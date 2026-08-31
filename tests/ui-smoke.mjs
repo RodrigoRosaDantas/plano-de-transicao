@@ -18,7 +18,10 @@ const companionFixture = `<!doctype html><html data-theme="dark"><head><meta cha
 </body></html>`;
 
 async function run(name, viewport, fn) {
-  const context = await browser.newContext({viewport, serviceWorkers:'allow'});
+  // No GitHub Pages o SW do Plano tem escopo /plano-de-transicao/ e não alcança
+  // /sedes-df-questoes/. O servidor local usa raiz /; bloquear SW aqui evita
+  // um escopo artificialmente amplo. Manifesto/cache são auditados separadamente.
+  const context = await browser.newContext({viewport, serviceWorkers:'block'});
   await context.addInitScript(() => {
     localStorage.setItem('sedes.questoes.activeProfile.v3', 'rodrigo');
     localStorage.setItem('sedes.questoes.profiles.v3', JSON.stringify([{id:'rodrigo',name:'Rodrigo',roles:['202','400']}]))
