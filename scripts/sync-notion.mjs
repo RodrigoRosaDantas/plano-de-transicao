@@ -1,4 +1,3 @@
-
 import fs from 'node:fs/promises';
 
 const token = process.env.NOTION_TOKEN;
@@ -22,8 +21,7 @@ const ids = {
     edasQuestions: '51c357e5bf1c47fea1c40357bf4c8801',
     edasErrors: '705bb839a4be4be497ae192cd62c9540',
     edasCases: '4a0a746eb92642489db14f3cbc3fd5d8',
-    registry: 'f1a15942ef2e4844b54ed9b6f892ea2f',
-    finance: 'cfaf6224f1c047d08385c5331c1ff37b'
+    registry: 'f1a15942ef2e4844b54ed9b6f892ea2f'
   }
 };
 
@@ -34,12 +32,14 @@ const headers = {
 };
 
 async function notion(path, opts = {}) {
-  const r = await fetch(`https://api.notion.com/v1/${path}`, {
+  const response = await fetch(`https://api.notion.com/v1/${path}`, {
     ...opts,
     headers: { ...headers, ...(opts.headers || {}) }
   });
-  if (!r.ok) throw new Error(`${path}: ${r.status} ${await r.text()}`);
-  return r.json();
+  if (!response.ok) {
+    throw new Error(`${path}: ${response.status} ${await response.text()}`);
+  }
+  return response.json();
 }
 
 async function blocks(id) {
@@ -48,9 +48,9 @@ async function blocks(id) {
   do {
     const qs = new URLSearchParams({ page_size: '100' });
     if (cursor) qs.set('start_cursor', cursor);
-    const r = await notion(`blocks/${id}/children?${qs}`);
-    all.push(...r.results);
-    cursor = r.has_more ? r.next_cursor : null;
+    const result = await notion(`blocks/${id}/children?${qs}`);
+    all.push(...result.results);
+    cursor = result.has_more ? result.next_cursor : null;
   } while (cursor);
   return all;
 }
@@ -61,12 +61,12 @@ async function databaseRows(id) {
   do {
     const body = { page_size: 100 };
     if (cursor) body.start_cursor = cursor;
-    const r = await notion(`databases/${id}/query`, {
+    const result = await notion(`databases/${id}/query`, {
       method: 'POST',
       body: JSON.stringify(body)
     });
-    all.push(...r.results);
-    cursor = r.has_more ? r.next_cursor : null;
+    all.push(...result.results);
+    cursor = result.has_more ? result.next_cursor : null;
   } while (cursor);
   return all;
 }
@@ -176,23 +176,25 @@ let tdasSimulations = previous.metrics.tdas.simulations;
 
 if (tdasRows) {
   const peRows = tdasRows.filter(r => /^PE\d+/i.test(textValue(r, 'Dia ID')));
-  tdasQuestions = sum(peRows, r =>
+  const concludedPEs = peRows.filter(r => textValue(r, 'Status') === 'Concluído');
+
+  tdasQuestions = sum(concludedPEs, r =>
     (numberValue(r, 'Questões gerais') || 0) +
     (numberValue(r, 'Questões específicas') || 0)
   );
-  tdasHits = sum(peRows, r =>
+  tdasHits = sum(concludedPEs, r =>
     (numberValue(r, 'Acertos gerais') || 0) +
     (numberValue(r, 'Acertos específicas') || 0)
   );
+
   const uniquePEs = new Map(peRows.map(r => [textValue(r, 'Dia ID'), r]));
   tdasStepsTotal = uniquePEs.size || tdasStepsTotal;
   tdasStepsDone = [...uniquePEs.values()].filter(r =>
     ['Concluído', 'Descanso'].includes(textValue(r, 'Status'))
   ).length;
-  tdasSimulations = peRows.filter(r =>
-    textValue(r, 'Status') === 'Concluído' &&
-    textValue(r, 'Bloco predominante') === 'Simulado' &&
-    textValue(r, 'Tipo') !== 'Diagnóstico'
+
+  tdasSimulations = concludedPEs.filter(r =>
+    textValue(r, 'Bloco predominante') === 'Simulado'
   ).length;
 }
 
@@ -231,6 +233,7 @@ if (included.length) {
     historyWithoutResult = sum(included, r => numberValue(r, 'Sem resultado'));
   }
 }
+
 const historyErrors = historyQuestions - historyHits;
 const historyRaw = historyQuestions + historyWithoutResult;
 
@@ -251,7 +254,7 @@ const latestIncludedAudit = included
   .at(-1) || previous.meta.performanceCut;
 
 const cycleNames = {
-  'Tribunais': 'Tribunais — 120 dias',
+  Tribunais: 'Tribunais — 120 dias',
   'SEDES inicial': 'SEDES — Plano Paralelo 1',
   'SEDES paralelo 8 semanas': 'SEDES — Plano Paralelo 8 Semanas',
   'Senador Canedo': 'Senador Canedo — Analista Administrativo',
@@ -289,7 +292,9 @@ function dynamicExam(previousExam, needle) {
     score: q ? `${h}/${q}` : previousExam.score,
     rawAccuracy: numberValue(row, 'Aproveitamento') ?? accuracy(h, q),
     weightedScore: note !== null && max ? `${note}/${max}` : previousExam.weightedScore,
-    ranking: ranking ? `${ranking.toLocaleString('pt-BR')}º${textValue(row, 'Etapa da classificação') ? ` · ${textValue(row, 'Etapa da classificação')}` : ''}` : previousExam.ranking,
+    ranking: ranking
+      ? `${ranking.toLocaleString('pt-BR')}º${textValue(row, 'Etapa da classificação') ? ` · ${textValue(row, 'Etapa da classificação')}` : ''}`
+      : previousExam.ranking,
     status: textValue(row, 'Situação competitiva') || previousExam.status
   };
 }
@@ -309,7 +314,7 @@ const snapshot = {
     performanceCut: latestIncludedAudit,
     source: 'Notion vivo — bancos operacionais + Registro Histórico',
     live: true,
-    syncWarnings: Object.entries(access).filter(([,v]) => !v.ok).map(([k]) => k)
+    syncWarnings: Object.entries(access).filter(([, value]) => !value.ok).map(([key]) => key)
   },
   metrics: {
     tdas: {
