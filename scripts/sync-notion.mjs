@@ -1,3 +1,4 @@
+
 import fs from 'node:fs/promises';
 
 const token = process.env.NOTION_TOKEN;
@@ -68,6 +69,19 @@ async function databaseRows(id) {
     cursor = r.has_more ? r.next_cursor : null;
   } while (cursor);
   return all;
+}
+
+const access = {};
+async function safeDatabaseRows(key, id) {
+  try {
+    const rows = await databaseRows(id);
+    access[key] = { ok: true, rows: rows.length };
+    return rows;
+  } catch (error) {
+    access[key] = { ok: false, error: String(error?.message || error) };
+    console.warn(`[fallback] ${key}: ${access[key].error}`);
+    return null;
+  }
 }
 
 function property(page, name) {
@@ -143,58 +157,84 @@ const [
       blocks: await blocks(id)
     }
   ])),
-  databaseRows(ids.databases.tdasQuestions),
-  databaseRows(ids.databases.tdasErrors),
-  databaseRows(ids.databases.tdasEssays),
-  databaseRows(ids.databases.edasQuestions),
-  databaseRows(ids.databases.edasErrors),
-  databaseRows(ids.databases.edasCases),
-  databaseRows(ids.databases.registry)
+  safeDatabaseRows('tdasQuestions', ids.databases.tdasQuestions),
+  safeDatabaseRows('tdasErrors', ids.databases.tdasErrors),
+  safeDatabaseRows('tdasEssays', ids.databases.tdasEssays),
+  safeDatabaseRows('edasQuestions', ids.databases.edasQuestions),
+  safeDatabaseRows('edasErrors', ids.databases.edasErrors),
+  safeDatabaseRows('edasCases', ids.databases.edasCases),
+  safeDatabaseRows('registry', ids.databases.registry)
 ]);
 
 const pageMirror = Object.fromEntries(pageMirrorEntries);
 
-const peRows = tdasRows.filter(r => /^PE\d+/i.test(textValue(r, 'Dia ID')));
-const tdasQuestions = sum(peRows, r =>
-  (numberValue(r, 'Questões gerais') || 0) +
-  (numberValue(r, 'Questões específicas') || 0)
-);
-const tdasHits = sum(peRows, r =>
-  (numberValue(r, 'Acertos gerais') || 0) +
-  (numberValue(r, 'Acertos específicas') || 0)
-);
-const uniquePEs = new Map(peRows.map(r => [textValue(r, 'Dia ID'), r]));
-const tdasStepsTotal = uniquePEs.size;
-const tdasStepsDone = [...uniquePEs.values()].filter(r =>
-  ['Concluído', 'Descanso'].includes(textValue(r, 'Status'))
-).length;
-const tdasSimulations = peRows.filter(r =>
-  textValue(r, 'Status') === 'Concluído' &&
-  textValue(r, 'Bloco predominante') === 'Simulado' &&
-  textValue(r, 'Tipo') !== 'Diagnóstico'
-).length;
+let tdasQuestions = previous.metrics.tdas.questions;
+let tdasHits = previous.metrics.tdas.hits;
+let tdasStepsTotal = previous.metrics.tdas.stepsTotal;
+let tdasStepsDone = previous.metrics.tdas.stepsDone;
+let tdasSimulations = previous.metrics.tdas.simulations;
 
-const edasDone = edasRows.filter(r => textValue(r, 'Status') === 'Concluído');
-const edasQuestions = sum(edasDone, r =>
-  (numberValue(r, 'Material — feitas') || 0) +
-  (numberValue(r, 'Comuns — feitas') || 0) +
-  (numberValue(r, 'Português — feitas') || 0)
-);
-const edasHits = sum(edasDone, r =>
-  (numberValue(r, 'Acertos material') || 0) +
-  (numberValue(r, 'Acertos comuns') || 0) +
-  (numberValue(r, 'Acertos Português') || 0)
-);
+if (tdasRows) {
+  const peRows = tdasRows.filter(r => /^PE\d+/i.test(textValue(r, 'Dia ID')));
+  tdasQuestions = sum(peRows, r =>
+    (numberValue(r, 'Questões gerais') || 0) +
+    (numberValue(r, 'Questões específicas') || 0)
+  );
+  tdasHits = sum(peRows, r =>
+    (numberValue(r, 'Acertos gerais') || 0) +
+    (numberValue(r, 'Acertos específicas') || 0)
+  );
+  const uniquePEs = new Map(peRows.map(r => [textValue(r, 'Dia ID'), r]));
+  tdasStepsTotal = uniquePEs.size || tdasStepsTotal;
+  tdasStepsDone = [...uniquePEs.values()].filter(r =>
+    ['Concluído', 'Descanso'].includes(textValue(r, 'Status'))
+  ).length;
+  tdasSimulations = peRows.filter(r =>
+    textValue(r, 'Status') === 'Concluído' &&
+    textValue(r, 'Bloco predominante') === 'Simulado' &&
+    textValue(r, 'Tipo') !== 'Diagnóstico'
+  ).length;
+}
 
-const included = registryRows.filter(r => checkboxValue(r, 'Conta no consolidado geral'));
-const nonTdasIncluded = included.filter(r => textValue(r, 'Projeto') !== 'TDAS 202');
-const historyQuestions = sum(nonTdasIncluded, r => numberValue(r, 'Questões')) + tdasQuestions;
-const historyHits = sum(nonTdasIncluded, r => numberValue(r, 'Acertos')) + tdasHits;
-const historyWithoutResult = sum(nonTdasIncluded, r => numberValue(r, 'Sem resultado'));
+let edasQuestions = previous.metrics.edas.questions;
+let edasHits = previous.metrics.edas.hits;
+if (edasRows) {
+  const edasDone = edasRows.filter(r => textValue(r, 'Status') === 'Concluído');
+  edasQuestions = sum(edasDone, r =>
+    (numberValue(r, 'Material — feitas') || 0) +
+    (numberValue(r, 'Comuns — feitas') || 0) +
+    (numberValue(r, 'Português — feitas') || 0)
+  );
+  edasHits = sum(edasDone, r =>
+    (numberValue(r, 'Acertos material') || 0) +
+    (numberValue(r, 'Acertos comuns') || 0) +
+    (numberValue(r, 'Acertos Português') || 0)
+  );
+}
+
+const registry = registryRows || [];
+const included = registry.filter(r => checkboxValue(r, 'Conta no consolidado geral'));
+
+let historyQuestions = previous.metrics.history.questions;
+let historyHits = previous.metrics.history.hits;
+let historyWithoutResult = previous.metrics.history.withoutResult;
+
+if (included.length) {
+  if (tdasRows) {
+    const nonTdasIncluded = included.filter(r => textValue(r, 'Projeto') !== 'TDAS 202');
+    historyQuestions = sum(nonTdasIncluded, r => numberValue(r, 'Questões')) + tdasQuestions;
+    historyHits = sum(nonTdasIncluded, r => numberValue(r, 'Acertos')) + tdasHits;
+    historyWithoutResult = sum(nonTdasIncluded, r => numberValue(r, 'Sem resultado'));
+  } else {
+    historyQuestions = sum(included, r => numberValue(r, 'Questões'));
+    historyHits = sum(included, r => numberValue(r, 'Acertos'));
+    historyWithoutResult = sum(included, r => numberValue(r, 'Sem resultado'));
+  }
+}
 const historyErrors = historyQuestions - historyHits;
 const historyRaw = historyQuestions + historyWithoutResult;
 
-const financeRow = registryRows.find(r =>
+const financeRow = registry.find(r =>
   textValue(r, 'Registro').includes('SEDES/DF 2026 — ciclo financeiro')
 );
 const financeConfirmed =
@@ -234,7 +274,7 @@ const historyCycles = included
     return { name, questions: q, hits: h, errors: q - h, accuracy: accuracy(h, q) };
   });
 
-const examRows = registryRows.filter(r => textValue(r, 'Escopo') === 'Prova real');
+const examRows = registry.filter(r => textValue(r, 'Escopo') === 'Prova real');
 function dynamicExam(previousExam, needle) {
   const row = examRows.find(r => textValue(r, 'Registro').includes(needle));
   if (!row) return previousExam;
@@ -268,7 +308,8 @@ const snapshot = {
     homeSnapshot: (homeMeta.last_edited_time || new Date().toISOString()).slice(0, 10),
     performanceCut: latestIncludedAudit,
     source: 'Notion vivo — bancos operacionais + Registro Histórico',
-    live: true
+    live: true,
+    syncWarnings: Object.entries(access).filter(([,v]) => !v.ok).map(([k]) => k)
   },
   metrics: {
     tdas: {
@@ -278,9 +319,9 @@ const snapshot = {
       accuracy: accuracy(tdasHits, tdasQuestions),
       stepsDone: tdasStepsDone,
       stepsTotal: tdasStepsTotal || previous.metrics.tdas.stepsTotal,
-      errorNotebook: tdasErrorRows.length,
-      essays: tdasEssayRows.length,
-      essaysGraded: tdasEssayRows.filter(hasStructuredScore).length,
+      errorNotebook: tdasErrorRows ? tdasErrorRows.length : previous.metrics.tdas.errorNotebook,
+      essays: tdasEssayRows ? tdasEssayRows.length : previous.metrics.tdas.essays,
+      essaysGraded: tdasEssayRows ? tdasEssayRows.filter(hasStructuredScore).length : previous.metrics.tdas.essaysGraded,
       simulations: tdasSimulations
     },
     edas: {
@@ -288,8 +329,8 @@ const snapshot = {
       hits: edasHits,
       errors: edasQuestions - edasHits,
       accuracy: accuracy(edasHits, edasQuestions),
-      errorNotebook: edasErrorRows.length,
-      caseStudies: edasCaseRows.length
+      errorNotebook: edasErrorRows ? edasErrorRows.length : previous.metrics.edas.errorNotebook,
+      caseStudies: edasCaseRows ? edasCaseRows.length : previous.metrics.edas.caseStudies
     },
     history: {
       questions: historyQuestions,
@@ -310,23 +351,24 @@ const snapshot = {
 
 const mirror = {
   generatedAt: snapshot.meta.generatedAt,
+  access,
   pages: pageMirror,
   operational: {
     tdas: {
       questionsDatabase: ids.databases.tdasQuestions,
       errorDatabase: ids.databases.tdasErrors,
       essayDatabase: ids.databases.tdasEssays,
-      rows: tdasRows.length
+      rows: tdasRows?.length ?? null
     },
     edas: {
       questionsDatabase: ids.databases.edasQuestions,
       errorDatabase: ids.databases.edasErrors,
       caseDatabase: ids.databases.edasCases,
-      rows: edasRows.length
+      rows: edasRows?.length ?? null
     },
     registry: {
       database: ids.databases.registry,
-      rows: registryRows.length
+      rows: registryRows?.length ?? null
     }
   }
 };
@@ -346,5 +388,6 @@ console.log(JSON.stringify({
   tdas: snapshot.metrics.tdas,
   edas: snapshot.metrics.edas,
   history: snapshot.metrics.history,
-  finance: snapshot.metrics.finance
+  finance: snapshot.metrics.finance,
+  access
 }, null, 2));
