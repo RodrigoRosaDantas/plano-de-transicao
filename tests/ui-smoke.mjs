@@ -2,6 +2,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 
 const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
+const baseOrigin = new URL(baseURL).origin;
 await fs.mkdir('artifacts', {recursive:true});
 
 const browser = await chromium.launch({headless:true});
@@ -18,16 +19,24 @@ async function run(name, viewport, fn) {
     localStorage.setItem('sedes.questoes.rodrigo.marked.v3', JSON.stringify({q3:{id:'q3',discipline:'Português'}}))
     localStorage.setItem('sedes.questoes.rodrigo.session.v3', JSON.stringify({current:4,questions:Array.from({length:20},(_,i)=>({id:`q${i}`})),answers:{q0:'A',q1:'B'},materialId:'teste'}))
   });
-  await context.route('**/sedes-df-questoes/**', route => route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Plataforma de Questões</title><main>Fixture da plataforma integrada</main>'}));
+  await context.route('**/favicon.ico', route => route.fulfill({status:204,body:''}));
+  await context.route('**/sedes-df-questoes/**', route => route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html><head><meta charset="utf-8"><title>Plataforma de Questões</title></head><body><main>Fixture da plataforma integrada</main></body></html>'}));
   const page = await context.newPage();
-  const consoleErrors = [];
-  page.on('pageerror', error => consoleErrors.push(String(error)));
-  page.on('console', msg => { if (msg.type()==='error') consoleErrors.push(msg.text()); });
+  const pageErrors = [];
+  const badResponses = [];
+  page.on('pageerror', error => pageErrors.push(String(error)));
+  page.on('response', response => {
+    const url = response.url();
+    if (response.status() >= 400 && url.startsWith(baseOrigin) && !url.includes('/sedes-df-questoes/')) {
+      badResponses.push(`${response.status()} ${url}`);
+    }
+  });
   try {
     await page.goto(baseURL, {waitUntil:'networkidle'});
     await page.waitForSelector('#content .section-title');
     await fn(page, context);
-    if (consoleErrors.length) throw new Error(`Erros de console: ${consoleErrors.join(' | ')}`);
+    if (pageErrors.length) throw new Error(`Erros JavaScript: ${pageErrors.join(' | ')}`);
+    if (badResponses.length) throw new Error(`Recursos HTTP com falha: ${badResponses.join(' | ')}`);
     results.push({name, pass:true});
     console.log(`PASS  ${name}`);
   } catch (error) {
@@ -91,8 +100,11 @@ await run('mobile: navegação, workspace e ausência de overflow', {width:390,h
   await page.screenshot({path:'artifacts/mobile-tools.png',fullPage:true});
 });
 
-await run('tablet: financeiro responsivo', {width:820,height:1180}, async page => {
-  await page.click('[data-view="finance"]');
+await run('tablet: financeiro responsivo pelo fluxo Mais', {width:820,height:1180}, async page => {
+  if (!(await page.locator('.mobile-dock').isVisible())) throw new Error('Dock de tablet não está visível.');
+  await page.click('#dockMore');
+  await page.waitForSelector('#sidebar.open');
+  await page.click('#sidebar [data-view="finance"]');
   await page.waitForSelector('#financeParityCharts');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal tablet: ${overflow}px`);
