@@ -3,56 +3,93 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1020" />
-  <meta name="description" content="Plano de Transição — jornada, concursos, desempenho, custos e estratégia." />
+  <meta name="theme-color" content="#07101d" />
+  <meta name="description" content="Plano de Transição — jornada, concursos, investimento, desempenho e estratégia de carreira." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Plano de Transição</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
       <div class="brand">
         <div class="brand-mark">🧭</div>
-        <div><strong>Plano de Transição</strong><span>Jornada orientada por dados</span></div>
+        <div class="brand-copy"><strong>Plano de Transição</strong><span>Jornada orientada por dados</span></div>
+        <button id="closeMenuBtn" class="icon-btn mobile-only" aria-label="Fechar menu">×</button>
       </div>
+
+      <div class="side-status">
+        <span class="dot live"></span>
+        <div><strong id="sideSync">Notion conectado</strong><small id="sideSnapshot">Carregando corte...</small></div>
+      </div>
+
+      <div class="nav-label">Comando</div>
       <nav id="nav">
-        <button data-view="home" class="active">⌂ <span>Visão geral</span></button>
-        <button data-view="journey">🧬 <span>Jornada e marcos</span></button>
-        <button data-view="exams">🏁 <span>Provas e resultados</span></button>
-        <button data-view="finance">💰 <span>Financeiro</span></button>
-        <button data-view="performance">📊 <span>Desempenho</span></button>
-        <button data-view="audit">🛡️ <span>Fontes e auditoria</span></button>
-        <button data-view="strategy">🧭 <span>Estratégia</span></button>
+        <button data-view="home" class="active"><span class="nav-icon">⌂</span><span>Visão executiva</span></button>
+        <button data-view="journey"><span class="nav-icon">◎</span><span>Jornada e marcos</span></button>
+        <button data-view="exams"><span class="nav-icon">◈</span><span>Concursos e provas</span></button>
+        <button data-view="finance"><span class="nav-icon">◉</span><span>Investimentos</span></button>
+        <button data-view="performance"><span class="nav-icon">↗</span><span>Desempenho</span></button>
+        <button data-view="audit"><span class="nav-icon">◇</span><span>Fontes e auditoria</span></button>
+        <button data-view="strategy"><span class="nav-icon">✦</span><span>Estratégia de carreira</span></button>
       </nav>
+
       <div class="sidebar-footer">
+        <div class="nav-label">Ferramentas</div>
         <button id="installBtn" class="ghost hidden">＋ Instalar aplicativo</button>
-        <button id="exportBtn" class="ghost">⇩ Exportar snapshot</button>
+        <button id="exportBtn" class="ghost">⇩ Exportar dados</button>
+        <a class="ghost link-button" href="https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899" target="_blank" rel="noreferrer">↗ Abrir fonte no Notion</a>
       </div>
     </aside>
 
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
     <main>
       <header class="topbar">
-        <button id="menuBtn" class="icon-btn">☰</button>
-        <div class="search-wrap"><span>⌕</span><input id="searchInput" placeholder="Buscar no plano..." /></div>
+        <button id="menuBtn" class="icon-btn mobile-menu" aria-label="Abrir menu">☰</button>
+        <div class="page-context">
+          <span class="context-kicker">PLANO DE TRANSIÇÃO</span>
+          <strong id="pageContext">Visão executiva</strong>
+        </div>
+        <button id="searchTrigger" class="search-trigger" aria-label="Buscar no plano">
+          <span>⌕</span><span>Buscar no plano...</span><kbd>Ctrl K</kbd>
+        </button>
         <div class="top-actions">
-          <div class="clock"><span id="clock">--:--</span><small>Brasília</small></div>
-          <button id="refreshBtn" class="icon-btn" title="Atualizar snapshot">↻</button>
+          <div class="clock"><span id="clock">--:--:--</span><small>Brasília</small></div>
+          <button id="refreshBtn" class="icon-btn" title="Atualizar dados">↻</button>
           <button id="themeBtn" class="icon-btn" title="Alternar tema">◐</button>
         </div>
       </header>
 
       <section class="status-strip">
-        <span class="dot live"></span><span id="syncText">Snapshot local</span>
-        <span class="sep">•</span><span id="snapshotDate"></span>
-        <span class="sep">•</span><span id="offlineState">online</span>
+        <div><span class="dot live"></span><span id="syncText">Carregando sincronização...</span></div>
+        <div class="status-meta"><span id="snapshotDate"></span><span class="sep">•</span><span id="offlineState">online</span></div>
       </section>
 
-      <div id="content" class="content"></div>
+      <div id="content" class="content" aria-live="polite"></div>
     </main>
   </div>
-  <div id="toast" class="toast"></div>
+
+  <nav class="mobile-dock" id="mobileDock" aria-label="Atalhos móveis">
+    <button data-view="home" class="active"><span>⌂</span><small>Início</small></button>
+    <button data-view="exams"><span>◈</span><small>Provas</small></button>
+    <button data-view="performance"><span>↗</span><small>Desempenho</small></button>
+    <button data-view="strategy"><span>✦</span><small>Estratégia</small></button>
+    <button id="dockMore"><span>☰</span><small>Mais</small></button>
+  </nav>
+
+  <div id="commandPalette" class="command-overlay hidden" role="dialog" aria-modal="true" aria-label="Busca global">
+    <div class="command-panel">
+      <div class="command-search"><span>⌕</span><input id="searchInput" autocomplete="off" placeholder="Buscar concurso, marco, indicador, fonte..." /><kbd>Esc</kbd></div>
+      <div id="searchResults" class="command-results"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
   <script src="assets/app.js" defer></script>
 </body>
 </html>
