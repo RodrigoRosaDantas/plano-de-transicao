@@ -2,10 +2,12 @@ import fs from 'node:fs/promises';
 
 const read = async path => fs.readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const snapshot = JSON.parse(await read('data/snapshot.json'));
+const manifest = JSON.parse(await read('manifest.webmanifest'));
 const index = await read('index.html');
 const sw = await read('sw.js');
 const parityV1 = await read('assets/work-parity.js');
 const parityV2 = await read('assets/work-parity-v2.js');
+const parityV3 = await read('assets/work-parity-v3.js');
 
 const results = [];
 const check = (name, pass, detail = '') => results.push({name, pass:Boolean(pass), detail});
@@ -38,19 +40,30 @@ check('Sem divergências de enriquecimento', !(snapshot.meta.dataWarnings||[]).l
 check('Fonte declara Notion vivo', String(snapshot.meta.source||'').includes('Notion'));
 check('Ciclos possuem âncora temporal quando disponível', (snapshot.historyCycles||[]).some(x=>x.date), `${(snapshot.historyCycles||[]).filter(x=>x.date).length}/${(snapshot.historyCycles||[]).length}`);
 
-for (const asset of ['assets/work-parity.css','assets/work-parity.js','assets/work-parity-v2.css','assets/work-parity-v2.js','data/snapshot.json','manifest.webmanifest']) {
+for (const asset of ['assets/work-parity.css','assets/work-parity.js','assets/work-parity-v2.css','assets/work-parity-v2.js','assets/work-parity-v3.js','data/snapshot.json','manifest.webmanifest']) {
   check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
 }
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Camada v1 está ligada no HTML', index.includes('work-parity.js'));
 check('Camada v2 está ligada no HTML', index.includes('work-parity-v2.js'));
+check('Camada v3 está ligada no HTML', index.includes('work-parity-v3.js'));
 check('Workspace integrado implementado', parityV2.includes('studyWorkspaceFrame') && parityV2.includes('WORKSPACE INTEGRADO'));
+check('Workspace remove navegação duplicada', parityV3.includes('>.topbar') && parityV3.includes('>.mobile-nav'));
+check('Workspace sincroniza tema do Plano', parityV3.includes("setAttribute('data-theme'"));
 check('Comparação de provas implementada', parityV2.includes('COMPARAÇÃO ENTRE PROVAS REAIS'));
 check('Investimento por ciclo implementado', parityV2.includes('INVESTIMENTO POR CICLO'));
 check('Confirmado x estimado x não confirmado implementado', parityV2.includes('Confirmado × estimado × não confirmado'));
 check('Guardrail investimento x desempenho implementado', parityV2.includes('INVESTIMENTO × DESEMPENHO'));
 check('Resumo x auditoria global implementado', parityV2.includes('globalViewToggle'));
 check('Persistência local da plataforma é lida', parityV1.includes('sedes.questoes.') && parityV1.includes('localStorage'));
+
+const shortcutUrls = new Set((manifest.shortcuts || []).map(x=>x.url));
+check('PWA usa modo standalone', manifest.display === 'standalone');
+check('PWA possui escopo próprio', manifest.scope === './' && manifest.id === './');
+check('PWA possui atalho Estudar', shortcutUrls.has('./#tools'));
+check('PWA possui atalho Desempenho', shortcutUrls.has('./#performance'));
+check('PWA possui atalho Provas', shortcutUrls.has('./#exams'));
+check('PWA possui atalho Investimentos', shortcutUrls.has('./#finance'));
 
 const failures = results.filter(x=>!x.pass);
 const width = Math.max(...results.map(x=>x.name.length));
