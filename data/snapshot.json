@@ -1,20 +1,13 @@
 {
   "meta": {
-    "generatedAt": "2026-08-31T16:08:46.182Z",
+    "generatedAt": "2026-08-31T16:17:25.085Z",
     "homeSnapshot": "2026-08-31",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
     "sourceUrl": "https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899",
     "nextExam": "2026-09-06T08:00:00-03:00",
     "live": true,
-    "syncWarnings": [
-      "tdasQuestions",
-      "tdasErrors",
-      "edasCases",
-      "edasQuestions",
-      "edasErrors",
-      "tdasEssays"
-    ]
+    "syncWarnings": []
   },
   "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
   "priorities": [
@@ -41,7 +34,7 @@
       "accuracy": 92.05,
       "stepsDone": 100,
       "stepsTotal": 112,
-      "errorNotebook": 276,
+      "errorNotebook": 288,
       "essays": 33,
       "essaysGraded": 13,
       "simulations": 7
