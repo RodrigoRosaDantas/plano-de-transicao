@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "generatedAt": "2026-08-31T08:45:00-03:00",
+    "homeSnapshot": "2026-08-30",
+    "performanceCut": "2026-08-27",
+    "source": "Notion vivo — PLANO DE TRANSIÇÃO",
+    "sourceUrl": "https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899",
+    "nextExam": "2026-09-06T08:00:00-03:00"
+  },
+  "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
+  "priorities": [
+    {"id":"tdas","title":"TDAS — Cargo 202","subtitle":"Técnico Administrativo","status":"Reta final","tone":"primary"},
+    {"id":"edas","title":"EDAS — Cargo 400","subtitle":"Administração","status":"Projeto paralelo estruturado","tone":"secondary"}
+  ],
+  "metrics": {
+    "tdas": {"questions":3319,"hits":3055,"errors":264,"accuracy":92.05,"stepsDone":100,"stepsTotal":112,"errorNotebook":276,"essays":33,"essaysGraded":13,"simulations":7},
+    "edas": {"questions":145,"hits":122,"errors":23,"accuracy":84.14,"errorNotebook":31,"caseStudies":12},
+    "history": {"questions":15329,"hits":13976,"errors":1353,"accuracy":91.17,"rawRecords":15419,"withoutResult":90},
+    "finance": {"sedesConfirmed":875.10,"status":"Parcial"}
+  },
+  "exams": [
+    {"name":"Prefeitura de Caldas Novas — 2016","role":"Agente de Vigilância","date":"2016-08-28","score":"22/30","rawAccuracy":73.33,"ranking":"171º","status":"Reserva Técnica"},
+    {"name":"Câmara Municipal de Goiânia","role":"G101 — Agente Administrativo","date":"2026-03-15","score":"35/50","rawAccuracy":70,"weightedScore":"68/100","ranking":"1.822º na objetiva/AC","status":"Concurso em andamento"},
+    {"name":"SEDES/DF","role":"TDAS 202 + EDAS 400","date":"2026-09-06","score":"—","rawAccuracy":null,"ranking":"—","status":"Próxima prova"}
+  ],
+  "historyCycles": [
+    {"name":"Tribunais — 120 dias","questions":3095,"hits":2609,"errors":486,"accuracy":84.30},
+    {"name":"SEDES — Plano Paralelo 1","questions":1230,"hits":1184,"errors":46,"accuracy":96.26},
+    {"name":"SEDES — Plano Paralelo 8 Semanas","questions":1826,"hits":1755,"errors":71,"accuracy":96.11},
+    {"name":"Senador Canedo — Analista Administrativo","questions":455,"hits":429,"errors":26,"accuracy":94.29},
+    {"name":"Câmara Goiânia — Agente Administrativo","questions":1765,"hits":1678,"errors":87,"accuracy":95.07},
+    {"name":"Câmara Goiânia — Reta Final","questions":2375,"hits":2110,"errors":265,"accuracy":88.84},
+    {"name":"SEDES — Pré-edital PRO","questions":1236,"hits":1132,"errors":104,"accuracy":91.59},
+    {"name":"Treino Quadrix — CRF-DF","questions":28,"hits":24,"errors":4,"accuracy":85.71},
+    {"name":"SEDES — TDAS Pós-edital","questions":3319,"hits":3055,"errors":264,"accuracy":92.05}
+  ],
+  "timeline": [
+    {"date":"03/07/2025","title":"Início da preparação atual","detail":"Retomada estruturada dos estudos e construção da base para tribunais e área administrativa."},
+    {"date":"23/07/2025","title":"Criação do Plano de Transição","detail":"O estudo passa a ser tratado como projeto de mudança de carreira."},
+    {"date":"15/03/2026","title":"Câmara de Goiânia — prova real","detail":"35/50, 70% bruto e 68/100 ponderado; primeira régua competitiva consolidada da jornada atual."},
+    {"date":"27/08/2026","title":"Corte TDAS revalidado","detail":"3.319 questões, 3.055 acertos, 92,05% e 100/112 etapas executadas."},
+    {"date":"06/09/2026","title":"SEDES/DF","detail":"Marco de conversão do capital acumulado em desempenho competitivo de prova."}
+  ],
+  "strategy": {
+    "current":"TDAS 202 é a prioridade operacional até 06/09/2026; EDAS 400 permanece separado e estruturado em paralelo.",
+    "principles":["Não recomeçar a cada edital","Posse vale mais que vaidade de cargo","Priorizar editais aderentes","Dados antes de sensação","Investimento também é dado","Qualidade de vida faz parte da remuneração"],
+    "stages":[
+      {"period":"2026–2027","title":"Entrada no serviço público","goal":"Classificação competitiva, nomeação e primeira posse."},
+      {"period":"2027–2029","title":"Consolidação em nível superior","goal":"Migrar para cargo de nível superior com ganho relevante de carreira."},
+      {"period":"2029–2032+","title":"Carreira de alto nível","goal":"Avaliar controle, auditoria, gestão, fiscalização ou carreira de Estado compatível."}
+    ]
+  },
+  "governance": {
+    "truthChain":["Banco operacional","Reconciliação / normalização","Registro Histórico","Painel / resumo"],
+    "rules":["A Home nunca prevalece sobre o banco operacional.","Provas reais não entram no volume de treino.","Bancos editoriais e de terceiros ficam fora do desempenho.","Snapshots cumulativos não devem ser somados entre si.","Registros sem resultado entram apenas no total bruto, sem afetar aproveitamento."],
+    "sources":[
+      {"name":"BANCO — CONTROLE DE QUESTÕES TDAS","id":"7ef15150d39b4215816b9d318fc88fa3","status":"Vigente"},
+      {"name":"CADERNO DE ERROS TDAS / PRO","id":"fabd0f60bdb84327bd83d99dc9a40374","status":"Vigente"},
+      {"name":"BANCO REDAÇÃO TDAS","id":"9b628a5313c646d8aa57576baa459bdb","status":"Vigente"},
+      {"name":"BANCO CONTROLE EDAS","id":"51c357e5bf1c47fea1c40357bf4c8801","status":"Vigente"},
+      {"name":"CADERNO DE ERROS EDAS","id":"705bb839a4be4be497ae192cd62c9540","status":"Vigente"},
+      {"name":"02.1 — Custos e Investimentos por Concurso","id":"cfaf6224f1c047d08385c5331c1ff37b","status":"Vigente"}
+    ]
+  }
+}
