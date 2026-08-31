@@ -1,21 +1,21 @@
 {
-  "generatedAt": "2026-08-31T16:43:25.885Z",
+  "generatedAt": "2026-08-31T17:02:52.922Z",
   "access": {
-    "edasCases": {
+    "edasErrors": {
       "ok": true,
-      "rows": 12
+      "rows": 31
     },
     "registry": {
       "ok": true,
       "rows": 29
     },
+    "edasCases": {
+      "ok": true,
+      "rows": 12
+    },
     "tdasEssays": {
       "ok": true,
       "rows": 33
-    },
-    "edasErrors": {
-      "ok": true,
-      "rows": 31
     },
     "edasQuestions": {
       "ok": true,
@@ -85,7 +85,7 @@
         "url": "https://app.notion.com/p/PLANO-DE-TRANSI-O-239cf5a2673180a1a2a2df40b502a899",
         "public_url": null,
         "archived": false,
-        "request_id": "f0f3d340-7f1d-4f51-b380-41b875df6156"
+        "request_id": "97c93a0a-f0eb-4af9-ab46-36b249f5e407"
       },
       "blocks": [
         {
@@ -2748,7 +2748,7 @@
         "url": "https://app.notion.com/p/01-Jornada-e-Marcos-3c8cf5a2673181adbbecc1f6d0080399",
         "public_url": null,
         "archived": false,
-        "request_id": "51f66fab-b68d-45a1-9752-b3a958e4d5a0"
+        "request_id": "d78a1bd8-118d-416f-afcb-44bee20e41fa"
       },
       "blocks": [
         {
@@ -5939,7 +5939,7 @@
         "url": "https://app.notion.com/p/02-Concursos-Provas-e-Resultados-3c8cf5a26731818a9571f28f56f13514",
         "public_url": null,
         "archived": false,
-        "request_id": "b3b52ff5-7eeb-4dda-bcde-4fb3c561b629"
+        "request_id": "f852a829-ab32-4f05-84a0-44af23ef3900"
       },
       "blocks": [
         {
@@ -8890,7 +8890,7 @@
         "url": "https://app.notion.com/p/03-Desempenho-e-Hist-rico-de-Estudos-3c8cf5a2673181a38caef92b980ce85c",
         "public_url": null,
         "archived": false,
-        "request_id": "98299b2c-9a3c-438c-ab08-408d61c6a305"
+        "request_id": "1f7d42f7-12b6-4ac0-978f-6dacfdeae003"
       },
       "blocks": [
         {
@@ -12585,7 +12585,7 @@
             "page_id": "3c8cf5a2-6731-81a3-8cae-f92b980ce85c"
           },
           "created_time": "2026-08-26T06:54:00.000Z",
-          "last_edited_time": "2026-08-31T15:43:00.000Z",
+          "last_edited_time": "2026-08-31T16:44:00.000Z",
           "created_by": {
             "object": "user",
             "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -12683,7 +12683,7 @@
         "url": "https://app.notion.com/p/04-Estrat-gia-de-Carreira-e-Pr-ximas-Etapas-3c8cf5a2673181e08ae8f9eff95df293",
         "public_url": null,
         "archived": false,
-        "request_id": "0cf228e4-10ab-4901-b69f-af773636fc83"
+        "request_id": "d6f5f77d-8bfc-40ce-9bd9-58130a47b725"
       },
       "blocks": [
         {
@@ -22922,7 +22922,7 @@
         "object": "page",
         "id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f",
         "created_time": "2026-08-26T06:54:00.000Z",
-        "last_edited_time": "2026-08-31T15:43:00.000Z",
+        "last_edited_time": "2026-08-31T16:44:00.000Z",
         "created_by": {
           "object": "user",
           "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -22971,7 +22971,7 @@
         "url": "https://app.notion.com/p/03-1-Registro-Mestre-de-Fontes-e-Auditoria-3c8cf5a2673181f7bce8f6b75881c31f",
         "public_url": null,
         "archived": false,
-        "request_id": "b1318938-539b-4f7e-bb20-beafc8645d95"
+        "request_id": "c3fefa0e-8833-487b-b5af-fe48b30bf01c"
       },
       "blocks": [
         {
@@ -35346,6 +35346,313 @@
             "color": "default"
           },
           "archived": false
+        },
+        {
+          "object": "block",
+          "id": "0f42f34d-cf70-4de9-8af9-95e762e13c58",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-08-31T16:44:00.000Z",
+          "last_edited_time": "2026-08-31T16:44:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "heading_3",
+          "heading_3": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Ressalva cronológica — Tribunais 120 dias | início declarado x grade nominal",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Ressalva cronológica — Tribunais 120 dias | início declarado x grade nominal",
+                "href": null
+              }
+            ],
+            "is_toggleable": false,
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "c965c248-a181-4004-972c-9e65b439c91e",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-08-31T16:44:00.000Z",
+          "last_edited_time": "2026-08-31T16:44:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "paragraph",
+          "paragraph": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "A página-mãe histórica fixa explicitamente ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "A página-mãe histórica fixa explicitamente ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "03/07/2025",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "03/07/2025",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " como início da preparação. Na mesma fonte, a grade nominal do cronograma começa em ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " como início da preparação. Na mesma fonte, a grade nominal do cronograma começa em ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "Dia 01 — 01/07",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Dia 01 — 01/07",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " e contém datas-calendário anteriores ao início declarado. Para fins de rastreabilidade do PLANO DE TRANSIÇÃO, ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " e contém datas-calendário anteriores ao início declarado. Para fins de rastreabilidade do PLANO DE TRANSIÇÃO, ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "03/07/2025 prevalece como marco de início da preparação",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "03/07/2025 prevalece como marco de início da preparação",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "; 01–02/07 permanecem apenas como desenho nominal do cronograma e ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "; 01–02/07 permanecem apenas como desenho nominal do cronograma e ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "não comprovam execução de estudo nesses dias",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "não comprovam execução de estudo nesses dias",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ". Esta ressalva não altera os quantitativos já consolidados no Registro Histórico e não exige recálculo do banco histórico.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ". Esta ressalva não altera os quantitativos já consolidados no Registro Histórico e não exige recálculo do banco histórico.",
+                "href": null
+              }
+            ],
+            "icon": null,
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "615e9e97-635b-44aa-b549-49bc0160a4b9",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-08-31T16:44:00.000Z",
+          "last_edited_time": "2026-08-31T16:44:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "paragraph",
+          "paragraph": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Fonte histórica: ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Fonte histórica: ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "Concurso Tribunais — 120 dias | Matérias Comuns para Tribunais (Nível Médio)",
+                  "link": {
+                    "url": "https://app.notion.com/p/21bcf5a2673180af928bdaf54233dd58"
+                  }
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Concurso Tribunais — 120 dias | Matérias Comuns para Tribunais (Nível Médio)",
+                "href": "https://app.notion.com/p/21bcf5a2673180af928bdaf54233dd58"
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ".",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ".",
+                "href": null
+              }
+            ],
+            "icon": null,
+            "color": "default"
+          },
+          "archived": false
         }
       ]
     },
@@ -35403,7 +35710,7 @@
         "url": "https://app.notion.com/p/03-2-Consolidado-de-Bancos-de-Quest-es-3cacf5a26731818da9dacef6da38241f",
         "public_url": null,
         "archived": false,
-        "request_id": "06185908-c2b6-4142-93d5-838f6e8cda1a"
+        "request_id": "6660687c-0d7e-446d-b5a8-3f1b90559713"
       },
       "blocks": [
         {
@@ -36981,7 +37288,7 @@
     }
   },
   "enrichment": {
-    "generatedAt": "2026-08-31T16:43:27.539Z",
+    "generatedAt": "2026-08-31T17:02:56.282Z",
     "financeRows": 24,
     "registryRows": 29,
     "warnings": []
