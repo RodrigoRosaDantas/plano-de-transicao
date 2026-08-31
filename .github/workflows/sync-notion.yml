@@ -9,6 +9,7 @@ on:
       - '.github/workflows/sync-notion.yml'
       - 'scripts/sync-notion.mjs'
       - 'scripts/enrich-work-parity.mjs'
+      - 'scripts/audit-parity.mjs'
       - '.sync-trigger'
   schedule:
     - cron: '17 */3 * * *'
@@ -38,6 +39,8 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/enrich-work-parity.mjs
+      - name: Auditar dados e paridade antes do commit
+        run: node scripts/audit-parity.mjs
       - name: Commit de atualização
         run: |
           git config user.name "github-actions[bot]"
