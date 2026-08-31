@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#07101d" />
-  <meta name="description" content="Plano de Transição — jornada, concursos, investimento, desempenho e estratégia de carreira." />
+  <meta name="theme-color" content="#08131f" />
+  <meta name="description" content="Plano de Transição — jornada, concursos, estudo, investimento, desempenho e estratégia de carreira." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Plano de Transição</title>
@@ -12,13 +12,14 @@
   <link rel="icon" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/work-parity.css?v=1" />
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
       <div class="brand">
-        <div class="brand-mark">🧭</div>
-        <div class="brand-copy"><strong>Plano de Transição</strong><span>Jornada orientada por dados</span></div>
+        <div class="brand-mark">PT</div>
+        <div class="brand-copy"><strong>Plano de Transição</strong><span>Comando integrado de estudo e carreira</span></div>
         <button id="closeMenuBtn" class="icon-btn mobile-only" aria-label="Fechar menu">×</button>
       </div>
 
@@ -27,22 +28,24 @@
         <div><strong id="sideSync">Notion conectado</strong><small id="sideSnapshot">Carregando corte...</small></div>
       </div>
 
-      <div class="nav-label">Comando</div>
+      <div class="nav-label">Plataforma</div>
       <nav id="nav">
-        <button data-view="home" class="active"><span class="nav-icon">⌂</span><span>Visão executiva</span></button>
-        <button data-view="journey"><span class="nav-icon">◎</span><span>Jornada e marcos</span></button>
+        <button data-view="home" class="active"><span class="nav-icon">⌂</span><span>Início</span></button>
+        <button data-tool-view="tools"><span class="nav-icon">▣</span><span>Estudar</span></button>
+        <button data-view="performance"><span class="nav-icon">◔</span><span>Desempenho</span></button>
+        <button data-view="journey"><span class="nav-icon">◎</span><span>Jornada</span></button>
         <button data-view="exams"><span class="nav-icon">◈</span><span>Concursos e provas</span></button>
         <button data-view="finance"><span class="nav-icon">◉</span><span>Investimentos</span></button>
-        <button data-view="performance"><span class="nav-icon">↗</span><span>Desempenho</span></button>
-        <button data-view="audit"><span class="nav-icon">◇</span><span>Fontes e auditoria</span></button>
-        <button data-view="strategy"><span class="nav-icon">✦</span><span>Estratégia de carreira</span></button>
+        <button data-view="strategy"><span class="nav-icon">✦</span><span>Estratégia</span></button>
+        <button data-view="audit"><span class="nav-icon">◇</span><span>Auditoria</span></button>
       </nav>
 
       <div class="sidebar-footer">
-        <div class="nav-label">Ferramentas</div>
+        <div class="nav-label">Dados e aplicativo</div>
         <button id="installBtn" class="ghost hidden">＋ Instalar aplicativo</button>
-        <button id="exportBtn" class="ghost">⇩ Exportar dados</button>
-        <a class="ghost link-button" href="https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899" target="_blank" rel="noreferrer">↗ Abrir fonte no Notion</a>
+        <button id="exportBtn" class="ghost">⇩ Exportar snapshot</button>
+        <a class="ghost link-button" href="../sedes-df-questoes/#/inicio">▦ Plataforma de Questões</a>
+        <a class="ghost link-button" href="https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899" target="_blank" rel="noreferrer">↗ Fonte no Notion</a>
       </div>
     </aside>
 
@@ -53,12 +56,13 @@
         <button id="menuBtn" class="icon-btn mobile-menu" aria-label="Abrir menu">☰</button>
         <div class="page-context">
           <span class="context-kicker">PLANO DE TRANSIÇÃO</span>
-          <strong id="pageContext">Visão executiva</strong>
+          <strong id="pageContext">Início</strong>
         </div>
         <button id="searchTrigger" class="search-trigger" aria-label="Buscar no plano">
           <span>⌕</span><span>Buscar no plano...</span><kbd>Ctrl K</kbd>
         </button>
         <div class="top-actions">
+          <a class="study-now-btn" href="../sedes-df-questoes/#/estudar">Estudar agora</a>
           <div class="clock"><span id="clock">--:--:--</span><small>Brasília</small></div>
           <button id="refreshBtn" class="icon-btn" title="Atualizar dados">↻</button>
           <button id="themeBtn" class="icon-btn" title="Alternar tema">◐</button>
@@ -67,7 +71,7 @@
 
       <section class="status-strip">
         <div><span class="dot live"></span><span id="syncText">Carregando sincronização...</span></div>
-        <div class="status-meta"><span id="snapshotDate"></span><span class="sep">•</span><span id="offlineState">online</span></div>
+        <div class="status-meta"><span id="studyLocalStatus">progresso local: verificando</span><span class="sep">•</span><span id="snapshotDate"></span><span class="sep">•</span><span id="offlineState">online</span></div>
       </section>
 
       <div id="content" class="content" aria-live="polite"></div>
@@ -76,9 +80,9 @@
 
   <nav class="mobile-dock" id="mobileDock" aria-label="Atalhos móveis">
     <button data-view="home" class="active"><span>⌂</span><small>Início</small></button>
+    <button data-tool-view="tools"><span>▣</span><small>Estudar</small></button>
+    <button data-view="performance"><span>◔</span><small>Desempenho</small></button>
     <button data-view="exams"><span>◈</span><small>Provas</small></button>
-    <button data-view="performance"><span>↗</span><small>Desempenho</small></button>
-    <button data-view="strategy"><span>✦</span><small>Estratégia</small></button>
     <button id="dockMore"><span>☰</span><small>Mais</small></button>
   </nav>
 
@@ -91,5 +95,6 @@
 
   <div id="toast" class="toast" role="status"></div>
   <script src="assets/app.js" defer></script>
+  <script src="assets/work-parity.js?v=1" defer></script>
 </body>
 </html>
