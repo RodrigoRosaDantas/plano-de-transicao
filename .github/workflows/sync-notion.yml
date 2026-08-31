@@ -1,6 +1,13 @@
 name: Sincronizar Notion e publicar
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/sync-notion.yml'
+      - 'scripts/sync-notion.mjs'
+      - '.sync-trigger'
   schedule:
     - cron: '15 9 * * *'
 permissions:
