@@ -1,0 +1,69 @@
+name: Qualidade e paridade Work
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'assets/**'
+      - 'data/snapshot.json'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - 'scripts/audit-parity.mjs'
+      - 'tests/**'
+      - '.github/workflows/quality.yml'
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plano-transicao-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Auditoria de dados e paridade
+        run: node scripts/audit-parity.mjs
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Servir aplicação local
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/plano-http.log 2>&1 &
+          echo $! > /tmp/plano-http.pid
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/plano-http.log
+          exit 1
+      - name: Testes desktop, mobile e tablet
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/ui-smoke.mjs
+      - name: Evidências visuais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-screenshots
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
