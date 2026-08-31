@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="Plano de Transição — jornada, concursos, desempenho, custos e estratégia." />
+  <title>Plano de Transição</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">🧭</div>
+        <div><strong>Plano de Transição</strong><span>Jornada orientada por dados</span></div>
+      </div>
+      <nav id="nav">
+        <button data-view="home" class="active">⌂ <span>Visão geral</span></button>
+        <button data-view="journey">🧬 <span>Jornada e marcos</span></button>
+        <button data-view="exams">🏁 <span>Provas e resultados</span></button>
+        <button data-view="finance">💰 <span>Financeiro</span></button>
+        <button data-view="performance">📊 <span>Desempenho</span></button>
+        <button data-view="audit">🛡️ <span>Fontes e auditoria</span></button>
+        <button data-view="strategy">🧭 <span>Estratégia</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="installBtn" class="ghost hidden">＋ Instalar aplicativo</button>
+        <button id="exportBtn" class="ghost">⇩ Exportar snapshot</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <button id="menuBtn" class="icon-btn">☰</button>
+        <div class="search-wrap"><span>⌕</span><input id="searchInput" placeholder="Buscar no plano..." /></div>
+        <div class="top-actions">
+          <div class="clock"><span id="clock">--:--</span><small>Brasília</small></div>
+          <button id="refreshBtn" class="icon-btn" title="Atualizar snapshot">↻</button>
+          <button id="themeBtn" class="icon-btn" title="Alternar tema">◐</button>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <span class="dot live"></span><span id="syncText">Snapshot local</span>
+        <span class="sep">•</span><span id="snapshotDate"></span>
+        <span class="sep">•</span><span id="offlineState">online</span>
+      </section>
+
+      <div id="content" class="content"></div>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
