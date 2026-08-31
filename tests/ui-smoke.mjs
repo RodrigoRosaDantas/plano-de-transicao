@@ -9,6 +9,14 @@ const browser = await chromium.launch({headless:true});
 const results = [];
 const failures = [];
 
+const companionFixture = `<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><title>Plataforma de Questões</title></head><body>
+  <a class="skip" href="#app">Pular para conteúdo</a>
+  <header class="topbar">Navegação própria da plataforma</header>
+  <main id="app" class="page"><section class="card"><h1>Fixture da plataforma integrada</h1><p>Conteúdo de estudo preservado.</p></section></main>
+  <nav class="mobile-nav">Navegação móvel própria</nav>
+  <footer class="footer">Rodapé próprio</footer>
+</body></html>`;
+
 async function run(name, viewport, fn) {
   const context = await browser.newContext({viewport, serviceWorkers:'allow'});
   await context.addInitScript(() => {
@@ -20,7 +28,7 @@ async function run(name, viewport, fn) {
     localStorage.setItem('sedes.questoes.rodrigo.session.v3', JSON.stringify({current:4,questions:Array.from({length:20},(_,i)=>({id:`q${i}`})),answers:{q0:'A',q1:'B'},materialId:'teste'}))
   });
   await context.route('**/favicon.ico', route => route.fulfill({status:204,body:''}));
-  await context.route('**/sedes-df-questoes/**', route => route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html><head><meta charset="utf-8"><title>Plataforma de Questões</title></head><body><main>Fixture da plataforma integrada</main></body></html>'}));
+  await context.route('**/sedes-df-questoes/**', route => route.fulfill({status:200,contentType:'text/html',body:companionFixture}));
   const page = await context.newPage();
   const pageErrors = [];
   const badResponses = [];
@@ -48,7 +56,7 @@ async function run(name, viewport, fn) {
   }
 }
 
-await run('desktop: home, busca, ferramentas e persistência', {width:1440,height:1000}, async page => {
+await run('desktop: home, busca, ferramentas, persistência e workspace nativo', {width:1440,height:1000}, async page => {
   await page.waitForSelector('.work-command-center');
   const localStatus = await page.locator('#studyLocalStatus').innerText();
   if (!localStatus.includes('tentativa salva')) throw new Error(`Persistência não detectada: ${localStatus}`);
@@ -57,7 +65,30 @@ await run('desktop: home, busca, ferramentas e persistência', {width:1440,heigh
   await page.keyboard.press('Escape');
   await page.click('[data-tool-view="tools"]');
   await page.waitForSelector('#studyWorkspace');
-  await page.waitForSelector('#studyWorkspaceFrame');
+  const frame = page.frameLocator('#studyWorkspaceFrame');
+  await frame.locator('#app').waitFor();
+  await page.waitForTimeout(100);
+
+  const embeddedState = await page.locator('#studyWorkspaceFrame').evaluate(frameEl => {
+    const doc = frameEl.contentDocument;
+    const style = selector => doc?.querySelector(selector) ? getComputedStyle(doc.querySelector(selector)).display : 'missing';
+    return {
+      topbar: style('.topbar'),
+      mobileNav: style('.mobile-nav'),
+      footer: style('.footer'),
+      skip: style('.skip'),
+      theme: doc?.documentElement?.getAttribute('data-theme'),
+      embedded: doc?.body?.dataset?.planoEmbedded
+    };
+  });
+  for (const key of ['topbar','mobileNav','footer','skip']) {
+    if (embeddedState[key] !== 'none') throw new Error(`Navegação duplicada não foi ocultada: ${key}=${embeddedState[key]}`);
+  }
+  if (embeddedState.embedded !== 'true') throw new Error('Modo embutido não foi aplicado ao workspace.');
+  const parentLight = await page.locator('html').evaluate(el => el.classList.contains('light'));
+  const expectedTheme = parentLight ? 'light' : 'dark';
+  if (embeddedState.theme !== expectedTheme) throw new Error(`Tema do workspace divergiu: ${embeddedState.theme} != ${expectedTheme}`);
+
   await page.click('[data-workspace-route="revisar"]');
   if ((await page.locator('#studyWorkspace').getAttribute('data-study-route')) !== 'revisar') throw new Error('Workspace não mudou para revisão.');
   await page.screenshot({path:'artifacts/desktop-tools.png',fullPage:true});
