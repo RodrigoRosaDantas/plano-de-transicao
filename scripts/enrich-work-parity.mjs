@@ -128,6 +128,25 @@ function enrichExam(previous, row) {
   };
 }
 
+function matchingCycleRow(name, rows) {
+  const candidates = rows.filter(row => checkbox(row, 'Conta no consolidado geral'));
+  const match = row => {
+    const project = text(row, 'Projeto');
+    const record = text(row, 'Registro');
+    if (name.includes('Tribunais')) return project === 'Tribunais';
+    if (name.includes('Plano Paralelo 1')) return project === 'SEDES inicial';
+    if (name.includes('Plano Paralelo 8')) return project === 'SEDES paralelo 8 semanas';
+    if (name.includes('Senador Canedo')) return project === 'Senador Canedo';
+    if (name.includes('Reta Final')) return project === 'Câmara Goiânia' && record.includes('Reta Final');
+    if (name.includes('Agente Administrativo')) return project === 'Câmara Goiânia' && record.includes('Agente Administrativo');
+    if (name.includes('Pré-edital')) return project === 'SEDES pré-edital';
+    if (name.includes('Treino Quadrix')) return record.includes('Treino Quadrix');
+    if (name.includes('TDAS Pós-edital')) return project === 'TDAS 202';
+    return false;
+  };
+  return candidates.find(match) || rows.find(match) || null;
+}
+
 const snapshotPath = new URL('../data/snapshot.json', import.meta.url);
 const mirrorPath = new URL('../data/notion-live.json', import.meta.url);
 const snapshot = JSON.parse(await fs.readFile(snapshotPath, 'utf8'));
@@ -206,6 +225,12 @@ if (registryRows) {
     return enrichExam(exam, realExams.find(row => text(row, 'Registro').includes(needle)));
   });
 
+  snapshot.historyCycles = (snapshot.historyCycles || []).map(cycle => {
+    const row = matchingCycleRow(cycle.name, registryRows);
+    const sourceDate = row ? (date(row, 'Data') || date(row, 'Data auditoria')) : null;
+    return sourceDate ? {...cycle, date: sourceDate} : cycle;
+  });
+
   const financialRegistry = registryRows.find(row => text(row, 'Registro').includes('SEDES/DF 2026 — ciclo financeiro'));
   const registryTotal = num(financialRegistry, 'Custo confirmado do ciclo (R$)');
   const operationalTotal = snapshot.financeSummary?.sedes?.confirmed;
@@ -240,6 +265,7 @@ console.log(JSON.stringify({
   ok: true,
   finance: snapshot.metrics.finance,
   financeSummary: snapshot.financeSummary,
+  historyCycles: snapshot.historyCycles?.map(c => ({name:c.name, date:c.date || null, accuracy:c.accuracy})),
   exams: snapshot.exams?.map(e => ({
     name:e.name,
     classification:e.classification,
