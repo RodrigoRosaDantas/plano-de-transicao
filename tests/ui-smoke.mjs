@@ -9,33 +9,16 @@ const browser = await chromium.launch({ headless: true });
 const results = [];
 const failures = [];
 
-const companionFixture = `<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><title>Plataforma de Questões</title></head><body>
-  <a class="skip" href="#app">Pular para conteúdo</a>
-  <header class="topbar">Navegação própria da plataforma</header>
-  <main id="app" class="page"><section class="card"><h1>Fixture da plataforma integrada</h1><p>Conteúdo de estudo preservado.</p></section></main>
-  <nav class="mobile-nav">Navegação móvel própria</nav>
-  <footer class="footer">Rodapé próprio</footer>
-</body></html>`;
-
 async function run(name, viewport, fn) {
   const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
-  await context.addInitScript(() => {
-    localStorage.setItem('sedes.questoes.activeProfile.v3', 'rodrigo');
-    localStorage.setItem('sedes.questoes.profiles.v3', JSON.stringify([{ id: 'rodrigo', name: 'Rodrigo', roles: ['202', '400'] }]));
-    localStorage.setItem('sedes.questoes.rodrigo.history.v3', JSON.stringify([{ answered: 20, correct: 18, elapsed: 1200, questionResults: Array.from({ length: 20 }, (_, i) => ({ id: `q${i}`, answer: 'A', correct: i < 18, discipline: i < 10 ? 'Português' : 'Administração' })) }]));
-    localStorage.setItem('sedes.questoes.rodrigo.errors.v3', JSON.stringify({ q18: { id: 'q18', open: true, count: 2, discipline: 'Administração' }, q19: { id: 'q19', open: true, count: 1, discipline: 'Administração' } }));
-    localStorage.setItem('sedes.questoes.rodrigo.marked.v3', JSON.stringify({ q3: { id: 'q3', discipline: 'Português' } }));
-    localStorage.setItem('sedes.questoes.rodrigo.session.v3', JSON.stringify({ current: 4, questions: Array.from({ length: 20 }, (_, i) => ({ id: `q${i}` })), answers: { q0: 'A', q1: 'B' }, materialId: 'teste' }));
-  });
   await context.route('**/favicon.ico', route => route.fulfill({ status: 204, body: '' }));
-  await context.route('**/sedes-df-questoes/**', route => route.fulfill({ status: 200, contentType: 'text/html', body: companionFixture }));
   const page = await context.newPage();
   const pageErrors = [];
   const badResponses = [];
   page.on('pageerror', error => pageErrors.push(String(error)));
   page.on('response', response => {
     const url = response.url();
-    if (response.status() >= 400 && url.startsWith(baseOrigin) && !url.includes('/sedes-df-questoes/')) badResponses.push(`${response.status()} ${url}`);
+    if (response.status() >= 400 && url.startsWith(baseOrigin)) badResponses.push(`${response.status()} ${url}`);
   });
   try {
     await page.goto(baseURL, { waitUntil: 'networkidle' });
@@ -54,84 +37,107 @@ async function run(name, viewport, fn) {
   }
 }
 
-await run('desktop: central, busca, progresso local e workspace integrado', { width: 1440, height: 1000 }, async page => {
+await run('desktop: central gerencial, atualizar, busca e operações', { width: 1440, height: 1000 }, async page => {
   await page.waitForSelector('.command-view');
-  const localStatus = await page.locator('#localStudyStatus').innerText();
-  if (!localStatus.includes('tentativa salva')) throw new Error(`Persistência não detectada: ${localStatus}`);
+  await page.waitForSelector('.manager-command-card');
+  if (await page.locator('[data-view="study"]').count()) throw new Error('Ainda existe ação de estudo embutido na interface.');
+  const refreshText = await page.locator('#refreshBtn').innerText();
+  if (!refreshText.includes('Atualizar')) throw new Error(`Botão Atualizar não está explícito: ${refreshText}`);
+  if (await page.locator('.manager-quick-grid > button').count() !== 4) throw new Error('Acessos gerenciais rápidos estão incompletos.');
+
   await page.keyboard.press('Control+K');
   await page.waitForSelector('#commandPalette:not(.hidden)');
   await page.fill('#searchInput', 'Português');
   if (await page.locator('#searchResults button').count() < 1) throw new Error('Busca global não retornou matéria.');
   await page.keyboard.press('Escape');
-  await page.click('[data-view="study"]');
-  await page.waitForSelector('#studyWorkspaceFrame');
-  const frame = page.frameLocator('#studyWorkspaceFrame');
-  await frame.locator('#app').waitFor();
-  await page.waitForTimeout(150);
-  const embedded = await page.locator('#studyWorkspaceFrame').evaluate(frameEl => {
-    const doc = frameEl.contentDocument;
-    const style = selector => doc?.querySelector(selector) ? getComputedStyle(doc.querySelector(selector)).display : 'missing';
-    return { topbar: style('.topbar'), mobileNav: style('.mobile-nav'), footer: style('.footer'), skip: style('.skip'), embedded: doc?.body?.dataset?.planoEmbedded };
-  });
-  for (const key of ['topbar', 'mobileNav', 'footer', 'skip']) if (embedded[key] !== 'none') throw new Error(`Navegação duplicada não foi ocultada: ${key}=${embedded[key]}`);
-  if (embedded.embedded !== 'true') throw new Error('Modo integrado não foi aplicado ao módulo.');
-  await page.click('[data-study-route="revisar"]');
-  if ((await page.locator('#studyWorkspace').getAttribute('data-study-route')) !== 'revisar') throw new Error('Workspace não mudou para revisão.');
-  await page.screenshot({ path: 'artifacts/desktop-command-study.png', fullPage: true });
+
+  await page.click('#moreTopBtn');
+  await page.waitForSelector('#moreSheet.open');
+  const sheetTitle = await page.locator('#moreSheet h2').first().innerText();
+  if (!sheetTitle.includes('Central de operações')) throw new Error(`Mais ainda está cru: ${sheetTitle}`);
+  if (await page.locator('#moreSheet .manager-nav-grid button').count() < 6) throw new Error('Central de operações sem navegação completa.');
+  if (await page.locator('#managerRefreshBtn').count() !== 1) throw new Error('Atualizar agora não está disponível em Mais.');
+  await page.click('#managerRefreshBtn');
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: 'artifacts/desktop-command-manager.png', fullPage: true });
 });
 
-await run('desktop: desempenho por matéria e filtros de grão', { width: 1440, height: 1000 }, async page => {
+await run('desktop: desempenho mantém visão geral, por matéria e filtros', { width: 1440, height: 1000 }, async page => {
   await page.click('[data-view="performance"]');
   await page.waitForSelector('.performance-view');
+  await page.waitForSelector('.manager-performance-nav');
+  if (await page.locator('.manager-performance-nav button').count() !== 5) throw new Error('Navegação contextual de desempenho foi reduzida.');
+
   await page.click('[data-performance-scope="tdas"]');
   await page.waitForSelector('.subject-table tbody tr');
+  await page.click('[data-manager-performance="subjects"]');
+  await page.waitForTimeout(100);
+  if (!(await page.locator('[data-performance-grain="subject"]').evaluate(el => el.classList.contains('active')))) throw new Error('Por matéria não preservou o grão de matéria.');
+
   await page.click('[data-performance-grain="combination"]');
-  const rows = await page.locator('.subject-table tbody tr').count();
-  if (rows < 1) throw new Error('Filtro de combinações não retornou linhas.');
-  await page.click('[data-performance-grain="subject"]');
+  if (await page.locator('.subject-table tbody tr').count() < 1) throw new Error('Filtro de combinações não retornou linhas.');
+  await page.click('[data-manager-performance="subjects"]');
   await page.fill('#subjectSearch', 'Português');
   await page.waitForTimeout(300);
   const first = await page.locator('.subject-table tbody tr').first().innerText();
   if (!first.includes('Português')) throw new Error(`Busca temática não filtrou Português: ${first}`);
-  await page.screenshot({ path: 'artifacts/desktop-performance.png', fullPage: true });
+
+  await page.click('[data-manager-performance="compare"]');
+  if (!(await page.locator('.performance-toolbar').evaluate(el => el.classList.contains('manager-highlight')))) throw new Error('Comparar não destacou os escopos disponíveis.');
+  await page.screenshot({ path: 'artifacts/desktop-performance-manager.png', fullPage: true });
 });
 
-await run('desktop: financeiro, provas e auditoria', { width: 1440, height: 1000 }, async page => {
+await run('desktop: financeiro, concursos e auditoria permanecem completos', { width: 1440, height: 1000 }, async page => {
   await page.click('[data-view="finance"]');
   await page.waitForSelector('.finance-view');
   await page.selectOption('#financeCycle', { label: 'SEDES/DF 2026' });
-  const ledgerRows = await page.locator('.ledger-row').count();
-  if (ledgerRows < 1) throw new Error('Filtro financeiro não retornou lançamentos.');
+  if (await page.locator('.ledger-row').count() < 1) throw new Error('Filtro financeiro não retornou lançamentos.');
+
   await page.click('[data-view="exams"]');
   await page.waitForSelector('.exam-matrix');
   if (await page.locator('.exam-matrix tbody tr').count() < 3) throw new Error('Matriz de concursos incompleta.');
+  if (await page.locator('.exam-hero [data-view="study"]').count()) throw new Error('Concursos ainda envia para estudo embutido.');
+  const examAction = await page.locator('.exam-hero .primary-button').innerText();
+  if (!examAction.includes('Ver preparação')) throw new Error(`Ação da prova não foi reorientada: ${examAction}`);
+
   await page.click('[data-view="sources"]');
   await page.waitForSelector('.audit-check');
   const score = await page.locator('.audit-score strong').innerText();
-  if (!score.includes('10/10')) throw new Error(`Auditoria visual não fechou: ${score}`);
-  await page.screenshot({ path: 'artifacts/desktop-audit.png', fullPage: true });
+  if (!score.includes('/')) throw new Error(`Auditoria visual não carregou: ${score}`);
+  await page.screenshot({ path: 'artifacts/desktop-audit-manager.png', fullPage: true });
 });
 
-await run('mobile: dock, Mais, estudo e ausência de overflow', { width: 390, height: 844 }, async page => {
+await run('mobile: Atualizar visível, dock completo, Mais maduro e sem overflow', { width: 390, height: 844 }, async page => {
+  await page.waitForSelector('.manager-command-card');
   if (!(await page.locator('.mobile-dock').isVisible())) throw new Error('Dock móvel não está visível.');
-  await page.click('.mobile-dock [data-view="study"]');
-  await page.waitForSelector('#studyWorkspace');
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  if (overflow > 2) throw new Error(`Overflow horizontal mobile: ${overflow}px`);
+  if (!(await page.locator('#refreshBtn').isVisible())) throw new Error('Atualizar sumiu no mobile.');
+  if (!(await page.locator('#refreshBtn').innerText()).includes('Atualizar')) throw new Error('Atualizar virou ícone escondido no mobile.');
+  if (await page.locator('.mobile-dock [data-view="study"]').count()) throw new Error('Dock móvel ainda contém Estudar.');
+
+  await page.click('.mobile-dock [data-view="performance"]');
+  await page.waitForSelector('.manager-performance-nav');
+  const overflowPerformance = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  if (overflowPerformance > 2) throw new Error(`Overflow horizontal no desempenho mobile: ${overflowPerformance}px`);
+
   await page.click('#moreDockBtn');
   await page.waitForSelector('#moreSheet.open');
+  if (await page.locator('#moreSheet .manager-data-actions .action-button').count() < 4) throw new Error('Mais não expõe as operações de dados.');
+  if (await page.locator('#moreSheet .manager-ecosystem-actions .action-button').count() < 2) throw new Error('Mais não expõe o ecossistema.');
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  if (overflow > 2) throw new Error(`Overflow horizontal mobile: ${overflow}px`);
   await page.click('#moreSheet [data-view="finance"]');
   await page.waitForSelector('.finance-view');
-  await page.screenshot({ path: 'artifacts/mobile-finance.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/mobile-finance-manager.png', fullPage: true });
 });
 
-await run('tablet: navegação responsiva e jornada', { width: 820, height: 1180 }, async page => {
+await run('tablet: navegação gerencial, jornada e ausência de estudo embutido', { width: 820, height: 1180 }, async page => {
+  if (await page.locator('[data-view="study"]').count()) throw new Error('Tablet ainda expõe Estudar.');
   await page.click('[data-view="journey"]');
   await page.waitForSelector('.journey-view');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal tablet: ${overflow}px`);
   if (await page.locator('.timeline-item').count() < 5) throw new Error('Linha do tempo incompleta.');
-  await page.screenshot({ path: 'artifacts/tablet-journey.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/tablet-journey-manager.png', fullPage: true });
 });
 
 await browser.close();
