@@ -9,6 +9,7 @@ on:
       - 'index.html'
       - 'assets/**'
       - 'data/snapshot.json'
+      - 'data/treated-performance-data.js'
       - 'manifest.webmanifest'
       - 'sw.js'
       - 'scripts/audit-parity.mjs'
@@ -55,7 +56,7 @@ jobs:
           done
           cat /tmp/plano-http.log
           exit 1
-      - name: Testes desktop, mobile e tablet
+      - name: Testes da central, estudo, desempenho, financeiro e responsividade
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/ui-smoke.mjs

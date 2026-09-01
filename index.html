@@ -3,101 +3,126 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#08131f" />
-  <meta name="description" content="Plano de Transição — jornada, concursos, estudo, investimento, desempenho e estratégia de carreira." />
+  <meta name="theme-color" content="#0b0f0e" />
+  <meta name="description" content="Plano de Transição — central integrada de estudo, concursos, desempenho, investimentos e estratégia de carreira." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta property="og:title" content="Plano de Transição" />
+  <meta property="og:description" content="Da preparação à posse: estudo, desempenho, provas, investimento e decisão em uma única central." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rodrigorosadantas.github.io/plano-de-transicao/" />
+  <meta property="og:image" content="https://rodrigorosadantas.github.io/plano-de-transicao/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Plano de Transição — Da preparação à posse" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Plano de Transição" />
+  <meta name="twitter:description" content="Da preparação à posse: estudo, desempenho, provas, investimento e decisão em uma única central." />
+  <meta name="twitter:image" content="https://rodrigorosadantas.github.io/plano-de-transicao/assets/og.png" />
   <title>Plano de Transição</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/work-parity.css?v=1" />
-  <link rel="stylesheet" href="assets/work-parity-v2.css?v=2" />
+  <link rel="stylesheet" href="assets/work-app.css?v=8" />
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
-      <div class="brand">
-        <div class="brand-mark">PT</div>
-        <div class="brand-copy"><strong>Plano de Transição</strong><span>Comando integrado de estudo e carreira</span></div>
-        <button id="closeMenuBtn" class="icon-btn mobile-only" aria-label="Fechar menu">×</button>
+  <a class="skip-link" href="#content">Pular para o conteúdo</a>
+
+  <div class="site-shell">
+    <header class="topbar">
+      <button class="brand" type="button" data-view="command" aria-label="Ir para Agora">
+        <span class="brand-mark" data-icon="route"></span>
+        <span class="brand-copy"><small>Projeto pessoal</small><strong>Plano de Transição</strong></span>
+      </button>
+
+      <div class="sync-state" id="syncState" aria-live="polite">
+        <span class="status-orb"><i></i></span>
+        <span><strong>Carregando dados</strong><small>Notion → GitHub Pages</small></span>
       </div>
 
-      <div class="side-status">
-        <span class="dot live"></span>
-        <div><strong id="sideSync">Notion conectado</strong><small id="sideSnapshot">Carregando corte...</small></div>
-      </div>
-
-      <div class="nav-label">Plataforma</div>
-      <nav id="nav">
-        <button data-view="home" class="active"><span class="nav-icon">⌂</span><span>Início</span></button>
-        <button data-tool-view="tools"><span class="nav-icon">▣</span><span>Estudar</span></button>
-        <button data-view="performance"><span class="nav-icon">◔</span><span>Desempenho</span></button>
-        <button data-view="journey"><span class="nav-icon">◎</span><span>Jornada</span></button>
-        <button data-view="exams"><span class="nav-icon">◈</span><span>Concursos e provas</span></button>
-        <button data-view="finance"><span class="nav-icon">◉</span><span>Investimentos</span></button>
-        <button data-view="strategy"><span class="nav-icon">✦</span><span>Estratégia</span></button>
-        <button data-view="audit"><span class="nav-icon">◇</span><span>Auditoria</span></button>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="nav-label">Dados e aplicativo</div>
-        <button id="installBtn" class="ghost hidden">＋ Instalar aplicativo</button>
-        <button id="exportBtn" class="ghost">⇩ Exportar snapshot</button>
-        <a class="ghost link-button" href="../sedes-df-questoes/#/inicio">▦ Plataforma de Questões</a>
-        <a class="ghost link-button" href="https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899" target="_blank" rel="noreferrer">↗ Fonte no Notion</a>
-      </div>
-    </aside>
-
-    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
-
-    <main>
-      <header class="topbar">
-        <button id="menuBtn" class="icon-btn mobile-menu" aria-label="Abrir menu">☰</button>
-        <div class="page-context">
-          <span class="context-kicker">PLANO DE TRANSIÇÃO</span>
-          <strong id="pageContext">Início</strong>
-        </div>
-        <button id="searchTrigger" class="search-trigger" aria-label="Buscar no plano">
-          <span>⌕</span><span>Buscar no plano...</span><kbd>Ctrl K</kbd>
+      <div class="topbar-actions">
+        <button id="searchTrigger" class="control-button search-button" type="button" aria-label="Buscar no plano">
+          <span data-icon="search"></span><b>Buscar</b><kbd>Ctrl K</kbd>
         </button>
-        <div class="top-actions">
-          <a class="study-now-btn" href="../sedes-df-questoes/#/estudar">Estudar agora</a>
-          <div class="clock"><span id="clock">--:--:--</span><small>Brasília</small></div>
-          <button id="refreshBtn" class="icon-btn" title="Atualizar dados">↻</button>
-          <button id="themeBtn" class="icon-btn" title="Alternar tema">◐</button>
-        </div>
-      </header>
+        <button id="refreshBtn" class="icon-button" type="button" aria-label="Atualizar dados" title="Atualizar dados"><span data-icon="refresh"></span></button>
+        <button id="themeBtn" class="icon-button" type="button" aria-label="Alternar tema" title="Alternar tema"><span data-icon="sun"></span></button>
+        <button id="moreTopBtn" class="icon-button more-top-button" type="button" aria-label="Abrir mais opções"><span data-icon="menu"></span></button>
+      </div>
+    </header>
 
-      <section class="status-strip">
-        <div><span class="dot live"></span><span id="syncText">Carregando sincronização...</span></div>
-        <div class="status-meta"><span id="studyLocalStatus">progresso local: verificando</span><span class="sep">•</span><span id="snapshotDate"></span><span class="sep">•</span><span id="offlineState">online</span></div>
+    <main class="page-wrap">
+      <section class="mission-strip" aria-labelledby="missionTitle">
+        <div class="mission-copy">
+          <span class="eyebrow">MISSÃO ATUAL · SEDES/DF</span>
+          <h1 id="missionTitle">Transformar estudo acumulado em <em>classificação, nomeação e posse.</em></h1>
+          <p id="missionText">Carregando a missão do plano…</p>
+          <div class="mission-targets"><span>TDAS · Cargo 202</span><span>EDAS · Cargo 400</span><span>Desde 03/07/2025</span></div>
+        </div>
+        <aside class="next-milestone" id="nextMilestone">
+          <span>Próximo marco</span><strong>06 SET</strong><small>SEDES/DF 2026</small>
+        </aside>
       </section>
 
-      <div id="content" class="content" aria-live="polite"></div>
+      <div class="tab-rail" aria-label="Áreas do plano">
+        <nav class="main-tabs" id="mainTabs">
+          <button class="active" type="button" data-view="command"><span data-icon="dashboard"></span><b>Agora</b></button>
+          <button type="button" data-view="study"><span data-icon="book"></span><b>Estudar</b></button>
+          <button type="button" data-view="performance"><span data-icon="chart"></span><b>Desempenho</b></button>
+          <button type="button" data-view="journey"><span data-icon="route"></span><b>Jornada</b></button>
+          <button type="button" data-view="exams"><span data-icon="flag"></span><b>Concursos</b></button>
+          <button type="button" data-view="finance"><span data-icon="wallet"></span><b>Investimentos</b></button>
+          <button type="button" data-view="strategy"><span data-icon="compass"></span><b>Estratégia</b></button>
+          <button type="button" data-view="sources"><span data-icon="database"></span><b>Fontes</b></button>
+        </nav>
+      </div>
+
+      <section class="context-line">
+        <div><span class="live-dot"></span><span id="contextStatus">Carregando snapshot auditado…</span></div>
+        <div><span id="localStudyStatus">progresso local: verificando</span><i>•</i><time id="snapshotDate"></time><i>•</i><span id="networkState">online</span></div>
+      </section>
+
+      <div id="content" class="content" aria-live="polite" aria-busy="true">
+        <section class="loading-stage">
+          <span class="loading-orbit"></span>
+          <div><strong>Montando sua central de comando…</strong><small>Dados, estudo e carreira no mesmo mapa.</small></div>
+        </section>
+      </div>
     </main>
   </div>
 
-  <nav class="mobile-dock" id="mobileDock" aria-label="Atalhos móveis">
-    <button data-view="home" class="active"><span>⌂</span><small>Início</small></button>
-    <button data-tool-view="tools"><span>▣</span><small>Estudar</small></button>
-    <button data-view="performance"><span>◔</span><small>Desempenho</small></button>
-    <button data-view="exams"><span>◈</span><small>Provas</small></button>
-    <button id="dockMore"><span>☰</span><small>Mais</small></button>
+  <nav class="mobile-dock" id="mobileDock" aria-label="Atalhos principais">
+    <button class="active" type="button" data-view="command"><span data-icon="dashboard"></span><small>Agora</small></button>
+    <button type="button" data-view="study"><span data-icon="book"></span><small>Estudar</small></button>
+    <button type="button" data-view="performance"><span data-icon="chart"></span><small>Desempenho</small></button>
+    <button type="button" data-view="exams"><span data-icon="flag"></span><small>Provas</small></button>
+    <button id="moreDockBtn" type="button"><span data-icon="menu"></span><small>Mais</small></button>
   </nav>
+
+  <div id="moreBackdrop" class="sheet-backdrop hidden"></div>
+  <aside id="moreSheet" class="more-sheet" aria-hidden="true" aria-label="Mais áreas e ações">
+    <div class="sheet-handle"></div>
+    <div class="sheet-heading"><div><span class="eyebrow">NAVEGAÇÃO</span><h2>Todo o projeto</h2></div><button id="closeMoreBtn" class="icon-button" type="button" aria-label="Fechar"><span data-icon="close"></span></button></div>
+    <div class="sheet-grid">
+      <button type="button" data-view="journey"><span data-icon="route"></span><b>Jornada</b><small>Marcos e evolução</small></button>
+      <button type="button" data-view="finance"><span data-icon="wallet"></span><b>Investimentos</b><small>Custos por ciclo</small></button>
+      <button type="button" data-view="strategy"><span data-icon="compass"></span><b>Estratégia</b><small>Próximas decisões</small></button>
+      <button type="button" data-view="sources"><span data-icon="database"></span><b>Fontes</b><small>Auditoria e operações</small></button>
+    </div>
+    <div class="sheet-actions">
+      <button id="installBtn" class="action-button hidden" type="button"><span data-icon="download"></span>Instalar aplicativo</button>
+      <button id="exportBtn" class="action-button" type="button"><span data-icon="export"></span>Exportar dados</button>
+      <a class="action-button" href="https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899" target="_blank" rel="noreferrer"><span data-icon="external"></span>Abrir fonte no Notion</a>
+    </div>
+  </aside>
 
   <div id="commandPalette" class="command-overlay hidden" role="dialog" aria-modal="true" aria-label="Busca global">
     <div class="command-panel">
-      <div class="command-search"><span>⌕</span><input id="searchInput" autocomplete="off" placeholder="Buscar concurso, marco, indicador, fonte..." /><kbd>Esc</kbd></div>
+      <label class="command-search"><span data-icon="search"></span><input id="searchInput" autocomplete="off" placeholder="Buscar prova, matéria, marco, custo ou fonte…" /><kbd>Esc</kbd></label>
       <div id="searchResults" class="command-results"></div>
     </div>
   </div>
 
-  <div id="toast" class="toast" role="status"></div>
-  <script src="assets/app.js" defer></script>
-  <script src="assets/work-parity.js?v=1" defer></script>
-  <script src="assets/work-parity-v2.js?v=2" defer></script>
-  <script src="assets/work-parity-v3.js?v=1" defer></script>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="assets/work-app.js?v=8"></script>
 </body>
 </html>

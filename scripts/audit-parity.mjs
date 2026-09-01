@@ -5,9 +5,9 @@ const snapshot = JSON.parse(await read('data/snapshot.json'));
 const manifest = JSON.parse(await read('manifest.webmanifest'));
 const index = await read('index.html');
 const sw = await read('sw.js');
-const parityV1 = await read('assets/work-parity.js');
-const parityV2 = await read('assets/work-parity-v2.js');
-const parityV3 = await read('assets/work-parity-v3.js');
+const app = await read('assets/work-app.js');
+const styles = await read('assets/work-app.css');
+const treated = await import(new URL('../data/treated-performance-data.js', import.meta.url));
 
 const results = [];
 const check = (name, pass, detail = '') => results.push({name, pass:Boolean(pass), detail});
@@ -40,27 +40,34 @@ check('Sem divergências de enriquecimento', !(snapshot.meta.dataWarnings||[]).l
 check('Fonte declara Notion vivo', String(snapshot.meta.source||'').includes('Notion'));
 check('Ciclos possuem âncora temporal quando disponível', (snapshot.historyCycles||[]).some(x=>x.date), `${(snapshot.historyCycles||[]).filter(x=>x.date).length}/${(snapshot.historyCycles||[]).length}`);
 
-for (const asset of ['assets/work-parity.css','assets/work-parity.js','assets/work-parity-v2.css','assets/work-parity-v2.js','assets/work-parity-v3.js','data/snapshot.json','manifest.webmanifest']) {
+check('Linhas temáticas tratadas são matematicamente válidas', treated.treatedTopicalSeed.every(x=>x.questions >= x.correct && x.correct >= 0));
+check('Atividades tratadas são matematicamente válidas', treated.treatedActivitySeed.every(x=>x.questions >= x.correct && x.correct >= 0));
+check('Tratamento preserva os três escopos', ['historical','tdas','edas'].every(scope=>treated.treatedTopicalSeed.some(x=>x.scope===scope)));
+check('Tratamento separa matérias, combinações e atividades', ['subject','combination','activity'].every(grain=>treated.treatedTopicalSeed.some(x=>x.grain===grain)));
+
+for (const asset of ['assets/work-app.css','assets/work-app.js','assets/og.png','data/snapshot.json','data/treated-performance-data.js','manifest.webmanifest']) {
   check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
 }
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
-check('Camada v1 está ligada no HTML', index.includes('work-parity.js'));
-check('Camada v2 está ligada no HTML', index.includes('work-parity-v2.js'));
-check('Camada v3 está ligada no HTML', index.includes('work-parity-v3.js'));
-check('Workspace integrado implementado', parityV2.includes('studyWorkspaceFrame') && parityV2.includes('WORKSPACE INTEGRADO'));
-check('Workspace remove navegação duplicada', parityV3.includes('>.topbar') && parityV3.includes('>.mobile-nav'));
-check('Workspace sincroniza tema do Plano', parityV3.includes("setAttribute('data-theme'"));
-check('Comparação de provas implementada', parityV2.includes('COMPARAÇÃO ENTRE PROVAS REAIS'));
-check('Investimento por ciclo implementado', parityV2.includes('INVESTIMENTO POR CICLO'));
-check('Confirmado x estimado x não confirmado implementado', parityV2.includes('Confirmado × estimado × não confirmado'));
-check('Guardrail investimento x desempenho implementado', parityV2.includes('INVESTIMENTO × DESEMPENHO'));
-check('Resumo x auditoria global implementado', parityV2.includes('globalViewToggle'));
-check('Persistência local da plataforma é lida', parityV1.includes('sedes.questoes.') && parityV1.includes('localStorage'));
+check('Aplicação nova está ligada no HTML', index.includes('assets/work-app.js'));
+check('Tema visual novo está ligado no HTML', index.includes('assets/work-app.css'));
+check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
+check('Workspace integrado implementado', app.includes('studyWorkspaceFrame') && app.includes('Plataforma de Questões'));
+check('Workspace remove navegação duplicada', app.includes('>.topbar') && app.includes('>.mobile-nav'));
+check('Workspace sincroniza tema do Plano', app.includes('setAttribute("data-theme"'));
+check('Desempenho por matéria implementado', app.includes('subjectRows') && app.includes('treatedTopicalSeed'));
+check('Comparação de provas implementada', app.includes('MATRIZ AUDITADA') && app.includes('exam-matrix'));
+check('Investimento por ciclo implementado', app.includes('POR CICLO') && app.includes('financeSummary.byCycle'));
+check('Confirmado x estimado x não confirmado implementado', app.includes('TOTAL CONFIRMADO') && app.includes('estimated'));
+check('Guardrail investimento x desempenho implementado', app.includes('GUARDA-CORPO'));
+check('Persistência local da plataforma é lida', app.includes('sedes.questoes.') && app.includes('localStorage'));
+check('Busca global implementada', app.includes('buildSearchIndex') && app.includes('commandPalette'));
+check('Layout móvel possui dock e folha Mais', styles.includes('.mobile-dock') && styles.includes('.more-sheet'));
 
 const shortcutUrls = new Set((manifest.shortcuts || []).map(x=>x.url));
 check('PWA usa modo standalone', manifest.display === 'standalone');
 check('PWA possui escopo próprio', manifest.scope === './' && manifest.id === './');
-check('PWA possui atalho Estudar', shortcutUrls.has('./#tools'));
+check('PWA possui atalho Estudar', shortcutUrls.has('./#study'));
 check('PWA possui atalho Desempenho', shortcutUrls.has('./#performance'));
 check('PWA possui atalho Provas', shortcutUrls.has('./#exams'));
 check('PWA possui atalho Investimentos', shortcutUrls.has('./#finance'));

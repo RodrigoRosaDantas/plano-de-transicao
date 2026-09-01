@@ -4,18 +4,20 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 
 ## O que já está implementado
 
-- Home executiva com missão, prioridades, contador para a SEDES/DF e relógio de Brasília.
-- Jornada e marcos.
-- Provas e resultados com separação entre aproveitamento, nota e classificação.
-- Financeiro com regras de auditoria.
-- Histórico de desempenho, gráficos de volume e consolidado.
+- Central “Agora” inspirada no produto Work, com missão, prioridades por dados, contador e relógio de Brasília.
+- Workspace da Plataforma de Questões integrado ao Plano, com retomada local, estudo, revisão, desempenho e prova real.
+- Desempenho por matéria, combinações e atividades, com filtros independentes para histórico, TDAS e EDAS.
+- Jornada e marcos em mapa visual contínuo.
+- Provas e resultados com separação entre aproveitamento, nota, classificação e etapa do certame.
+- Financeiro completo com filtros, gráficos por ciclo/categoria, livro de lançamentos e exportação em CSV.
 - Fontes e auditoria com cadeia de verdade explícita.
 - Estratégia de carreira.
 - Busca global.
 - Tema claro/escuro.
 - Layout responsivo para Android, iPhone, iPad e desktop.
 - PWA instalável + service worker + uso offline.
-- Cache local e exportação do snapshot em JSON.
+- Busca global por matéria, concurso, marco e investimento.
+- Cache local, exportação do snapshot em JSON e cartão social próprio.
 - Sincronização segura do Notion via `NOTION_TOKEN` em GitHub Actions.
 
 ## Regra de governança
