@@ -19,6 +19,8 @@ const inbox = await read('assets/manager-inbox-v13.js');
 const inboxStyles = await read('assets/manager-inbox-v13.css');
 const focus = await read('assets/home-focus-v14.js');
 const focusStyles = await read('assets/home-focus-v14.css');
+const transition = await read('assets/transition-gate-v15.js');
+const transitionStyles = await read('assets/transition-gate-v15.css');
 const syncScript = await read('scripts/sync-notion.mjs');
 const enrichScript = await read('scripts/enrich-work-parity.mjs');
 const syncWorkflow = await read('.github/workflows/sync-notion.yml');
@@ -70,6 +72,8 @@ check('Sem warnings de sincronização', !(snapshot.meta.syncWarnings || []).len
 check('Sem divergências de enriquecimento', !(snapshot.meta.dataWarnings || []).length, JSON.stringify(snapshot.meta.dataWarnings || []));
 check('Fonte declara Notion vivo', String(snapshot.meta.source || '').includes('Notion'));
 check('Ciclos possuem âncora temporal quando disponível', (snapshot.historyCycles || []).some((x) => x.date), `${(snapshot.historyCycles || []).filter((x) => x.date).length}/${(snapshot.historyCycles || []).length}`);
+check('Estratégia possui gatilho pós-prova tratado', (snapshot.strategy?.postExamGates || []).length >= 5);
+check('Gatilho pós-prova declara fonte editorial', String(snapshot.strategy?.postExamSource?.page || '').includes('Estratégia de Carreira') && String(snapshot.strategy?.postExamSource?.url || '').includes('notion'));
 
 check('Linhas temáticas tratadas são matematicamente válidas', treated.treatedTopicalSeed.every((x) => x.questions >= x.correct && x.correct >= 0));
 check('Atividades tratadas são matematicamente válidas', treated.treatedActivitySeed.every((x) => x.questions >= x.correct && x.correct >= 0));
@@ -84,18 +88,19 @@ const cachedAssets = [
   'assets/decision-history-v12.css', 'assets/decision-history-v12.js',
   'assets/manager-inbox-v13.css', 'assets/manager-inbox-v13.js',
   'assets/home-focus-v14.css', 'assets/home-focus-v14.js',
+  'assets/transition-gate-v15.css', 'assets/transition-gate-v15.js',
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está na versão v14', sw.includes("const CACHE='plano-transicao-v14'"));
+check('Cache PWA está na versão v15', sw.includes("const CACHE='plano-transicao-v15'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
-check('Todas as camadas v9–v14 estão ligadas no HTML', [
-  'work-manager-v9.js', 'work-intelligence-v10.js', 'work-decisions-v11.js', 'decision-history-v12.js', 'manager-inbox-v13.js', 'home-focus-v14.js',
+check('Todas as camadas v9–v15 estão ligadas no HTML', [
+  'work-manager-v9.js', 'work-intelligence-v10.js', 'work-decisions-v11.js', 'decision-history-v12.js', 'manager-inbox-v13.js', 'home-focus-v14.js', 'transition-gate-v15.js',
 ].every((asset) => index.includes(asset)));
-check('Todos os estilos v9–v14 estão ligados no HTML', [
-  'work-manager-v9.css', 'work-intelligence-v10.css', 'work-decisions-v11.css', 'decision-history-v12.css', 'manager-inbox-v13.css', 'home-focus-v14.css',
+check('Todos os estilos v9–v15 estão ligados no HTML', [
+  'work-manager-v9.css', 'work-intelligence-v10.css', 'work-decisions-v11.css', 'decision-history-v12.css', 'manager-inbox-v13.css', 'home-focus-v14.css', 'transition-gate-v15.css',
 ].every((asset) => index.includes(asset)));
-check('Cache busting do shell está em v14', !index.includes('?v=13') && index.includes('?v=14'));
+check('Cache busting do shell está em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
 
 check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
@@ -105,6 +110,7 @@ check('Site não oferece estudo nem acesso operacional', !index.includes('../sed
 check('Assets operacionais antigos não são publicados', !legacyStudyAssetsPublished);
 check('Espelho bruto do Notion não é publicado', !rawNotionMirrorPublished);
 check('Sincronização gera somente snapshot tratado', !syncScript.includes('notion-live.json') && !syncScript.includes('pageMirror') && !enrichScript.includes('notion-live.json'));
+check('Sincronização trata somente a lista pós-prova necessária', syncScript.includes('sectionList') && syncScript.includes('postExamGates') && syncScript.includes('strategyBlocks'));
 check('Workflow versiona somente o snapshot tratado', !syncWorkflow.includes('data/notion-live.json') && syncWorkflow.includes('git add data/snapshot.json'));
 check('Bookmark antigo de estudo é redirecionado', manager.includes("location.hash === '#study'") && manager.includes("location.hash = '#command'"));
 check('Home mantém reorientação gerencial', manager.includes('manager-quick-grid') && manager.includes('Acessos gerenciais rápidos'));
@@ -144,6 +150,12 @@ check('v14 recolhe contexto profundo sem remover dados', focus.includes('v14-dee
 check('v14 expande antes de navegação profunda', focus.includes('expandBeforeDeepNavigation') && focus.includes('[data-v11-scroll]') && focus.includes('[data-v13-open]'));
 check('v14 integra alternância ao Mais', focus.includes('v14FocusOps') && focus.includes('v14ToggleModeOps'));
 
+check('v15 cria fechamento do ciclo na Estratégia', transition.includes('transitionGateV15') && transition.includes('FECHAMENTO DO CICLO · V15'));
+check('v15 mantém checklist local separado do Notion', transition.includes('plano.transitionGate.v15') && transition.includes('não altera o Notion'));
+check('v15 ativa o gatilho pela data da prova', transition.includes('now >= examAt') && transition.includes('data-v15-phase'));
+check('v15 expõe evidências oficiais sem inferir conclusão', transition.includes('resultRegistered') && transition.includes('snapshotAfterExam') && transition.includes('financeClosed'));
+check('v15 exporta fechamento local', transition.includes('fechamento-ciclo-sedes-v15.json') && transition.includes("storage: 'localStorage'"));
+
 check('Desempenho mantém Visão geral e Por matéria', manager.includes('data-manager-performance="overview"') && manager.includes('data-manager-performance="subjects"'));
 check('Desempenho preserva escopo e grão', app.includes('data-performance-scope') && app.includes('data-performance-grain'));
 check('Desempenho por matéria continua implementado', app.includes('subjectRows') && app.includes('treatedTopicalSeed'));
@@ -161,6 +173,8 @@ check('v12 empilha impacto e timeline no mobile', historyStyles.includes('.v12-i
 check('v13 empilha fila antes de 980px', inboxStyles.includes('@media (max-width: 980px)') && inboxStyles.includes('.v13-inbox-item { grid-template-columns: minmax(0, 1fr); }'));
 check('v14 recolhe redundâncias no mobile', focusStyles.includes('.manager-command-card') && focusStyles.includes('.manager-quick-grid'));
 check('v14 trata telas de 390px', focusStyles.includes('@media (max-width: 390px)'));
+check('v15 empilha evidências e ações no mobile', transitionStyles.includes('@media (max-width: 980px)') && transitionStyles.includes('.v15-evidence-grid { grid-template-columns: 1fr; }'));
+check('v15 trata telas de 390px sem largura fixa', transitionStyles.includes('@media (max-width: 390px)') && !transitionStyles.includes('width: 1000px'));
 
 check('Mais mantém navegação, estado e ferramentas', index.includes('sheet-sync-card') && index.includes('Ferramentas rápidas') && index.includes('Abrir fonte no Notion'));
 check('Mais mantém saúde v10', intelligence.includes('managerHealthGrid') && intelligence.includes('managerClearCacheBtn'));
@@ -168,6 +182,7 @@ check('Mais mantém decisões v11', decisions.includes('v11DecisionHealth') && d
 check('Mais mantém histórico v12', history.includes('v12DecisionJournalOps') && history.includes('v12ExportDossier'));
 check('Mais mantém caixa v13', inbox.includes('v13InboxOps') && inbox.includes('v13RestoreInbox'));
 check('Mais recebe modo foco v14', focus.includes('v14FocusOps') && focus.includes('v14ToggleModeOps'));
+check('Mais recebe fechamento v15', transition.includes('v15TransitionOps') && transition.includes('Fechamento do ciclo'));
 
 const shortcutUrls = new Set((manifest.shortcuts || []).map((x) => x.url));
 check('PWA usa modo standalone', manifest.display === 'standalone');
@@ -175,6 +190,7 @@ check('PWA possui escopo próprio', manifest.scope === './' && manifest.id === '
 check('PWA não possui atalho de estudo', !shortcutUrls.has('./#study'));
 check('PWA possui atalho Agora', shortcutUrls.has('./#command'));
 check('PWA mantém atalhos gerenciais principais', ['./#performance', './#exams', './#finance'].every((url) => shortcutUrls.has(url)));
+check('PWA possui atalho para fechamento estratégico', shortcutUrls.has('./#strategy'));
 
 const failures = results.filter((x) => !x.pass);
 const width = Math.max(...results.map((x) => x.name.length));

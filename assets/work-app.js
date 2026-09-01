@@ -470,8 +470,9 @@ function buildSearchIndex() {
   const exams = data.exams.map((exam) => ({ view: "exams", title: exam.name, description: `${exam.role} · ${exam.score}`, group: "Concursos" }));
   const finance = data.financeEntries.map((entry) => ({ view: "finance", title: entry.name, description: `${entry.cycle} · ${money(entry.confirmed || entry.estimated)}`, group: "Investimentos" }));
   const timeline = data.timeline.map((item) => ({ view: "journey", title: item.title, description: `${item.date} · ${item.detail}`, group: "Jornada" }));
+  const transitionGates = (data.strategy?.postExamGates || []).map((title, index) => ({ view: "strategy", title, description: `Fechamento do ciclo · etapa ${index + 1}`, group: "Estratégia" }));
   const dedupe = new Map();
-  [...staticItems, ...subjects, ...exams, ...finance, ...timeline].forEach((item) => {
+  [...staticItems, ...transitionGates, ...subjects, ...exams, ...finance, ...timeline].forEach((item) => {
     const key = `${item.view}:${item.title}:${item.scope || ""}`;
     if (!dedupe.has(key)) dedupe.set(key, item);
   });

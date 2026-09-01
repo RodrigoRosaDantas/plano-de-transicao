@@ -15,6 +15,7 @@ on:
       - 'scripts/audit-parity.mjs'
       - 'scripts/audit-v13.mjs'
       - 'scripts/audit-v14.mjs'
+      - 'scripts/audit-v15.mjs'
       - 'tests/**'
       - '.github/workflows/quality.yml'
   pull_request:
@@ -40,6 +41,8 @@ jobs:
         run: node scripts/audit-v13.mjs
       - name: Auditoria estrutural da v14
         run: node scripts/audit-v14.mjs
+      - name: Auditoria estrutural da v15
+        run: node scripts/audit-v15.mjs
 
   ui:
     runs-on: ubuntu-latest
@@ -74,6 +77,10 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v14-focus.mjs
+      - name: Testes específicos do fechamento do ciclo v15
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v15-transition-gate.mjs
       - name: Evidências visuais
         if: always()
         uses: actions/upload-artifact@v4

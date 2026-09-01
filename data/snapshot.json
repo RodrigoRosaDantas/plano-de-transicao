@@ -224,6 +224,19 @@
   ],
   "strategy": {
     "current": "TDAS 202 é a prioridade operacional até 06/09/2026; EDAS 400 permanece separado e estruturado em paralelo.",
+    "postExamSource": {
+      "page": "04 — Estratégia de Carreira e Próximas Etapas",
+      "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
+      "lastEditedAt": "2026-09-01T10:36:00.321Z",
+      "status": "treated"
+    },
+    "postExamGates": [
+      "Registrar a prova e o resultado em Concursos, Provas e Resultados.",
+      "Criar o snapshot final do ciclo e o diagnóstico quantitativo.",
+      "Separar falha de conteúdo, falha de execução, tempo e estratégia de prova antes de alterar a trilha.",
+      "Escolher o próximo alvo por reaproveitamento, chance de nomeação, remuneração, localização e custo de oportunidade.",
+      "Manter TDAS e EDAS separados até existir motivo explícito para unificação de alguma matéria ou indicador."
+    ],
     "principles": [
       "Não recomeçar a cada edital",
       "Posse vale mais que vaidade de cargo",
