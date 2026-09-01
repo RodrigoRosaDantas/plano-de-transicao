@@ -148,10 +148,7 @@ function matchingCycleRow(name, rows) {
 }
 
 const snapshotPath = new URL('../data/snapshot.json', import.meta.url);
-const mirrorPath = new URL('../data/notion-live.json', import.meta.url);
 const snapshot = JSON.parse(await fs.readFile(snapshotPath, 'utf8'));
-let mirror = {};
-try { mirror = JSON.parse(await fs.readFile(mirrorPath, 'utf8')); } catch {}
 
 const warnings = [];
 let financeRows = null;
@@ -251,15 +248,7 @@ snapshot.meta = {
   dataWarnings: warnings
 };
 
-mirror.enrichment = {
-  generatedAt: snapshot.meta.workParityEnrichedAt,
-  financeRows: financeRows?.length ?? null,
-  registryRows: registryRows?.length ?? null,
-  warnings
-};
-
 await fs.writeFile(snapshotPath, JSON.stringify(snapshot, null, 2) + '\n');
-await fs.writeFile(mirrorPath, JSON.stringify(mirror, null, 2) + '\n');
 
 console.log(JSON.stringify({
   ok: true,

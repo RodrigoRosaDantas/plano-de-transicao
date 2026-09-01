@@ -20,6 +20,7 @@ const inboxStyles = await read('assets/manager-inbox-v13.css');
 const focus = await read('assets/home-focus-v14.js');
 const focusStyles = await read('assets/home-focus-v14.css');
 const syncScript = await read('scripts/sync-notion.mjs');
+const enrichScript = await read('scripts/enrich-work-parity.mjs');
 const syncWorkflow = await read('.github/workflows/sync-notion.yml');
 const treated = await import(new URL('../data/treated-performance-data.js', import.meta.url));
 
@@ -103,7 +104,7 @@ check('Mais é central gerencial de navegação e operações', index.includes('
 check('Site não oferece estudo nem acesso operacional', !index.includes('../sedes-df-questoes/') && !manager.includes('PLATFORM_URL') && !index.includes('data-view="study"'));
 check('Assets operacionais antigos não são publicados', !legacyStudyAssetsPublished);
 check('Espelho bruto do Notion não é publicado', !rawNotionMirrorPublished);
-check('Sincronização gera somente snapshot tratado', !syncScript.includes('notion-live.json') && !syncScript.includes('pageMirror'));
+check('Sincronização gera somente snapshot tratado', !syncScript.includes('notion-live.json') && !syncScript.includes('pageMirror') && !enrichScript.includes('notion-live.json'));
 check('Workflow versiona somente o snapshot tratado', !syncWorkflow.includes('data/notion-live.json') && syncWorkflow.includes('git add data/snapshot.json'));
 check('Bookmark antigo de estudo é redirecionado', manager.includes("location.hash === '#study'") && manager.includes("location.hash = '#command'"));
 check('Home mantém reorientação gerencial', manager.includes('manager-quick-grid') && manager.includes('Acessos gerenciais rápidos'));
