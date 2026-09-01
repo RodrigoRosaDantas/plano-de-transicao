@@ -45,19 +45,20 @@ await scenario('desktop: caixa gerencial prioriza, adia, restaura e integra revi
     const state = JSON.parse(localStorage.getItem('plano.managerInbox.v13') || '{}');
     return Boolean(state.snoozed?.[id]);
   }, itemId);
-  if (await page.locator(`[data-v13-item-id="${itemId}"]`).count()) throw new Error('Item adiado continuou aparecendo na fila ativa.');
+  await page.waitForFunction((id) => !document.querySelector(`[data-v13-item-id="${CSS.escape(id)}"]`), itemId);
 
   await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open');
   await page.waitForSelector('#v13InboxOps');
-  if (await page.locator('#v13OpenInbox').count() !== 1 || await page.locator('#v13RestoreInbox').count() !== 1) throw new Error('Mais não expõe operações da caixa v13.');
+  await page.waitForSelector('#v13OpenInbox');
+  await page.waitForSelector('#v13RestoreInbox');
   await page.click('#v13RestoreInbox');
   await page.waitForFunction(() => {
     const state = JSON.parse(localStorage.getItem('plano.managerInbox.v13') || '{}');
     return Object.keys(state.snoozed || {}).length === 0 && Object.keys(state.silenced || {}).length === 0;
   });
   await page.click('#closeMoreBtn');
-  await page.waitForSelector('#moreSheet:not(.open)');
+  await page.waitForFunction(() => !document.querySelector('#moreSheet')?.classList.contains('open'));
   await page.waitForSelector(`[data-v13-item-id="${itemId}"]`);
 
   await page.evaluate(({ sourceId }) => {
@@ -81,6 +82,7 @@ await scenario('desktop: caixa gerencial prioriza, adia, restaura e integra revi
   await review.locator('[data-v13-open]').click();
   await page.waitForSelector('#v12DecisionDrawer:not(.hidden)');
   await page.click('#v12DecisionDrawer [data-v12-close-drawer]');
+  await page.waitForFunction(() => document.querySelector('#v12DecisionDrawer')?.classList.contains('hidden'));
 
   await page.click('[data-v13-filter="now"]');
   await page.waitForFunction(() => document.querySelector('[data-v13-filter="now"]')?.classList.contains('active'));
@@ -103,8 +105,10 @@ await scenario('mobile: caixa gerencial mantém hierarquia sem overflow', { widt
   await page.click('#moreDockBtn');
   await page.waitForSelector('#moreSheet.open');
   await page.waitForSelector('#v13InboxOps');
-  const opsText = await page.locator('#v13InboxOps').innerText();
-  if (!opsText.includes('Caixa de entrada gerencial') || !opsText.includes('Restaurar itens ocultados')) throw new Error('Operações v13 estão incompletas no mobile.');
+  await page.waitForSelector('#v13OpenInbox');
+  await page.waitForSelector('#v13RestoreInbox');
+  const opsTitle = await page.locator('#v13InboxOps .sheet-section-label').innerText();
+  if (!opsTitle.includes('Caixa de entrada gerencial')) throw new Error(`Título das operações v13 incorreto: ${opsTitle}`);
   const overflowSheet = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflowSheet > 2) throw new Error(`Central de operações criou overflow no mobile: ${overflowSheet}px`);
   await page.screenshot({ path: 'artifacts/mobile-inbox-v13.png', fullPage: true });
