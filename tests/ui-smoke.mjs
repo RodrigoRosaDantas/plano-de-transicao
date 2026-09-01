@@ -60,12 +60,12 @@ await run('desktop: Agora, decisões, alertas, semana e operações', { width: 1
   const firstDecision = page.locator('#v11DecisionCenter .v11-decision-card').first();
   const decisionId = await firstDecision.getAttribute('data-decision-id');
   await firstDecision.locator('[data-v11-decision-status="adopted"]').click();
-  await page.waitForTimeout(120);
+  await page.waitForTimeout(550);
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('plano.decisions.v11') || '{}'));
   if (!decisionId || stored[decisionId]?.status !== 'adopted') throw new Error('Decisão adotada não foi persistida no navegador.');
   await page.waitForSelector(`#v11DecisionCenter [data-decision-id="${decisionId}"]`);
   const adoptedText = await page.locator(`#v11DecisionCenter [data-decision-id="${decisionId}"] .v11-decision-status`).innerText();
-  if (!adoptedText.includes('Adotada')) throw new Error('Centro de decisões não refletiu o estado adotado.');
+  if (!adoptedText.includes('Adotada')) throw new Error(`Centro de decisões não refletiu o estado adotado: ${adoptedText}`);
 
   await page.keyboard.press('Control+K');
   await page.waitForSelector('#commandPalette:not(.hidden)');
