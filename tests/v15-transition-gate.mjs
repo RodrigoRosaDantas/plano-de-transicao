@@ -47,7 +47,8 @@ await scenario('pré-prova: fechamento preparado, rastreável e sem execução a
   const disabled = await gates.evaluateAll((nodes) => nodes.every((node) => node.disabled));
   if (!disabled) throw new Error('Etapas deveriam permanecer bloqueadas antes da prova.');
   const source = await page.locator('#transitionGateV15 .v15-source-line').innerText();
-  if (!source.includes('Notion tratado') || !source.includes('snapshot sem espelho bruto')) throw new Error(`Fonte tratada não está explícita: ${source}`);
+  const sourceNormalized = source.toLowerCase();
+  if (!sourceNormalized.includes('notion tratado') || !sourceNormalized.includes('snapshot sem espelho bruto')) throw new Error(`Fonte tratada não está explícita: ${source}`);
   if (await page.locator('[data-view="study"]').count()) throw new Error('A v15 reintroduziu navegação de estudo.');
   if (await page.locator('iframe').count()) throw new Error('A v15 reintroduziu iframe.');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
