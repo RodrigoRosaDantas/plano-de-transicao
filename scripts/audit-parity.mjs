@@ -110,7 +110,7 @@ check('Site não oferece estudo nem acesso operacional', !index.includes('../sed
 check('Assets operacionais antigos não são publicados', !legacyStudyAssetsPublished);
 check('Espelho bruto do Notion não é publicado', !rawNotionMirrorPublished);
 check('Sincronização gera somente snapshot tratado', !syncScript.includes('notion-live.json') && !syncScript.includes('pageMirror') && !enrichScript.includes('notion-live.json'));
-check('Sincronização trata somente a lista pós-prova necessária', syncScript.includes('sectionList') && syncScript.includes('postExamGates') && syncScript.includes('strategyBlocks'));
+check('Sincronização trata somente a lista pós-prova necessária', syncScript.includes('sectionList') && syncScript.includes('headingLevel') && syncScript.includes('postExamGates') && syncScript.includes('strategyBlocks'));
 check('Workflow versiona somente o snapshot tratado', !syncWorkflow.includes('data/notion-live.json') && syncWorkflow.includes('git add data/snapshot.json'));
 check('Bookmark antigo de estudo é redirecionado', manager.includes("location.hash === '#study'") && manager.includes("location.hash = '#command'"));
 check('Home mantém reorientação gerencial', manager.includes('manager-quick-grid') && manager.includes('Acessos gerenciais rápidos'));

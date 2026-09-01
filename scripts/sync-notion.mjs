@@ -108,15 +108,27 @@ function normalizeText(value) {
     .toLocaleLowerCase('pt-BR');
 }
 
+function headingLevel(block) {
+  const match = /^heading_([123])$/.exec(block?.type || '');
+  return match ? Number(match[1]) : null;
+}
+
 function sectionList(blocks, headingNeedle) {
   if (!blocks) return [];
   const needle = normalizeText(headingNeedle);
   let active = false;
+  let activeLevel = null;
   const items = [];
   for (const block of blocks) {
-    if (block.type === 'heading_2') {
-      if (active) break;
-      active = normalizeText(blockText(block)).includes(needle);
+    const level = headingLevel(block);
+    if (level) {
+      const matches = normalizeText(blockText(block)).includes(needle);
+      if (!active && matches) {
+        active = true;
+        activeLevel = level;
+      } else if (active && level <= activeLevel) {
+        break;
+      }
       continue;
     }
     if (!active) continue;
