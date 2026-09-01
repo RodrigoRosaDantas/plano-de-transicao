@@ -5,7 +5,8 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 ## O que já está implementado
 
 - Central “Agora” inspirada no produto Work, com missão, prioridades por dados, contador e relógio de Brasília.
-- Workspace da Plataforma de Questões integrado ao Plano, com retomada local, estudo, revisão, desempenho e prova real.
+- Plano focado em decisão e acompanhamento; a execução de questões permanece fora deste site.
+- Central de operações com atualização visível, estado do snapshot, sincronização segura e PWA.
 - Desempenho por matéria, combinações e atividades, com filtros independentes para histórico, TDAS e EDAS.
 - Jornada e marcos em mapa visual contínuo.
 - Provas e resultados com separação entre aproveitamento, nota, classificação e etapa do certame.

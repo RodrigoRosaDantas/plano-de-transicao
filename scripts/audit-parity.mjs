@@ -7,16 +7,6 @@ const index = await read('index.html');
 const sw = await read('sw.js');
 const app = await read('assets/work-app.js');
 const styles = await read('assets/work-app.css');
-const manager = await read('assets/work-manager-v9.js');
-const managerStyles = await read('assets/work-manager-v9.css');
-const intelligence = await read('assets/work-intelligence-v10.js');
-const intelligenceStyles = await read('assets/work-intelligence-v10.css');
-const decisions = await read('assets/work-decisions-v11.js');
-const decisionStyles = await read('assets/work-decisions-v11.css');
-const history = await read('assets/decision-history-v12.js');
-const historyStyles = await read('assets/decision-history-v12.css');
-const inbox = await read('assets/manager-inbox-v13.js');
-const inboxStyles = await read('assets/manager-inbox-v13.css');
 const treated = await import(new URL('../data/treated-performance-data.js', import.meta.url));
 
 const results = [];
@@ -55,92 +45,33 @@ check('Atividades tratadas são matematicamente válidas', treated.treatedActivi
 check('Tratamento preserva os três escopos', ['historical','tdas','edas'].every(scope=>treated.treatedTopicalSeed.some(x=>x.scope===scope)));
 check('Tratamento separa matérias, combinações e atividades', ['subject','combination','activity'].every(grain=>treated.treatedTopicalSeed.some(x=>x.grain===grain)));
 
-for (const asset of ['assets/work-app.css','assets/work-app.js','assets/work-manager-v9.css','assets/work-manager-v9.js','assets/work-intelligence-v10.css','assets/work-intelligence-v10.js','assets/work-decisions-v11.css','assets/work-decisions-v11.js','assets/work-decisions-v11-fix.js','assets/decision-history-v12.css','assets/decision-history-v12.js','assets/manager-inbox-v13.css','assets/manager-inbox-v13.js','assets/og.png','data/snapshot.json','data/treated-performance-data.js','manifest.webmanifest']) {
+for (const asset of ['assets/work-app.css','assets/work-app.js','assets/og.png','data/snapshot.json','data/treated-performance-data.js','manifest.webmanifest']) {
   check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
 }
-check('Cache PWA está na versão v13', sw.includes("plano-transicao-v13"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
-check('Aplicação-base está ligada no HTML', index.includes('assets/work-app.js'));
-check('Tema visual-base está ligado no HTML', index.includes('assets/work-app.css'));
-check('Camada gerencial está ligada no HTML', index.includes('assets/work-manager-v9.js') && index.includes('assets/work-manager-v9.css'));
-check('Camada inteligente v10 está ligada no HTML', index.includes('assets/work-intelligence-v10.js') && index.includes('assets/work-intelligence-v10.css'));
-check('Camada de decisões v11 está ligada no HTML', index.includes('assets/work-decisions-v11.js') && index.includes('assets/work-decisions-v11.css'));
-check('Camada de memória v12 está ligada no HTML', index.includes('assets/decision-history-v12.js') && index.includes('assets/decision-history-v12.css'));
-check('Caixa gerencial v13 está ligada no HTML', index.includes('assets/manager-inbox-v13.js') && index.includes('assets/manager-inbox-v13.css'));
+check('Aplicação nova está ligada no HTML', index.includes('assets/work-app.js'));
+check('Tema visual novo está ligado no HTML', index.includes('assets/work-app.css'));
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
-
-check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
-check('Botão Atualizar é ação textual e visível', index.includes('refresh-work-button') && index.includes('<b>Atualizar</b>'));
-check('Mais virou Central de operações', index.includes('Central de operações') && index.includes('manager-operations'));
-check('Plataforma de Questões ficou externa', index.includes('../sedes-df-questoes/') && index.includes('sem estudar dentro deste site'));
-check('Bookmark antigo de estudo é redirecionado', manager.includes("location.hash === '#study'") && manager.includes("location.hash = '#command'"));
-check('Home é reorientada para decisão gerencial', manager.includes('O Plano acompanha. A plataforma executa.') && manager.includes('manager-quick-grid'));
-check('Home v10 possui bloco Agora inteligente', intelligence.includes('managerNowBoard') && intelligence.includes('Maior atenção mensurável'));
-check('Home v10 possui leitura Se a prova fosse hoje', intelligence.includes('managerExamToday') && intelligence.includes('Leitura de preparação, não previsão de aprovação'));
-check('Leitura de prova preserva guardrail sem previsão', intelligence.includes('Não inventa nota de corte, posição ou probabilidade de nomeação'));
-check('Home v11 possui navegação Resumo/Decisões/Alertas/Semana', decisions.includes('v11CommandRail') && decisions.includes('Decisões') && decisions.includes('Alertas') && decisions.includes('Semana'));
-check('v11 possui Centro de decisões persistente local', decisions.includes('CENTRO DE DECISÕES') && decisions.includes('plano.decisions.v11') && decisions.includes('localStorage'));
-check('v11 separa decisão local de sincronização Notion', decisions.includes('Decisões não são enviadas ao Notion automaticamente'));
-check('v11 permite adotar, descartar e reabrir decisão', decisions.includes("'adopted'") && decisions.includes("'dismissed'") && decisions.includes("'open'"));
-check('v11 possui alertas com origem rastreável', decisions.includes('ALERTAS RASTREÁVEIS') && decisions.includes('Origem:'));
-check('v11 possui horizonte Hoje/48h/próximo marco', decisions.includes('HORIZONTE OPERACIONAL') && decisions.includes('PRÓXIMAS 48H'));
-check('v11 exporta decisões sem alterar fonte oficial', decisions.includes('Exportar decisões') && decisions.includes('storage: \'localStorage\''));
-check('v11 não cria probabilidade de aprovação', !decisions.toLowerCase().includes('probabilidade de aprovação'));
-
-check('v12 adiciona Histórico à navegação da Home', history.includes("button.textContent = 'Histórico'") && history.includes("'#v12DecisionHistory'"));
-check('v12 possui memória decisória local', history.includes('plano.decisionJournal.v12') && history.includes('MEMÓRIA DECISÓRIA · V12'));
-check('v12 registra transições sem alterar o estado oficial', history.includes('decision-interaction') && history.includes('imported-v11-state') && history.includes('sourceSeparation'));
-check('v12 cria baseline ao adotar decisão', history.includes("status === 'adopted' ? await metricForDecision(id) : null") && history.includes('baselineQuality'));
-check('v12 compara aproveitamento em pontos percentuais', history.includes("baseline.kind === 'accuracy'") && history.includes("p.p."));
-check('v12 explicita que comparação não prova causalidade', history.includes('não demonstra causalidade') && history.includes('Comparação não é causalidade'));
-check('v12 permite notas locais por decisão', history.includes('v12DecisionNote') && history.includes('journal.notes'));
-check('v12 permite revisão em 24h e 72h', history.includes('data-v12-review-hours="24"') && history.includes('data-v12-review-hours="72"'));
-check('v12 exporta dossiê completo local', history.includes('Exportar dossiê') && history.includes('currentDecisionState') && history.includes('journal: readJournal()'));
-check('v12 mantém limite de histórico para evitar crescimento infinito', history.includes('journal.events.length > 250'));
-check('v12 não inventa causalidade ou aprovação', !history.toLowerCase().includes('probabilidade de aprovação') && !history.toLowerCase().includes('causou melhora'));
-
-check('v13 adiciona Atenção à navegação da Home', inbox.includes("button.textContent = 'Atenção'") && inbox.includes("'#v13ManagerInbox'"));
-check('v13 agrega decisões, revisões, alertas e snapshot', inbox.includes('readDecisionCards()') && inbox.includes('reviewItems()') && inbox.includes('alertItems()') && inbox.includes('snapshotItems(snapshot)'));
-check('v13 classifica Agora/Hoje/Monitorar', inbox.includes("bucket === 'now'") && inbox.includes("bucket === 'today'") && inbox.includes("'Monitorar'"));
-check('v13 permite adiar e silenciar localmente', inbox.includes("kind === 'snooze'") && inbox.includes("kind === 'silence'") && inbox.includes('plano.managerInbox.v13'));
-check('v13 preserva separação da fonte oficial', inbox.includes('não alteram Notion, decisões ou snapshot'));
-check('v13 possui operações de restauração', inbox.includes('v13RestoreInbox') && inbox.includes('restoreInbox()'));
-
-check('Desempenho mantém Visão geral e Por matéria', manager.includes('data-manager-performance="overview"') && manager.includes('data-manager-performance="subjects"'));
-check('Desempenho v10 adiciona Diagnóstico e Prioridades', intelligence.includes('data-v10-performance="diagnostic"') && intelligence.includes('data-v10-performance="priorities"'));
-check('Ranking de prioridade usa apenas evidência observada', intelligence.includes('const priority =') && intelligence.includes('row.questions') && intelligence.includes('row.correct'));
-check('Diagnóstico não confunde score com importância do edital', intelligence.includes('não mede importância do edital'));
-check('Desempenho preserva controles de escopo e grão', app.includes('data-performance-scope') && app.includes('data-performance-grain'));
-check('Desempenho por matéria continua implementado', app.includes('subjectRows') && app.includes('treatedTopicalSeed'));
-check('Comparação de provas continua implementada', app.includes('MATRIZ AUDITADA') && app.includes('exam-matrix'));
-check('Investimento por ciclo continua implementado', app.includes('POR CICLO') && app.includes('financeSummary.byCycle'));
+check('Área de Questões removida do Plano', !app.includes('studyWorkspaceFrame') && !index.includes('data-view="study"'));
+check('Botão Atualizar dados é visível e funcional', index.includes('id="refreshBtn"') && index.includes('data-refresh') && app.includes('loadSnapshot(true)'));
+check('Desempenho por matéria implementado', app.includes('subjectRows') && app.includes('treatedTopicalSeed'));
+check('Desempenho mantém cinco leituras internas', app.includes('performance-section-nav') && ['performanceOverview','performanceCycles','performanceActivities','performanceSubjects','performanceDiagnosis'].every(id=>app.includes(id)));
+check('Comparação de provas implementada', app.includes('MATRIZ AUDITADA') && app.includes('exam-matrix'));
+check('Investimento por ciclo implementado', app.includes('POR CICLO') && app.includes('financeSummary.byCycle'));
 check('Confirmado x estimado x não confirmado implementado', app.includes('TOTAL CONFIRMADO') && app.includes('estimated'));
 check('Guardrail investimento x desempenho implementado', app.includes('GUARDA-CORPO'));
+check('Central de operações implementada', app.includes('operationsView') && app.includes('DUAS AÇÕES, DOIS EFEITOS'));
 check('Busca global implementada', app.includes('buildSearchIndex') && app.includes('commandPalette'));
 check('Layout móvel possui dock e folha Mais', styles.includes('.mobile-dock') && styles.includes('.more-sheet'));
-check('Camada v9 trata Android e telas estreitas', managerStyles.includes('@media (max-width: 760px)') && managerStyles.includes('.refresh-work-button'));
-check('v10 converte tabela de matéria em cards no mobile', intelligenceStyles.includes('.subject-table thead { display: none; }') && intelligenceStyles.includes('.subject-table tr { display: grid'));
-check('v10 mantém prevenção explícita de overflow', intelligenceStyles.includes('overflow-x: auto') && intelligenceStyles.includes('minmax(0, 1fr)'));
-check('v11 é responsivo e não replica tabela desktop', decisionStyles.includes('@media (max-width: 760px)') && decisionStyles.includes('.v11-decision-grid { grid-template-columns: 1fr; }'));
-check('v12 empilha impacto e timeline no mobile', historyStyles.includes('@media (max-width: 760px)') && historyStyles.includes('.v12-impact-grid { grid-template-columns: 1fr; }') && historyStyles.includes('.v12-event { grid-template-columns: 10px minmax(0, 1fr); }'));
-check('v12 drawer móvel não provoca largura fixa', historyStyles.includes('width: calc(100% - 12px)') && historyStyles.includes('max-height: min(82vh, 720px)'));
-check('v13 mantém fila responsiva sem tabela desktop', inboxStyles.includes('@media (max-width: 980px)') && inboxStyles.includes('.v13-inbox-item { grid-template-columns: minmax(0, 1fr); }'));
-check('v13 possui tratamento específico para Android estreito', inboxStyles.includes('@media (max-width: 390px)') && inboxStyles.includes('.v13-item-actions { grid-template-columns: 1fr; }'));
-check('Mais possui navegação, sincronização e ecossistema', index.includes('Dados e sincronização') && index.includes('Ecossistema') && index.includes('Sincronizar no GitHub'));
-check('Mais v10 possui saúde, cache e recarga sem apagar progresso', intelligence.includes('managerHealthGrid') && intelligence.includes('managerClearCacheBtn') && intelligence.includes('não apaga progresso de questões'));
-check('Mais v11 expõe estado e exportação de decisões locais', decisions.includes('v11DecisionHealth') && decisions.includes('v11ExportDecisions'));
-check('Mais v12 expõe histórico e dossiê', history.includes('v12DecisionJournalOps') && history.includes('v12ExportDossier'));
-check('Mais v13 expõe caixa de atenção e restauração', inbox.includes('v13InboxOps') && inbox.includes('v13OpenInbox') && inbox.includes('v13RestoreInbox'));
+check('Mais possui estado, navegação e ferramentas', index.includes('sheet-sync-card') && index.includes('sheet-section-title') && styles.includes('.sheet-footnote'));
+check('Navegação completa permanece visível no celular', !styles.includes('.main-tabs { display: none; }') && styles.includes('scroll-snap-type: x proximity'));
 
 const shortcutUrls = new Set((manifest.shortcuts || []).map(x=>x.url));
 check('PWA usa modo standalone', manifest.display === 'standalone');
 check('PWA possui escopo próprio', manifest.scope === './' && manifest.id === './');
-check('PWA não possui atalho de estudo embutido', !shortcutUrls.has('./#study'));
-check('PWA possui atalho para a central Agora/Atenção', shortcutUrls.has('./#command'));
-check('PWA identifica atalho de atenção', (manifest.shortcuts || []).some(x=>x.short_name === 'Atenção'));
+check('PWA possui atalho Agora', shortcutUrls.has('./#command'));
 check('PWA possui atalho Desempenho', shortcutUrls.has('./#performance'));
-check('PWA possui atalho Concursos', shortcutUrls.has('./#exams'));
-check('PWA possui atalho Jornada', shortcutUrls.has('./#journey'));
+check('PWA possui atalho Provas', shortcutUrls.has('./#exams'));
 check('PWA possui atalho Investimentos', shortcutUrls.has('./#finance'));
 
 const failures = results.filter(x=>!x.pass);

@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0f0e" />
-  <meta name="description" content="Plano de Transição — central gerencial de atenção, decisões, concursos, desempenho, trajetória, investimentos, fontes e estratégia de carreira." />
+  <meta name="description" content="Plano de Transição — central integrada de desempenho, concursos, investimentos, jornada e estratégia de carreira." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta property="og:title" content="Plano de Transição" />
-  <meta property="og:description" content="Da preparação à posse: atenção, desempenho, concursos, trajetória, investimento e decisão em uma única central." />
+  <meta property="og:description" content="Da preparação à posse: estudo, desempenho, provas, investimento e decisão em uma única central." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://rodrigorosadantas.github.io/plano-de-transicao/" />
   <meta property="og:image" content="https://rodrigorosadantas.github.io/plano-de-transicao/assets/og.png" />
@@ -17,18 +17,13 @@
   <meta property="og:image:alt" content="Plano de Transição — Da preparação à posse" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Plano de Transição" />
-  <meta name="twitter:description" content="Da preparação à posse: atenção, desempenho, concursos, trajetória, investimento e decisão em uma única central." />
+  <meta name="twitter:description" content="Da preparação à posse: estudo, desempenho, provas, investimento e decisão em uma única central." />
   <meta name="twitter:image" content="https://rodrigorosadantas.github.io/plano-de-transicao/assets/og.png" />
   <title>Plano de Transição</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="assets/work-app.css?v=13" />
-  <link rel="stylesheet" href="assets/work-manager-v9.css?v=13" />
-  <link rel="stylesheet" href="assets/work-intelligence-v10.css?v=13" />
-  <link rel="stylesheet" href="assets/work-decisions-v11.css?v=13" />
-  <link rel="stylesheet" href="assets/decision-history-v12.css?v=13" />
-  <link rel="stylesheet" href="assets/manager-inbox-v13.css?v=13" />
+  <link rel="stylesheet" href="assets/work-app.css?v=10" />
 </head>
 <body>
   <a class="skip-link" href="#content">Pular para o conteúdo</a>
@@ -37,7 +32,7 @@
     <header class="topbar">
       <button class="brand" type="button" data-view="command" aria-label="Ir para Agora">
         <span class="brand-mark" data-icon="route"></span>
-        <span class="brand-copy"><small>Central gerencial</small><strong>Plano de Transição</strong></span>
+        <span class="brand-copy"><small>Projeto pessoal</small><strong>Plano de Transição</strong></span>
       </button>
 
       <div class="sync-state" id="syncState" aria-live="polite">
@@ -49,11 +44,9 @@
         <button id="searchTrigger" class="control-button search-button" type="button" aria-label="Buscar no plano">
           <span data-icon="search"></span><b>Buscar</b><kbd>Ctrl K</kbd>
         </button>
-        <button id="refreshBtn" class="control-button refresh-work-button" type="button" aria-label="Atualizar dados" title="Atualizar dados">
-          <span data-icon="refresh"></span><b>Atualizar</b><small>dados</small>
-        </button>
+        <button id="refreshBtn" class="control-button refresh-button" type="button" data-refresh aria-label="Atualizar dados publicados" title="Recarregar o snapshot mais recente publicado"><span class="refresh-icon" data-icon="refresh"></span><span><b id="refreshLabel">Atualizar dados</b><small id="refreshAge">último snapshot</small></span></button>
         <button id="themeBtn" class="icon-button" type="button" aria-label="Alternar tema" title="Alternar tema"><span data-icon="sun"></span></button>
-        <button id="moreTopBtn" class="icon-button more-top-button" type="button" aria-label="Abrir central de operações"><span data-icon="menu"></span></button>
+        <button id="moreTopBtn" class="icon-button more-top-button" type="button" aria-label="Abrir mais opções"><span data-icon="menu"></span></button>
       </div>
     </header>
 
@@ -79,18 +72,19 @@
           <button type="button" data-view="finance"><span data-icon="wallet"></span><b>Investimentos</b></button>
           <button type="button" data-view="strategy"><span data-icon="compass"></span><b>Estratégia</b></button>
           <button type="button" data-view="sources"><span data-icon="database"></span><b>Fontes</b></button>
+          <button type="button" data-view="operations"><span data-icon="settings"></span><b>Operações</b></button>
         </nav>
       </div>
 
       <section class="context-line">
         <div><span class="live-dot"></span><span id="contextStatus">Carregando snapshot auditado…</span></div>
-        <div><span id="localStudyStatus">central gerencial</span><i>•</i><time id="snapshotDate"></time><i>•</i><span id="networkState">online</span></div>
+        <div><span id="publishedStatus">snapshot publicado</span><i>•</i><time id="snapshotDate"></time><i>•</i><span id="networkState">online</span></div>
       </section>
 
       <div id="content" class="content" aria-live="polite" aria-busy="true">
         <section class="loading-stage">
           <span class="loading-orbit"></span>
-          <div><strong>Montando sua central de comando…</strong><small>Dados, decisões e carreira no mesmo mapa.</small></div>
+          <div><strong>Montando sua central de comando…</strong><small>Dados, concursos e carreira no mesmo mapa.</small></div>
         </section>
       </div>
     </main>
@@ -99,64 +93,48 @@
   <nav class="mobile-dock" id="mobileDock" aria-label="Atalhos principais">
     <button class="active" type="button" data-view="command"><span data-icon="dashboard"></span><small>Agora</small></button>
     <button type="button" data-view="performance"><span data-icon="chart"></span><small>Desempenho</small></button>
-    <button type="button" data-view="exams"><span data-icon="flag"></span><small>Concursos</small></button>
     <button type="button" data-view="journey"><span data-icon="route"></span><small>Jornada</small></button>
+    <button type="button" data-view="exams"><span data-icon="flag"></span><small>Provas</small></button>
     <button id="moreDockBtn" type="button"><span data-icon="menu"></span><small>Mais</small></button>
   </nav>
 
   <div id="moreBackdrop" class="sheet-backdrop hidden"></div>
-  <aside id="moreSheet" class="more-sheet manager-operations" aria-hidden="true" aria-label="Central de operações">
+  <aside id="moreSheet" class="more-sheet" aria-hidden="true" aria-label="Mais áreas e ações">
     <div class="sheet-handle"></div>
-    <div class="sheet-heading">
-      <div><span class="eyebrow">OPERAÇÕES</span><h2>Central de operações</h2><p>Atalhos, atualização, fontes e ferramentas do projeto.</p></div>
-      <button id="closeMoreBtn" class="icon-button" type="button" aria-label="Fechar"><span data-icon="close"></span></button>
-    </div>
-
-    <section class="manager-ops-status" aria-live="polite">
-      <div class="manager-ops-orb"><span class="live-dot"></span></div>
-      <div><small>Estado publicado</small><strong id="managerOpsState">Carregando…</strong><span id="managerOpsUpdated">Aguardando snapshot</span></div>
+    <div class="sheet-heading"><div><span class="eyebrow">CENTRAL DO PLANO</span><h2>Navegação e operações</h2><p>Todos os módulos, estado dos dados e ações úteis no mesmo lugar.</p></div><button id="closeMoreBtn" class="icon-button" type="button" aria-label="Fechar"><span data-icon="close"></span></button></div>
+    <section class="sheet-sync-card" aria-live="polite">
+      <div class="sheet-sync-icon"><span data-icon="shield"></span></div>
+      <div><span>Estado dos dados</span><strong id="moreSyncTitle">Carregando snapshot…</strong><small id="moreSyncDetail">Notion → GitHub Actions → site</small></div>
+      <button id="moreRefreshBtn" class="primary-button" type="button" data-refresh><span data-icon="refresh"></span>Atualizar dados</button>
     </section>
-
-    <div class="sheet-section-label">Navegação</div>
-    <div class="sheet-grid manager-nav-grid">
-      <button type="button" data-view="performance"><span data-icon="chart"></span><b>Desempenho</b><small>Visão geral e por matéria</small></button>
+    <div class="sheet-grid">
+      <button type="button" data-view="command"><span data-icon="dashboard"></span><b>Agora</b><small>Comando e prioridades</small></button>
+      <button type="button" data-view="performance"><span data-icon="chart"></span><b>Desempenho</b><small>Matérias e visão geral</small></button>
       <button type="button" data-view="journey"><span data-icon="route"></span><b>Jornada</b><small>Marcos e evolução</small></button>
-      <button type="button" data-view="exams"><span data-icon="flag"></span><b>Concursos</b><small>Provas e classificação</small></button>
+      <button type="button" data-view="exams"><span data-icon="flag"></span><b>Concursos</b><small>Provas e resultados</small></button>
       <button type="button" data-view="finance"><span data-icon="wallet"></span><b>Investimentos</b><small>Custos por ciclo</small></button>
-      <button type="button" data-view="strategy"><span data-icon="compass"></span><b>Estratégia</b><small>Decisões e próximos passos</small></button>
-      <button type="button" data-view="sources"><span data-icon="database"></span><b>Fontes</b><small>Auditoria e governança</small></button>
+      <button type="button" data-view="strategy"><span data-icon="compass"></span><b>Estratégia</b><small>Próximas decisões</small></button>
+      <button type="button" data-view="sources"><span data-icon="database"></span><b>Fontes</b><small>Cadeia e auditoria</small></button>
+      <button type="button" data-view="operations"><span data-icon="settings"></span><b>Operações</b><small>Sincronização e PWA</small></button>
     </div>
-
-    <div class="sheet-section-label">Dados e sincronização</div>
-    <div class="sheet-actions manager-data-actions">
-      <button id="managerRefreshBtn" class="action-button manager-primary-action" type="button"><span data-icon="refresh"></span><span><b>Atualizar agora</b><small>Recarrega o snapshot publicado</small></span></button>
-      <a class="action-button" href="https://github.com/RodrigoRosaDantas/plano-de-transicao/actions/workflows/sync-notion.yml" target="_blank" rel="noreferrer"><span data-icon="database"></span><span><b>Sincronizar no GitHub</b><small>Executar pipeline Notion → Pages</small></span></a>
-      <button id="exportBtn" class="action-button" type="button"><span data-icon="export"></span><span><b>Exportar snapshot</b><small>Baixar os dados publicados em JSON</small></span></button>
-      <a class="action-button" href="https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899" target="_blank" rel="noreferrer"><span data-icon="external"></span><span><b>Abrir fonte no Notion</b><small>Consultar a fonte operacional viva</small></span></a>
+    <div class="sheet-section-title"><span>Ferramentas rápidas</span><small>Sem sair da central</small></div>
+    <div class="sheet-actions">
+      <button id="installBtn" class="action-button hidden" type="button" data-install><span data-icon="download"></span>Instalar aplicativo</button>
+      <button id="exportBtn" class="action-button" type="button"><span data-icon="export"></span>Exportar dados</button>
+      <button id="moreThemeBtn" class="action-button" type="button" data-toggle-theme><span data-icon="sun"></span>Alternar tema</button>
+      <a class="action-button" href="https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899" target="_blank" rel="noreferrer"><span data-icon="external"></span>Abrir fonte no Notion</a>
     </div>
-
-    <div class="sheet-section-label">Ecossistema</div>
-    <div class="sheet-actions manager-ecosystem-actions">
-      <a class="action-button" href="../sedes-df-questoes/" target="_blank" rel="noreferrer"><span data-icon="external"></span><span><b>Plataforma de Questões</b><small>Abre em módulo próprio — sem estudar dentro deste site</small></span></a>
-      <button id="installBtn" class="action-button hidden" type="button"><span data-icon="download"></span><span><b>Instalar aplicativo</b><small>Adicionar o Plano à tela inicial</small></span></button>
-      <button id="managerThemeBtn" class="action-button" type="button"><span data-icon="sun"></span><span><b>Aparência</b><small>Alternar entre tema claro e escuro</small></span></button>
-    </div>
+    <p class="sheet-footnote">A atualização segura do Notion roda no GitHub Actions. O botão acima recarrega imediatamente o último snapshot já publicado.</p>
   </aside>
 
   <div id="commandPalette" class="command-overlay hidden" role="dialog" aria-modal="true" aria-label="Busca global">
     <div class="command-panel">
-      <label class="command-search"><span data-icon="search"></span><input id="searchInput" autocomplete="off" placeholder="Buscar concurso, matéria, marco, custo ou fonte…" /><kbd>Esc</kbd></label>
+      <label class="command-search"><span data-icon="search"></span><input id="searchInput" autocomplete="off" placeholder="Buscar prova, matéria, marco, custo ou fonte…" /><kbd>Esc</kbd></label>
       <div id="searchResults" class="command-results"></div>
     </div>
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="assets/work-app.js?v=13"></script>
-  <script type="module" src="assets/work-manager-v9.js?v=13"></script>
-  <script type="module" src="assets/work-intelligence-v10.js?v=13"></script>
-  <script type="module" src="assets/work-decisions-v11.js?v=13"></script>
-  <script type="module" src="assets/work-decisions-v11-fix.js?v=13"></script>
-  <script type="module" src="assets/decision-history-v12.js?v=13"></script>
-  <script type="module" src="assets/manager-inbox-v13.js?v=13"></script>
+  <script type="module" src="assets/work-app.js?v=10"></script>
 </body>
 </html>
