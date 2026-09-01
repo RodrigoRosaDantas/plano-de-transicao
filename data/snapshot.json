@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-01T22:59:22.927Z",
+    "generatedAt": "2026-09-01T23:07:54.374Z",
     "homeSnapshot": "2026-08-31",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,7 +8,7 @@
     "nextExam": "2026-09-06T08:00:00-03:00",
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-01T22:59:25.348Z",
+    "workParityEnrichedAt": "2026-09-01T23:07:55.203Z",
     "dataWarnings": []
   },
   "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
@@ -228,13 +228,13 @@
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
       "lastEditedAt": "2026-09-01T22:39:00.000Z",
-      "status": "treated-fallback"
+      "status": "treated-live"
     },
     "postExamGates": [
-      "Registrar a prova e o resultado em Concursos, Provas e Resultados.",
-      "Criar o snapshot final do ciclo e o diagnóstico quantitativo.",
+      "Registrar a prova e o resultado em 02 — Concursos, Provas e Resultados.",
+      "Criar o snapshot final do ciclo e o diagnóstico quantitativo em 03 — Desempenho e Histórico de Estudos.",
       "Separar falha de conteúdo, falha de execução, tempo e estratégia de prova antes de alterar a trilha.",
-      "Escolher o próximo alvo por reaproveitamento, chance de nomeação, remuneração, localização e custo de oportunidade.",
+      "Escolher o próximo alvo pelo filtro de reaproveitamento, chance de nomeação, remuneração, localização e custo de oportunidade.",
       "Manter TDAS e EDAS separados até existir motivo explícito para unificação de alguma matéria ou indicador."
     ],
     "principles": [
