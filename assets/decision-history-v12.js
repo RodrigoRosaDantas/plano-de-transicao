@@ -472,6 +472,9 @@ function renderOps() {
   }
   const journal = readJournal();
   const notes = Object.values(journal.notes).filter((item) => item?.text?.trim()).length;
+  const signature = `${journal.events.length}:${notes}`;
+  if (section.dataset.signature === signature) return;
+  section.dataset.signature = signature;
   section.innerHTML = `
     <div class="sheet-section-label">Memória decisória</div>
     <div class="v12-ops-summary"><span>V12</span><div><small>Dossiê local</small><strong>${journal.events.length} movimentos · ${notes} notas registradas</strong></div></div>
