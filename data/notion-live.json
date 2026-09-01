@@ -1,25 +1,25 @@
 {
-  "generatedAt": "2026-09-01T02:40:03.981Z",
+  "generatedAt": "2026-09-01T03:14:05.537Z",
   "access": {
     "edasCases": {
       "ok": true,
       "rows": 12
     },
+    "registry": {
+      "ok": true,
+      "rows": 29
+    },
     "edasErrors": {
       "ok": true,
       "rows": 31
-    },
-    "edasQuestions": {
-      "ok": true,
-      "rows": 45
     },
     "tdasEssays": {
       "ok": true,
       "rows": 33
     },
-    "registry": {
+    "edasQuestions": {
       "ok": true,
-      "rows": 29
+      "rows": 45
     },
     "tdasQuestions": {
       "ok": true,
@@ -85,7 +85,7 @@
         "url": "https://app.notion.com/p/PLANO-DE-TRANSI-O-239cf5a2673180a1a2a2df40b502a899",
         "public_url": null,
         "archived": false,
-        "request_id": "22519602-d2b7-4688-885c-960df003b18c"
+        "request_id": "9023ecfd-44d9-4506-b76f-7209c7e3155f"
       },
       "blocks": [
         {
@@ -2748,7 +2748,7 @@
         "url": "https://app.notion.com/p/01-Jornada-e-Marcos-3c8cf5a2673181adbbecc1f6d0080399",
         "public_url": null,
         "archived": false,
-        "request_id": "254af236-1bed-4061-b6a7-af8d7297e6af"
+        "request_id": "2c02266f-895f-4c94-9db8-7d486678efc1"
       },
       "blocks": [
         {
@@ -7364,7 +7364,7 @@
         "url": "https://app.notion.com/p/02-Concursos-Provas-e-Resultados-3c8cf5a26731818a9571f28f56f13514",
         "public_url": null,
         "archived": false,
-        "request_id": "acbcd94e-486e-41c9-8d68-b54e1845daa0"
+        "request_id": "eda065d7-48c6-4017-930a-80930090fe59"
       },
       "blocks": [
         {
@@ -10315,7 +10315,7 @@
         "url": "https://app.notion.com/p/03-Desempenho-e-Hist-rico-de-Estudos-3c8cf5a2673181a38caef92b980ce85c",
         "public_url": null,
         "archived": false,
-        "request_id": "3b801f35-4539-453e-a662-f65dbb7246d4"
+        "request_id": "cf264c74-b36c-43c2-97a9-e921404a3ff1"
       },
       "blocks": [
         {
@@ -14108,7 +14108,7 @@
         "url": "https://app.notion.com/p/04-Estrat-gia-de-Carreira-e-Pr-ximas-Etapas-3c8cf5a2673181e08ae8f9eff95df293",
         "public_url": null,
         "archived": false,
-        "request_id": "be2eddbb-8312-4549-b8a8-53243cda281d"
+        "request_id": "427c233f-4138-47dd-b6b6-83a68c67b1ca"
       },
       "blocks": [
         {
@@ -25796,7 +25796,7 @@
         "url": "https://app.notion.com/p/03-1-Registro-Mestre-de-Fontes-e-Auditoria-3c8cf5a2673181f7bce8f6b75881c31f",
         "public_url": null,
         "archived": false,
-        "request_id": "983ddd99-ed40-49dc-9843-65f6ee53251e"
+        "request_id": "f0ddd499-7a99-4909-bdd3-dedf887fb507"
       },
       "blocks": [
         {
@@ -39615,7 +39615,7 @@
         "url": "https://app.notion.com/p/03-2-Consolidado-de-Bancos-de-Quest-es-3cacf5a26731818da9dacef6da38241f",
         "public_url": null,
         "archived": false,
-        "request_id": "74d883df-b68f-4197-82b4-ab418a501905"
+        "request_id": "82167add-54a1-4ec5-b5cb-27aa4dc881be"
       },
       "blocks": [
         {
@@ -41193,7 +41193,7 @@
     }
   },
   "enrichment": {
-    "generatedAt": "2026-09-01T02:40:05.183Z",
+    "generatedAt": "2026-09-01T03:14:06.500Z",
     "financeRows": 24,
     "registryRows": 29,
     "warnings": []
