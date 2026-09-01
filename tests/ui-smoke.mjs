@@ -54,7 +54,7 @@ await run('desktop: Agora, decisões, histórico, contexto e operações', { wid
   if (await page.locator('.manager-quick-grid > button').count() !== 4) throw new Error('Acessos gerenciais rápidos estão incompletos.');
   if (await page.locator('#managerNowBoard .manager-now-item').count() !== 4) throw new Error('Bloco Agora não entrega os quatro sinais gerenciais.');
   if (await page.locator('#managerExamToday .manager-exam-scopes article').count() !== 2) throw new Error('Leitura “Se a prova fosse hoje” não separa TDAS e EDAS.');
-  if (await page.locator('#v11CommandRail button').count() !== 5) throw new Error('Rail da Home não contém Resumo, Decisões, Alertas, Semana e Histórico.');
+  if (await page.locator('#v11CommandRail button').count() !== 6) throw new Error('Rail da Home não contém Resumo, Atenção, Decisões, Alertas, Semana e Histórico.');
   if (await page.locator('#v11DecisionCenter .v11-decision-card').count() < 3) throw new Error('Centro de decisões possui poucas recomendações rastreáveis.');
   if (await page.locator('#v11AlertRadar .v11-alert').count() < 1) throw new Error('Radar de alertas está vazio.');
   if (await page.locator('#v11WeeklyHorizon .v11-week-grid article').count() !== 3) throw new Error('Horizonte operacional não possui três janelas.');
@@ -189,7 +189,7 @@ await run('mobile: decisões, histórico, desempenho e Mais sem overflow', { wid
   if (await page.locator('.mobile-dock [data-view="study"]').count()) throw new Error('Dock móvel ainda contém Estudar.');
   const overflowHome = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflowHome > 2) throw new Error(`Overflow horizontal na Home mobile: ${overflowHome}px`);
-  if (await page.locator('#v11CommandRail button').count() !== 5) throw new Error('Rail gerencial mobile não possui Histórico.');
+  if (await page.locator('#v11CommandRail button').count() !== 6) throw new Error('Rail gerencial mobile não possui Atenção e Histórico.');
   const decisionGridColumns = await page.locator('#v11DecisionCenter .v11-decision-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns);
   if (decisionGridColumns.split(' ').length !== 1) throw new Error(`Decisões não empilharam no mobile: ${decisionGridColumns}`);
   const impactColumns = await page.locator('#v12DecisionHistory .v12-impact-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns);
