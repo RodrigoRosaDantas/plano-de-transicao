@@ -108,7 +108,8 @@ await scenario('mobile: caixa gerencial mantém hierarquia sem overflow', { widt
   await page.waitForSelector('#v13OpenInbox');
   await page.waitForSelector('#v13RestoreInbox');
   const opsTitle = await page.locator('#v13InboxOps .sheet-section-label').innerText();
-  if (!opsTitle.includes('Caixa de entrada gerencial')) throw new Error(`Título das operações v13 incorreto: ${opsTitle}`);
+  const opsTitleNormalized = opsTitle.toLocaleLowerCase('pt-BR');
+  if (!opsTitleNormalized.includes('caixa de entrada gerencial')) throw new Error(`Título das operações v13 incorreto: ${opsTitle}`);
   const overflowSheet = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflowSheet > 2) throw new Error(`Central de operações criou overflow no mobile: ${overflowSheet}px`);
   await page.screenshot({ path: 'artifacts/mobile-inbox-v13.png', fullPage: true });
