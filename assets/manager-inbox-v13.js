@@ -7,7 +7,6 @@ const MAX_VISIBLE = 6;
 const $ = (selector, root = document) => root?.querySelector?.(selector) ?? null;
 const $$ = (selector, root = document) => root?.querySelectorAll ? [...root.querySelectorAll(selector)] : [];
 const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-const fmt = (value) => new Intl.NumberFormat('pt-BR').format(Number(value || 0));
 const nowIso = () => new Date().toISOString();
 
 let snapshotCache = null;
@@ -479,6 +478,9 @@ function renderOpsSummary(items) {
     section.className = 'v13-inbox-ops';
     anchor.after(section);
   }
+  const signature = `${urgent}:${hidden}`;
+  if (section.dataset.signature === signature) return;
+  section.dataset.signature = signature;
   section.innerHTML = `
     <div class="sheet-section-label">Caixa de entrada gerencial</div>
     <div class="v13-ops-summary"><span>V13</span><div><small>Fila dinâmica</small><strong>${urgent} exigem atenção · ${hidden} fora da fila</strong></div></div>
