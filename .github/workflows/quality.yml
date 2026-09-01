@@ -56,6 +56,10 @@ jobs:
           done
           cat /tmp/plano-http.log
           exit 1
+      - name: Diagnóstico isolado do Centro de Decisões
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v11-decision-debug.mjs
       - name: Testes da central, estudo, desempenho, financeiro e responsividade
         env:
           BASE_URL: http://127.0.0.1:4173/
