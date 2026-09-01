@@ -47,7 +47,7 @@ await run('desktop: Agora, decisões, histórico, contexto e operações', { wid
   await page.waitForSelector('#v11AlertRadar');
   await page.waitForSelector('#v11WeeklyHorizon');
   await page.waitForSelector('#v12DecisionHistory');
-  await page.waitForSelector('#v12DecisionDrawer');
+  await page.waitForSelector('#v12DecisionDrawer', { state: 'attached' });
   if (await page.locator('[data-view="study"]').count()) throw new Error('Ainda existe ação de estudo embutido na interface.');
   const refreshText = await page.locator('#refreshBtn').innerText();
   if (!refreshText.includes('Atualizar')) throw new Error(`Botão Atualizar não está explícito: ${refreshText}`);
