@@ -16,9 +16,6 @@
 /* O menu Mais é uma área funcional também no desktop, não uma gaveta exclusiva do mobile. */
 #moreTopBtn.more-top-button { display: inline-flex !important; }
 
-.main-tabs [data-view="study"],
-.mobile-dock [data-view="study"] { display: none !important; }
-
 .manager-quick-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -216,6 +213,56 @@
   background: color-mix(in srgb, var(--lime) 9%, var(--surface)) !important;
 }
 .manager-primary-action > span:first-child { color: var(--lime); }
+
+/* Compatibilidade das camadas gerenciais com o shell consolidado. */
+.more-sheet > .manager-health-grid,
+.more-sheet > .v11-decision-ops,
+.more-sheet > .v12-ops,
+.more-sheet > .v13-inbox-ops,
+.more-sheet > .v14-focus-ops {
+  width: min(960px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.more-sheet .manager-tool-action,
+.more-sheet .v11-decision-ops .action-button,
+.more-sheet .v12-ops .action-button,
+.more-sheet .v13-inbox-ops .action-button,
+.more-sheet .v14-focus-ops .action-button {
+  justify-content: flex-start;
+  min-height: 64px;
+  padding: 11px 13px;
+  text-align: left;
+}
+
+.more-sheet .manager-tool-action > span:last-child,
+.more-sheet .v11-decision-ops .action-button > span:last-child,
+.more-sheet .v12-ops .action-button > span:last-child,
+.more-sheet .v13-inbox-ops .action-button > span:last-child,
+.more-sheet .v14-focus-ops .action-button > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.more-sheet .manager-tool-action b,
+.more-sheet .v11-decision-ops .action-button b,
+.more-sheet .v12-ops .action-button b,
+.more-sheet .v13-inbox-ops .action-button b,
+.more-sheet .v14-focus-ops .action-button b { font-size: .64rem; }
+
+.more-sheet .manager-tool-action small,
+.more-sheet .v11-decision-ops .action-button small,
+.more-sheet .v12-ops .action-button small,
+.more-sheet .v13-inbox-ops .action-button small,
+.more-sheet .v14-focus-ops .action-button small {
+  color: var(--muted-2);
+  font-size: .54rem;
+  line-height: 1.35;
+}
 
 @media (max-width: 1120px) {
   .manager-quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

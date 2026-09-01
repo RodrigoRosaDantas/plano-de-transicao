@@ -1,0 +1,198 @@
+/* V14 — modo foco: menos rolagem, mesma informação, contexto sob demanda. */
+
+#v14FocusControl { scroll-margin-top: 178px; }
+
+.v14-focus-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 82px;
+  padding: 15px 17px;
+  border-color: color-mix(in srgb, var(--aqua) 15%, var(--border));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--aqua) 4%, var(--surface)), color-mix(in srgb, var(--surface-2) 82%, transparent));
+}
+
+.v14-focus-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.v14-focus-copy strong {
+  font-size: .76rem;
+  letter-spacing: -.015em;
+}
+
+.v14-focus-copy small {
+  color: var(--muted);
+  font-size: .55rem;
+  line-height: 1.45;
+}
+
+.v14-focus-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.v14-mode-pill {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: .5rem;
+  font-weight: 900;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.v14-mode-pill.focus {
+  border-color: color-mix(in srgb, var(--aqua) 28%, transparent);
+  background: color-mix(in srgb, var(--aqua) 7%, transparent);
+  color: var(--aqua);
+}
+
+.v14-mode-pill.expanded {
+  border-color: color-mix(in srgb, var(--lime) 25%, transparent);
+  background: color-mix(in srgb, var(--lime) 6%, transparent);
+  color: var(--lime);
+}
+
+#v14ToggleMode {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid color-mix(in srgb, var(--aqua) 26%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--aqua) 7%, var(--surface));
+  color: var(--aqua);
+  font-size: .54rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+#v14ToggleMode:hover {
+  border-color: color-mix(in srgb, var(--aqua) 48%, transparent);
+  color: var(--paper);
+}
+
+.command-view.v14-home-focus .v14-deep-context {
+  display: none !important;
+}
+
+.command-view.v14-home-focus #v14FocusControl {
+  border-color: color-mix(in srgb, var(--aqua) 23%, var(--border));
+}
+
+.command-view.v14-home-expanded .v14-deep-context {
+  animation: v14Reveal .22s ease both;
+}
+
+@keyframes v14Reveal {
+  from { opacity: .35; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.v14-focus-ops { margin-top: 16px; }
+
+.v14-ops-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 10px;
+  padding: 12px 13px;
+  border: 1px solid color-mix(in srgb, var(--aqua) 18%, var(--border));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--aqua) 4%, transparent);
+}
+
+.v14-ops-summary > span {
+  display: inline-flex;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--aqua) 10%, transparent);
+  color: var(--aqua);
+  font-size: .62rem;
+  font-weight: 900;
+}
+
+.v14-ops-summary > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.v14-ops-summary small {
+  color: var(--muted-2);
+  font-size: .5rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.v14-ops-summary strong {
+  font-size: .63rem;
+  line-height: 1.38;
+}
+
+@media (max-width: 980px) {
+  .command-view.v14-home-focus .manager-command-card,
+  .command-view.v14-home-focus .manager-quick-grid {
+    display: none !important;
+  }
+
+  .v14-focus-control {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .v14-focus-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 640px) {
+  #v14FocusControl { scroll-margin-top: 126px; }
+
+  .v14-focus-control {
+    min-height: 0;
+    padding: 13px 14px;
+    border-radius: 16px;
+  }
+
+  .v14-focus-copy .eyebrow { font-size: .46rem; }
+  .v14-focus-copy strong { font-size: .7rem; }
+  .v14-focus-copy small { font-size: .52rem; }
+
+  .v14-focus-actions {
+    gap: 6px;
+  }
+
+  #v14ToggleMode {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  .v14-focus-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .v14-mode-pill {
+    align-self: flex-start;
+  }
+}

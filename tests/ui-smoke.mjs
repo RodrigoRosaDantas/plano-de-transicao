@@ -42,7 +42,7 @@ await run('desktop: central, atualização visível e busca global', { width: 14
   if (!(await page.locator('#refreshBtn').isVisible())) throw new Error('Botão Atualizar dados não está visível.');
   const refreshLabel = await page.locator('#refreshLabel').innerText();
   if (!refreshLabel.includes('Atualizar dados')) throw new Error(`Rótulo de atualização incorreto: ${refreshLabel}`);
-  if (await page.locator('[data-view="study"], #studyWorkspaceFrame').count()) throw new Error('Área de Questões ainda aparece no Plano.');
+  if (await page.locator('[data-view="study"], #studyWorkspaceFrame, iframe, a[href*="sedes-df-questoes"]').count()) throw new Error('Ainda existe uma ação operacional de estudo no Plano.');
   await page.click('#refreshBtn');
   await page.waitForSelector('#toast.show');
   const toast = await page.locator('#toast').innerText();
@@ -103,6 +103,11 @@ await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação desapareceu ao abrir Desempenho.');
   if (await page.locator('#mainTabs [data-view]').count() !== navCount) throw new Error('Desempenho reduziu opções no celular.');
   if (await page.locator('.performance-section-nav button').count() !== 5) throw new Error('Atalhos internos de desempenho incompletos.');
+  await page.click('#mainTabs [data-view="finance"]');
+  await page.waitForSelector('.finance-view .ledger-row');
+  const financeOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  if (financeOverflow > 2) throw new Error(`Investimentos criaram overflow horizontal: ${financeOverflow}px`);
+  await page.screenshot({ path: 'artifacts/mobile-finance.png', fullPage: true });
   await page.click('#moreDockBtn');
   await page.waitForSelector('#moreSheet.open');
   if (!(await page.locator('.sheet-sync-card').isVisible())) throw new Error('Estado de atualização não aparece no Mais.');

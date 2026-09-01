@@ -302,8 +302,8 @@ async function renderWeeklyHorizon() {
 function addMoreDecisionTools() {
   const sheet = $('#moreSheet');
   if (!sheet || $('#v11DecisionOps', sheet)) return;
-  const ecosystem = $('.manager-ecosystem-actions', sheet);
-  if (!ecosystem) return;
+  const anchor = $('.manager-ecosystem-actions', sheet) || $('.sheet-actions', sheet) || $('.sheet-footnote', sheet);
+  if (!anchor) return;
   const wrap = document.createElement('div');
   wrap.id = 'v11DecisionOps';
   wrap.className = 'v11-decision-ops';
@@ -311,7 +311,7 @@ function addMoreDecisionTools() {
     <div class="sheet-section-label">Decisões locais</div>
     <div class="v11-ops-summary"><span>${ICON.decision}</span><div><small>Estado neste navegador</small><strong id="v11DecisionHealth">Nenhuma decisão registrada</strong></div></div>
     <button id="v11ExportDecisions" class="action-button" type="button"><span>${ICON.export}</span><span><b>Exportar decisões</b><small>Baixa um JSON com os estados locais e horários</small></span></button>`;
-  ecosystem.after(wrap);
+  anchor.after(wrap);
   getSnapshot().then((data) => { if (data) updateDecisionHealth(candidateDecisions(data)); });
 }
 
