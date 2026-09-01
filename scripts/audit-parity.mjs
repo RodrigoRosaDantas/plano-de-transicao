@@ -108,6 +108,7 @@ check('Sincronização gera somente snapshot tratado', !syncScript.includes('not
 check('Workflow versiona somente o snapshot tratado', !syncWorkflow.includes('data/notion-live.json') && syncWorkflow.includes('git add data/snapshot.json'));
 check('Bookmark antigo de estudo é redirecionado', manager.includes("location.hash === '#study'") && manager.includes("location.hash = '#command'"));
 check('Home mantém reorientação gerencial', manager.includes('manager-quick-grid') && manager.includes('Acessos gerenciais rápidos'));
+check('Contagem regressiva usa o mesmo arredondamento gerencial', app.includes('days: Math.ceil(diff / 86_400_000)'));
 
 check('v10 possui bloco Agora inteligente', intelligence.includes('managerNowBoard') && intelligence.includes('Maior atenção mensurável'));
 check('v10 possui leitura Se a prova fosse hoje', intelligence.includes('managerExamToday') && intelligence.includes('Leitura de preparação, não previsão de aprovação'));
