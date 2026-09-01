@@ -37,13 +37,19 @@ async function run(name, viewport, fn) {
   }
 }
 
-await run('desktop: central gerencial, atualizar, busca e operações', { width: 1440, height: 1000 }, async page => {
+await run('desktop: Agora inteligente, atualizar, busca e operações', { width: 1440, height: 1000 }, async page => {
   await page.waitForSelector('.command-view');
   await page.waitForSelector('.manager-command-card');
+  await page.waitForSelector('#managerNowBoard');
+  await page.waitForSelector('#managerExamToday');
   if (await page.locator('[data-view="study"]').count()) throw new Error('Ainda existe ação de estudo embutido na interface.');
   const refreshText = await page.locator('#refreshBtn').innerText();
   if (!refreshText.includes('Atualizar')) throw new Error(`Botão Atualizar não está explícito: ${refreshText}`);
   if (await page.locator('.manager-quick-grid > button').count() !== 4) throw new Error('Acessos gerenciais rápidos estão incompletos.');
+  if (await page.locator('#managerNowBoard .manager-now-item').count() !== 4) throw new Error('Bloco Agora não entrega os quatro sinais gerenciais.');
+  if (await page.locator('#managerExamToday .manager-exam-scopes article').count() !== 2) throw new Error('Leitura “Se a prova fosse hoje” não separa TDAS e EDAS.');
+  const examToday = await page.locator('#managerExamToday').innerText();
+  if (!examToday.includes('não previsão de aprovação')) throw new Error('Guardrail da leitura de preparação foi removido.');
 
   await page.keyboard.press('Control+K');
   await page.waitForSelector('#commandPalette:not(.hidden)');
@@ -56,24 +62,35 @@ await run('desktop: central gerencial, atualizar, busca e operações', { width:
   const sheetTitle = await page.locator('#moreSheet h2').first().innerText();
   if (!sheetTitle.includes('Central de operações')) throw new Error(`Mais ainda está cru: ${sheetTitle}`);
   if (await page.locator('#moreSheet .manager-nav-grid button').count() < 6) throw new Error('Central de operações sem navegação completa.');
-  if (await page.locator('#managerRefreshBtn').count() !== 1) throw new Error('Atualizar agora não está disponível em Mais.');
+  await page.waitForSelector('#managerHealthGrid');
+  if (await page.locator('#managerHealthGrid > div').count() !== 3) throw new Error('Saúde operacional incompleta.');
+  if (await page.locator('#managerClearCacheBtn').count() !== 1) throw new Error('Central de operações não permite limpar apenas o cache PWA.');
+  if (await page.locator('#managerReloadBtn').count() !== 1) throw new Error('Central de operações não permite recarregar a interface.');
+
   await page.click('#managerRefreshBtn');
-  await page.waitForTimeout(250);
-  await page.screenshot({ path: 'artifacts/desktop-command-manager.png', fullPage: true });
+  await page.waitForTimeout(100);
+  if ((await page.locator('#refreshBtn').getAttribute('data-v10-loading')) !== 'true') throw new Error('Atualizar não fornece feedback imediato de carregamento.');
+  await page.screenshot({ path: 'artifacts/desktop-command-v10.png', fullPage: true });
 });
 
-await run('desktop: desempenho mantém visão geral, por matéria e filtros', { width: 1440, height: 1000 }, async page => {
+await run('desktop: desempenho mantém tudo e adiciona diagnóstico e prioridades', { width: 1440, height: 1000 }, async page => {
   await page.click('[data-view="performance"]');
   await page.waitForSelector('.performance-view');
   await page.waitForSelector('.manager-performance-nav');
-  if (await page.locator('.manager-performance-nav button').count() !== 5) throw new Error('Navegação contextual de desempenho foi reduzida.');
+  await page.waitForSelector('#performanceDiagnostic');
+  await page.waitForSelector('#performancePriorities');
+  if (await page.locator('.manager-performance-nav button').count() !== 7) throw new Error('Navegação contextual de desempenho não contém as sete leituras esperadas.');
 
   await page.click('[data-performance-scope="tdas"]');
+  await page.waitForSelector('#performanceDiagnostic');
   await page.waitForSelector('.subject-table tbody tr');
+  const diagnosticText = await page.locator('#performanceDiagnostic').innerText();
+  if (!diagnosticText.includes('TDAS 202')) throw new Error(`Diagnóstico não acompanhou o escopo TDAS: ${diagnosticText.slice(0, 120)}`);
+  if (await page.locator('#performancePriorities .manager-priority-list button').count() < 1) throw new Error('Ranking de prioridades TDAS está vazio.');
+
   await page.click('[data-manager-performance="subjects"]');
   await page.waitForTimeout(100);
   if (!(await page.locator('[data-performance-grain="subject"]').evaluate(el => el.classList.contains('active')))) throw new Error('Por matéria não preservou o grão de matéria.');
-
   await page.click('[data-performance-grain="combination"]');
   if (await page.locator('.subject-table tbody tr').count() < 1) throw new Error('Filtro de combinações não retornou linhas.');
   await page.click('[data-manager-performance="subjects"]');
@@ -82,12 +99,14 @@ await run('desktop: desempenho mantém visão geral, por matéria e filtros', { 
   const first = await page.locator('.subject-table tbody tr').first().innerText();
   if (!first.includes('Português')) throw new Error(`Busca temática não filtrou Português: ${first}`);
 
-  await page.click('[data-manager-performance="compare"]');
-  if (!(await page.locator('.performance-toolbar').evaluate(el => el.classList.contains('manager-highlight')))) throw new Error('Comparar não destacou os escopos disponíveis.');
-  await page.screenshot({ path: 'artifacts/desktop-performance-manager.png', fullPage: true });
+  await page.click('[data-v10-performance="diagnostic"]');
+  if (!(await page.locator('[data-v10-performance="diagnostic"]').evaluate(el => el.classList.contains('active')))) throw new Error('Diagnóstico não assume estado ativo.');
+  await page.click('[data-v10-performance="priorities"]');
+  if (!(await page.locator('[data-v10-performance="priorities"]').evaluate(el => el.classList.contains('active')))) throw new Error('Prioridades não assume estado ativo.');
+  await page.screenshot({ path: 'artifacts/desktop-performance-v10.png', fullPage: true });
 });
 
-await run('desktop: financeiro, concursos e auditoria permanecem completos', { width: 1440, height: 1000 }, async page => {
+await run('desktop: financeiro, concursos e auditoria permanecem íntegros', { width: 1440, height: 1000 }, async page => {
   await page.click('[data-view="finance"]');
   await page.waitForSelector('.finance-view');
   await page.selectOption('#financeCycle', { label: 'SEDES/DF 2026' });
@@ -104,40 +123,45 @@ await run('desktop: financeiro, concursos e auditoria permanecem completos', { w
   await page.waitForSelector('.audit-check');
   const score = await page.locator('.audit-score strong').innerText();
   if (!score.includes('/')) throw new Error(`Auditoria visual não carregou: ${score}`);
-  await page.screenshot({ path: 'artifacts/desktop-audit-manager.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/desktop-audit-v10.png', fullPage: true });
 });
 
-await run('mobile: Atualizar visível, dock completo, Mais maduro e sem overflow', { width: 390, height: 844 }, async page => {
-  await page.waitForSelector('.manager-command-card');
+await run('mobile: dashboard premium, desempenho em cards e Mais sem overflow', { width: 390, height: 844 }, async page => {
+  await page.waitForSelector('#managerNowBoard');
   if (!(await page.locator('.mobile-dock').isVisible())) throw new Error('Dock móvel não está visível.');
   if (!(await page.locator('#refreshBtn').isVisible())) throw new Error('Atualizar sumiu no mobile.');
   if (!(await page.locator('#refreshBtn').innerText()).includes('Atualizar')) throw new Error('Atualizar virou ícone escondido no mobile.');
   if (await page.locator('.mobile-dock [data-view="study"]').count()) throw new Error('Dock móvel ainda contém Estudar.');
+  if (await page.locator('#managerNowBoard .manager-now-item').count() !== 4) throw new Error('Agora mobile perdeu sinais gerenciais.');
 
   await page.click('.mobile-dock [data-view="performance"]');
-  await page.waitForSelector('.manager-performance-nav');
+  await page.waitForSelector('#performancePriorities');
   const overflowPerformance = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflowPerformance > 2) throw new Error(`Overflow horizontal no desempenho mobile: ${overflowPerformance}px`);
+  const subjectDisplay = await page.locator('.subject-table').evaluate(el => getComputedStyle(el).display);
+  if (subjectDisplay !== 'block') throw new Error(`Tabela de matérias não virou leitura em cards no mobile: display=${subjectDisplay}`);
+  const firstRowDisplay = await page.locator('.subject-table tbody tr').first().evaluate(el => getComputedStyle(el).display);
+  if (firstRowDisplay !== 'grid') throw new Error(`Linha de matéria não virou card: display=${firstRowDisplay}`);
 
   await page.click('#moreDockBtn');
   await page.waitForSelector('#moreSheet.open');
   if (await page.locator('#moreSheet .manager-data-actions .action-button').count() < 4) throw new Error('Mais não expõe as operações de dados.');
-  if (await page.locator('#moreSheet .manager-ecosystem-actions .action-button').count() < 2) throw new Error('Mais não expõe o ecossistema.');
+  if (await page.locator('#moreSheet .manager-ecosystem-actions .action-button').count() < 5) throw new Error('Mais não expõe ferramentas e ecossistema completos.');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal mobile: ${overflow}px`);
-  await page.click('#moreSheet [data-view="finance"]');
-  await page.waitForSelector('.finance-view');
-  await page.screenshot({ path: 'artifacts/mobile-finance-manager.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/mobile-operations-v10.png', fullPage: true });
 });
 
-await run('tablet: navegação gerencial, jornada e ausência de estudo embutido', { width: 820, height: 1180 }, async page => {
+await run('tablet: inteligência, jornada e ausência de estudo embutido', { width: 820, height: 1180 }, async page => {
+  await page.waitForSelector('#managerNowBoard');
   if (await page.locator('[data-view="study"]').count()) throw new Error('Tablet ainda expõe Estudar.');
+  if (await page.locator('#managerNowBoard .manager-now-item').count() !== 4) throw new Error('Agora tablet incompleto.');
   await page.click('[data-view="journey"]');
   await page.waitForSelector('.journey-view');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal tablet: ${overflow}px`);
   if (await page.locator('.timeline-item').count() < 5) throw new Error('Linha do tempo incompleta.');
-  await page.screenshot({ path: 'artifacts/tablet-journey-manager.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/tablet-journey-v10.png', fullPage: true });
 });
 
 await browser.close();
