@@ -86,7 +86,7 @@ await run('desktop: Agora, decisões, histórico, contexto e operações', { wid
   const reviewStatus = await page.locator('#v12ReviewStatus').innerText();
   if (!reviewStatus.includes('Revisão marcada')) throw new Error(`Prazo de revisão não foi registrado: ${reviewStatus}`);
   await page.click('#v12SaveContext');
-  await page.waitForSelector('#v12DecisionDrawer.hidden');
+  await page.waitForFunction(() => document.querySelector('#v12DecisionDrawer')?.classList.contains('hidden'));
   await page.waitForFunction(({ id, note }) => {
     const journal = JSON.parse(localStorage.getItem('plano.decisionJournal.v12') || '{}');
     return journal.notes?.[id]?.text === note && Boolean(journal.reviews?.[id]?.dueAt);
