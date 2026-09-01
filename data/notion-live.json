@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T03:14:05.537Z",
+  "generatedAt": "2026-09-01T03:44:15.063Z",
   "access": {
     "edasCases": {
       "ok": true,
@@ -13,21 +13,21 @@
       "ok": true,
       "rows": 31
     },
-    "tdasEssays": {
-      "ok": true,
-      "rows": 33
-    },
     "edasQuestions": {
       "ok": true,
       "rows": 45
     },
-    "tdasQuestions": {
+    "tdasEssays": {
       "ok": true,
-      "rows": 114
+      "rows": 33
     },
     "tdasErrors": {
       "ok": true,
       "rows": 288
+    },
+    "tdasQuestions": {
+      "ok": true,
+      "rows": 114
     }
   },
   "pages": {
@@ -85,7 +85,7 @@
         "url": "https://app.notion.com/p/PLANO-DE-TRANSI-O-239cf5a2673180a1a2a2df40b502a899",
         "public_url": null,
         "archived": false,
-        "request_id": "9023ecfd-44d9-4506-b76f-7209c7e3155f"
+        "request_id": "6c8995f2-4490-4868-bbd0-8989d296dfc9"
       },
       "blocks": [
         {
@@ -2748,7 +2748,7 @@
         "url": "https://app.notion.com/p/01-Jornada-e-Marcos-3c8cf5a2673181adbbecc1f6d0080399",
         "public_url": null,
         "archived": false,
-        "request_id": "2c02266f-895f-4c94-9db8-7d486678efc1"
+        "request_id": "4d9fd573-4602-4cfd-a50c-f77e8521796e"
       },
       "blocks": [
         {
@@ -7364,7 +7364,7 @@
         "url": "https://app.notion.com/p/02-Concursos-Provas-e-Resultados-3c8cf5a26731818a9571f28f56f13514",
         "public_url": null,
         "archived": false,
-        "request_id": "eda065d7-48c6-4017-930a-80930090fe59"
+        "request_id": "d0460bd8-8b14-440e-be82-8687106db066"
       },
       "blocks": [
         {
@@ -10315,7 +10315,7 @@
         "url": "https://app.notion.com/p/03-Desempenho-e-Hist-rico-de-Estudos-3c8cf5a2673181a38caef92b980ce85c",
         "public_url": null,
         "archived": false,
-        "request_id": "cf264c74-b36c-43c2-97a9-e921404a3ff1"
+        "request_id": "123312db-7a09-47cc-8ff2-518fc224099f"
       },
       "blocks": [
         {
@@ -14010,7 +14010,7 @@
             "page_id": "3c8cf5a2-6731-81a3-8cae-f92b980ce85c"
           },
           "created_time": "2026-08-26T06:54:00.000Z",
-          "last_edited_time": "2026-09-01T02:37:00.000Z",
+          "last_edited_time": "2026-09-01T03:37:00.000Z",
           "created_by": {
             "object": "user",
             "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -14108,7 +14108,7 @@
         "url": "https://app.notion.com/p/04-Estrat-gia-de-Carreira-e-Pr-ximas-Etapas-3c8cf5a2673181e08ae8f9eff95df293",
         "public_url": null,
         "archived": false,
-        "request_id": "427c233f-4138-47dd-b6b6-83a68c67b1ca"
+        "request_id": "474e3fb0-9a24-4f58-8010-4dd6d45f06e6"
       },
       "blocks": [
         {
@@ -25747,7 +25747,7 @@
         "object": "page",
         "id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f",
         "created_time": "2026-08-26T06:54:00.000Z",
-        "last_edited_time": "2026-09-01T02:37:00.000Z",
+        "last_edited_time": "2026-09-01T03:37:00.000Z",
         "created_by": {
           "object": "user",
           "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -25796,7 +25796,7 @@
         "url": "https://app.notion.com/p/03-1-Registro-Mestre-de-Fontes-e-Auditoria-3c8cf5a2673181f7bce8f6b75881c31f",
         "public_url": null,
         "archived": false,
-        "request_id": "f0ddd499-7a99-4909-bdd3-dedf887fb507"
+        "request_id": "3f2374ee-b29a-403c-8e73-04379c4f6b28"
       },
       "blocks": [
         {
@@ -39558,6 +39558,338 @@
             "color": "default"
           },
           "archived": false
+        },
+        {
+          "object": "block",
+          "id": "88f1610c-11f1-4968-986a-0d7522320174",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T03:37:00.000Z",
+          "last_edited_time": "2026-09-01T03:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "heading_2",
+          "heading_2": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "🧾 Plano Paralelo SEDES — histórico de saneamento e critério documental",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "🧾 Plano Paralelo SEDES — histórico de saneamento e critério documental",
+                "href": null
+              }
+            ],
+            "is_toggleable": false,
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "d90a2b93-f0c9-4404-87ea-997194e5ab47",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T03:37:00.000Z",
+          "last_edited_time": "2026-09-01T03:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Histórico de auditorias e correções — COM • TEC • LEG",
+                  "link": {
+                    "url": "https://app.notion.com/p/39bcf5a2673181298294e2ecbe83af72"
+                  }
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Histórico de auditorias e correções — COM • TEC • LEG",
+                "href": "https://app.notion.com/p/39bcf5a2673181298294e2ecbe83af72"
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " — fonte histórica de ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " — fonte histórica de ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "saneamento documental",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "saneamento documental",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " do Plano Paralelo. Registra que a arquitetura COM01–COM14, TEC01–TEC14 e LEG01–LEG25 foi reaud itada contra os três PDFs de origem; a trilha LEG apresentou deslocamentos em LEG01–LEG12 na primeira versão e foi corrigida, enquanto COM teve correção pontual de COM03/tabela da Semana 1 e TEC manteve a ordem compatível com o PDF. Também documenta a regularização da camada normativa (COM09–COM11, programas distritais e II PDPM/FN04), a correção de títulos que tratavam recortes legais como índices integrais e o zeramento de checklists marcados sem evidência de execução.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " do Plano Paralelo. Registra que a arquitetura COM01–COM14, TEC01–TEC14 e LEG01–LEG25 foi reaud itada contra os três PDFs de origem; a trilha LEG apresentou deslocamentos em LEG01–LEG12 na primeira versão e foi corrigida, enquanto COM teve correção pontual de COM03/tabela da Semana 1 e TEC manteve a ordem compatível com o PDF. Também documenta a regularização da camada normativa (COM09–COM11, programas distritais e II PDPM/FN04), a correção de títulos que tratavam recortes legais como índices integrais e o zeramento de checklists marcados sem evidência de execução.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "d7d97be0-dbda-4afb-bf1c-ae039a6c129a",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T03:37:00.000Z",
+          "last_edited_time": "2026-09-01T03:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Regra de rastreabilidade:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Regra de rastreabilidade:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " esta fonte comprova correções de arquitetura, fidelidade e material disponível para execução; ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " esta fonte comprova correções de arquitetura, fidelidade e material disponível para execução; ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "não comprova que os 53 dias foram estudados",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "não comprova que os 53 dias foram estudados",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ". Marcações removidas por ausência de execução não devem ser reconstruídas. O critério final do projeto considerou um dia documentalmente executável quando o conteúdo possuía transcrição organizada no workspace ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ". Marcações removidas por ausência de execução não devem ser reconstruídas. O critério final do projeto considerou um dia documentalmente executável quando o conteúdo possuía transcrição organizada no workspace ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "ou",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "ou",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " roteiro normativo completo com consulta obrigatória à fonte oficial vigente. Assim, “material completo para execução” não equivale a “estudo concluído”.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " roteiro normativo completo com consulta obrigatória à fonte oficial vigente. Assim, “material completo para execução” não equivale a “estudo concluído”.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "d1ee0627-27ba-4562-834e-664331302736",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T03:37:00.000Z",
+          "last_edited_time": "2026-09-01T03:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Preservação histórica:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Preservação histórica:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " manter o histórico de achados e remediações como evidência da evolução do projeto, sem reabrir nesta rotina os bancos operacionais COM/TEC/LEG, TDAS 202 ou EDAS 400 e sem converter auditorias de conteúdo em métricas de desempenho.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " manter o histórico de achados e remediações como evidência da evolução do projeto, sem reabrir nesta rotina os bancos operacionais COM/TEC/LEG, TDAS 202 ou EDAS 400 e sem converter auditorias de conteúdo em métricas de desempenho.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
         }
       ]
     },
@@ -39615,7 +39947,7 @@
         "url": "https://app.notion.com/p/03-2-Consolidado-de-Bancos-de-Quest-es-3cacf5a26731818da9dacef6da38241f",
         "public_url": null,
         "archived": false,
-        "request_id": "82167add-54a1-4ec5-b5cb-27aa4dc881be"
+        "request_id": "66d81721-b1b6-40ec-b065-a4031a87ed05"
       },
       "blocks": [
         {
@@ -41193,7 +41525,7 @@
     }
   },
   "enrichment": {
-    "generatedAt": "2026-09-01T03:14:06.500Z",
+    "generatedAt": "2026-09-01T03:44:15.949Z",
     "financeRows": 24,
     "registryRows": 29,
     "warnings": []
