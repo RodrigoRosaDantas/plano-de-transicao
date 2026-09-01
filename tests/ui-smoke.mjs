@@ -65,7 +65,7 @@ await run('desktop: Agora, decisões, alertas, semana e operações', { width: 1
   if (!decisionId || stored[decisionId]?.status !== 'adopted') throw new Error('Decisão adotada não foi persistida no navegador.');
   await page.waitForSelector(`#v11DecisionCenter [data-decision-id="${decisionId}"]`);
   const adoptedText = await page.locator(`#v11DecisionCenter [data-decision-id="${decisionId}"] .v11-decision-status`).innerText();
-  if (!adoptedText.includes('Adotada')) throw new Error(`Centro de decisões não refletiu o estado adotado: ${adoptedText}`);
+  if (!adoptedText.toLocaleLowerCase('pt-BR').includes('adotada')) throw new Error(`Centro de decisões não refletiu o estado adotado: ${adoptedText}`);
 
   await page.keyboard.press('Control+K');
   await page.waitForSelector('#commandPalette:not(.hidden)');
