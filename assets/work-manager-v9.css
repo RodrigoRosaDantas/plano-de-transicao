@@ -13,6 +13,9 @@
 .refresh-work-button.spinning svg { animation: manager-spin .75s linear infinite; }
 @keyframes manager-spin { to { transform: rotate(360deg); } }
 
+/* O menu Mais é uma área funcional também no desktop, não uma gaveta exclusiva do mobile. */
+#moreTopBtn.more-top-button { display: inline-flex !important; }
+
 .main-tabs [data-view="study"],
 .mobile-dock [data-view="study"] { display: none !important; }
 
@@ -86,10 +89,23 @@
 .manager-command-actions { position: relative; z-index: 1; }
 .manager-external-button { text-decoration: none; }
 
+/* Impede que o conteúdo intrínseco das tabelas/segmentos faça a coluna flex crescer além da viewport. */
+.performance-view,
+.performance-view > *,
+.performance-toolbar,
+.performance-hero,
+.performance-chart-grid,
+.performance-score,
+.mapping-card,
+.subject-panel,
+.subject-table-wrap { min-width: 0; max-width: 100%; }
+
 .manager-performance-nav {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
   padding: 8px;
   overflow: hidden;
 }
@@ -203,7 +219,7 @@
 
 @media (max-width: 1120px) {
   .manager-quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .manager-performance-nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .manager-performance-nav { display: flex; width: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
   .manager-performance-nav::-webkit-scrollbar { display: none; }
   .manager-performance-nav button { flex: 0 0 190px; }
 }
@@ -221,15 +237,28 @@
   .refresh-work-button small { display: none; }
   .topbar .icon-button { width: 40px; min-height: 40px; }
   .topbar #themeBtn { display: none; }
-  .more-top-button { display: inline-flex !important; }
 
   .manager-quick-grid { grid-template-columns: 1fr; gap: 8px; }
   .manager-quick-grid > button { min-height: 78px; padding: 12px 13px; }
   .manager-quick-grid strong { font-size: .72rem; }
 
-  .manager-performance-nav { margin-inline: -2px; border-radius: 17px; }
+  .performance-view { width: 100%; overflow-x: clip; }
+  .performance-view > * { width: 100%; }
+  .performance-toolbar { display: grid; width: 100%; grid-template-columns: minmax(0, 1fr); overflow: hidden; }
+  .performance-toolbar > * { min-width: 0; max-width: 100%; }
+  .performance-toolbar .segmented { width: 100%; max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+  .performance-toolbar .segmented button { flex: 0 0 auto; }
+  .manager-performance-nav { width: 100%; margin-inline: 0; border-radius: 17px; }
   .manager-performance-nav button { flex-basis: 168px; min-height: 58px; }
-  .manager-toolbar-title { flex-basis: 100%; min-width: 100%; padding: 0 0 6px; }
+  .manager-toolbar-title { flex-basis: 100%; width: 100%; min-width: 0; padding: 0 0 6px; }
+  .performance-hero,
+  .performance-chart-grid,
+  .metric-grid { width: 100%; grid-template-columns: minmax(0, 1fr); }
+  .score-layout,
+  .score-copy,
+  .mapping-card,
+  .chart-panel { min-width: 0; max-width: 100%; }
+  .subject-table-wrap { width: 100%; max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
 
   .manager-operations {
     right: 8px;
