@@ -7,6 +7,8 @@ const index = await read('index.html');
 const sw = await read('sw.js');
 const app = await read('assets/work-app.js');
 const styles = await read('assets/work-app.css');
+const manager = await read('assets/work-manager-v9.js');
+const managerStyles = await read('assets/work-manager-v9.css');
 const treated = await import(new URL('../data/treated-performance-data.js', import.meta.url));
 
 const results = [];
@@ -45,31 +47,41 @@ check('Atividades tratadas são matematicamente válidas', treated.treatedActivi
 check('Tratamento preserva os três escopos', ['historical','tdas','edas'].every(scope=>treated.treatedTopicalSeed.some(x=>x.scope===scope)));
 check('Tratamento separa matérias, combinações e atividades', ['subject','combination','activity'].every(grain=>treated.treatedTopicalSeed.some(x=>x.grain===grain)));
 
-for (const asset of ['assets/work-app.css','assets/work-app.js','assets/og.png','data/snapshot.json','data/treated-performance-data.js','manifest.webmanifest']) {
+for (const asset of ['assets/work-app.css','assets/work-app.js','assets/work-manager-v9.css','assets/work-manager-v9.js','assets/og.png','data/snapshot.json','data/treated-performance-data.js','manifest.webmanifest']) {
   check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
 }
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
-check('Aplicação nova está ligada no HTML', index.includes('assets/work-app.js'));
-check('Tema visual novo está ligado no HTML', index.includes('assets/work-app.css'));
+check('Aplicação-base está ligada no HTML', index.includes('assets/work-app.js'));
+check('Tema visual-base está ligado no HTML', index.includes('assets/work-app.css'));
+check('Camada gerencial está ligada no HTML', index.includes('assets/work-manager-v9.js') && index.includes('assets/work-manager-v9.css'));
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
-check('Workspace integrado implementado', app.includes('studyWorkspaceFrame') && app.includes('Plataforma de Questões'));
-check('Workspace remove navegação duplicada', app.includes('>.topbar') && app.includes('>.mobile-nav'));
-check('Workspace sincroniza tema do Plano', app.includes('setAttribute("data-theme"'));
-check('Desempenho por matéria implementado', app.includes('subjectRows') && app.includes('treatedTopicalSeed'));
-check('Comparação de provas implementada', app.includes('MATRIZ AUDITADA') && app.includes('exam-matrix'));
-check('Investimento por ciclo implementado', app.includes('POR CICLO') && app.includes('financeSummary.byCycle'));
+
+check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
+check('Botão Atualizar é ação textual e visível', index.includes('refresh-work-button') && index.includes('<b>Atualizar</b>'));
+check('Mais virou Central de operações', index.includes('Central de operações') && index.includes('manager-operations'));
+check('Plataforma de Questões ficou externa', index.includes('../sedes-df-questoes/') && index.includes('sem estudar dentro deste site'));
+check('Bookmark antigo de estudo é redirecionado', manager.includes("location.hash === '#study'") && manager.includes("location.hash = '#command'"));
+check('Home é reorientada para decisão gerencial', manager.includes('O Plano acompanha. A plataforma executa.') && manager.includes('manager-quick-grid'));
+check('Desempenho mantém Visão geral e Por matéria', manager.includes('data-manager-performance="overview"') && manager.includes('data-manager-performance="subjects"'));
+check('Desempenho preserva controles de escopo e grão', app.includes('data-performance-scope') && app.includes('data-performance-grain'));
+check('Desempenho por matéria continua implementado', app.includes('subjectRows') && app.includes('treatedTopicalSeed'));
+check('Comparação de provas continua implementada', app.includes('MATRIZ AUDITADA') && app.includes('exam-matrix'));
+check('Investimento por ciclo continua implementado', app.includes('POR CICLO') && app.includes('financeSummary.byCycle'));
 check('Confirmado x estimado x não confirmado implementado', app.includes('TOTAL CONFIRMADO') && app.includes('estimated'));
 check('Guardrail investimento x desempenho implementado', app.includes('GUARDA-CORPO'));
-check('Persistência local da plataforma é lida', app.includes('sedes.questoes.') && app.includes('localStorage'));
 check('Busca global implementada', app.includes('buildSearchIndex') && app.includes('commandPalette'));
 check('Layout móvel possui dock e folha Mais', styles.includes('.mobile-dock') && styles.includes('.more-sheet'));
+check('Camada v9 trata Android e telas estreitas', managerStyles.includes('@media (max-width: 760px)') && managerStyles.includes('.refresh-work-button'));
+check('Mais possui navegação, sincronização e ecossistema', index.includes('Dados e sincronização') && index.includes('Ecossistema') && index.includes('Sincronizar no GitHub'));
 
 const shortcutUrls = new Set((manifest.shortcuts || []).map(x=>x.url));
 check('PWA usa modo standalone', manifest.display === 'standalone');
 check('PWA possui escopo próprio', manifest.scope === './' && manifest.id === './');
-check('PWA possui atalho Estudar', shortcutUrls.has('./#study'));
+check('PWA não possui atalho de estudo embutido', !shortcutUrls.has('./#study'));
+check('PWA possui atalho Agora', shortcutUrls.has('./#command'));
 check('PWA possui atalho Desempenho', shortcutUrls.has('./#performance'));
-check('PWA possui atalho Provas', shortcutUrls.has('./#exams'));
+check('PWA possui atalho Concursos', shortcutUrls.has('./#exams'));
+check('PWA possui atalho Jornada', shortcutUrls.has('./#journey'));
 check('PWA possui atalho Investimentos', shortcutUrls.has('./#finance'));
 
 const failures = results.filter(x=>!x.pass);
