@@ -28,6 +28,7 @@ check('snapshot possui ao menos cinco gates', snapshot.strategy?.postExamGates?.
 check('snapshot preserva fonte tratada', snapshot.strategy?.postExamSource?.status?.startsWith('treated') && snapshot.strategy?.postExamSource?.url?.includes('notion'));
 check('sincronizador lê blocos com paginação', sync.includes('async function pageBlocks') && sync.includes("page_size: '100'") && sync.includes('start_cursor'));
 check('sincronizador extrai somente a seção necessária', sync.includes("sectionList(strategyBlocks, 'Gatilho pós-SEDES/DF')") && sync.includes('postExamGates'));
+check('extrator reconhece cabeçalhos H1, H2 e H3 do Notion', sync.includes('function headingLevel') && sync.includes('/^heading_([123])$/'));
 check('sincronizador não grava espelho bruto', !sync.includes('notion-live.json') && !sync.includes('pageMirror'));
 
 check('v15 cria resumo na Home', js.includes("summary.id = 'v15TransitionSummary'"));
