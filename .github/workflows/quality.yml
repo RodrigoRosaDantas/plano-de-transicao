@@ -13,6 +13,7 @@ on:
       - 'manifest.webmanifest'
       - 'sw.js'
       - 'scripts/audit-parity.mjs'
+      - 'scripts/audit-v13.mjs'
       - 'tests/**'
       - '.github/workflows/quality.yml'
   pull_request:
@@ -34,6 +35,8 @@ jobs:
           node-version: '22'
       - name: Auditoria de dados e paridade
         run: node scripts/audit-parity.mjs
+      - name: Auditoria estrutural da v13
+        run: node scripts/audit-v13.mjs
 
   ui:
     runs-on: ubuntu-latest
@@ -64,6 +67,10 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/ui-smoke.mjs
+      - name: Testes específicos da caixa gerencial v13
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v13-inbox.mjs
       - name: Evidências visuais
         if: always()
         uses: actions/upload-artifact@v4
