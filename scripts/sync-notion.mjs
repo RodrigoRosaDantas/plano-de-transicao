@@ -58,6 +58,19 @@ async function databaseRows(id) {
   return all;
 }
 
+async function pageBlocks(id) {
+  let cursor;
+  const all = [];
+  do {
+    const suffix = new URLSearchParams({ page_size: '100' });
+    if (cursor) suffix.set('start_cursor', cursor);
+    const result = await notion(`blocks/${id}/children?${suffix}`);
+    all.push(...result.results);
+    cursor = result.has_more ? result.next_cursor : null;
+  } while (cursor);
+  return all;
+}
+
 const access = {};
 async function safeDatabaseRows(key, id) {
   try {
@@ -69,6 +82,51 @@ async function safeDatabaseRows(key, id) {
     console.warn(`[fallback] ${key}: ${access[key].error}`);
     return null;
   }
+}
+
+async function safePageBlocks(key, id) {
+  try {
+    const blocks = await pageBlocks(id);
+    access[key] = { ok: true, rows: blocks.length };
+    return blocks;
+  } catch (error) {
+    access[key] = { ok: false, error: String(error?.message || error) };
+    console.warn(`[fallback] ${key}: ${access[key].error}`);
+    return null;
+  }
+}
+
+function blockText(block) {
+  const content = block?.[block?.type];
+  return (content?.rich_text || []).map(item => item.plain_text || '').join('').trim();
+}
+
+function normalizeText(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR');
+}
+
+function sectionList(blocks, headingNeedle) {
+  if (!blocks) return [];
+  const needle = normalizeText(headingNeedle);
+  let active = false;
+  const items = [];
+  for (const block of blocks) {
+    if (block.type === 'heading_2') {
+      if (active) break;
+      active = normalizeText(blockText(block)).includes(needle);
+      continue;
+    }
+    if (!active) continue;
+    if (block.type === 'divider' && items.length) break;
+    if (['numbered_list_item', 'bulleted_list_item', 'to_do'].includes(block.type)) {
+      const value = blockText(block);
+      if (value) items.push(value);
+    }
+  }
+  return items;
 }
 
 function property(page, name) {
@@ -127,6 +185,8 @@ const previous = JSON.parse(
 
 const [
   homeMeta,
+  strategyMeta,
+  strategyBlocks,
   tdasRows,
   tdasErrorRows,
   tdasEssayRows,
@@ -136,6 +196,8 @@ const [
   registryRows
 ] = await Promise.all([
   notion(`pages/${ids.pages.home}`),
+  notion(`pages/${ids.pages.strategy}`),
+  safePageBlocks('strategyBlocks', ids.pages.strategy),
   safeDatabaseRows('tdasQuestions', ids.databases.tdasQuestions),
   safeDatabaseRows('tdasErrors', ids.databases.tdasErrors),
   safeDatabaseRows('tdasEssays', ids.databases.tdasEssays),
@@ -282,6 +344,16 @@ const exams = previous.exams.map(e => {
   return e;
 });
 
+const fallbackPostExamGates = previous.strategy?.postExamGates || [
+  'Registrar a prova e o resultado em Concursos, Provas e Resultados.',
+  'Criar o snapshot final do ciclo e o diagnóstico quantitativo.',
+  'Separar falha de conteúdo, falha de execução, tempo e estratégia de prova antes de alterar a trilha.',
+  'Escolher o próximo alvo por reaproveitamento, chance de nomeação, remuneração, localização e custo de oportunidade.',
+  'Manter TDAS e EDAS separados até existir motivo explícito para unificação de alguma matéria ou indicador.'
+];
+const livePostExamGates = sectionList(strategyBlocks, 'Gatilho pós-SEDES/DF');
+const postExamGates = livePostExamGates.length >= 3 ? livePostExamGates : fallbackPostExamGates;
+
 const snapshot = {
   ...previous,
   meta: {
@@ -292,6 +364,16 @@ const snapshot = {
     source: 'Notion vivo — bancos operacionais + Registro Histórico',
     live: true,
     syncWarnings: Object.entries(access).filter(([, value]) => !value.ok).map(([key]) => key)
+  },
+  strategy: {
+    ...previous.strategy,
+    postExamSource: {
+      page: '04 — Estratégia de Carreira e Próximas Etapas',
+      url: 'https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293',
+      lastEditedAt: strategyMeta.last_edited_time,
+      status: livePostExamGates.length >= 3 ? 'treated-live' : 'treated-fallback'
+    },
+    postExamGates
   },
   metrics: {
     tdas: {
