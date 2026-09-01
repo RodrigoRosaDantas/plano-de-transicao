@@ -19,7 +19,25 @@ const inbox = await read('assets/manager-inbox-v13.js');
 const inboxStyles = await read('assets/manager-inbox-v13.css');
 const focus = await read('assets/home-focus-v14.js');
 const focusStyles = await read('assets/home-focus-v14.css');
+const syncScript = await read('scripts/sync-notion.mjs');
+const syncWorkflow = await read('.github/workflows/sync-notion.yml');
 const treated = await import(new URL('../data/treated-performance-data.js', import.meta.url));
+
+async function exists(path) {
+  try {
+    await fs.access(new URL(`../${path}`, import.meta.url));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const rawNotionMirrorPublished = await exists('data/notion-live.json');
+const legacyStudyAssetsPublished = (await Promise.all([
+  'assets/work-parity.js',
+  'assets/work-parity-v2.js',
+  'assets/work-parity-v3.js',
+].map(exists))).some(Boolean);
 
 const results = [];
 const check = (name, pass, detail = '') => results.push({ name, pass: Boolean(pass), detail });
@@ -80,11 +98,15 @@ check('Cache busting do shell está em v14', !index.includes('?v=13') && index.i
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
 
 check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
-check('Botão Atualizar é textual e visível', index.includes('refresh-work-button') && index.includes('<b>Atualizar</b>'));
-check('Mais é Central de operações', index.includes('Central de operações') && index.includes('manager-operations'));
-check('Plataforma de Questões ficou externa', index.includes('../sedes-df-questoes/') && index.includes('sem estudar dentro deste site'));
+check('Botão Atualizar é textual e visível', index.includes('id="refreshBtn"') && index.includes('data-refresh') && index.includes('Atualizar dados'));
+check('Mais é central gerencial de navegação e operações', index.includes('CENTRAL GERENCIAL') && index.includes('Navegação e operações'));
+check('Site não oferece estudo nem acesso operacional', !index.includes('../sedes-df-questoes/') && !manager.includes('PLATFORM_URL') && !index.includes('data-view="study"'));
+check('Assets operacionais antigos não são publicados', !legacyStudyAssetsPublished);
+check('Espelho bruto do Notion não é publicado', !rawNotionMirrorPublished);
+check('Sincronização gera somente snapshot tratado', !syncScript.includes('notion-live.json') && !syncScript.includes('pageMirror'));
+check('Workflow versiona somente o snapshot tratado', !syncWorkflow.includes('data/notion-live.json') && syncWorkflow.includes('git add data/snapshot.json'));
 check('Bookmark antigo de estudo é redirecionado', manager.includes("location.hash === '#study'") && manager.includes("location.hash = '#command'"));
-check('Home mantém reorientação gerencial', manager.includes('O Plano acompanha. A plataforma executa.') && manager.includes('manager-quick-grid'));
+check('Home mantém reorientação gerencial', manager.includes('manager-quick-grid') && manager.includes('Acessos gerenciais rápidos'));
 
 check('v10 possui bloco Agora inteligente', intelligence.includes('managerNowBoard') && intelligence.includes('Maior atenção mensurável'));
 check('v10 possui leitura Se a prova fosse hoje', intelligence.includes('managerExamToday') && intelligence.includes('Leitura de preparação, não previsão de aprovação'));
@@ -138,7 +160,7 @@ check('v13 empilha fila antes de 980px', inboxStyles.includes('@media (max-width
 check('v14 recolhe redundâncias no mobile', focusStyles.includes('.manager-command-card') && focusStyles.includes('.manager-quick-grid'));
 check('v14 trata telas de 390px', focusStyles.includes('@media (max-width: 390px)'));
 
-check('Mais mantém navegação, sincronização e ecossistema', index.includes('Dados e sincronização') && index.includes('Ecossistema') && index.includes('Sincronizar no GitHub'));
+check('Mais mantém navegação, estado e ferramentas', index.includes('sheet-sync-card') && index.includes('Ferramentas rápidas') && index.includes('Abrir fonte no Notion'));
 check('Mais mantém saúde v10', intelligence.includes('managerHealthGrid') && intelligence.includes('managerClearCacheBtn'));
 check('Mais mantém decisões v11', decisions.includes('v11DecisionHealth') && decisions.includes('v11ExportDecisions'));
 check('Mais mantém histórico v12', history.includes('v12DecisionJournalOps') && history.includes('v12ExportDossier'));
@@ -149,8 +171,8 @@ const shortcutUrls = new Set((manifest.shortcuts || []).map((x) => x.url));
 check('PWA usa modo standalone', manifest.display === 'standalone');
 check('PWA possui escopo próprio', manifest.scope === './' && manifest.id === './');
 check('PWA não possui atalho de estudo', !shortcutUrls.has('./#study'));
-check('PWA possui atalho Atenção/Agora', shortcutUrls.has('./#command') && (manifest.shortcuts || []).some((x) => x.short_name === 'Atenção'));
-check('PWA mantém atalhos principais', ['./#performance', './#exams', './#journey', './#finance'].every((url) => shortcutUrls.has(url)));
+check('PWA possui atalho Agora', shortcutUrls.has('./#command'));
+check('PWA mantém atalhos gerenciais principais', ['./#performance', './#exams', './#finance'].every((url) => shortcutUrls.has(url)));
 
 const failures = results.filter((x) => !x.pass);
 const width = Math.max(...results.map((x) => x.name.length));

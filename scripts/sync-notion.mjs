@@ -42,19 +42,6 @@ async function notion(path, opts = {}) {
   return response.json();
 }
 
-async function blocks(id) {
-  let cursor;
-  const all = [];
-  do {
-    const qs = new URLSearchParams({ page_size: '100' });
-    if (cursor) qs.set('start_cursor', cursor);
-    const result = await notion(`blocks/${id}/children?${qs}`);
-    all.push(...result.results);
-    cursor = result.has_more ? result.next_cursor : null;
-  } while (cursor);
-  return all;
-}
-
 async function databaseRows(id) {
   let cursor;
   const all = [];
@@ -140,7 +127,6 @@ const previous = JSON.parse(
 
 const [
   homeMeta,
-  pageMirrorEntries,
   tdasRows,
   tdasErrorRows,
   tdasEssayRows,
@@ -150,13 +136,6 @@ const [
   registryRows
 ] = await Promise.all([
   notion(`pages/${ids.pages.home}`),
-  Promise.all(Object.entries(ids.pages).map(async ([key, id]) => [
-    key,
-    {
-      meta: await notion(`pages/${id}`),
-      blocks: await blocks(id)
-    }
-  ])),
   safeDatabaseRows('tdasQuestions', ids.databases.tdasQuestions),
   safeDatabaseRows('tdasErrors', ids.databases.tdasErrors),
   safeDatabaseRows('tdasEssays', ids.databases.tdasEssays),
@@ -165,8 +144,6 @@ const [
   safeDatabaseRows('edasCases', ids.databases.edasCases),
   safeDatabaseRows('registry', ids.databases.registry)
 ]);
-
-const pageMirror = Object.fromEntries(pageMirrorEntries);
 
 let tdasQuestions = previous.metrics.tdas.questions;
 let tdasHits = previous.metrics.tdas.hits;
@@ -354,37 +331,9 @@ const snapshot = {
   historyCycles
 };
 
-const mirror = {
-  generatedAt: snapshot.meta.generatedAt,
-  access,
-  pages: pageMirror,
-  operational: {
-    tdas: {
-      questionsDatabase: ids.databases.tdasQuestions,
-      errorDatabase: ids.databases.tdasErrors,
-      essayDatabase: ids.databases.tdasEssays,
-      rows: tdasRows?.length ?? null
-    },
-    edas: {
-      questionsDatabase: ids.databases.edasQuestions,
-      errorDatabase: ids.databases.edasErrors,
-      caseDatabase: ids.databases.edasCases,
-      rows: edasRows?.length ?? null
-    },
-    registry: {
-      database: ids.databases.registry,
-      rows: registryRows?.length ?? null
-    }
-  }
-};
-
 await fs.writeFile(
   new URL('../data/snapshot.json', import.meta.url),
   JSON.stringify(snapshot, null, 2) + '\n'
-);
-await fs.writeFile(
-  new URL('../data/notion-live.json', import.meta.url),
-  JSON.stringify(mirror, null, 2) + '\n'
 );
 
 console.log(JSON.stringify({

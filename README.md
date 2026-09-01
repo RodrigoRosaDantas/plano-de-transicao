@@ -4,8 +4,9 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 
 ## O que já está implementado
 
-- Central “Agora” inspirada no produto Work, com missão, prioridades por dados, contador e relógio de Brasília.
-- Workspace da Plataforma de Questões integrado ao Plano, com retomada local, estudo, revisão, desempenho e prova real.
+- Central “Agora” gerencial, com missão, prioridades por dados, contador e relógio de Brasília.
+- Plano focado em decisão e acompanhamento; a execução de questões permanece fora deste site.
+- Central de operações com atualização visível, estado do snapshot, sincronização segura e PWA.
 - Desempenho por matéria, combinações e atividades, com filtros independentes para histórico, TDAS e EDAS.
 - Jornada e marcos em mapa visual contínuo.
 - Provas e resultados com separação entre aproveitamento, nota, classificação e etapa do certame.
@@ -26,7 +27,11 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 
 O site lê `data/snapshot.json`. Esse arquivo é atualizado pelo workflow a partir dos bancos operacionais compartilhados com a integração do Notion e do Registro Histórico. Quando algum banco não está acessível à integração, a rotina preserva o último valor validado e registra a pendência em `meta.syncWarnings`, evitando derrubar o painel ou substituir dado válido por zero.
 
-O arquivo `data/notion-live.json` mantém o espelho técnico e o diagnóstico de acesso das fontes consultadas. O token do Notion fica somente nos GitHub Actions Secrets e nunca é enviado ao navegador.
+O repositório publica somente o snapshot tratado necessário ao painel. O espelho bruto das páginas do Notion não é gerado nem exposto no GitHub Pages. O token do Notion fica somente nos GitHub Actions Secrets e nunca é enviado ao navegador.
+
+## Limite do produto
+
+Este site não oferece sessão de estudo, revisão, simulado, prova real, resolução de questões ou iframe de outra plataforma. O propósito é exclusivamente gerencial: preservar histórico, acompanhar desempenho e investimento, registrar decisões e apoiar os próximos movimentos da transição.
 
 ## Publicação
 

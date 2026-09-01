@@ -199,7 +199,7 @@ function renderPerformanceIntelligence() {
 function enhanceMoreOperations() {
   const sheet = $('#moreSheet');
   if (!sheet || $('#managerHealthGrid', sheet)) return;
-  const status = $('.manager-ops-status', sheet);
+  const status = $('.manager-ops-status', sheet) || $('.sheet-sync-card', sheet);
   if (status) {
     status.insertAdjacentHTML('afterend', `
       <div id="managerHealthGrid" class="manager-health-grid">
@@ -208,12 +208,12 @@ function enhanceMoreOperations() {
         <div><small>Interface</small><strong>v10</strong></div>
       </div>`);
   }
-  const ecosystem = $('.manager-ecosystem-actions', sheet);
+  const ecosystem = $('.manager-ecosystem-actions', sheet) || $('.sheet-actions', sheet);
   if (ecosystem) {
     ecosystem.insertAdjacentHTML('beforeend', `
-      <a class="action-button" href="https://github.com/RodrigoRosaDantas/plano-de-transicao" target="_blank" rel="noreferrer"><span data-icon="database"></span><span><b>Repositório GitHub</b><small>Código, histórico e Pull Requests</small></span></a>
-      <button id="managerClearCacheBtn" class="action-button" type="button"><span data-icon="refresh"></span><span><b>Limpar cache do app</b><small>Remove apenas o cache PWA; não apaga progresso de questões</small></span></button>
-      <button id="managerReloadBtn" class="action-button" type="button"><span data-icon="refresh"></span><span><b>Recarregar interface</b><small>Força uma nova leitura da versão publicada</small></span></button>`);
+      <a class="action-button manager-tool-action" href="https://github.com/RodrigoRosaDantas/plano-de-transicao" target="_blank" rel="noreferrer"><span data-icon="database"></span><span><b>Repositório GitHub</b><small>Código, histórico e Pull Requests</small></span></a>
+      <button id="managerClearCacheBtn" class="action-button manager-tool-action" type="button"><span data-icon="refresh"></span><span><b>Limpar cache do app</b><small>Remove apenas o cache PWA; não apaga decisões ou preferências locais</small></span></button>
+      <button id="managerReloadBtn" class="action-button manager-tool-action" type="button"><span data-icon="refresh"></span><span><b>Recarregar interface</b><small>Força uma nova leitura da versão publicada</small></span></button>`);
     window.setTimeout(() => window.dispatchEvent(new CustomEvent('v10:hydrate-icons')), 0);
   }
   updateCacheHealth();

@@ -1,24 +1,14 @@
 import { treatedTopicalSeed, treatedActivitySeed } from "../data/treated-performance-data.js";
 
-const PLATFORM_BASE = "../sedes-df-questoes/";
-const STUDY_ROUTES = [
-  { id: "inicio", label: "Início", icon: "dashboard", href: `${PLATFORM_BASE}#/inicio` },
-  { id: "estudar", label: "Estudar", icon: "book", href: `${PLATFORM_BASE}#/estudar` },
-  { id: "cargo", label: "Por cargo", icon: "layers", href: `${PLATFORM_BASE}estudo-por-cargo.html` },
-  { id: "revisar", label: "Revisar", icon: "refresh", href: `${PLATFORM_BASE}#/revisar` },
-  { id: "desempenho", label: "Desempenho", icon: "chart", href: `${PLATFORM_BASE}#/desempenho` },
-  { id: "prova", label: "Prova real", icon: "flag", href: `${PLATFORM_BASE}#/inicio` },
-];
-
 const VIEW_NAMES = {
   command: "Agora",
-  study: "Estudar",
   performance: "Desempenho",
   journey: "Jornada",
   exams: "Concursos",
   finance: "Investimentos",
   strategy: "Estratégia",
   sources: "Fontes",
+  operations: "Operações",
 };
 
 const ICONS = {
@@ -54,13 +44,14 @@ const ICONS = {
   shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/>',
   link: '<path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/>',
   fullscreen: '<path d="M8 3H3v5m13-5h5v5M8 21H3v-5m13 5h5v-5"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.55 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.55a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.45 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.33.7.6 1 .3.28.68.42 1.1.4h.09v4h-.09A1.7 1.7 0 0 0 19.4 15Z"/>',
+  cloud: '<path d="M17.5 19H7a5 5 0 1 1 1.4-9.8A6 6 0 0 1 20 11.5 3.8 3.8 0 0 1 17.5 19Z"/><path d="M12 11v6m-3-3 3 3 3-3"/>',
 };
 
 const state = {
   data: null,
   view: "command",
-  studyRoute: sessionStorage.getItem("plano.study.route") || "inicio",
-  performance: { scope: "historical", grain: "subject", sort: "questions", query: "" },
+  performance: { mode: "subjects", scope: "historical", grain: "subject", sort: "questions", query: "" },
   finance: { cycle: "Todos", category: "Todas", situation: "Todas", query: "" },
   strategyStage: "all",
   searchIndex: [],
@@ -114,40 +105,6 @@ function metricCard(label, value, note, tone = "") {
 
 function statusChip(label, tone = "") {
   return `<span class="status-chip ${tone}">${esc(label)}</span>`;
-}
-
-function localStudyState() {
-  try {
-    const active = localStorage.getItem("sedes.questoes.activeProfile.v3") || "rodrigo";
-    const read = (suffix, fallback) => {
-      const direct = localStorage.getItem(`sedes.questoes.${active}.${suffix}.v3`);
-      if (direct) return JSON.parse(direct);
-      const key = Object.keys(localStorage).find((item) => item.startsWith("sedes.questoes.") && item.endsWith(`.${suffix}.v3`));
-      return key ? JSON.parse(localStorage.getItem(key)) : fallback;
-    };
-    const histories = read("history", []);
-    const errors = read("errors", {});
-    const marked = read("marked", {});
-    const session = read("session", null);
-    const list = Array.isArray(histories) ? histories : [];
-    const answered = list.reduce((sum, item) => sum + Number(item.answered ?? item.questionResults?.length ?? 0), 0);
-    const correct = list.reduce((sum, item) => sum + Number(item.correct ?? item.questionResults?.filter((row) => row.correct).length ?? 0), 0);
-    const total = Number(session?.questions?.length || 0);
-    const current = Number(session?.current || 0);
-    return {
-      available: Boolean(list.length || session || Object.keys(errors || {}).length || Object.keys(marked || {}).length),
-      answered,
-      correct,
-      accuracy: answered ? (correct / answered) * 100 : null,
-      errors: Object.keys(errors || {}).length,
-      marked: Object.keys(marked || {}).length,
-      session,
-      current,
-      total,
-    };
-  } catch {
-    return { available: false, answered: 0, correct: 0, accuracy: null, errors: 0, marked: 0, session: null, current: 0, total: 0 };
-  }
 }
 
 function countdownParts() {
@@ -222,7 +179,6 @@ function commandView() {
   const m = data.metrics;
   const clock = countdownParts();
   const tdasProgress = m.tdas.stepsTotal ? m.tdas.stepsDone / m.tdas.stepsTotal * 100 : 0;
-  const local = localStudyState();
   const tdasWeak = weakest("tdas");
   const edasWeak = weakest("edas");
   const historicalWeak = weakest("historical");
@@ -250,7 +206,7 @@ function commandView() {
     </section>
 
     <section class="command-grid">
-      <article class="panel study-command-card"><div class="study-command-profile"><span class="profile-orb">RR</span><div><span>Área pessoal de estudo</span><strong>${local.available ? "Progresso local encontrado" : "Plataforma pronta para estudar"}</strong></div></div><h2>${local.session ? `Retome da questão ${Math.min(local.current + 1, local.total || local.current + 1)}.` : "Entre no estudo sem sair do plano."}</h2><p>${local.available ? `${fmt(local.answered)} respostas locais, ${fmt(local.errors)} erros abertos e ${fmt(local.marked)} marcações. Esses dados continuam no seu navegador.` : "A Plataforma de Questões abre integrada, com módulos de estudo, revisão, desempenho e prova real."}</p><div class="command-actions"><button class="primary-button" type="button" data-view="study" data-study-jump="${local.session ? "estudar" : "inicio"}">${svgIcon("play")} ${local.session ? "Retomar tentativa" : "Abrir plataforma"}</button><button class="secondary-button" type="button" data-view="study" data-study-jump="revisar">${svgIcon("refresh")} Revisar erros</button></div></article>
+      <article class="panel sync-command-card"><div class="sync-command-profile"><span class="profile-orb">${svgIcon("database")}</span><div><span>Dados do plano</span><strong>${sourceReady ? "Notion reconciliado" : "Snapshot preservado"}</strong></div></div><h2>Seu painel começa pela fonte certa.</h2><p>O último corte publicado foi gerado em ${new Date(data.meta.generatedAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).replace(".", "")}. Atualize o snapshot visível ou abra a sincronização segura do Notion.</p><div class="command-actions"><button class="primary-button" type="button" data-refresh>${svgIcon("refresh")} Atualizar dados</button><button class="secondary-button" type="button" data-view="operations">${svgIcon("settings")} Central de operações</button></div></article>
       <article class="panel action-card"><div><span class="eyebrow">DECISÃO OPERACIONAL</span><h2>Seu trabalho agora é converter volume em ponto líquido.</h2></div><p><strong>${fmt(m.history.questions)} questões mensuráveis</strong> já formam uma base rara. O ganho marginal está menos em “ver tudo” e mais em escolher o próximo bloco com frieza.</p><div class="command-actions"><button class="primary-button" type="button" data-view="performance">${svgIcon("chart")} Ver prioridades</button><button class="secondary-button" type="button" data-view="exams">${svgIcon("flag")} Régua de prova real</button><button class="secondary-button" type="button" data-view="finance">${svgIcon("wallet")} Ver investimento</button></div></article>
     </section>
 
@@ -263,18 +219,6 @@ function commandView() {
     <section class="panel journey-mini"><div class="panel-heading"><div><span class="eyebrow">JORNADA DA TRANSIÇÃO</span><h2>O plano não termina na prova</h2></div><button class="text-button" type="button" data-view="journey">Ver linha do tempo ${svgIcon("arrow")}</button></div><div class="journey-flow">${["Retomada", "Base", "Prova real", "Reta final", "SEDES/DF", "Resultado", "Posse"].map((label, index) => `<div class="journey-node ${index < 4 ? "done" : index === 4 ? "active" : ""}"><i></i><strong>${label}</strong><small>${["jul/25", "2025", "mar/26", "ago/26", "set/26", "próximo", "destino"][index]}</small></div>`).join("")}</div></section>
 
     <section class="panel source-status-card"><div class="source-status-icon ${sourceReady ? "ready" : ""}">${svgIcon(sourceReady ? "shield" : "alert")}</div><div><span class="eyebrow">ESTADO DOS DADOS</span><h2>${sourceReady ? "Snapshot reconciliado e sem alertas" : "Último snapshot preservado com ressalvas"}</h2><p>${dateBR(data.meta.generatedAt)} · ${esc(data.meta.source)} · ${fmt(data.metrics.history.rawRecords)} registros brutos.</p></div><button class="text-button" type="button" data-view="sources">Abrir auditoria ${svgIcon("arrow")}</button></section>
-  </div>`;
-}
-
-function studyView() {
-  const local = localStudyState();
-  const route = STUDY_ROUTES.find((item) => item.id === state.studyRoute) || STUDY_ROUTES[0];
-  const actions = `<a class="secondary-button" href="${route.href}" target="_blank" rel="noreferrer">${svgIcon("external")} Abrir em nova aba</a>`;
-  return `<div class="view-stack study-view">${viewHeading("Estudar", "A Plataforma de Questões mora aqui.", "Mesma origem, mesmo progresso e uma navegação única. O Plano organiza; a plataforma executa.", actions)}
-    <section class="study-hero"><article class="panel study-profile-panel"><span class="eyebrow">CONTINUIDADE LOCAL</span><h2>${local.session ? "Há uma tentativa esperando por você." : "O próximo bloco começa daqui."}</h2><p>${local.available ? `Detectei ${fmt(local.answered)} respostas, ${fmt(local.errors)} erros abertos e ${fmt(local.marked)} questões marcadas neste navegador.` : "O histórico local aparecerá aqui assim que você usar a Plataforma de Questões neste aparelho."}</p><div class="command-actions"><button class="primary-button" type="button" data-study-route="${local.session ? "estudar" : "inicio"}">${svgIcon("play")} ${local.session ? "Retomar agora" : "Começar"}</button><button class="secondary-button" type="button" data-study-route="revisar">${svgIcon("refresh")} Revisar</button></div></article><div class="study-quick-grid">${metricCard("Respondidas neste aparelho", fmt(local.answered), "Histórico salvo localmente", "aqua")}${metricCard("Aproveitamento local", local.accuracy == null ? "—" : pct(local.accuracy), local.accuracy == null ? "Ainda sem base local" : `${fmt(local.correct)} acertos`, "lime")}${metricCard("Erros abertos", fmt(local.errors), "Disponíveis para revisão", "coral")}${metricCard("Questões marcadas", fmt(local.marked), "Fila pessoal de retorno", "amber")}</div></section>
-    <section class="panel study-route-bar"><div class="study-route-tabs" role="tablist" aria-label="Módulos da Plataforma de Questões">${STUDY_ROUTES.map((item) => `<button type="button" role="tab" aria-selected="${item.id === route.id}" class="${item.id === route.id ? "active" : ""}" data-study-route="${item.id}">${svgIcon(item.icon)} ${esc(item.label)}</button>`).join("")}</div><div class="workspace-mini-actions"><button class="icon-button" type="button" data-frame-reload title="Recarregar módulo" aria-label="Recarregar módulo">${svgIcon("refresh")}</button><button class="icon-button" type="button" data-frame-fullscreen title="Tela cheia" aria-label="Tela cheia">${svgIcon("fullscreen")}</button></div></section>
-    <section class="panel workspace-shell" id="studyWorkspace" data-study-route="${route.id}"><div class="workspace-toolbar"><span>${svgIcon("link")} <strong id="workspaceRouteLabel">${esc(route.label)}</strong> · progresso preservado na Plataforma</span><span id="workspaceState">carregando módulo…</span></div><div class="workspace-frame-wrap"><div id="workspaceLoading" class="workspace-loading"><span class="loading-orbit"></span><strong>Carregando ${esc(route.label)}…</strong></div><iframe class="study-workspace-frame" id="studyWorkspaceFrame" title="${esc(route.label)} — Plataforma de Questões" src="${route.href}" loading="eager" allow="fullscreen" referrerpolicy="same-origin"></iframe></div></section>
-    <section class="panel study-local-note"><span class="eyebrow">COMO OS DADOS SE DIVIDEM</span><p>Os indicadores oficiais do Plano vêm do snapshot reconciliado do Notion. Tentativa em andamento, marcações e preferências continuam no navegador. Assim, o painel não inventa sincronização onde ela não existe — bonito, útil e honesto. Trinca rara.</p></section>
   </div>`;
 }
 
@@ -293,12 +237,15 @@ function performanceView() {
   const grainLabel = grain === "subject" ? "Matérias" : grain === "combination" ? "Combinações" : "Atividades";
   const ring = `style="--score:${clamp(metrics.accuracy) * 3.6}deg"`;
   return `<div class="view-stack performance-view">${viewHeading("Desempenho", "Do consolidado até a matéria — sem misturar grãos.", "O painel separa matérias, combinações e atividades. Você pode comparar escopos sem somar snapshots cumulativos.", `<button class="secondary-button" type="button" data-copy-performance>${svgIcon("copy")} Copiar resumo</button>`)}
+    <nav class="performance-section-nav panel" aria-label="Áreas do desempenho">
+      ${[["performanceOverview", "dashboard", "Visão geral", "placar e cobertura"], ["performanceCycles", "chart", "Ciclos", "evolução no tempo"], ["performanceActivities", "spark", "Atividades", "forma de estudo"], ["performanceSubjects", "layers", "Matérias", "recorte detalhado"], ["performanceDiagnosis", "target", "Diagnóstico", "regra de leitura"]].map(([id, icon, label, note]) => `<button type="button" data-performance-section="${id}">${svgIcon(icon)}<span><b>${label}</b><small>${note}</small></span></button>`).join("")}
+    </nav>
     <section class="performance-toolbar panel"><div><span>Escopo</span><div class="segmented">${[["historical", "Histórico"], ["tdas", "TDAS 202"], ["edas", "EDAS 400"]].map(([value, label]) => `<button type="button" class="${scope === value ? "active" : ""}" data-performance-scope="${value}">${label}</button>`).join("")}</div></div><div><span>Grão</span><div class="segmented">${[["subject", "Matérias"], ["combination", "Combinações"], ["activity", "Atividades"]].map(([value, label]) => `<button type="button" class="${grain === value ? "active" : ""}" data-performance-grain="${value}">${label}</button>`).join("")}</div></div><label class="filter-input">${svgIcon("search")}<input id="subjectSearch" type="search" value="${esc(state.performance.query)}" placeholder="Buscar matéria ou fonte…" /></label></section>
-    <section class="performance-hero"><article class="panel performance-score"><div class="panel-heading"><div><span class="eyebrow">${scopeLabel} · indicador reconciliado</span><h2>${esc(metrics.label)}</h2></div>${statusChip("Fonte auditada", "good")}</div><div class="score-layout"><div class="score-ring" ${ring}><div><strong>${pct(metrics.accuracy)}</strong><span>aproveitamento</span></div></div><div class="score-copy"><p>Base mensurável do escopo</p><h3>${fmt(metrics.questions)} questões</h3><span>${fmt(metrics.correct)} acertos · ${fmt(metrics.errors)} erros</span><div class="score-pairs"><span>${svgIcon("check")} ${pct(100 - metrics.errors / Math.max(1, metrics.questions) * 100, 1)} certas</span><span>${svgIcon("error")} ${pct(metrics.errors / Math.max(1, metrics.questions) * 100, 1)} erradas</span></div></div></div></article><article class="panel mapping-card"><div class="panel-heading"><div><span class="eyebrow">COBERTURA DO RECORTE</span><h2>${grainLabel}</h2></div>${svgIcon("layers")}</div><div class="mapping-number"><strong>${fmt(mappedQuestions)}</strong><span>observações neste grão</span></div><div class="mapping-stats"><div><small>Linhas tratadas</small><strong>${fmt(allRows.length)}</strong></div><div><small>Acertos</small><strong>${fmt(mappedCorrect)}</strong></div><div><small>Aproveitamento</small><strong>${pct(mappedAccuracy)}</strong></div></div><p>Esse total descreve apenas o grão selecionado. Não é somado aos demais grãos.</p></article></section>
+    <section class="performance-hero" id="performanceOverview"><article class="panel performance-score"><div class="panel-heading"><div><span class="eyebrow">${scopeLabel} · indicador reconciliado</span><h2>${esc(metrics.label)}</h2></div>${statusChip("Fonte auditada", "good")}</div><div class="score-layout"><div class="score-ring" ${ring}><div><strong>${pct(metrics.accuracy)}</strong><span>aproveitamento</span></div></div><div class="score-copy"><p>Base mensurável do escopo</p><h3>${fmt(metrics.questions)} questões</h3><span>${fmt(metrics.correct)} acertos · ${fmt(metrics.errors)} erros</span><div class="score-pairs"><span>${svgIcon("check")} ${pct(100 - metrics.errors / Math.max(1, metrics.questions) * 100, 1)} certas</span><span>${svgIcon("error")} ${pct(metrics.errors / Math.max(1, metrics.questions) * 100, 1)} erradas</span></div></div></div></article><article class="panel mapping-card"><div class="panel-heading"><div><span class="eyebrow">COBERTURA DO RECORTE</span><h2>${grainLabel}</h2></div>${svgIcon("layers")}</div><div class="mapping-number"><strong>${fmt(mappedQuestions)}</strong><span>observações neste grão</span></div><div class="mapping-stats"><div><small>Linhas tratadas</small><strong>${fmt(allRows.length)}</strong></div><div><small>Acertos</small><strong>${fmt(mappedCorrect)}</strong></div><div><small>Aproveitamento</small><strong>${pct(mappedAccuracy)}</strong></div></div><p>Esse total descreve apenas o grão selecionado. Não é somado aos demais grãos.</p></article></section>
     <section class="metric-grid">${metricCard("Questões mensuráveis", fmt(metrics.questions), metrics.label, "aqua")}${metricCard("Acertos", fmt(metrics.correct), pct(metrics.accuracy), "lime")}${metricCard("Erros", fmt(metrics.errors), `${pct(metrics.errors / Math.max(1, metrics.questions) * 100, 1)} da base`, "coral")}${metricCard("Linhas exibidas", fmt(rows.length), `${grainLabel} após filtros`, "violet")}</section>
-    <section class="performance-chart-grid"><article class="panel chart-panel"><div class="panel-heading"><div><span class="eyebrow">EVOLUÇÃO POR CICLO</span><h2>Aproveitamento em bases independentes</h2><p>O eixo mostra eficiência; o volume aparece na legenda para impedir leitura apressada.</p></div>${svgIcon("chart")}</div>${lineChart(cycles)}</article><article class="panel chart-panel activity-panel"><div class="panel-heading"><div><span class="eyebrow">FORMA DE ESTUDO</span><h2>Atividades no ${scopeLabel}</h2></div>${svgIcon("spark")}</div>${activities.length ? horizontalBars(activities, "questions", fmt, 8) : '<div class="empty-inline">Sem atividades tratadas neste escopo.</div>'}</article></section>
-    <section class="panel subject-panel"><div class="subject-panel-head"><div><span class="eyebrow">DESEMPENHO POR ${grainLabel.toUpperCase()}</span><h2>${fmt(rows.length)} linhas após o tratamento</h2><p>Acertos e erros são recalculados diretamente da base tratada.</p></div><label class="sort-control">Ordenar<select id="subjectSort"><option value="questions" ${state.performance.sort === "questions" ? "selected" : ""}>Maior volume</option><option value="accuracy" ${state.performance.sort === "accuracy" ? "selected" : ""}>Menor aproveitamento</option><option value="errors" ${state.performance.sort === "errors" ? "selected" : ""}>Mais erros</option></select></label></div><div class="subject-table-wrap"><table class="data-table subject-table"><thead><tr><th>${grainLabel.slice(0, -1) || grainLabel}</th><th>Questões</th><th>Acertos</th><th>Erros</th><th>Aproveitamento</th><th>Leitura</th></tr></thead><tbody>${rows.map((row) => `<tr><td><strong>${esc(row.name)}</strong><small>${row.sourceKeys.length} fonte(s) · ${esc(row.scope)}</small></td><td>${fmt(row.questions)}</td><td>${fmt(row.correct)}</td><td>${fmt(row.errors)}</td><td><div class="table-progress"><span>${pct(row.accuracy)}</span>${progress(row.accuracy)}</div></td><td>${statusChip(row.accuracy >= 90 ? "consolidar" : row.accuracy >= 80 ? "revisar" : "prioridade", row.accuracy >= 90 ? "good" : row.accuracy >= 80 ? "warning" : "danger")}</td></tr>`).join("") || '<tr><td colspan="6"><div class="empty-inline">Nenhuma linha encontrada com esses filtros.</div></td></tr>'}</tbody></table></div></section>
-    <section class="panel method-card"><div>${svgIcon("shield")}</div><div><span class="eyebrow">REGRA DE LEITURA</span><h2>Matéria não é revisão. Revisão não é simulado. Combinação não é matéria isolada.</h2><p>O tratamento preserva o nome do que realmente foi medido. Essa separação impede que um bloco misto seja falsamente atribuído a uma única disciplina.</p></div><button class="text-button" type="button" data-view="sources">Ver método ${svgIcon("arrow")}</button></section>
+    <section class="performance-chart-grid"><article class="panel chart-panel" id="performanceCycles"><div class="panel-heading"><div><span class="eyebrow">EVOLUÇÃO POR CICLO</span><h2>Aproveitamento em bases independentes</h2><p>O eixo mostra eficiência; o volume aparece na legenda para impedir leitura apressada.</p></div>${svgIcon("chart")}</div>${lineChart(cycles)}</article><article class="panel chart-panel activity-panel" id="performanceActivities"><div class="panel-heading"><div><span class="eyebrow">FORMA DE ESTUDO</span><h2>Atividades no ${scopeLabel}</h2></div>${svgIcon("spark")}</div>${activities.length ? horizontalBars(activities, "questions", fmt, 8) : '<div class="empty-inline">Sem atividades tratadas neste escopo.</div>'}</article></section>
+    <section class="panel subject-panel" id="performanceSubjects"><div class="subject-panel-head"><div><span class="eyebrow">DESEMPENHO POR ${grainLabel.toUpperCase()}</span><h2>${fmt(rows.length)} linhas após o tratamento</h2><p>Acertos e erros são recalculados diretamente da base tratada.</p></div><label class="sort-control">Ordenar<select id="subjectSort"><option value="questions" ${state.performance.sort === "questions" ? "selected" : ""}>Maior volume</option><option value="accuracy" ${state.performance.sort === "accuracy" ? "selected" : ""}>Menor aproveitamento</option><option value="errors" ${state.performance.sort === "errors" ? "selected" : ""}>Mais erros</option></select></label></div><div class="subject-table-wrap"><table class="data-table subject-table"><thead><tr><th>${grainLabel.slice(0, -1) || grainLabel}</th><th>Questões</th><th>Acertos</th><th>Erros</th><th>Aproveitamento</th><th>Leitura</th></tr></thead><tbody>${rows.map((row) => `<tr><td><strong>${esc(row.name)}</strong><small>${row.sourceKeys.length} fonte(s) · ${esc(row.scope)}</small></td><td>${fmt(row.questions)}</td><td>${fmt(row.correct)}</td><td>${fmt(row.errors)}</td><td><div class="table-progress"><span>${pct(row.accuracy)}</span>${progress(row.accuracy)}</div></td><td>${statusChip(row.accuracy >= 90 ? "consolidar" : row.accuracy >= 80 ? "revisar" : "prioridade", row.accuracy >= 90 ? "good" : row.accuracy >= 80 ? "warning" : "danger")}</td></tr>`).join("") || '<tr><td colspan="6"><div class="empty-inline">Nenhuma linha encontrada com esses filtros.</div></td></tr>'}</tbody></table></div></section>
+    <section class="panel method-card" id="performanceDiagnosis"><div>${svgIcon("shield")}</div><div><span class="eyebrow">DIAGNÓSTICO E REGRA DE LEITURA</span><h2>Matéria não é revisão. Revisão não é simulado. Combinação não é matéria isolada.</h2><p>O tratamento preserva o nome do que realmente foi medido. Essa separação impede que um bloco misto seja falsamente atribuído a uma única disciplina.</p></div><button class="text-button" type="button" data-view="sources">Ver método ${svgIcon("arrow")}</button></section>
   </div>`;
 }
 
@@ -322,7 +269,7 @@ function examsView() {
   const exams = state.data.exams;
   const measured = exams.filter((exam) => exam.rawAccuracy != null);
   return `<div class="view-stack exams-view">${viewHeading("Concursos", "Prova, nota, classificação e contexto no lugar certo.", "A prova real funciona como régua externa. O treino não é usado para maquiar resultado de concurso.", `<button class="secondary-button" type="button" data-copy-exams>${svgIcon("copy")} Copiar histórico</button>`)}
-    <section class="exam-hero panel"><div><span class="eyebrow">PRÓXIMA PROVA</span><h2>SEDES/DF · TDAS 202 + EDAS 400</h2><p>06 de setembro de 2026 · duas trilhas, mesma data, métricas separadas.</p></div><div class="exam-hero-date"><strong>06</strong><span>SET<br>2026</span></div><button class="primary-button" type="button" data-view="study">${svgIcon("play")} Estudar agora</button></section>
+    <section class="exam-hero panel"><div><span class="eyebrow">PRÓXIMA PROVA</span><h2>SEDES/DF · TDAS 202 + EDAS 400</h2><p>06 de setembro de 2026 · duas trilhas, mesma data, métricas separadas.</p></div><div class="exam-hero-date"><strong>06</strong><span>SET<br>2026</span></div><button class="primary-button" type="button" data-view="performance">${svgIcon("target")} Ver prioridades</button></section>
     <section class="exam-grid">${exams.map(examCard).join("")}</section>
     <section class="performance-chart-grid"><article class="panel chart-panel"><div class="panel-heading"><div><span class="eyebrow">PROVAS REAIS</span><h2>Evolução do aproveitamento bruto</h2></div>${svgIcon("chart")}</div>${horizontalBars(measured.map((exam) => ({ name: exam.name, accuracy: exam.rawAccuracy, questions: Number(String(exam.score).split("/")[1] || 0) })), "accuracy", (value) => pct(value), 8)}</article><article class="panel competitive-card"><span class="eyebrow">RÉGUA COMPETITIVA</span><h2>Da nota ao contexto</h2><div class="competitive-compare">${measured.map((exam) => `<div><span>${esc(exam.name)}</span><strong>${pct(exam.rawAccuracy)}</strong><small>${esc(exam.ranking || "—")}</small></div>`).join("")}</div><p>Aproveitamento bruto, nota editalícia e classificação são grandezas diferentes. Aqui, elas não são empilhadas como se fossem a mesma coisa.</p></article></section>
     <section class="panel exam-matrix-panel"><div class="panel-heading"><div><span class="eyebrow">MATRIZ AUDITADA</span><h2>Comparação sem apagar o estágio do concurso</h2></div>${statusChip(`${measured.length} resultados reais`, "aqua")}</div><div class="subject-table-wrap"><table class="data-table exam-matrix"><thead><tr><th>Concurso</th><th>Data</th><th>Resultado</th><th>Aproveitamento</th><th>Classificação</th><th>Etapa / universo</th></tr></thead><tbody>${exams.map((exam) => `<tr><td><strong>${esc(exam.name)}</strong><small>${esc(exam.role)}</small></td><td>${dateBR(exam.date)}</td><td>${esc(exam.score || "—")}</td><td>${exam.rawAccuracy == null ? "—" : pct(exam.rawAccuracy)}</td><td>${exam.classification ? fmt(exam.classification) : "—"}</td><td>${esc(exam.classificationStage || exam.status || "—")}</td></tr>`).join("")}</tbody></table></div></section>
@@ -393,7 +340,7 @@ function sourcesView() {
   const checks = auditChecks();
   const passed = checks.filter(([, ok]) => ok).length;
   const subjectCount = treatedTopicalSeed.filter((row) => row.grain === "subject").length;
-  return `<div class="view-stack sources-view">${viewHeading("Fontes", "A beleza fica na frente. A verdade continua rastreável.", "Notion vivo, tratamento, snapshot e site são camadas diferentes. O painel deixa essa cadeia visível.", `<button class="secondary-button" type="button" id="refreshPublished">${svgIcon("refresh")} Recarregar publicado</button><a class="secondary-button" href="https://github.com/RodrigoRosaDantas/plano-de-transicao/actions/workflows/sync-notion.yml" target="_blank" rel="noreferrer">${svgIcon("database")} Sincronizar no GitHub</a><button class="secondary-button" type="button" data-export-snapshot>${svgIcon("download")} Exportar snapshot</button>`)}
+  return `<div class="view-stack sources-view">${viewHeading("Fontes", "A beleza fica na frente. A verdade continua rastreável.", "Notion vivo, tratamento, snapshot e site são camadas diferentes. O painel deixa essa cadeia visível.", `<button class="secondary-button" type="button" id="refreshPublished" data-refresh>${svgIcon("refresh")} Recarregar publicado</button><a class="secondary-button" href="https://github.com/RodrigoRosaDantas/plano-de-transicao/actions/workflows/sync-notion.yml" target="_blank" rel="noreferrer">${svgIcon("database")} Sincronizar no GitHub</a><button class="secondary-button" type="button" data-export-snapshot>${svgIcon("download")} Exportar snapshot</button>`)}
     <section class="audit-hero panel ${passed === checks.length ? "ready" : "warning"}"><div class="audit-score"><strong>${passed}<span>/${checks.length}</span></strong><small>verificações aprovadas</small></div><div><span class="eyebrow">AUDITORIA AUTOMÁTICA</span><h2>${passed === checks.length ? "Dados reconciliados para publicação" : "Há verificações que pedem revisão"}</h2><p>Última geração em ${new Date(data.meta.generatedAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })} · corte de desempenho ${dateBR(data.meta.performanceCut)}.</p></div>${statusChip(passed === checks.length ? "Íntegro" : "Revisar", passed === checks.length ? "good" : "danger")}</section>
     <section class="panel truth-panel"><div class="panel-heading"><div><span class="eyebrow">CADEIA DE VERDADE</span><h2>Quem prevalece quando há divergência</h2></div>${svgIcon("database")}</div><div class="truth-chain">${data.governance.truthChain.map((label, index) => `<div class="truth-node ${index === 0 ? "primary" : ""}"><span>0${index + 1}</span><strong>${esc(label)}</strong>${index < data.governance.truthChain.length - 1 ? svgIcon("arrow") : ""}</div>`).join("")}</div></section>
     <section class="audit-grid"><article class="panel audit-check-panel"><div class="panel-heading"><div><span class="eyebrow">VERIFICAÇÕES</span><h2>Fechamento automático</h2></div>${svgIcon("shield")}</div><div class="audit-checks">${checks.map(([label, ok]) => `<div class="audit-check ${ok ? "ok" : "bad"}"><span>${svgIcon(ok ? "check" : "alert")}</span><strong>${esc(label)}</strong><small>${ok ? "aprovado" : "revisar"}</small></div>`).join("")}</div></article><article class="panel source-summary"><span class="eyebrow">COBERTURA PUBLICADA</span><h2>O que o site sabe hoje</h2><div class="source-summary-list"><div><span>Registros brutos</span><strong>${fmt(data.metrics.history.rawRecords)}</strong></div><div><span>Questões mensuráveis</span><strong>${fmt(data.metrics.history.questions)}</strong></div><div><span>Linhas temáticas tratadas</span><strong>${fmt(treatedTopicalSeed.length)}</strong></div><div><span>Linhas só de matéria</span><strong>${fmt(subjectCount)}</strong></div><div><span>Atividades tratadas</span><strong>${fmt(treatedActivitySeed.length)}</strong></div><div><span>Lançamentos financeiros</span><strong>${fmt(data.financeEntries.length)}</strong></div></div></article></section>
@@ -402,7 +349,30 @@ function sourcesView() {
   </div>`;
 }
 
-const viewRenderers = { command: commandView, study: studyView, performance: performanceView, journey: journeyView, exams: examsView, finance: financeView, strategy: strategyView, sources: sourcesView };
+function operationsView() {
+  const data = state.data;
+  const generated = new Date(data.meta.generatedAt);
+  const warningCount = (data.meta.syncWarnings || []).length + (data.meta.dataWarnings || []).length;
+  const generatedLabel = generated.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).replace(".", "");
+  const online = navigator.onLine;
+  return `<div class="view-stack operations-view">${viewHeading("Operações", "Atualização, publicação e aplicativo sob controle.", "Aqui ficam as ações técnicas do plano. As áreas de decisão continuam limpas; o funcionamento do sistema fica transparente.", `<button class="primary-button" type="button" data-refresh>${svgIcon("refresh")} Atualizar dados</button>`)}
+    <section class="panel operations-hero ${warningCount ? "warning" : "ready"}">
+      <div class="operations-signal">${svgIcon(warningCount ? "alert" : "shield")}</div>
+      <div><span class="eyebrow">SNAPSHOT PUBLICADO</span><h2>${warningCount ? "Última versão preservada com ressalvas" : "Dados reconciliados e disponíveis"}</h2><p>Gerado em ${generatedLabel}. O botão Atualizar dados busca imediatamente a versão mais recente já publicada no GitHub Pages.</p></div>
+      <div class="operations-hero-actions"><button class="primary-button" type="button" data-refresh>${svgIcon("refresh")} Recarregar agora</button><a class="secondary-button" href="https://github.com/RodrigoRosaDantas/plano-de-transicao/actions/workflows/sync-notion.yml" target="_blank" rel="noreferrer">${svgIcon("cloud")} Sincronizar Notion</a></div>
+    </section>
+    <section class="system-grid" aria-label="Estado do sistema">
+      <article class="panel system-card"><span class="system-card-icon">${svgIcon("database")}</span><div><span>Fonte principal</span><strong>Notion</strong><small>${data.governance.sources.length} bancos vigentes</small></div>${statusChip(warningCount ? "atenção" : "conectado", warningCount ? "warning" : "good")}</article>
+      <article class="panel system-card"><span class="system-card-icon">${svgIcon("shield")}</span><div><span>Snapshot</span><strong>${dateBR(data.meta.homeSnapshot)}</strong><small>corte do painel</small></div>${statusChip("publicado", "aqua")}</article>
+      <article class="panel system-card"><span class="system-card-icon">${svgIcon("cloud")}</span><div><span>Publicação</span><strong>GitHub Pages</strong><small>atualização automatizada</small></div>${statusChip(online ? "online" : "offline", online ? "good" : "warning")}</article>
+      <article class="panel system-card"><span class="system-card-icon">${svgIcon("download")}</span><div><span>Aplicativo</span><strong>PWA instalável</strong><small>cache do último snapshot</small></div>${statusChip("disponível", "aqua")}</article>
+    </section>
+    <section class="panel operation-flow"><div class="panel-heading"><div><span class="eyebrow">DUAS AÇÕES, DOIS EFEITOS</span><h2>Atualizar o painel não expõe o segredo do Notion</h2><p>A separação é intencional: o site público só lê o snapshot; a credencial continua protegida no GitHub Actions.</p></div>${svgIcon("shield")}</div><div class="operation-step-grid"><article><span>01</span><div><strong>Sincronizar Notion</strong><p>Executa a rotina segura no GitHub, consulta os bancos e publica um novo snapshot.</p></div><a href="https://github.com/RodrigoRosaDantas/plano-de-transicao/actions/workflows/sync-notion.yml" target="_blank" rel="noreferrer">Abrir rotina ${svgIcon("external")}</a></article><article><span>02</span><div><strong>Atualizar dados</strong><p>Recarrega no aparelho o snapshot mais recente que já terminou de ser publicado.</p></div><button type="button" data-refresh>Recarregar ${svgIcon("refresh")}</button></article></div></section>
+    <section class="panel operations-actions"><div><span class="eyebrow">FERRAMENTAS</span><h2>Aplicativo e portabilidade</h2><p>Instale a central, exporte o snapshot ou alterne o tema sem misturar essas ações com o conteúdo do plano.</p></div><div><button class="secondary-button" type="button" data-install>${svgIcon("download")} Instalar aplicativo</button><button class="secondary-button" type="button" data-export-snapshot>${svgIcon("export")} Exportar snapshot</button><button class="secondary-button" type="button" data-toggle-theme>${svgIcon("sun")} Alternar tema</button><a class="secondary-button" href="${esc(data.meta.sourceUrl)}" target="_blank" rel="noreferrer">${svgIcon("external")} Abrir Notion</a></div></section>
+  </div>`;
+}
+
+const viewRenderers = { command: commandView, performance: performanceView, journey: journeyView, exams: examsView, finance: financeView, strategy: strategyView, sources: sourcesView, operations: operationsView };
 
 function render() {
   if (!state.data) return;
@@ -415,7 +385,7 @@ function render() {
   hydrateIcons(content);
   bindViewControls();
   updateLiveTime();
-  if (state.view === "study") bindStudyFrame();
+  updateMoreSheet();
   document.title = `${VIEW_NAMES[state.view]} · Plano de Transição`;
 }
 
@@ -426,7 +396,6 @@ function navigate(view, options = {}) {
     state.performance.query = options.subject;
     state.performance.grain = "subject";
   }
-  if (options.studyRoute) state.studyRoute = options.studyRoute;
   state.view = view;
   const hash = `#${view}`;
   if (location.hash !== hash) history.pushState(null, "", hash);
@@ -434,55 +403,6 @@ function navigate(view, options = {}) {
   closeSearch();
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function setStudyRoute(routeId) {
-  const route = STUDY_ROUTES.find((item) => item.id === routeId) || STUDY_ROUTES[0];
-  state.studyRoute = route.id;
-  sessionStorage.setItem("plano.study.route", route.id);
-  if (state.view !== "study") return navigate("study", { studyRoute: route.id });
-  $$('[data-study-route]').forEach((button) => {
-    const active = button.dataset.studyRoute === route.id;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-selected", String(active));
-  });
-  const frame = $("#studyWorkspaceFrame");
-  const loading = $("#workspaceLoading");
-  const label = $("#workspaceRouteLabel");
-  if (label) label.textContent = route.label;
-  if (loading) loading.classList.remove("hidden");
-  if (frame && frame.getAttribute("src") !== route.href) {
-    frame.title = `${route.label} — Plataforma de Questões`;
-    frame.src = route.href;
-  }
-  $("#studyWorkspace")?.setAttribute("data-study-route", route.id);
-}
-
-function bindStudyFrame() {
-  const frame = $("#studyWorkspaceFrame");
-  if (!frame || frame.dataset.bound) return;
-  frame.dataset.bound = "true";
-  frame.addEventListener("load", () => {
-    $("#workspaceLoading")?.classList.add("hidden");
-    const status = $("#workspaceState");
-    if (status) status.textContent = "módulo carregado";
-    try {
-      const doc = frame.contentDocument;
-      if (doc?.documentElement) doc.documentElement.setAttribute("data-theme", document.documentElement.classList.contains("light") ? "light" : "dark");
-      if (doc?.body) {
-        doc.body.dataset.planoEmbedded = "true";
-        let style = doc.getElementById("plano-embedded-style");
-        if (!style && doc.head) {
-          style = doc.createElement("style");
-          style.id = "plano-embedded-style";
-          style.textContent = "body[data-plano-embedded=true]>.topbar,body[data-plano-embedded=true]>.mobile-nav,body[data-plano-embedded=true]>.footer,body[data-plano-embedded=true]>.skip{display:none!important}body[data-plano-embedded=true]>.page,body[data-plano-embedded=true] #app.page{max-width:1480px!important;margin:0 auto!important;padding-top:16px!important;min-height:100vh!important}";
-          doc.head.append(style);
-        }
-      }
-    } catch {
-      if (status) status.textContent = "aberto em modo protegido";
-    }
-  });
 }
 
 function bindViewControls() {
@@ -510,7 +430,6 @@ function bindViewControls() {
       input?.setSelectionRange(input.value.length, input.value.length);
     }, 220);
   });
-  $("#refreshPublished")?.addEventListener("click", () => loadSnapshot(true));
 }
 
 async function copyText(text, success) {
@@ -604,26 +523,52 @@ function updateLiveTime() {
   $$('[data-countdown-days]').forEach((node) => { node.textContent = countdown.days; });
 }
 
+function updateMoreSheet() {
+  if (!state.data) return;
+  const data = state.data;
+  const generated = new Date(data.meta.generatedAt);
+  const warningCount = (data.meta.syncWarnings || []).length + (data.meta.dataWarnings || []).length;
+  const generatedLabel = generated.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).replace(".", "");
+  const title = $("#moreSyncTitle");
+  const detail = $("#moreSyncDetail");
+  const age = $("#refreshAge");
+  if (title) title.textContent = warningCount ? "Snapshot preservado com ressalvas" : "Notion reconciliado e publicado";
+  if (detail) detail.textContent = `${generatedLabel} · ${data.governance.sources.length} bancos · ${navigator.onLine ? "online" : "offline"}`;
+  if (age) age.textContent = `${dateBR(data.meta.homeSnapshot, true).toUpperCase()} · publicado`;
+  $$("#moreSheet [data-view]").forEach((button) => {
+    const active = button.dataset.view === state.view;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-current", active ? "page" : "false");
+  });
+}
+
 function updateShell() {
   const data = state.data;
-  $("#missionText").textContent = data.mission;
+  if ($("#missionText")) $("#missionText").textContent = data.mission;
   const milestone = $("#nextMilestone");
   if (milestone) milestone.innerHTML = `<span>Próximo marco</span><strong>${dateBR(data.meta.nextExam, true).toUpperCase()}</strong><small>SEDES/DF 2026</small>`;
   const generated = new Date(data.meta.generatedAt);
-  $("#snapshotDate").textContent = `corte ${dateBR(data.meta.homeSnapshot)} · desempenho ${dateBR(data.meta.performanceCut)}`;
-  $("#contextStatus").textContent = data.meta.live ? "Notion vivo → tratamento → GitHub Pages" : "Snapshot auditado publicado";
-  $("#networkState").textContent = navigator.onLine ? "online" : "offline";
-  const local = localStudyState();
-  $("#localStudyStatus").textContent = local.session ? `tentativa salva · questão ${Math.min(local.current + 1, local.total || local.current + 1)}` : local.available ? `${fmt(local.answered)} respostas locais` : "sem tentativa local";
+  if ($("#snapshotDate")) $("#snapshotDate").textContent = `corte ${dateBR(data.meta.homeSnapshot)} · desempenho ${dateBR(data.meta.performanceCut)}`;
+  if ($("#contextStatus")) $("#contextStatus").textContent = data.meta.live ? "Notion vivo → tratamento → GitHub Pages" : "Snapshot auditado publicado";
+  if ($("#networkState")) $("#networkState").textContent = navigator.onLine ? "online" : "offline";
   const sync = $("#syncState");
-  sync.classList.toggle("warning", Boolean((data.meta.syncWarnings || []).length));
-  sync.innerHTML = `<span class="status-orb"><i></i></span><span><strong>${(data.meta.syncWarnings || []).length ? "Snapshot com ressalvas" : "Dados reconciliados"}</strong><small>${generated.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).replace(".", "")}</small></span>`;
+  if (sync) {
+    sync.classList.toggle("warning", Boolean((data.meta.syncWarnings || []).length));
+    sync.innerHTML = `<span class="status-orb"><i></i></span><span><strong>${(data.meta.syncWarnings || []).length ? "Snapshot com ressalvas" : "Dados reconciliados"}</strong><small>${generated.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).replace(".", "")}</small></span>`;
+  }
+  updateMoreSheet();
   hydrateIcons();
 }
 
 async function loadSnapshot(feedback = false) {
-  const refresh = $("#refreshBtn");
-  refresh?.classList.add("spinning");
+  const refreshButtons = $$('[data-refresh]');
+  refreshButtons.forEach((button) => {
+    button.classList.add("spinning");
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+  });
+  const refreshLabel = $("#refreshLabel");
+  if (refreshLabel) refreshLabel.textContent = "Atualizando…";
   try {
     const response = await fetch(`data/snapshot.json?ts=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -633,15 +578,40 @@ async function loadSnapshot(feedback = false) {
     buildSearchIndex();
     updateShell();
     render();
-    if (feedback) toast("Snapshot publicado recarregado.");
+    if (feedback) toast("Dados publicados atualizados agora.");
   } catch (error) {
     const content = $("#content");
     if (!state.data && content) content.innerHTML = `<section class="panel empty-state">${svgIcon("alert")}<h2>Não foi possível carregar o snapshot.</h2><p>${esc(error.message)}. Tente novamente; se estiver offline, a versão instalada poderá usar o último cache válido.</p><button class="primary-button" type="button" id="retryLoad">Tentar novamente</button></section>`;
     $("#retryLoad")?.addEventListener("click", () => loadSnapshot(true));
     if (feedback) toast("Não foi possível atualizar agora.");
   } finally {
-    refresh?.classList.remove("spinning");
+    refreshButtons.forEach((button) => {
+      button.classList.remove("spinning");
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    });
+    if (refreshLabel) refreshLabel.textContent = "Atualizar dados";
   }
+}
+
+function toggleTheme() {
+  document.documentElement.classList.toggle("light");
+  const light = document.documentElement.classList.contains("light");
+  localStorage.setItem("plano.theme", light ? "light" : "dark");
+  $$('[data-toggle-theme] [data-icon], #themeBtn [data-icon]').forEach((icon) => icon.setAttribute("data-icon", light ? "moon" : "sun"));
+  hydrateIcons();
+  toast(light ? "Tema claro ativado." : "Tema escuro ativado.");
+}
+
+async function installApp() {
+  if (!state.deferredPrompt) {
+    toast("No Android, abra o menu do navegador e escolha “Instalar aplicativo”.");
+    return;
+  }
+  state.deferredPrompt.prompt();
+  await state.deferredPrompt.userChoice;
+  state.deferredPrompt = null;
+  $$('[data-install]').forEach((button) => button.classList.add("hidden"));
 }
 
 function registerPwa() {
@@ -649,11 +619,11 @@ function registerPwa() {
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     state.deferredPrompt = event;
-    $("#installBtn")?.classList.remove("hidden");
+    $$('[data-install]').forEach((button) => button.classList.remove("hidden"));
   });
   window.addEventListener("appinstalled", () => {
     state.deferredPrompt = null;
-    $("#installBtn")?.classList.add("hidden");
+    $$('[data-install]').forEach((button) => button.classList.add("hidden"));
     toast("Plano de Transição instalado.");
   });
 }
@@ -663,12 +633,14 @@ function bindShell() {
     const viewButton = event.target.closest("[data-view]");
     if (viewButton) {
       const scope = viewButton.dataset.performanceScopeJump;
-      const studyRoute = viewButton.dataset.studyJump;
-      navigate(viewButton.dataset.view, { scope, studyRoute });
+      navigate(viewButton.dataset.view, { scope });
       return;
     }
-    const studyButton = event.target.closest("[data-study-route]");
-    if (studyButton) { setStudyRoute(studyButton.dataset.studyRoute); return; }
+    const performanceSection = event.target.closest("[data-performance-section]");
+    if (performanceSection) {
+      document.getElementById(performanceSection.dataset.performanceSection)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     const scopeButton = event.target.closest("[data-performance-scope]");
     if (scopeButton) { state.performance.scope = scopeButton.dataset.performanceScope; state.performance.query = ""; render(); return; }
     const grainButton = event.target.closest("[data-performance-grain]");
@@ -689,33 +661,19 @@ function bindShell() {
     if (event.target.closest("[data-copy-strategy]")) { copyText([state.data.strategy.current, ...state.data.strategy.principles].join("\n• "), "Estratégia copiada."); return; }
     if (event.target.closest("[data-export-finance]")) { exportFinance(); return; }
     if (event.target.closest("[data-export-snapshot]")) { exportFile("snapshot-plano-de-transicao.json", JSON.stringify(state.data, null, 2)); toast("Snapshot exportado."); return; }
-    if (event.target.closest("[data-frame-reload]")) { const frame = $("#studyWorkspaceFrame"); if (frame) { $("#workspaceLoading")?.classList.remove("hidden"); frame.src = frame.src; } return; }
-    if (event.target.closest("[data-frame-fullscreen]")) { const workspace = $("#studyWorkspace"); if (!document.fullscreenElement) workspace?.requestFullscreen?.(); else document.exitFullscreen?.(); return; }
+    if (event.target.closest("[data-refresh]")) { loadSnapshot(true); return; }
+    if (event.target.closest("[data-toggle-theme]")) { toggleTheme(); return; }
+    if (event.target.closest("[data-install]")) { installApp(); return; }
     if (event.target === $("#commandPalette")) closeSearch();
   });
   $("#searchTrigger")?.addEventListener("click", openSearch);
   $("#searchInput")?.addEventListener("input", (event) => renderSearch(event.target.value));
-  $("#refreshBtn")?.addEventListener("click", () => loadSnapshot(true));
-  $("#themeBtn")?.addEventListener("click", () => {
-    document.documentElement.classList.toggle("light");
-    const light = document.documentElement.classList.contains("light");
-    localStorage.setItem("plano.theme", light ? "light" : "dark");
-    $("#themeBtn [data-icon]")?.setAttribute("data-icon", light ? "moon" : "sun");
-    hydrateIcons($("#themeBtn"));
-    try { $("#studyWorkspaceFrame")?.contentDocument?.documentElement?.setAttribute("data-theme", light ? "light" : "dark"); } catch {}
-  });
+  $("#themeBtn")?.addEventListener("click", toggleTheme);
   $("#moreTopBtn")?.addEventListener("click", openMoreSheet);
   $("#moreDockBtn")?.addEventListener("click", openMoreSheet);
   $("#closeMoreBtn")?.addEventListener("click", closeMoreSheet);
   $("#moreBackdrop")?.addEventListener("click", closeMoreSheet);
   $("#exportBtn")?.addEventListener("click", () => { if (state.data) { exportFile("snapshot-plano-de-transicao.json", JSON.stringify(state.data, null, 2)); toast("Snapshot exportado."); } });
-  $("#installBtn")?.addEventListener("click", async () => {
-    if (!state.deferredPrompt) { toast("No Android, abra o menu do navegador e escolha “Instalar aplicativo”."); return; }
-    state.deferredPrompt.prompt();
-    await state.deferredPrompt.userChoice;
-    state.deferredPrompt = null;
-    $("#installBtn")?.classList.add("hidden");
-  });
   window.addEventListener("popstate", () => { state.view = location.hash.slice(1) in viewRenderers ? location.hash.slice(1) : "command"; render(); });
   window.addEventListener("hashchange", () => { const view = location.hash.slice(1); if (viewRenderers[view] && view !== state.view) { state.view = view; render(); } });
   window.addEventListener("online", updateShell);
@@ -730,7 +688,7 @@ function init() {
   const savedTheme = localStorage.getItem("plano.theme");
   if (savedTheme === "light") document.documentElement.classList.add("light");
   const hash = location.hash.slice(1);
-  state.view = viewRenderers[hash] ? hash : hash === "tools" ? "study" : hash === "home" ? "command" : "command";
+  state.view = viewRenderers[hash] ? hash : hash === "tools" ? "operations" : hash === "home" ? "command" : "command";
   if (location.hash !== `#${state.view}`) history.replaceState(null, "", `#${state.view}`);
   bindShell();
   registerPwa();
