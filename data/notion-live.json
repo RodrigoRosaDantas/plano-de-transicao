@@ -1,17 +1,9 @@
 {
-  "generatedAt": "2026-09-01T05:11:43.989Z",
+  "generatedAt": "2026-09-01T06:30:31.764Z",
   "access": {
     "edasCases": {
       "ok": true,
       "rows": 12
-    },
-    "tdasEssays": {
-      "ok": true,
-      "rows": 33
-    },
-    "edasQuestions": {
-      "ok": true,
-      "rows": 45
     },
     "edasErrors": {
       "ok": true,
@@ -20,6 +12,14 @@
     "registry": {
       "ok": true,
       "rows": 29
+    },
+    "edasQuestions": {
+      "ok": true,
+      "rows": 45
+    },
+    "tdasEssays": {
+      "ok": true,
+      "rows": 33
     },
     "tdasQuestions": {
       "ok": true,
@@ -85,7 +85,7 @@
         "url": "https://app.notion.com/p/PLANO-DE-TRANSI-O-239cf5a2673180a1a2a2df40b502a899",
         "public_url": null,
         "archived": false,
-        "request_id": "8fcd2d49-d558-4d32-8fd5-41aeae15c98c"
+        "request_id": "2ae4a32b-ec04-432b-ac43-e5d0b29a6cb6"
       },
       "blocks": [
         {
@@ -2748,7 +2748,7 @@
         "url": "https://app.notion.com/p/01-Jornada-e-Marcos-3c8cf5a2673181adbbecc1f6d0080399",
         "public_url": null,
         "archived": false,
-        "request_id": "675cf6ef-4769-4cc7-a316-b4398e979398"
+        "request_id": "e97dd360-c803-47a9-855f-a0715e3a13ef"
       },
       "blocks": [
         {
@@ -7364,7 +7364,7 @@
         "url": "https://app.notion.com/p/02-Concursos-Provas-e-Resultados-3c8cf5a26731818a9571f28f56f13514",
         "public_url": null,
         "archived": false,
-        "request_id": "2005a2b5-58aa-46fc-a8bc-119912bf6b71"
+        "request_id": "4479c87e-1278-40d2-b91a-6dbe962122b4"
       },
       "blocks": [
         {
@@ -10315,7 +10315,7 @@
         "url": "https://app.notion.com/p/03-Desempenho-e-Hist-rico-de-Estudos-3c8cf5a2673181a38caef92b980ce85c",
         "public_url": null,
         "archived": false,
-        "request_id": "a7db6133-eb11-42e3-b3ab-49e5483cb7c9"
+        "request_id": "7d03b62d-472e-4bdf-ba59-874e1cb07ad1"
       },
       "blocks": [
         {
@@ -14010,7 +14010,7 @@
             "page_id": "3c8cf5a2-6731-81a3-8cae-f92b980ce85c"
           },
           "created_time": "2026-08-26T06:54:00.000Z",
-          "last_edited_time": "2026-09-01T04:41:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
           "created_by": {
             "object": "user",
             "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -14108,7 +14108,7 @@
         "url": "https://app.notion.com/p/04-Estrat-gia-de-Carreira-e-Pr-ximas-Etapas-3c8cf5a2673181e08ae8f9eff95df293",
         "public_url": null,
         "archived": false,
-        "request_id": "f575fcc8-1656-43bd-8ddd-e164d6f06565"
+        "request_id": "bb4e22ca-9c6e-446c-bc53-c116c0322e25"
       },
       "blocks": [
         {
@@ -25747,7 +25747,7 @@
         "object": "page",
         "id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f",
         "created_time": "2026-08-26T06:54:00.000Z",
-        "last_edited_time": "2026-09-01T04:41:00.000Z",
+        "last_edited_time": "2026-09-01T05:37:00.000Z",
         "created_by": {
           "object": "user",
           "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -25796,7 +25796,7 @@
         "url": "https://app.notion.com/p/03-1-Registro-Mestre-de-Fontes-e-Auditoria-3c8cf5a2673181f7bce8f6b75881c31f",
         "public_url": null,
         "archived": false,
-        "request_id": "302d3ea9-abca-4f31-a627-ee5fa2079361"
+        "request_id": "b6386d3b-f89d-40b7-9539-9e62be713e27"
       },
       "blocks": [
         {
@@ -39890,6 +39890,827 @@
             "color": "default"
           },
           "archived": false
+        },
+        {
+          "object": "block",
+          "id": "b06a9657-b351-4d1c-a413-c7d32cfef8b0",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T05:37:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "heading_2",
+          "heading_2": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Fonte histórica — Caldas Novas 2016 | prova real e homologação",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Fonte histórica — Caldas Novas 2016 | prova real e homologação",
+                "href": null
+              }
+            ],
+            "is_toggleable": false,
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "3b7144e2-538f-4967-a34f-c4cfb806642e",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T05:37:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Registro canônico:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Registro canônico:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " ",
+                "href": null
+              },
+              {
+                "type": "mention",
+                "mention": {
+                  "type": "page",
+                  "page": {
+                    "id": "3cccf5a2-6731-8167-81da-d52f4c2bf70b"
+                  }
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Caldas Novas 2016 — Agente de Vigilância — prova real",
+                "href": "https://app.notion.com/p/3cccf5a26731816781dad52f4c2bf70b"
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ".",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ".",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "998fad16-aed9-42cb-aa6e-5157ef98cd07",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T05:37:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Escopo:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Escopo:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " prova real — Prefeitura de Caldas Novas, Agente de Vigilância, Edital 001/2016; prova objetiva em ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " prova real — Prefeitura de Caldas Novas, Agente de Vigilância, Edital 001/2016; prova objetiva em ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "28/08/2016",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "28/08/2016",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ".",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ".",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "df7dbdd1-00cb-429f-aeb7-35788b15e1a4",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T05:37:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Evidência oficial preservada no Registro Histórico:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Evidência oficial preservada no Registro Histórico:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "22/30 (73,33%)",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "22/30 (73,33%)",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ", classificação ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ", classificação ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "171ª",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "171ª",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ", situação ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ", situação ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "Reserva Técnica",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Reserva Técnica",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "; a homologação retificada de ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "; a homologação retificada de ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "18/04/2017",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "18/04/2017",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " limitou o cadastro de reserva da ampla concorrência a 10 vezes as 19 vagas AC, formando lista AC homologada até a ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " limitou o cadastro de reserva da ampla concorrência a 10 vezes as 19 vagas AC, formando lista AC homologada até a ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "209ª posição",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "209ª posição",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ".",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ".",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "699883dc-6101-45c4-bf4d-62d606a55e28",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T05:37:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Regra de leitura:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Regra de leitura:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " o denominador ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " o denominador ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "209",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "209",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " pertence especificamente à homologação retificada e não deve ser tratado como total de inscritos. A relação oficial de ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " pertence especificamente à homologação retificada e não deve ser tratado como total de inscritos. A relação oficial de ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "32,53 candidatos/vaga",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "32,53 candidatos/vaga",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " também não autoriza inferir um total exato de inscrições, pois é uma razão divulgada e sujeita à ressalva da própria fonte.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " também não autoriza inferir um total exato de inscrições, pois é uma razão divulgada e sujeita à ressalva da própria fonte.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "0b1a8b17-1dd6-4fd6-8f0e-72cb06da9186",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T05:37:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Regra quantitativa:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Regra quantitativa:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " este registro é uma ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " este registro é uma ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "prova real",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "prova real",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " e permanece com ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " e permanece com ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "Conta no consolidado geral = não",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": true,
+                  "color": "default"
+                },
+                "plain_text": "Conta no consolidado geral = não",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "; seus 30 itens não devem ser somados aos bancos de treino. Os valores competitivos e de desempenho devem ser referenciados a partir do Registro Histórico, sem criar uma segunda fonte de verdade.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "; seus 30 itens não devem ser somados aos bancos de treino. Os valores competitivos e de desempenho devem ser referenciados a partir do Registro Histórico, sem criar uma segunda fonte de verdade.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "35c59d20-6c6f-4e8e-b4a3-3947bbe1be81",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T05:37:00.000Z",
+          "last_edited_time": "2026-09-01T05:37:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Rastreabilidade:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Rastreabilidade:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " fontes oficiais de resultado final, homologação retificada e concorrência permanecem armazenadas no próprio registro histórico. O ciclo financeiro foi encerrado como ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " fontes oficiais de resultado final, homologação retificada e concorrência permanecem armazenadas no próprio registro histórico. O ciclo financeiro foi encerrado como ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "Não auditável — histórico insuficiente",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Não auditável — histórico insuficiente",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ", sem conversão indevida para R$ 0,00.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ", sem conversão indevida para R$ 0,00.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
         }
       ]
     },
@@ -39947,7 +40768,7 @@
         "url": "https://app.notion.com/p/03-2-Consolidado-de-Bancos-de-Quest-es-3cacf5a26731818da9dacef6da38241f",
         "public_url": null,
         "archived": false,
-        "request_id": "bfb6e096-fc0e-4996-8708-01cefa66a759"
+        "request_id": "b019a878-5efa-46f3-b2bd-4c9a686ae1af"
       },
       "blocks": [
         {
@@ -41525,7 +42346,7 @@
     }
   },
   "enrichment": {
-    "generatedAt": "2026-09-01T05:11:45.074Z",
+    "generatedAt": "2026-09-01T06:30:32.836Z",
     "financeRows": 24,
     "registryRows": 29,
     "warnings": []
