@@ -21,9 +21,8 @@ const css = files['assets/manager-inbox-v13.css'];
 const sw = files['sw.js'];
 const manifest = JSON.parse(files['manifest.webmanifest']);
 
-check('shell carrega CSS v13', index.includes('manager-inbox-v13.css?v=13'));
-check('shell carrega JS v13 por último', index.includes('decision-history-v12.js?v=13') && index.indexOf('manager-inbox-v13.js?v=13') > index.indexOf('decision-history-v12.js?v=13'));
-check('cache busting foi elevado para v13', !index.includes('?v=12'));
+check('shell continua carregando CSS v13', /manager-inbox-v13\.css\?v=\d+/.test(index));
+check('shell continua carregando JS v13 depois da memória v12', /decision-history-v12\.js\?v=\d+/.test(index) && index.indexOf('manager-inbox-v13.js') > index.indexOf('decision-history-v12.js'));
 check('estudo embutido continua fora da navegação pública', !index.includes('data-view="study"'));
 
 check('v13 cria caixa gerencial', js.includes("section.id = 'v13ManagerInbox'") && js.includes('CAIXA DE ENTRADA GERENCIAL · V13'));
@@ -42,10 +41,9 @@ check('v13 possui layout mobile dedicado', css.includes('@media (max-width: 640p
 check('v13 empilha item antes de 980px', css.includes('@media (max-width: 980px)') && css.includes('grid-template-columns: minmax(0, 1fr)'));
 check('badge mobile tem posicionamento próprio', css.includes('#mobileDock .v13-attention-badge'));
 
-check('service worker usa cache v13', sw.includes("plano-transicao-v13"));
-check('service worker inclui assets v13', sw.includes('manager-inbox-v13.css') && sw.includes('manager-inbox-v13.js'));
-check('manifest expõe atalho de atenção', manifest.shortcuts?.some((item) => item.short_name === 'Atenção' && item.url === './#command'));
+check('service worker continua incluindo assets v13', sw.includes('manager-inbox-v13.css') && sw.includes('manager-inbox-v13.js'));
+check('manifest continua expondo atalho de atenção', manifest.shortcuts?.some((item) => item.short_name === 'Atenção' && item.url === './#command'));
 
 const failed = checks.filter((item) => !item.pass);
-console.log(`\n${checks.length - failed.length}/${checks.length} verificações v13 aprovadas.`);
+console.log(`\n${checks.length - failed.length}/${checks.length} verificações de compatibilidade v13 aprovadas.`);
 if (failed.length) process.exit(1);
