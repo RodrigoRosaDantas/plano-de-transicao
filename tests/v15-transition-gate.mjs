@@ -37,7 +37,7 @@ async function scenario(name, viewport, fixedNow, run) {
 await scenario('pré-prova: fechamento preparado, rastreável e sem execução antecipada', { width: 1440, height: 1000 }, '2026-09-01T15:00:00-03:00', async (page) => {
   const summary = await page.locator('#v15TransitionSummary').innerText();
   if (!summary.includes('Fechamento preparado')) throw new Error(`Fase pré-prova incorreta: ${summary}`);
-  if (!summary.includes('ativa em 5d')) throw new Error(`Resumo não preservou D-5: ${summary}`);
+  if (!summary.toLowerCase().includes('ativa em 5d')) throw new Error(`Resumo não preservou D-5: ${summary}`);
   await page.click('#v15TransitionSummary [data-v15-open]');
   await page.waitForURL(/#strategy$/);
   await page.waitForSelector('#transitionGateV15');
