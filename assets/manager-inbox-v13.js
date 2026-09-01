@@ -407,6 +407,13 @@ async function renderInbox() {
     <div class="v13-inbox-foot"><strong>Fila dinâmica</strong><span>Itens somem quando a condição deixa de existir. Adiar e silenciar são estados locais e não alteram Notion, decisões ou snapshot.</span></div>`;
 }
 
+function removeItemImmediately(id) {
+  const card = $(`#v13ManagerInbox [data-v13-item-id="${CSS.escape(id)}"]`);
+  if (!card) return;
+  card.setAttribute('aria-hidden', 'true');
+  card.remove();
+}
+
 function setItemState(id, kind) {
   const state = readInboxState();
   if (kind === 'snooze') {
@@ -417,6 +424,7 @@ function setItemState(id, kind) {
     delete state.snoozed[id];
   }
   writeInboxState(state);
+  removeItemImmediately(id);
   scheduleRender();
 }
 
@@ -479,7 +487,8 @@ function renderOpsSummary(items) {
     anchor.after(section);
   }
   const signature = `${urgent}:${hidden}`;
-  if (section.dataset.signature === signature) return;
+  const complete = Boolean($('#v13OpenInbox', section) && $('#v13RestoreInbox', section));
+  if (section.dataset.signature === signature && complete) return;
   section.dataset.signature = signature;
   section.innerHTML = `
     <div class="sheet-section-label">Caixa de entrada gerencial</div>
