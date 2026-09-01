@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-09-01T01:14:34.608Z",
+  "generatedAt": "2026-09-01T02:09:54.653Z",
   "access": {
-    "tdasEssays": {
-      "ok": true,
-      "rows": 33
-    },
     "edasCases": {
       "ok": true,
       "rows": 12
     },
-    "edasErrors": {
+    "registry": {
       "ok": true,
-      "rows": 31
+      "rows": 29
+    },
+    "tdasEssays": {
+      "ok": true,
+      "rows": 33
     },
     "edasQuestions": {
       "ok": true,
@@ -21,13 +21,13 @@
       "ok": true,
       "rows": 114
     },
-    "registry": {
-      "ok": true,
-      "rows": 29
-    },
     "tdasErrors": {
       "ok": true,
       "rows": 288
+    },
+    "edasErrors": {
+      "ok": true,
+      "rows": 31
     }
   },
   "pages": {
@@ -85,7 +85,7 @@
         "url": "https://app.notion.com/p/PLANO-DE-TRANSI-O-239cf5a2673180a1a2a2df40b502a899",
         "public_url": null,
         "archived": false,
-        "request_id": "0e7861f3-4ad6-48cf-b0b2-fac6535a05d7"
+        "request_id": "fc8cfbf4-f387-442b-a00f-21ca43e2b4f8"
       },
       "blocks": [
         {
@@ -2748,7 +2748,7 @@
         "url": "https://app.notion.com/p/01-Jornada-e-Marcos-3c8cf5a2673181adbbecc1f6d0080399",
         "public_url": null,
         "archived": false,
-        "request_id": "89bedbb4-7a96-4dbd-9c49-6b684df393f5"
+        "request_id": "78e8c9ac-1710-420b-b710-b0b1d3618280"
       },
       "blocks": [
         {
@@ -7364,7 +7364,7 @@
         "url": "https://app.notion.com/p/02-Concursos-Provas-e-Resultados-3c8cf5a26731818a9571f28f56f13514",
         "public_url": null,
         "archived": false,
-        "request_id": "8c96390d-8b8b-49cc-b43c-5f7a70f3e91c"
+        "request_id": "15272ed4-0199-4e56-9578-98c09bc028a3"
       },
       "blocks": [
         {
@@ -10315,7 +10315,7 @@
         "url": "https://app.notion.com/p/03-Desempenho-e-Hist-rico-de-Estudos-3c8cf5a2673181a38caef92b980ce85c",
         "public_url": null,
         "archived": false,
-        "request_id": "29b5a5dd-518a-4617-af3f-4d989afc967a"
+        "request_id": "3f655782-884a-46e8-9444-d1bad5a067e3"
       },
       "blocks": [
         {
@@ -14010,7 +14010,7 @@
             "page_id": "3c8cf5a2-6731-81a3-8cae-f92b980ce85c"
           },
           "created_time": "2026-08-26T06:54:00.000Z",
-          "last_edited_time": "2026-08-31T16:44:00.000Z",
+          "last_edited_time": "2026-09-01T01:36:00.000Z",
           "created_by": {
             "object": "user",
             "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -14108,7 +14108,7 @@
         "url": "https://app.notion.com/p/04-Estrat-gia-de-Carreira-e-Pr-ximas-Etapas-3c8cf5a2673181e08ae8f9eff95df293",
         "public_url": null,
         "archived": false,
-        "request_id": "d41a294c-2d9f-4ed8-81ab-a84ac79b2739"
+        "request_id": "22be3c64-473d-46e0-8712-e4ecb772b7a2"
       },
       "blocks": [
         {
@@ -25747,7 +25747,7 @@
         "object": "page",
         "id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f",
         "created_time": "2026-08-26T06:54:00.000Z",
-        "last_edited_time": "2026-08-31T16:44:00.000Z",
+        "last_edited_time": "2026-09-01T01:36:00.000Z",
         "created_by": {
           "object": "user",
           "id": "21bd872b-594c-813b-b478-00023bf1777d"
@@ -25796,7 +25796,7 @@
         "url": "https://app.notion.com/p/03-1-Registro-Mestre-de-Fontes-e-Auditoria-3c8cf5a2673181f7bce8f6b75881c31f",
         "public_url": null,
         "archived": false,
-        "request_id": "d26a5f9c-244f-4453-9943-a57886232373"
+        "request_id": "d2a7b484-d5a6-44c0-a59d-5f3cf0eedfc1"
       },
       "blocks": [
         {
@@ -38478,6 +38478,586 @@
             "color": "default"
           },
           "archived": false
+        },
+        {
+          "object": "block",
+          "id": "f266adb2-2649-4514-a548-0fa533127d3a",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T01:36:00.000Z",
+          "last_edited_time": "2026-09-01T01:36:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "heading_3",
+          "heading_3": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "✍️ Fonte histórica — Plano Paralelo de Redação SEDES/DF (14/04/2026–13/06/2026)",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "✍️ Fonte histórica — Plano Paralelo de Redação SEDES/DF (14/04/2026–13/06/2026)",
+                "href": null
+              }
+            ],
+            "is_toggleable": false,
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "68ddee70-a442-499e-93ae-d1dde45d8dd5",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T01:36:00.000Z",
+          "last_edited_time": "2026-09-01T01:36:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "SEDES/DF — Plano Paralelo de Redação (Técnico Administrativo) | Dashboard PRO",
+                  "link": {
+                    "url": "https://app.notion.com/p/33dcf5a2673180f89b23cf19707af099"
+                  }
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "SEDES/DF — Plano Paralelo de Redação (Técnico Administrativo) | Dashboard PRO",
+                "href": "https://app.notion.com/p/33dcf5a2673180f89b23cf19707af099"
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " — ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " — ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "fonte histórica de planejamento discursivo",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "fonte histórica de planejamento discursivo",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ", paralela ao plano principal. Documenta ciclo nominal de ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ", paralela ao plano principal. Documenta ciclo nominal de ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "9 semanas",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "9 semanas",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ", com frequência prevista de ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ", com frequência prevista de ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "2 treinos por semana (terça + sábado)",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "2 treinos por semana (terça + sábado)",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " e 18 registros individualizados, ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " e 18 registros individualizados, ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "R01–R18",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "R01–R18",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ".",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ".",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "f5098942-8fb6-44a9-9026-58806ca28f71",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T01:36:00.000Z",
+          "last_edited_time": "2026-09-01T01:36:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "A progressão planejada parte de estrutura/tese e introdução, passa por desenvolvimento, conclusão e conectores, e avança para redações completas, diagnóstico de vícios, repertório social, serviço público/políticas sociais, planejamento rápido, treino cronometrado, reescrita e fechamento.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "A progressão planejada parte de estrutura/tese e introdução, passa por desenvolvimento, conclusão e conectores, e avança para redações completas, diagnóstico de vícios, repertório social, serviço público/políticas sociais, planejamento rápido, treino cronometrado, reescrita e fechamento.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "3895383c-9be2-49a0-9eea-2cde50831699",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T01:36:00.000Z",
+          "last_edited_time": "2026-09-01T01:36:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "A própria fonte previa ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "A própria fonte previa ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "18 produções",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "18 produções",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ", ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ", ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "6 redações completas",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "6 redações completas",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " e ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " e ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "6–8 reescritas",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "6–8 reescritas",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": ", porém todos os registros ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": ", porém todos os registros ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "R01–R18 permanecem com status ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "R01–R18 permanecem com status ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "Não iniciado",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": true,
+                  "color": "default"
+                },
+                "plain_text": "Não iniciado",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " e o Caderno de Erros CE-001–CE-005 não contém execução registrada. Portanto, a fonte ",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " e o Caderno de Erros CE-001–CE-005 não contém execução registrada. Portanto, a fonte ",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": "não comprova produção discursiva realizada nem desempenho",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "não comprova produção discursiva realizada nem desempenho",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " e não deve alimentar quantitativos de redação no consolidado.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " e não deve alimentar quantitativos de redação no consolidado.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
+        },
+        {
+          "object": "block",
+          "id": "09c63f84-740a-41f0-b090-8b1fcbf9404d",
+          "parent": {
+            "type": "page_id",
+            "page_id": "3c8cf5a2-6731-81f7-bce8-f6b75881c31f"
+          },
+          "created_time": "2026-09-01T01:36:00.000Z",
+          "last_edited_time": "2026-09-01T01:36:00.000Z",
+          "created_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "last_edited_by": {
+            "object": "user",
+            "id": "21bd872b-594c-813b-b478-00023bf1777d"
+          },
+          "has_children": false,
+          "in_trash": false,
+          "type": "bulleted_list_item",
+          "bulleted_list_item": {
+            "rich_text": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Regra de reconciliação:",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": true,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": "Regra de reconciliação:",
+                "href": null
+              },
+              {
+                "type": "text",
+                "text": {
+                  "content": " preservar esta página como evidência de desenho metodológico e intenção de treino. Só migrar produção, correção ou desempenho para o Registro Histórico se houver outra evidência confiável de execução; não inferir realização a partir das datas planejadas.",
+                  "link": null
+                },
+                "annotations": {
+                  "bold": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false,
+                  "code": false,
+                  "color": "default"
+                },
+                "plain_text": " preservar esta página como evidência de desenho metodológico e intenção de treino. Só migrar produção, correção ou desempenho para o Registro Histórico se houver outra evidência confiável de execução; não inferir realização a partir das datas planejadas.",
+                "href": null
+              }
+            ],
+            "color": "default"
+          },
+          "archived": false
         }
       ]
     },
@@ -38535,7 +39115,7 @@
         "url": "https://app.notion.com/p/03-2-Consolidado-de-Bancos-de-Quest-es-3cacf5a26731818da9dacef6da38241f",
         "public_url": null,
         "archived": false,
-        "request_id": "77136311-6495-4eb6-b034-e32ec56ba6ad"
+        "request_id": "52e96eef-6226-4f00-8bb0-d8e52d571f2e"
       },
       "blocks": [
         {
@@ -40113,7 +40693,7 @@
     }
   },
   "enrichment": {
-    "generatedAt": "2026-09-01T01:14:35.539Z",
+    "generatedAt": "2026-09-01T02:09:55.758Z",
     "financeRows": 24,
     "registryRows": 29,
     "warnings": []
