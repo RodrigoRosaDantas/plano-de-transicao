@@ -74,8 +74,9 @@ await run('desktop: Agora, decisões, histórico, contexto e operações', { wid
   if (!adoptedText.toLocaleLowerCase('pt-BR').includes('adotada')) throw new Error(`Centro de decisões não refletiu o estado adotado: ${adoptedText}`);
   await page.waitForSelector(`#v12DecisionHistory [data-v12-impact-id="${decisionId}"]`);
   const impactText = await page.locator(`#v12DecisionHistory [data-v12-impact-id="${decisionId}"]`).innerText();
-  if (!impactText.includes('Na decisão') || !impactText.includes('Agora')) throw new Error(`Comparação pós-decisão não foi montada: ${impactText}`);
-  if (!impactText.toLocaleLowerCase('pt-BR').includes('causalidade')) throw new Error('Guardrail de causalidade sumiu do impacto posterior.');
+  const impactTextNormalized = impactText.toLocaleLowerCase('pt-BR');
+  if (!impactTextNormalized.includes('na decisão') || !impactTextNormalized.includes('agora')) throw new Error(`Comparação pós-decisão não foi montada: ${impactText}`);
+  if (!impactTextNormalized.includes('causalidade')) throw new Error('Guardrail de causalidade sumiu do impacto posterior.');
 
   await page.locator(`#v12DecisionHistory [data-v12-impact-id="${decisionId}"] [data-v12-open-drawer]`).click();
   await page.waitForSelector('#v12DecisionDrawer:not(.hidden)');
