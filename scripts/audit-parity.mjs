@@ -13,6 +13,8 @@ const intelligence = await read('assets/work-intelligence-v10.js');
 const intelligenceStyles = await read('assets/work-intelligence-v10.css');
 const decisions = await read('assets/work-decisions-v11.js');
 const decisionStyles = await read('assets/work-decisions-v11.css');
+const history = await read('assets/decision-history-v12.js');
+const historyStyles = await read('assets/decision-history-v12.css');
 const treated = await import(new URL('../data/treated-performance-data.js', import.meta.url));
 
 const results = [];
@@ -51,16 +53,17 @@ check('Atividades tratadas são matematicamente válidas', treated.treatedActivi
 check('Tratamento preserva os três escopos', ['historical','tdas','edas'].every(scope=>treated.treatedTopicalSeed.some(x=>x.scope===scope)));
 check('Tratamento separa matérias, combinações e atividades', ['subject','combination','activity'].every(grain=>treated.treatedTopicalSeed.some(x=>x.grain===grain)));
 
-for (const asset of ['assets/work-app.css','assets/work-app.js','assets/work-manager-v9.css','assets/work-manager-v9.js','assets/work-intelligence-v10.css','assets/work-intelligence-v10.js','assets/work-decisions-v11.css','assets/work-decisions-v11.js','assets/og.png','data/snapshot.json','data/treated-performance-data.js','manifest.webmanifest']) {
+for (const asset of ['assets/work-app.css','assets/work-app.js','assets/work-manager-v9.css','assets/work-manager-v9.js','assets/work-intelligence-v10.css','assets/work-intelligence-v10.js','assets/work-decisions-v11.css','assets/work-decisions-v11.js','assets/work-decisions-v11-fix.js','assets/decision-history-v12.css','assets/decision-history-v12.js','assets/og.png','data/snapshot.json','data/treated-performance-data.js','manifest.webmanifest']) {
   check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
 }
-check('Cache PWA está na versão v11', sw.includes("plano-transicao-v11"));
+check('Cache PWA está na versão v12', sw.includes("plano-transicao-v12"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Aplicação-base está ligada no HTML', index.includes('assets/work-app.js'));
 check('Tema visual-base está ligado no HTML', index.includes('assets/work-app.css'));
 check('Camada gerencial está ligada no HTML', index.includes('assets/work-manager-v9.js') && index.includes('assets/work-manager-v9.css'));
 check('Camada inteligente v10 está ligada no HTML', index.includes('assets/work-intelligence-v10.js') && index.includes('assets/work-intelligence-v10.css'));
 check('Camada de decisões v11 está ligada no HTML', index.includes('assets/work-decisions-v11.js') && index.includes('assets/work-decisions-v11.css'));
+check('Camada de memória v12 está ligada no HTML', index.includes('assets/decision-history-v12.js') && index.includes('assets/decision-history-v12.css'));
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
 
 check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
@@ -80,6 +83,19 @@ check('v11 possui alertas com origem rastreável', decisions.includes('ALERTAS R
 check('v11 possui horizonte Hoje/48h/próximo marco', decisions.includes('HORIZONTE OPERACIONAL') && decisions.includes('PRÓXIMAS 48H'));
 check('v11 exporta decisões sem alterar fonte oficial', decisions.includes('Exportar decisões') && decisions.includes('storage: \'localStorage\''));
 check('v11 não cria probabilidade de aprovação', !decisions.toLowerCase().includes('probabilidade de aprovação'));
+
+check('v12 adiciona Histórico à navegação da Home', history.includes("button.textContent = 'Histórico'") && history.includes("'#v12DecisionHistory'"));
+check('v12 possui memória decisória local', history.includes('plano.decisionJournal.v12') && history.includes('MEMÓRIA DECISÓRIA · V12'));
+check('v12 registra transições sem alterar o estado oficial', history.includes('decision-interaction') && history.includes('imported-v11-state') && history.includes('sourceSeparation'));
+check('v12 cria baseline ao adotar decisão', history.includes("status === 'adopted' ? await metricForDecision(id) : null") && history.includes('baselineQuality'));
+check('v12 compara aproveitamento em pontos percentuais', history.includes("baseline.kind === 'accuracy'") && history.includes("p.p."));
+check('v12 explicita que comparação não prova causalidade', history.includes('não demonstra causalidade') && history.includes('Comparação não é causalidade'));
+check('v12 permite notas locais por decisão', history.includes('v12DecisionNote') && history.includes('journal.notes'));
+check('v12 permite revisão em 24h e 72h', history.includes('data-v12-review-hours="24"') && history.includes('data-v12-review-hours="72"'));
+check('v12 exporta dossiê completo local', history.includes('Exportar dossiê') && history.includes('currentDecisionState') && history.includes('journal: readJournal()'));
+check('v12 mantém limite de histórico para evitar crescimento infinito', history.includes('journal.events.length > 250'));
+check('v12 não inventa causalidade ou aprovação', !history.toLowerCase().includes('probabilidade de aprovação') && !history.toLowerCase().includes('causou melhora'));
+
 check('Desempenho mantém Visão geral e Por matéria', manager.includes('data-manager-performance="overview"') && manager.includes('data-manager-performance="subjects"'));
 check('Desempenho v10 adiciona Diagnóstico e Prioridades', intelligence.includes('data-v10-performance="diagnostic"') && intelligence.includes('data-v10-performance="priorities"'));
 check('Ranking de prioridade usa apenas evidência observada', intelligence.includes('const priority =') && intelligence.includes('row.questions') && intelligence.includes('row.correct'));
@@ -96,9 +112,12 @@ check('Camada v9 trata Android e telas estreitas', managerStyles.includes('@medi
 check('v10 converte tabela de matéria em cards no mobile', intelligenceStyles.includes('.subject-table thead { display: none; }') && intelligenceStyles.includes('.subject-table tr { display: grid'));
 check('v10 mantém prevenção explícita de overflow', intelligenceStyles.includes('overflow-x: auto') && intelligenceStyles.includes('minmax(0, 1fr)'));
 check('v11 é responsivo e não replica tabela desktop', decisionStyles.includes('@media (max-width: 760px)') && decisionStyles.includes('.v11-decision-grid { grid-template-columns: 1fr; }'));
+check('v12 empilha impacto e timeline no mobile', historyStyles.includes('@media (max-width: 760px)') && historyStyles.includes('.v12-impact-grid { grid-template-columns: 1fr; }') && historyStyles.includes('.v12-event { grid-template-columns: 10px minmax(0, 1fr); }'));
+check('v12 drawer móvel não provoca largura fixa', historyStyles.includes('width: calc(100% - 12px)') && historyStyles.includes('max-height: min(82vh, 720px)'));
 check('Mais possui navegação, sincronização e ecossistema', index.includes('Dados e sincronização') && index.includes('Ecossistema') && index.includes('Sincronizar no GitHub'));
 check('Mais v10 possui saúde, cache e recarga sem apagar progresso', intelligence.includes('managerHealthGrid') && intelligence.includes('managerClearCacheBtn') && intelligence.includes('não apaga progresso de questões'));
 check('Mais v11 expõe estado e exportação de decisões locais', decisions.includes('v11DecisionHealth') && decisions.includes('v11ExportDecisions'));
+check('Mais v12 expõe histórico e dossiê', history.includes('v12DecisionJournalOps') && history.includes('v12ExportDossier'));
 
 const shortcutUrls = new Set((manifest.shortcuts || []).map(x=>x.url));
 check('PWA usa modo standalone', manifest.display === 'standalone');
