@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-02T16:36:02.478Z",
+    "generatedAt": "2026-09-02T21:04:46.616Z",
     "homeSnapshot": "2026-08-31",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,7 +8,7 @@
     "nextExam": "2026-09-06T08:00:00-03:00",
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-02T16:36:03.467Z",
+    "workParityEnrichedAt": "2026-09-02T21:04:47.956Z",
     "dataWarnings": []
   },
   "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
@@ -46,7 +46,7 @@
       "hits": 122,
       "errors": 23,
       "accuracy": 84.14,
-      "errorNotebook": 31,
+      "errorNotebook": 48,
       "caseStudies": 12
     },
     "history": {
@@ -227,7 +227,7 @@
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
-      "lastEditedAt": "2026-09-02T10:38:00.000Z",
+      "lastEditedAt": "2026-09-02T20:40:00.000Z",
       "status": "treated-live"
     },
     "postExamGates": [
