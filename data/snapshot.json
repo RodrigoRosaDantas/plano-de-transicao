@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-03T16:26:59.061Z",
+    "generatedAt": "2026-09-03T21:03:37.876Z",
     "homeSnapshot": "2026-08-31",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,7 +8,7 @@
     "nextExam": "2026-09-06T08:00:00-03:00",
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-03T16:27:00.436Z",
+    "workParityEnrichedAt": "2026-09-03T21:03:39.245Z",
     "dataWarnings": []
   },
   "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
@@ -30,13 +30,13 @@
   ],
   "metrics": {
     "tdas": {
-      "questions": 3319,
-      "hits": 3055,
-      "errors": 264,
-      "accuracy": 92.05,
-      "stepsDone": 100,
+      "questions": 3439,
+      "hits": 3157,
+      "errors": 282,
+      "accuracy": 91.8,
+      "stepsDone": 102,
       "stepsTotal": 112,
-      "errorNotebook": 288,
+      "errorNotebook": 306,
       "essays": 33,
       "essaysGraded": 13,
       "simulations": 7
@@ -50,11 +50,11 @@
       "caseStudies": 12
     },
     "history": {
-      "questions": 15329,
-      "hits": 13976,
-      "errors": 1353,
-      "accuracy": 91.17,
-      "rawRecords": 15419,
+      "questions": 15449,
+      "hits": 14078,
+      "errors": 1371,
+      "accuracy": 91.13,
+      "rawRecords": 15539,
       "withoutResult": 90
     },
     "finance": {
@@ -132,10 +132,10 @@
     },
     {
       "name": "SEDES — TDAS Pós-edital",
-      "questions": 3319,
-      "hits": 3055,
-      "errors": 264,
-      "accuracy": 92.05,
+      "questions": 3439,
+      "hits": 3157,
+      "errors": 282,
+      "accuracy": 91.8,
       "date": "2026-08-27"
     },
     {
@@ -227,7 +227,7 @@
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
-      "lastEditedAt": "2026-09-03T13:41:00.000Z",
+      "lastEditedAt": "2026-09-03T16:40:00.000Z",
       "status": "treated-live"
     },
     "postExamGates": [
