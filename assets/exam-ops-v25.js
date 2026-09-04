@@ -215,7 +215,9 @@ function initExamOpsV25() {
   const content = document.getElementById('content');
   if (content) {
     v25Observer = new MutationObserver(() => queueMicrotask(v25Sync));
-    v25Observer.observe(content, { childList: true, subtree: true });
+    // O app troca a view como filho direto de #content. Não observar subtree evita que o relógio/contagem
+    // (que atualizam textContent a cada segundo) retroalimentem o MutationObserver.
+    v25Observer.observe(content, { childList: true, subtree: false });
   }
   document.addEventListener('click', event => {
     if (event.target.closest('[data-v25-open-exam]')) v25OpenExam();
