@@ -20,8 +20,8 @@ const check = (name, condition) => {
 };
 
 check('shell carrega CSS v15', index.includes('assets/transition-gate-v15.css?v=15'));
-check('shell carrega JS v15 por último', index.includes('assets/transition-gate-v15.js?v=15') && index.indexOf('transition-gate-v15.js?v=15') > index.indexOf('home-focus-v14.js?v=15'));
-check('cache busting global foi elevado para v15', !index.includes('?v=14') && index.includes('?v=15'));
+check('shell carrega JS v15 após v14', index.includes('assets/transition-gate-v15.js?v=15') && index.indexOf('transition-gate-v15.js?v=15') > index.indexOf('home-focus-v14.js?v=15'));
+check('cache busting da interface-base permanece em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('estudo continua fora da navegação', !index.includes('data-view="study"'));
 
 check('snapshot possui ao menos cinco gates', snapshot.strategy?.postExamGates?.length >= 5);
@@ -44,7 +44,7 @@ check('v15 inclui etapas na busca global', app.includes('transitionGates') && ap
 
 check('CSS v15 é responsivo até 390px', css.includes('@media (max-width: 980px)') && css.includes('@media (max-width: 390px)'));
 check('CSS v15 evita largura fixa problemática', !css.includes('width: 1000px') && !css.includes('min-width: 1000px'));
-check('service worker usa cache v15', sw.includes("const CACHE='plano-transicao-v15'"));
+check('service worker está no cache atual v19', sw.includes("const CACHE='plano-transicao-v19'"));
 check('service worker inclui os dois assets v15', sw.includes('transition-gate-v15.css') && sw.includes('transition-gate-v15.js'));
 check('workflow executa auditoria e teste v15', workflow.includes('node scripts/audit-v15.mjs') && workflow.includes('node tests/v15-transition-gate.mjs'));
 
