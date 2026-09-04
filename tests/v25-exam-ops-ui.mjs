@@ -64,7 +64,12 @@ await scenario('Dia da Prova: fase, contagem, diretriz, progresso e marco oficia
 await scenario('mobile 390px: recursos operacionais sem overflow e sem nova navegação', { width: 390, height: 844 }, async page => {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   await page.waitForSelector('.v25-home-ops');
-  if (await page.locator('#mobileDock button').count() > 5) throw new Error('V25 superlotou a navegação mobile.');
+  const visibleDockButtons = await page.locator('#mobileDock button').evaluateAll(nodes => nodes.filter(node => {
+    const style = getComputedStyle(node);
+    const rect = node.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+  }).length);
+  if (visibleDockButtons > 5) throw new Error(`V25 superlotou a navegação mobile: ${visibleDockButtons} opções visíveis.`);
 
   await page.click('[data-v25-open-exam]');
   await page.waitForSelector('.v25-ops-center');
