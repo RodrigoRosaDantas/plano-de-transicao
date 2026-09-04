@@ -1,0 +1,335 @@
+/* Workspace v23 — redesign estrutural global. Mantém dados e lógica; muda linguagem visual. */
+:root{
+  --ink:#0d100f;
+  --ink-soft:#111513;
+  --surface:#151917;
+  --surface-2:#1a1f1c;
+  --paper:#f2f0e8;
+  --muted:#9aa39e;
+  --muted-2:#737d77;
+  --lime:#d2fa73;
+  --aqua:#72d5cf;
+  --amber:#eeb26a;
+  --coral:#ef745e;
+  --violet:#a99af2;
+  --border:rgba(242,240,232,.10);
+  --border-soft:rgba(242,240,232,.055);
+  --shadow:none;
+  --radius:20px;
+  --radius-sm:12px;
+  --page:min(1480px,calc(100% - 56px));
+}
+html.light{
+  --ink:#f4f3ed;
+  --ink-soft:#eceee8;
+  --surface:#fffef9;
+  --surface-2:#f4f5ef;
+  --paper:#17201b;
+  --muted:#68736d;
+  --muted-2:#828b86;
+  --lime:#5f841b;
+  --aqua:#187d78;
+  --amber:#ad681d;
+  --coral:#c9503e;
+  --violet:#6758c8;
+  --border:rgba(23,32,27,.11);
+  --border-soft:rgba(23,32,27,.06);
+}
+body{
+  background:
+    radial-gradient(circle at 90% -12%,color-mix(in srgb,var(--lime) 5%,transparent),transparent 34rem),
+    radial-gradient(circle at 28% -10%,color-mix(in srgb,var(--aqua) 4%,transparent),transparent 30rem),
+    var(--ink);
+}
+
+/* Top utility bar */
+.topbar{
+  min-height:68px;
+  padding:10px 22px;
+  border-bottom:1px solid var(--border-soft);
+  background:color-mix(in srgb,var(--ink) 94%,transparent);
+  backdrop-filter:blur(24px) saturate(120%);
+}
+.brand{gap:10px}
+.brand-mark{
+  width:38px;height:38px;border-radius:11px;
+  background:var(--lime);transform:none;
+  box-shadow:none;
+}
+.brand-mark svg{width:19px;height:19px}
+.brand-copy small{margin-bottom:3px;font-size:.55rem;letter-spacing:.12em}
+.brand-copy strong{font-size:.88rem}
+.sync-state{gap:8px}
+.status-orb{width:24px;height:24px;border-color:var(--border);background:transparent}
+.status-orb i{width:6px;height:6px;box-shadow:none}
+.sync-state strong{font-size:.66rem}
+.sync-state small{font-size:.57rem}
+.topbar-actions{gap:7px}
+.icon-button,.control-button{
+  min-height:38px;border-color:var(--border-soft);background:transparent;
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.icon-button{width:38px;border-radius:10px}
+.search-button{min-width:172px;border-radius:10px;background:color-mix(in srgb,var(--surface) 60%,transparent)}
+.refresh-button{min-width:148px;border-radius:10px;border-color:color-mix(in srgb,var(--lime) 18%,var(--border));background:color-mix(in srgb,var(--lime) 5%,transparent)}
+.refresh-button b{font-size:.62rem}.refresh-button small{font-size:.48rem}
+
+/* Desktop = workspace com rail lateral, usando a navegação existente. */
+@media(min-width:1180px){
+  .page-wrap{
+    width:auto;max-width:1540px;margin:0 0 0 224px;
+    padding:0 38px 92px;
+  }
+  .tab-rail{
+    position:fixed;z-index:44;top:68px;bottom:0;left:0;
+    width:224px;height:auto;margin:0;padding:24px 14px 18px;
+    overflow-x:hidden;overflow-y:auto;
+    border-right:1px solid var(--border-soft);
+    background:color-mix(in srgb,var(--ink-soft) 96%,transparent);
+    backdrop-filter:blur(22px);
+  }
+  .tab-rail::before{
+    display:block;margin:0 10px 12px;color:var(--muted-2);
+    font-size:.52rem;font-weight:850;letter-spacing:.14em;content:"WORKSPACE";
+  }
+  .main-tabs{
+    display:flex;width:100%;min-width:0;flex-direction:column;gap:4px;padding:0;
+  }
+  .main-tabs button{
+    width:100%;min-height:42px;justify-content:flex-start;gap:10px;
+    padding:0 12px;border-radius:10px;color:var(--muted);
+  }
+  .main-tabs button b{font-size:.68rem;font-weight:730}
+  .main-tabs button svg{width:16px;height:16px}
+  .main-tabs button:hover{background:color-mix(in srgb,var(--paper) 3%,transparent);color:var(--paper)}
+  .main-tabs button.active,
+  .main-tabs [data-exam-day-tab].active{
+    border-color:transparent!important;
+    background:color-mix(in srgb,var(--paper) 6%,transparent)!important;
+    color:var(--paper)!important;
+    box-shadow:inset 2px 0 0 var(--lime);
+  }
+  .main-tabs button.active svg,.main-tabs [data-exam-day-tab].active svg{color:var(--lime)}
+  .mission-strip{padding-top:34px}
+  .more-sheet{
+    top:0!important;right:0!important;bottom:0!important;left:auto!important;
+    width:min(460px,92vw)!important;max-height:none!important;height:100dvh!important;
+    padding:24px 22px 30px!important;border-radius:0!important;
+    border-left:1px solid var(--border)!important;
+    transform:translateX(105%)!important;
+  }
+  .more-sheet.open{transform:translateX(0)!important}
+  .sheet-handle{display:none!important}
+}
+
+/* Missão: editorial, não cartão. Só aparece na Home. */
+body:not(.v23-view-command) .mission-strip{display:none!important}
+.mission-strip{
+  grid-template-columns:minmax(0,1fr) 150px;gap:30px;
+  padding:34px 0 28px;border-bottom:1px solid var(--border-soft);
+}
+.eyebrow,.section-kicker{font-size:.56rem;letter-spacing:.14em}
+.mission-strip h1{
+  max-width:820px;margin-top:12px;
+  font-size:clamp(2.45rem,4vw,3.85rem);line-height:.97;letter-spacing:-.06em;
+}
+.mission-strip h1 em{color:color-mix(in srgb,var(--paper) 46%,transparent);font-weight:430}
+.mission-copy>p{max-width:760px;margin-top:14px;font-size:.72rem;line-height:1.65}
+.mission-targets{margin-top:15px;gap:6px}
+.mission-targets span{
+  min-height:26px;padding:0 9px;border-color:var(--border-soft);background:transparent;
+  color:var(--muted);font-size:.55rem;font-weight:720;
+}
+.next-milestone{
+  min-width:0;padding:15px 16px;border:0;border-left:2px solid var(--lime);
+  border-radius:0;background:transparent;
+}
+.next-milestone::after{display:none}
+.next-milestone span,.next-milestone small{font-size:.52rem;letter-spacing:.1em}
+.next-milestone strong{margin:6px 0 3px;font-size:1.55rem}
+.context-line{min-height:32px;margin:10px 0 24px;border-bottom:1px solid var(--border-soft);font-size:.56rem}
+body:not(.v23-view-command):not(.exam-day-active) .context-line{margin-top:12px}
+
+/* Conteúdo e hierarquia */
+.content{max-width:1280px;margin:0 auto}
+.view-stack{gap:28px}
+.view-heading{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;
+  margin:0;padding:8px 0 24px;border-bottom:1px solid var(--border-soft);
+}
+.view-heading h2{max-width:900px;margin:9px 0 0;font-size:clamp(2.1rem,4vw,3.8rem);line-height:.98;letter-spacing:-.06em}
+.view-heading p{max-width:760px;margin-top:12px;font-size:.72rem;line-height:1.65}
+.view-heading-actions{align-self:end}
+
+/* Anti-card: painéis mais silenciosos, seções principais mais editoriais. */
+.panel{
+  border:1px solid var(--border-soft);border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 62%,transparent);
+  box-shadow:none;
+}
+.view-stack>.panel{
+  border-color:var(--border-soft);
+  background:color-mix(in srgb,var(--surface) 48%,transparent);
+}
+.command-view>.panel,
+.command-view>.manager-command-card,
+.command-view>.manager-quick-grid,
+.command-view>.v14-deep-context.panel{
+  box-shadow:none!important;
+}
+.metric-card{
+  min-height:118px;padding:18px 18px 16px;border:0;border-top:1px solid var(--border);
+  border-radius:0;background:transparent;box-shadow:none;
+}
+.metric-card span{font-size:.54rem;letter-spacing:.11em}
+.metric-card strong{font-size:clamp(1.7rem,3vw,2.45rem)}
+.metric-card small{font-size:.56rem}
+.panel-heading h2{font-size:clamp(1.25rem,2.1vw,1.8rem)}
+.panel-heading p{font-size:.66rem}
+
+/* Navegações secundárias: linha editorial em vez de dashboard dentro de dashboard. */
+.performance-section-nav{
+  display:flex;gap:2px;padding:4px;overflow-x:auto;border:1px solid var(--border-soft);
+  border-radius:12px;background:color-mix(in srgb,var(--surface) 52%,transparent);
+}
+.performance-section-nav button{
+  flex:1 0 150px;min-height:52px;padding:9px 11px;border-radius:8px;background:transparent;
+}
+.performance-section-nav button:hover{background:color-mix(in srgb,var(--paper) 4%,transparent)}
+.performance-section-nav button small{display:none}
+.performance-toolbar{padding:12px 0;border:0;background:transparent}
+
+/* Desempenho */
+.performance-hero{gap:14px}
+.performance-score,.mapping-card{min-height:310px;padding:26px;border-radius:20px}
+.score-ring{width:154px;box-shadow:none}
+.score-ring::before{width:122px;border:0;background:var(--ink-soft)}
+.score-layout{gap:32px;margin-top:28px}
+.score-copy h3{font-size:clamp(2rem,4vw,3.3rem)}
+.mapping-number strong{font-size:clamp(3.4rem,6vw,5.2rem)}
+.mapping-stats{gap:8px;border:0;background:transparent}
+.mapping-stats>div{padding:11px;border-top:1px solid var(--border-soft);background:transparent}
+.performance-chart-grid{gap:14px}
+.chart-panel{min-height:380px;padding:24px}
+.chart-line{filter:none}
+.chart-legend li{border:0;border-top:1px solid var(--border-soft);border-radius:0}
+.subject-panel{background:transparent;border-color:var(--border-soft)}
+.subject-panel-head{padding:22px 0 17px}
+.data-table th,.data-table td{padding:13px 12px}
+
+/* Jornada */
+.journey-layout{gap:14px}
+.timeline-panel,.capital-panel,.transition-map{padding:26px}
+.timeline-index{border-radius:10px;background:transparent}
+.capital-breakdown{gap:8px;border:0;background:transparent}
+.capital-breakdown>div{background:transparent;border-top:1px solid var(--border-soft)}
+.transition-step{border-top-color:var(--border-soft)}
+
+/* Concursos / Estratégia / Financeiro: reduzir efeito de caixa. */
+.exam-hero{border-color:var(--border-soft)!important;background:linear-gradient(135deg,color-mix(in srgb,var(--amber) 5%,transparent),transparent)!important}
+.finance-summary,.strategy-summary{gap:12px}
+
+/* Home / modo foco: mais leitura, menos caixas. */
+.command-view{gap:26px}
+.command-view .v14-focus-control{
+  min-height:64px;padding:10px 0;border:0;border-bottom:1px solid var(--border-soft);border-radius:0;background:transparent;
+}
+.command-view .v14-ops-summary{
+  margin:8px 0;padding:10px 0;border:0;border-bottom:1px solid var(--border-soft);border-radius:0;background:transparent;
+}
+.command-view .manager-command-card,
+.command-view .manager-quick-grid,
+.command-view .v14-deep-context{
+  border-color:var(--border-soft)!important;box-shadow:none!important;
+}
+.command-view .manager-quick-grid{gap:10px!important}
+.command-view .manager-quick-grid>*{box-shadow:none!important}
+
+/* Dia da Prova integra o mesmo workspace sem perder sua identidade. */
+.exam-day-active .content{max-width:1280px}
+.exam-day-active .exam21-shell{gap:24px}
+.exam-day-active .exam21-hero{box-shadow:none!important}
+.exam-day-active .exam21-location-card,
+.exam-day-active .exam21-day-card,
+.exam-day-active .exam21-turn,
+.exam-day-active .exam21-between,
+.exam-day-active .exam21-checklist-card,
+.exam-day-active .exam21-rules>article,
+.exam-day-active .exam21-sources{box-shadow:none!important}
+
+/* Mais = ferramenta, não dashboard paralelo. */
+.sheet-backdrop{background:rgba(0,0,0,.46);backdrop-filter:blur(4px)}
+.more-sheet{
+  border-color:var(--border);background:color-mix(in srgb,var(--ink-soft) 98%,transparent);box-shadow:-24px 0 70px rgba(0,0,0,.22);
+}
+.sheet-heading h2{font-size:1.75rem}
+.sheet-sync-card{border-color:var(--border-soft);background:transparent}
+.sheet-grid{gap:6px}
+.sheet-grid button{
+  min-height:58px;border-color:var(--border-soft);border-radius:10px;background:transparent;
+}
+.sheet-grid button:hover{background:color-mix(in srgb,var(--paper) 4%,transparent)}
+.sheet-actions{gap:6px}
+.action-button{border-color:var(--border-soft)!important;background:transparent!important}
+
+/* Controles gerais */
+.primary-button,.secondary-button,.ghost-button,.action-button{
+  border-radius:10px!important;box-shadow:none!important;
+}
+select,.filter-input,input{border-color:var(--border-soft)!important;border-radius:9px!important}
+.progress-track{background:color-mix(in srgb,var(--paper) 6%,transparent)}
+
+/* Mobile e tablet continuam app, sem sidebar. */
+@media(max-width:1179px){
+  .page-wrap{width:min(100% - 28px,1420px)}
+  .tab-rail{background:color-mix(in srgb,var(--ink) 94%,transparent)}
+}
+@media(max-width:900px){
+  :root{--page:min(100% - 24px,1420px)}
+  .topbar{min-height:62px;padding:9px 12px}
+  .brand-copy small{display:none}
+  .brand-mark{width:34px;height:34px;border-radius:10px}
+  .sync-state{display:none}
+  .search-button{width:38px;min-width:38px;padding:0}
+  .search-button b,.search-button kbd{display:none}
+  .refresh-button{min-width:38px;width:38px;padding:0;justify-content:center}
+  .refresh-button>span:last-child{display:none}
+  .mission-strip{grid-template-columns:1fr;padding:24px 0 20px}
+  .mission-strip h1{font-size:clamp(2.15rem,8vw,3.2rem)}
+  .next-milestone{display:grid;width:100%;grid-template-columns:auto auto 1fr;align-items:center;gap:10px;padding:10px 0 0;border:0;border-top:1px solid var(--border-soft)}
+  .next-milestone strong{margin:0;font-size:1.2rem}
+  .tab-rail{top:62px}
+  .view-heading{grid-template-columns:1fr;padding-top:2px}
+  .view-heading h2{font-size:clamp(2rem,8vw,3rem)}
+  .performance-hero,.performance-chart-grid,.journey-layout{grid-template-columns:1fr}
+  .score-layout{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:760px){
+  .page-wrap{width:calc(100% - 20px);padding-bottom:96px}
+  .content{max-width:100%}
+  .view-stack{gap:18px}
+  .view-heading{padding-bottom:18px}
+  .panel{border-radius:15px}
+  .metric-card{min-height:96px;padding:14px 10px}
+  .performance-section-nav{margin:0 -2px}
+  .performance-toolbar{grid-template-columns:1fr;gap:10px}
+  .performance-score,.mapping-card,.chart-panel,.timeline-panel,.capital-panel,.transition-map{padding:18px}
+  .mobile-dock{
+    right:10px;bottom:10px;left:10px;width:auto;min-height:58px;padding:6px;
+    border:1px solid var(--border);border-radius:16px;
+    background:color-mix(in srgb,var(--ink-soft) 90%,transparent);backdrop-filter:blur(22px);
+    box-shadow:0 12px 34px rgba(0,0,0,.24);
+  }
+  .mobile-dock button{min-height:44px;border-radius:11px}
+  .mobile-dock button.active{background:color-mix(in srgb,var(--paper) 6%,transparent)}
+}
+@media(max-width:430px){
+  .page-wrap{width:calc(100% - 16px)}
+  .brand-copy strong{font-size:.76rem}
+  .mission-strip h1{font-size:2.2rem}
+  .view-heading h2{font-size:2.25rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
