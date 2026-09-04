@@ -15,6 +15,9 @@ function syncExamDayShell() {
 
 document.addEventListener('click', event => {
   if (!event.target.closest('[data-exam-day-tab]')) return;
+  // Fecha imediatamente o sheet antes de renderizar/navegar para evitar sobreposição e condição de corrida.
+  closeMoreSheetForExamDay();
+  document.body.classList.add('exam-day-active');
   window.setTimeout(syncExamDayShell, 0);
 });
 
