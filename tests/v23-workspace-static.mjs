@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
-const [css, homeCss, js, shellCss, shellJs, sw] = await Promise.all([
+const [index, css, homeCss, js, shellCss, shellJs, sw] = await Promise.all([
+  fs.readFile('index.html','utf8'),
   fs.readFile('assets/workspace-v23.css','utf8'),
   fs.readFile('assets/workspace-v23-home.css','utf8'),
   fs.readFile('assets/workspace-v23.js','utf8'),
@@ -12,12 +13,18 @@ const [css, homeCss, js, shellCss, shellJs, sw] = await Promise.all([
 
 const has = (text, value, label) => assert.ok(text.includes(value), `${label}: ausente ${value}`);
 
-has(shellCss, 'workspace-v23.css?v=23', 'loader CSS v23');
-has(shellCss, 'workspace-v23-home.css?v=23', 'loader Home v23');
-has(shellJs, "workspace-v23.js?v=23", 'loader JS v23');
+has(index, 'assets/workspace-v23.css?v=23', 'loader CSS v23 direto no index');
+has(index, 'assets/workspace-v23-home.css?v=23', 'loader Home v23 direto no index');
+has(index, 'assets/workspace-v23.js?v=23', 'loader JS v23 direto no index');
+assert.ok(index.indexOf('workspace-v23.css?v=23') > index.indexOf('exam-day-v21-shell.css?v=21'), 'CSS global deve carregar após o shell específico da prova.');
+assert.ok(index.indexOf('workspace-v23.js?v=23') > index.indexOf('exam-day-v21-shell.js?v=21'), 'JS global deve carregar independentemente após o shell específico da prova.');
+assert.ok(!shellCss.includes('workspace-v23'), 'Shell CSS do Dia da Prova não deve carregar o workspace global.');
+assert.ok(!shellJs.includes('workspace-v23'), 'Shell JS do Dia da Prova não deve carregar o workspace global.');
+
 has(sw, "'./assets/workspace-v23.css'", 'PWA CSS v23');
 has(sw, "'./assets/workspace-v23-home.css'", 'PWA Home v23');
 has(sw, "'./assets/workspace-v23.js'", 'PWA JS v23');
+has(sw, 'caches.match(req,{ignoreSearch:true})', 'fallback offline ignora query de versionamento');
 
 has(css, '@media(min-width:1180px)', 'breakpoint desktop');
 has(css, 'position:fixed', 'rail lateral');
@@ -39,4 +46,4 @@ for (const forbidden of ['06:45','07:45','13:45','14:45','Sala 1820','Sala 1830'
   assert.ok(!bundle.includes(forbidden), `v23 não deve conter dado operacional: ${forbidden}`);
 }
 
-console.log('PASS  v23: redesign estrutural global desacoplado de dados e integrado ao PWA.');
+console.log('PASS  v23: redesign global independente do Dia da Prova, desacoplado de dados e integrado ao PWA.');
