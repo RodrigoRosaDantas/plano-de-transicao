@@ -48,6 +48,8 @@ for (const feature of [
 
 has(js, 'não substitui instrução oficial da equipe de aplicação', 'automação não se apresenta como regra oficial');
 has(js, 'Isto acompanha os portões, não a duração das provas.', 'progresso não confunde portões com duração');
+has(js, "v25Observer.observe(content, { childList: true, subtree: false })", 'observer acompanha apenas troca da view e não o relógio');
+lacks(js, "subtree: true", 'v25 não observa atualizações internas a cada segundo');
 for (const invented of ["'08:00'", "'15:00'", "'12:00'", "'19:00'"]) lacks(js, invented, 'v25 não inventa início/término nominal');
 
 for (const token of ['@media(max-width:980px)','@media(max-width:640px)','@media(max-width:390px)','prefers-reduced-motion']) {
