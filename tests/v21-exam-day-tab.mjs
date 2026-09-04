@@ -43,8 +43,8 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
     'Não divulgado oficialmente', '4h após o início efetivo', '4 horas'
   ]) if (!text.includes(value)) throw new Error(`Conteúdo esperado ausente: ${value}`);
 
-  const first = page.locator('#exam21Checks input[type="checkbox"]').first();
-  await first.check();
+  // Reproduz a interação real: o input é visualmente oculto; o usuário toca no cartão/label.
+  await page.locator('.exam21-check').first().click();
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('plano-transicao:exam-day-v19:checks') || '{}').documento === true);
 
   await page.click('#mainTabs [data-view="command"]');
