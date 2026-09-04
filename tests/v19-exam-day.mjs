@@ -51,7 +51,7 @@ mustContain(moduleJs, 'Centro de Ensino Fundamental Telebrasília — Riacho Fun
 mustContain(moduleJs, '4 horas', 'duração');
 mustContain(moduleJs, 'Não há hora nominal de início publicada', 'sem horário inventado');
 mustContain(moduleJs, 'Sem tolerância:', 'fechamento sem tolerância');
-mustContain(moduleJs, 'últimos <strong>60 minutos</strong>', 'regra do caderno');
+mustContain(moduleJs, '<strong>últimos 60 minutos</strong>', 'regra do caderno');
 mustContain(moduleJs, '2 horas após o início', 'permanência mínima');
 
 // Operational UX corrections.
