@@ -43,6 +43,8 @@ jobs:
         run: node scripts/audit-v14.mjs
       - name: Auditoria estrutural da v15
         run: node scripts/audit-v15.mjs
+      - name: Auditoria do Dia da Prova v19
+        run: node tests/v19-exam-day.mjs
 
   ui:
     runs-on: ubuntu-latest

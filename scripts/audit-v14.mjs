@@ -14,9 +14,9 @@ const check = (name, condition) => {
   console.log(`${condition ? 'PASS' : 'FAIL'}  ${name}`);
 };
 
-check('shell mantém CSS do modo foco v14 sob cache v15', index.includes('assets/home-focus-v14.css?v=15'));
+check('shell mantém CSS do modo foco v14 sob shell v15', index.includes('assets/home-focus-v14.css?v=15'));
 check('shell mantém JS v14 entre as camadas v13 e v15', index.includes('assets/home-focus-v14.js?v=15') && index.indexOf('home-focus-v14.js?v=15') > index.indexOf('manager-inbox-v13.js?v=15') && index.indexOf('home-focus-v14.js?v=15') < index.indexOf('transition-gate-v15.js?v=15'));
-check('cache busting da interface avançou para v15', !index.includes('?v=14') && index.includes('?v=15'));
+check('cache busting da interface-base permanece em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('estudo embutido continua fora da navegação', !index.includes('data-view="study"'));
 
 check('modo v14 persiste preferência local', js.includes("const MODE_KEY = 'plano.homeMode.v14'") && js.includes('localStorage.setItem'));
@@ -34,7 +34,7 @@ check('mobile também recolhe card institucional e atalhos redundantes', css.inc
 check('v14 mantém tratamento estreito em 390px', css.includes('@media (max-width: 390px)'));
 check('v14 não cria largura fixa problemática', !css.includes('width: 1000px') && !css.includes('min-width: 1000px'));
 
-check('service worker avançou para cache v15', sw.includes("const CACHE='plano-transicao-v15'"));
+check('service worker está no cache atual v19', sw.includes("const CACHE='plano-transicao-v19'"));
 check('service worker preserva assets v14', sw.includes('home-focus-v14.css') && sw.includes('home-focus-v14.js'));
 
 const failures = checks.filter((item) => !item.pass);

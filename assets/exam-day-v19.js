@@ -35,7 +35,8 @@ const EXAM_DAY = {
   ]
 };
 
-const CHECK_STORAGE_KEY = 'plano-transicao:exam-day-v18:checks';
+const CHECK_STORAGE_KEY = 'plano-transicao:exam-day-v19:checks';
+const LEGACY_CHECK_STORAGE_KEY = 'plano-transicao:exam-day-v18:checks';
 const CHECK_ITEMS = [
   ['documento', 'Documento de identidade válido separado'],
   ['canetas', '2 ou 3 canetas transparentes azul ou preta'],
@@ -47,10 +48,25 @@ const CHECK_ITEMS = [
   ['saida', 'Horários de abertura e fechamento memorizados']
 ];
 
+function parseStored(value) {
+  try {
+    const parsed = JSON.parse(value || '{}');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
 function safeStorageRead() {
   try {
-    const parsed = JSON.parse(localStorage.getItem(CHECK_STORAGE_KEY) || '{}');
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    const current = parseStored(localStorage.getItem(CHECK_STORAGE_KEY));
+    if (Object.keys(current).length) return current;
+    const legacy = parseStored(localStorage.getItem(LEGACY_CHECK_STORAGE_KEY));
+    if (Object.keys(legacy).length) {
+      localStorage.setItem(CHECK_STORAGE_KEY, JSON.stringify(legacy));
+      return legacy;
+    }
+    return {};
   } catch {
     return {};
   }

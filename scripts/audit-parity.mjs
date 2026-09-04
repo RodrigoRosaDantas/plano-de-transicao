@@ -89,11 +89,13 @@ const cachedAssets = [
   'assets/manager-inbox-v13.css', 'assets/manager-inbox-v13.js',
   'assets/home-focus-v14.css', 'assets/home-focus-v14.js',
   'assets/transition-gate-v15.css', 'assets/transition-gate-v15.js',
+  'assets/exam-day-v19.css', 'assets/exam-day-v19.js', 'assets/exam-day-v18.css',
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está na versão v15', sw.includes("const CACHE='plano-transicao-v15'"));
+check('Cache PWA está na versão v19', sw.includes("const CACHE='plano-transicao-v19'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
+check('Dia da Prova v19 está ligado no HTML', index.includes('exam-day-v19.css?v=19') && index.includes('exam-day-v19.js?v=19'));
 check('Todas as camadas v9–v15 estão ligadas no HTML', [
   'work-manager-v9.js', 'work-intelligence-v10.js', 'work-decisions-v11.js', 'decision-history-v12.js', 'manager-inbox-v13.js', 'home-focus-v14.js', 'transition-gate-v15.js',
 ].every((asset) => index.includes(asset)));
