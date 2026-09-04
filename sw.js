@@ -41,6 +41,6 @@ self.addEventListener('fetch',event=>{
         }
         return response;
       })
-      .catch(()=>caches.match(req).then(response=>response||caches.match('./index.html')))
+      .catch(()=>caches.match(req,{ignoreSearch:true}).then(response=>response||caches.match('./index.html')))
   );
 });
