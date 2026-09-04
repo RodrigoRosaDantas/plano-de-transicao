@@ -51,6 +51,8 @@ jobs:
         run: node tests/v21-exam-day-tab-static.mjs
       - name: Auditoria estática do polimento v22
         run: node tests/v22-exam-day-polish-static.mjs
+      - name: Auditoria estática do workspace v23
+        run: node tests/v23-workspace-static.mjs
 
   ui:
     runs-on: ubuntu-latest
@@ -85,6 +87,10 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v22-exam-day-polish.mjs
+      - name: Testes do redesign workspace v23
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v23-workspace-ui.mjs
       - name: Testes específicos da caixa gerencial v13
         env:
           BASE_URL: http://127.0.0.1:4173/
