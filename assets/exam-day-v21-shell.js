@@ -1,3 +1,5 @@
+import './exam-day-v22.js?v=22';
+
 function closeMoreSheetForExamDay() {
   const sheet = document.getElementById('moreSheet');
   const backdrop = document.getElementById('moreBackdrop');
