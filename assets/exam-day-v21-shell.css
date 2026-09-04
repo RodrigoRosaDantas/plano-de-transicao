@@ -1,6 +1,4 @@
 @import url("./exam-day-v22.css?v=22");
-@import url("./workspace-v23.css?v=23");
-@import url("./workspace-v23-home.css?v=23");
 
 body.exam-day-active .mission-strip,
 body.exam-day-active .context-line{display:none!important}

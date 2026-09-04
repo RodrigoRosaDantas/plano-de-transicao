@@ -1,5 +1,4 @@
 import './exam-day-v22.js?v=22';
-import './workspace-v23.js?v=23';
 
 function closeMoreSheetForExamDay() {
   const sheet = document.getElementById('moreSheet');

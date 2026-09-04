@@ -23,12 +23,23 @@ async function scenario(name, viewport, run) {
   }
 }
 
+async function waitForMoreClosed(page) {
+  await page.waitForFunction(() => {
+    const sheet = document.getElementById('moreSheet');
+    if (!sheet) return true;
+    if (sheet.classList.contains('open')) return false;
+    const rect = sheet.getBoundingClientRect();
+    return rect.left >= window.innerWidth - 1 || rect.top >= window.innerHeight - 1 || rect.right <= 1 || rect.bottom <= 1;
+  });
+}
+
 await scenario('desktop: aba dedicada, dados oficiais e persistência', { width: 1440, height: 1000 }, async page => {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
   await page.waitForSelector('#mainTabs [data-exam-day-tab]');
   await page.click('#mainTabs [data-exam-day-tab]');
   await page.waitForURL(/#exam-day$/);
   await page.waitForSelector('.exam21-shell');
+  await waitForMoreClosed(page);
 
   if (!(await page.locator('body').evaluate(node => node.classList.contains('exam-day-active')))) throw new Error('Shell dedicado não foi ativado.');
   if (await page.locator('.mission-strip').isVisible()) throw new Error('Faixa institucional da Home continua visível na aba dedicada.');
@@ -47,18 +58,23 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
   await page.locator('.exam21-check').first().click();
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('plano-transicao:exam-day-v19:checks') || '{}').documento === true);
 
+  // Fluxo real do drawer no desktop: sair para Agora, abrir Mais e então entrar em Dia da Prova.
   await page.click('#mainTabs [data-view="command"]');
   await page.waitForURL(/#command$/);
-  await page.click('#mainTabs [data-exam-day-tab]');
-  await page.waitForSelector('.exam21-shell');
-  if (!(await page.locator('#exam21Checks input[value="documento"]').isChecked())) throw new Error('Checklist não persistiu ao trocar de aba.');
-
-  // O botão superior Mais é oculto em desktop no layout normal; dispara o clique pelo DOM para testar o fluxo sem falso timeout de visibilidade.
   await page.evaluate(() => document.getElementById('moreTopBtn')?.click());
   await page.waitForSelector('#moreSheet.open');
+  await page.waitForFunction(() => {
+    const sheet = document.getElementById('moreSheet');
+    if (!sheet?.classList.contains('open')) return false;
+    const rect = sheet.getBoundingClientRect();
+    return rect.left < window.innerWidth && rect.right > 0;
+  });
   await page.click('#moreSheet [data-exam-day-tab]');
+  await page.waitForURL(/#exam-day$/);
   await page.waitForSelector('.exam21-shell');
+  await waitForMoreClosed(page);
   if (await page.locator('#moreSheet').evaluate(node => node.classList.contains('open'))) throw new Error('Menu Mais permaneceu aberto sobre a aba Dia da Prova.');
+  if (!(await page.locator('#exam21Checks input[value="documento"]').isChecked())) throw new Error('Checklist não persistiu ao retornar pelo menu Mais.');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal desktop: ${overflow}px`);
@@ -68,6 +84,7 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
 await scenario('acesso direto: #exam-day sobrevive à inicialização do app', { width: 1180, height: 900 }, async page => {
   await page.goto(`${baseURL}#exam-day`, { waitUntil: 'networkidle' });
   await page.waitForSelector('.exam21-shell', { timeout: 10000 });
+  await waitForMoreClosed(page);
   if (new URL(page.url()).hash !== '#exam-day') throw new Error(`Hash direto foi perdido: ${page.url()}`);
   const active = await page.locator('#mainTabs [data-exam-day-tab]').getAttribute('aria-current');
   if (active !== 'page') throw new Error('Aba dedicada não ficou ativa no acesso direto.');
@@ -79,10 +96,12 @@ await scenario('mobile 390px: dock enxuto, cards empilhados e sem overflow', { w
   await page.waitForSelector('#mobileDock [data-exam-day-tab]');
   await page.click('#mobileDock [data-exam-day-tab]');
   await page.waitForSelector('.exam21-shell');
+  await waitForMoreClosed(page);
 
   if (!(await page.locator('#mobileDock [data-exam-day-tab]').isVisible())) throw new Error('Atalho Dia da Prova não está visível no dock móvel.');
   if (await page.locator('#mobileDock [data-view="journey"]').isVisible()) throw new Error('Dock móvel manteve opção redundante e ficou superlotado.');
   if (await page.locator('.exam21-turn').count() !== 2) throw new Error('Os dois turnos não foram renderizados.');
+  if (await page.locator('#moreSheet').evaluate(node => node.classList.contains('open'))) throw new Error('Menu Mais ficou aberto sobre a aba no mobile.');
 
   const turnColumns = await page.locator('.exam21-turns').evaluate(node => getComputedStyle(node).gridTemplateColumns);
   if (turnColumns.trim().split(/\s+/).length !== 1) throw new Error(`Cards não empilharam no mobile: ${turnColumns}`);
@@ -93,8 +112,9 @@ await scenario('mobile 390px: dock enxuto, cards empilhados e sem overflow', { w
 });
 
 await browser.close();
+
 if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   process.exit(1);
 }
-console.log('\n3/3 cenários da aba Dia da Prova v21 aprovados.');
+console.log('\n3/3 cenários da aba Dia da Prova aprovados.');
