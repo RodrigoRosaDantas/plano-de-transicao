@@ -1,0 +1,129 @@
+/* Workspace v23 — segunda passada: Home editorial, com menos caixas. */
+.command-view .cockpit-grid{
+  gap:0;
+  align-items:stretch;
+  padding:10px 0 28px;
+  border-bottom:1px solid var(--border-soft);
+}
+.command-view .countdown-card{
+  padding:28px 28px 28px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.command-view .countdown-card p{max-width:520px;color:var(--muted);line-height:1.65}
+.command-view .countdown-value strong{font-size:clamp(4.8rem,10vw,7.8rem);line-height:.78;letter-spacing:-.1em}
+.command-view .target-stack{
+  gap:0;
+  padding-left:28px;
+  border-left:1px solid var(--border-soft);
+}
+.command-view .target-card{
+  padding:18px 0;
+  border:0;
+  border-bottom:1px solid var(--border-soft);
+  border-radius:0;
+  background:transparent;
+}
+.command-view .target-card:last-child{border-bottom:0}
+.command-view .target-card:hover{background:transparent;transform:none}
+.command-view .target-card-main h2{font-size:clamp(1.25rem,2.1vw,1.8rem)}
+.command-view .target-card-main>strong{font-size:1.15rem}
+.command-view .target-card-footer{color:var(--muted-2)}
+
+.command-view .command-grid{
+  gap:0;
+  padding:0;
+  border-bottom:1px solid var(--border-soft);
+}
+.command-view .sync-command-card,
+.command-view .action-card{
+  min-height:0;
+  padding:34px 30px 34px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.command-view .action-card{
+  padding-left:30px;
+  border-left:1px solid var(--border-soft);
+}
+.command-view .sync-command-card h2,
+.command-view .action-card h2{max-width:520px;font-size:clamp(1.75rem,3vw,2.55rem);line-height:1;letter-spacing:-.05em}
+.command-view .sync-command-card p,
+.command-view .action-card p{max-width:560px}
+.command-view .sync-command-profile{margin-bottom:24px}
+
+.command-view .priority-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+  padding:8px 0;
+  border-top:1px solid var(--border-soft);
+  border-bottom:1px solid var(--border-soft);
+}
+.command-view .priority-card{
+  min-height:0;
+  padding:22px 24px;
+  border:0;
+  border-right:1px solid var(--border-soft);
+  border-radius:0;
+  background:transparent;
+}
+.command-view .priority-card:first-child{padding-left:0}
+.command-view .priority-card:last-child{padding-right:0;border-right:0}
+.command-view .priority-card h3{font-size:1.05rem}
+.command-view .priority-card .progress-track{height:4px}
+
+.command-view .focus-board,
+.command-view .journey-mini,
+.command-view .source-status-card{
+  padding:30px 0;
+  border:0;
+  border-bottom:1px solid var(--border-soft);
+  border-radius:0;
+  background:transparent;
+}
+.command-view .focus-list{
+  margin-top:20px;
+  border-top:1px solid var(--border-soft);
+}
+.command-view .focus-list button{
+  border:0;
+  border-bottom:1px solid var(--border-soft);
+  border-radius:0;
+  background:transparent;
+}
+.command-view .focus-list button:hover{background:color-mix(in srgb,var(--paper) 3%,transparent)}
+.command-view .journey-flow{margin-top:26px}
+.command-view .source-status-card{grid-template-columns:auto minmax(0,1fr) auto;align-items:center}
+
+/* Manager/home-focus: reduzir containers secundários sem remover conteúdo. */
+.command-view .manager-command-card,
+.command-view .v14-deep-context.panel{
+  border-left:0!important;
+  border-right:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.command-view .manager-quick-grid>*{
+  border-color:var(--border-soft)!important;
+  background:color-mix(in srgb,var(--surface) 42%,transparent)!important;
+}
+
+@media(max-width:900px){
+  .command-view .cockpit-grid{gap:18px;padding-bottom:22px}
+  .command-view .countdown-card{padding:20px 0 8px}
+  .command-view .target-stack{padding-left:0;border-left:0;border-top:1px solid var(--border-soft)}
+  .command-view .target-card{padding:16px 0}
+  .command-view .command-grid{grid-template-columns:1fr}
+  .command-view .sync-command-card,.command-view .action-card{padding:26px 0}
+  .command-view .action-card{border-left:0;border-top:1px solid var(--border-soft)}
+  .command-view .priority-grid{grid-template-columns:1fr}
+  .command-view .priority-card,
+  .command-view .priority-card:first-child,
+  .command-view .priority-card:last-child{
+    padding:18px 0;border-right:0;border-bottom:1px solid var(--border-soft);
+  }
+  .command-view .priority-card:last-child{border-bottom:0}
+}
