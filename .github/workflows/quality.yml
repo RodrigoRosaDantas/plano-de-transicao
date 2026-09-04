@@ -49,6 +49,8 @@ jobs:
         run: node tests/v20-application-time.mjs
       - name: Auditoria estática da aba Dia da Prova v21
         run: node tests/v21-exam-day-tab-static.mjs
+      - name: Auditoria estática do polimento v22
+        run: node tests/v22-exam-day-polish-static.mjs
 
   ui:
     runs-on: ubuntu-latest
@@ -79,6 +81,10 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v21-exam-day-tab.mjs
+      - name: Testes do polimento visual v22
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v22-exam-day-polish.mjs
       - name: Testes específicos da caixa gerencial v13
         env:
           BASE_URL: http://127.0.0.1:4173/
