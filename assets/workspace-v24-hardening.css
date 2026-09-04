@@ -1,0 +1,15 @@
+/* V24 — hardening pós-auditoria: o drawer fechado não permanece visual/focal fora do viewport. */
+.more-sheet{
+  visibility:hidden;
+  pointer-events:none;
+  transition:transform .28s ease,visibility 0s linear .28s;
+}
+.more-sheet.open{
+  visibility:visible;
+  pointer-events:auto;
+  transition:transform .28s ease,visibility 0s linear 0s;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .more-sheet{transition:none!important}
+}
