@@ -47,18 +47,22 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
   await page.locator('.exam21-check').first().click();
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('plano-transicao:exam-day-v19:checks') || '{}').documento === true);
 
+  // Fluxo real do drawer no desktop: sair para Agora, abrir Mais e então entrar em Dia da Prova.
   await page.click('#mainTabs [data-view="command"]');
   await page.waitForURL(/#command$/);
-  await page.click('#mainTabs [data-exam-day-tab]');
-  await page.waitForSelector('.exam21-shell');
-  if (!(await page.locator('#exam21Checks input[value="documento"]').isChecked())) throw new Error('Checklist não persistiu ao trocar de aba.');
-
-  // O botão superior Mais é oculto em desktop no layout normal; dispara o clique pelo DOM para testar o fluxo sem falso timeout de visibilidade.
   await page.evaluate(() => document.getElementById('moreTopBtn')?.click());
   await page.waitForSelector('#moreSheet.open');
+  await page.waitForFunction(() => {
+    const sheet = document.getElementById('moreSheet');
+    if (!sheet?.classList.contains('open')) return false;
+    const rect = sheet.getBoundingClientRect();
+    return rect.left < window.innerWidth && rect.right > 0;
+  });
   await page.click('#moreSheet [data-exam-day-tab]');
+  await page.waitForURL(/#exam-day$/);
   await page.waitForSelector('.exam21-shell');
   if (await page.locator('#moreSheet').evaluate(node => node.classList.contains('open'))) throw new Error('Menu Mais permaneceu aberto sobre a aba Dia da Prova.');
+  if (!(await page.locator('#exam21Checks input[value="documento"]').isChecked())) throw new Error('Checklist não persistiu ao retornar pelo menu Mais.');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal desktop: ${overflow}px`);
@@ -93,8 +97,9 @@ await scenario('mobile 390px: dock enxuto, cards empilhados e sem overflow', { w
 });
 
 await browser.close();
+
 if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   process.exit(1);
 }
-console.log('\n3/3 cenários da aba Dia da Prova v21 aprovados.');
+console.log('\n3/3 cenários da aba Dia da Prova aprovados.');
