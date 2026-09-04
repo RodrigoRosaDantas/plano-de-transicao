@@ -1,0 +1,9 @@
+body.exam-day-active .mission-strip,
+body.exam-day-active .context-line{display:none!important}
+body.exam-day-active .page-wrap{padding-top:0}
+body.exam-day-active .tab-rail{margin-top:0}
+body.exam-day-active .content{padding-top:18px}
+
+@media(max-width:760px){
+  body.exam-day-active .content{padding-top:10px}
+}
