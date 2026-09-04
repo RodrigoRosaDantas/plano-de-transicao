@@ -51,6 +51,7 @@ function getNextMilestone(now = Date.now()) {
     milestones.push({ at: new Date(exam.openIso).getTime(), label: `Abertura dos portões · ${exam.code}` });
     milestones.push({ at: new Date(exam.closeIso).getTime(), label: `FECHAMENTO DOS PORTÕES · ${exam.code}` });
   });
+  milestones.sort((a, b) => a.at - b.at);
   const next = milestones.find(item => item.at > now);
   if (next) return next;
   return { at: null, label: 'Cronograma de acesso de 06/09 encerrado' };
@@ -83,7 +84,7 @@ function examCard(exam) {
         <div><span>Bloco</span><strong>${exam.block}</strong></div>
         <div><span>Andar</span><strong>${exam.floor}</strong></div>
       </div>
-      <div class="exam-application-note"><b>Aplicação:</b> turno da ${exam.turn.toLowerCase()}, com 4h de duração. O CCI e o Edital nº 4 não publicam uma hora nominal de início; depois do fechamento dos portões, siga as orientações da equipe de sala.</div>
+      <div class="exam-application-note"><b>Chegada:</b> o CCI recomenda no mínimo 1 hora de antecedência; esteja no local já na abertura dos portões (${exam.open}). <b>Aplicação:</b> turno da ${exam.turn.toLowerCase()}, com 4h de duração. O CCI e o Edital nº 4 não publicam uma hora nominal de início; depois do fechamento dos portões, siga as orientações da equipe de sala.</div>
       <div class="exam-card-actions">
         <a href="${EXAM_DAY.mapsUrl}" target="_blank" rel="noreferrer">Abrir rota</a>
         <button type="button" data-open-exam-checklist>Ver checklist</button>
@@ -100,13 +101,13 @@ function template() {
           <h2 id="examDayTitle">Operação 06 SET — dois turnos, mesmo local</h2>
           <p>Horários, salas, regras críticas e checklist operacional dos seus CCIs. Dados pessoais como CPF, RG e números de inscrição não são publicados neste site.</p>
         </div>
-        <div class="exam-day-live"><i></i><span><b>${EXAM_DAY.dateLabel}</b><small>Horário oficial de Brasília</small></span></div>
+        <div class="exam-day-live"><i aria-hidden="true"></i><span><b>${EXAM_DAY.dateLabel}</b><small>Horário oficial de Brasília</small></span></div>
       </div>
 
       <div class="exam-day-next">
         <div class="exam-day-countdown">
           <div class="exam-day-countdown-copy"><span>Próximo marco operacional</span><strong id="examNextLabel">Calculando…</strong></div>
-          <div class="exam-day-clock" id="examNextClock" aria-live="polite">--:--:--</div>
+          <div class="exam-day-clock" id="examNextClock" role="timer" aria-label="Tempo restante para o próximo marco">--:--:--</div>
         </div>
         <div class="exam-day-location">
           <span>Local das duas provas</span>
@@ -123,7 +124,7 @@ function template() {
           <section class="exam-check-group">
             <h4>Levar</h4>
             <ul>
-              <li><strong>Documento original de identidade válido.</strong></li>
+              <li><strong>Documento de identidade válido.</strong> Documento físico deve ser original; documento digital admitido deve ser exibido no aplicativo oficial.</li>
               <li><strong>2 ou 3 canetas</strong> azul ou preta, de material transparente.</li>
               <li>Comprovante de inscrição provisória ou comprovante de pagamento, para apresentação se solicitado.</li>
               <li>Água e alimentos somente em <strong>recipientes/embalagens transparentes</strong>.</li>
@@ -132,7 +133,8 @@ function template() {
           <section class="exam-check-group">
             <h4>Não portar/utilizar</h4>
             <ul>
-              <li>Relógio de qualquer espécie, smartwatch, fones, calculadora e demais eletrônicos.</li>
+              <li>Relógio de qualquer espécie, smartwatch, fones, calculadora e demais eletrônicos fora do porta-objetos.</li>
+              <li><strong>Chaves com alarme</strong> ou qualquer outro componente eletrônico.</li>
               <li>Lápis, lapiseira/grafite, borracha, marca-texto, livros, anotações ou impressos.</li>
               <li>Óculos escuros, protetor auricular e acessórios de chapelaria.</li>
               <li>Recipientes opacos e objetos cortantes/perfurantes.</li>
@@ -141,9 +143,12 @@ function template() {
           <section class="exam-check-group exam-check-critical">
             <h4>Regras críticas</h4>
             <ul>
+              <li><strong>Chegue com no mínimo 1 hora de antecedência.</strong> Plano operacional: esteja no portão na abertura.</li>
               <li><strong>Sem tolerância:</strong> EDAS fecha 07:45; TDAS fecha 14:45.</li>
               <li>Celular e eletrônicos devem ficar <strong>completamente desligados</strong> e lacrados no porta-objetos.</li>
               <li>Documento digital só vale no <strong>aplicativo oficial</strong>; print, foto e PDF não valem.</li>
+              <li>Após entrar no local, dirija-se imediatamente à sala; não permaneça nos corredores antes do início.</li>
+              <li>É vedado registrar respostas no comprovante de inscrição ou em meio não permitido.</li>
               <li>Permanência mínima de <strong>2 horas após o início</strong> da aplicação.</li>
               <li>Caderno de provas somente pode ser levado nos <strong>últimos 60 minutos</strong>.</li>
             </ul>
@@ -152,7 +157,7 @@ function template() {
       </details>
 
       <div class="exam-day-foot">
-        <span><b>Fonte operacional:</b> seus dois Cartões de Convocação Individual + Edital nº 4 de convocação. Retificação nº 5 não altera estes horários.</span>
+        <span><b>Fonte operacional:</b> seus dois Cartões de Convocação Individual + Edital nº 4 de convocação. O Edital nº 5 apenas retifica o preâmbulo e mantém inalteradas as demais disposições.</span>
         <a href="${EXAM_DAY.officialUrl}" target="_blank" rel="noreferrer">Abrir página oficial do concurso</a>
       </div>
     </section>`;

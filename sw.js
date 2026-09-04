@@ -1,4 +1,4 @@
-const CACHE='plano-transicao-v16';
+const CACHE='plano-transicao-v17';
 const ASSETS=['./','./index.html','./assets/work-app.css','./assets/work-app.js','./assets/work-manager-v9.css','./assets/work-manager-v9.js','./assets/work-intelligence-v10.css','./assets/work-intelligence-v10.js','./assets/work-decisions-v11.css','./assets/work-decisions-v11.js','./assets/work-decisions-v11-fix.js','./assets/decision-history-v12.css','./assets/decision-history-v12.js','./assets/manager-inbox-v13.css','./assets/manager-inbox-v13.js','./assets/home-focus-v14.css','./assets/home-focus-v14.js','./assets/transition-gate-v15.css','./assets/transition-gate-v15.js','./assets/exam-day-v16.css','./assets/exam-day-v16.js','./assets/og.png','./data/snapshot.json','./data/treated-performance-data.js','./manifest.webmanifest','./assets/icon-192.png','./assets/icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
