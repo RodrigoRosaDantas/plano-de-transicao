@@ -45,6 +45,8 @@ jobs:
         run: node scripts/audit-v15.mjs
       - name: Auditoria do Dia da Prova v19
         run: node tests/v19-exam-day.mjs
+      - name: Auditoria do horário da aplicação v20
+        run: node tests/v20-application-time.mjs
 
   ui:
     runs-on: ubuntu-latest
