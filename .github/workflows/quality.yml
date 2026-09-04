@@ -76,30 +76,44 @@ jobs:
           cat /tmp/plano-http.log
           exit 1
       - name: Testes da central, atualização, desempenho, operações e responsividade
+        id: smoke
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/ui-smoke.mjs
       - name: Testes da aba Dia da Prova v21
+        id: v21
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v21-exam-day-tab.mjs
       - name: Testes do polimento visual v22
+        id: v22
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v22-exam-day-polish.mjs
       - name: Testes do redesign workspace v23
+        id: v23
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v23-workspace-ui.mjs
       - name: Testes específicos da caixa gerencial v13
+        id: v13
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v13-inbox.mjs
       - name: Testes específicos do modo foco v14
+        id: v14
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v14-focus.mjs
       - name: Testes específicos do fechamento do ciclo v15
+        id: v15
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v15-transition-gate.mjs
@@ -111,3 +125,22 @@ jobs:
           path: artifacts/
           if-no-files-found: ignore
           retention-days: 14
+      - name: Consolidar resultado da UI
+        if: always()
+        run: |
+          failed=0
+          for outcome in \
+            "${{ steps.smoke.outcome }}" \
+            "${{ steps.v21.outcome }}" \
+            "${{ steps.v22.outcome }}" \
+            "${{ steps.v23.outcome }}" \
+            "${{ steps.v13.outcome }}" \
+            "${{ steps.v14.outcome }}" \
+            "${{ steps.v15.outcome }}"; do
+            if [ "$outcome" != "success" ]; then failed=1; fi
+          done
+          if [ "$failed" -ne 0 ]; then
+            echo "Uma ou mais suítes de UI falharam. Consulte os passos acima e os screenshots."
+            exit 1
+          fi
+          echo "Todas as suítes de UI passaram."
