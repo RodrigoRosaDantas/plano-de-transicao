@@ -1,3 +1,5 @@
+@import url("./exam-day-v22.css?v=22");
+
 body.exam-day-active .mission-strip,
 body.exam-day-active .context-line{display:none!important}
 body.exam-day-active .page-wrap{padding-top:0;min-width:0}
