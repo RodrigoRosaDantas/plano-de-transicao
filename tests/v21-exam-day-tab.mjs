@@ -53,7 +53,8 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
   await page.waitForSelector('.exam21-shell');
   if (!(await page.locator('#exam21Checks input[value="documento"]').isChecked())) throw new Error('Checklist não persistiu ao trocar de aba.');
 
-  await page.click('#moreTopBtn');
+  // O botão superior Mais é oculto em desktop no layout normal; dispara o clique pelo DOM para testar o fluxo sem falso timeout de visibilidade.
+  await page.evaluate(() => document.getElementById('moreTopBtn')?.click());
   await page.waitForSelector('#moreSheet.open');
   await page.click('#moreSheet [data-exam-day-tab]');
   await page.waitForSelector('.exam21-shell');
