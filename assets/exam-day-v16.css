@@ -1,2 +1,5 @@
 /* Compatibility stylesheet: the site keeps this stable entrypoint while the organized module lives in v18. */
 @import url('./exam-day-v18.css?v=18');
+
+/* Accessibility audit: keep the native checkbox focusable while visually hiding it. */
+.exam-v18-check{position:relative}.exam-v18-check input{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;opacity:1;pointer-events:auto}.exam-v18-check:focus-within{outline:2px solid var(--lime);outline-offset:2px}
