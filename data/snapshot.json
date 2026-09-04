@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-04T16:22:57.480Z",
+    "generatedAt": "2026-09-04T20:29:09.736Z",
     "homeSnapshot": "2026-08-31",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,7 +8,7 @@
     "nextExam": "2026-09-06T08:00:00-03:00",
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-04T16:22:58.800Z",
+    "workParityEnrichedAt": "2026-09-04T20:29:10.729Z",
     "dataWarnings": []
   },
   "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
@@ -30,16 +30,16 @@
   ],
   "metrics": {
     "tdas": {
-      "questions": 3439,
-      "hits": 3157,
-      "errors": 282,
-      "accuracy": 91.8,
-      "stepsDone": 102,
+      "questions": 3559,
+      "hits": 3258,
+      "errors": 301,
+      "accuracy": 91.54,
+      "stepsDone": 104,
       "stepsTotal": 112,
-      "errorNotebook": 309,
+      "errorNotebook": 325,
       "essays": 33,
       "essaysGraded": 13,
-      "simulations": 7
+      "simulations": 8
     },
     "edas": {
       "questions": 145,
@@ -50,11 +50,11 @@
       "caseStudies": 12
     },
     "history": {
-      "questions": 15449,
-      "hits": 14078,
-      "errors": 1371,
-      "accuracy": 91.13,
-      "rawRecords": 15539,
+      "questions": 15569,
+      "hits": 14179,
+      "errors": 1390,
+      "accuracy": 91.07,
+      "rawRecords": 15659,
       "withoutResult": 90
     },
     "finance": {
@@ -132,10 +132,10 @@
     },
     {
       "name": "SEDES — TDAS Pós-edital",
-      "questions": 3439,
-      "hits": 3157,
-      "errors": 282,
-      "accuracy": 91.8,
+      "questions": 3559,
+      "hits": 3258,
+      "errors": 301,
+      "accuracy": 91.54,
       "date": "2026-08-27"
     },
     {
