@@ -1,0 +1,27 @@
+body.exam-day-active .mission-strip,
+body.exam-day-active .context-line{display:none!important}
+body.exam-day-active .page-wrap{padding-top:0;min-width:0}
+body.exam-day-active .tab-rail{margin-top:0}
+body.exam-day-active .content{padding-top:18px;min-width:0;max-width:100%}
+
+/* Grid/flex children precisam poder encolher no mobile; sem isso a timeline expandia o documento. */
+body.exam-day-active .exam21-shell,
+body.exam-day-active .exam21-shell>*,
+body.exam-day-active .exam21-summary,
+body.exam-day-active .exam21-summary>*,
+body.exam-day-active .exam21-turns,
+body.exam-day-active .exam21-turn,
+body.exam-day-active .exam21-between,
+body.exam-day-active .exam21-checklist-card,
+body.exam-day-active .exam21-rules,
+body.exam-day-active .exam21-rules>*,
+body.exam-day-active .exam21-sources,
+body.exam-day-active .exam21-day-card,
+body.exam-day-active .exam21-timeline{min-width:0;max-width:100%;box-sizing:border-box}
+body.exam-day-active .exam21-shell{width:100%;overflow-x:clip}
+body.exam-day-active .exam21-timeline{width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
+body.exam-day-active .exam21-subnav{max-width:100%;box-sizing:border-box}
+
+@media(max-width:760px){
+  body.exam-day-active .content{padding-top:10px}
+}
