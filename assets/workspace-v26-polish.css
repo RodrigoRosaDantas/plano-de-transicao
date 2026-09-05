@@ -1,0 +1,331 @@
+/* Workspace v26 — refinamento visual sem alterar arquitetura, dados ou lógica. */
+:root{
+  --v26-surface-soft:color-mix(in srgb,var(--surface) 54%,transparent);
+  --v26-surface-raised:color-mix(in srgb,var(--surface-2) 72%,transparent);
+  --v26-border:color-mix(in srgb,var(--paper) 9%,transparent);
+  --v26-border-strong:color-mix(in srgb,var(--paper) 14%,transparent);
+  --v26-shadow:0 18px 48px rgba(0,0,0,.13);
+  --v26-shadow-soft:0 10px 30px rgba(0,0,0,.08);
+}
+
+/* 1) Profundidade controlada: superfície só onde há hierarquia real. */
+.performance-score,
+.timeline-panel,
+.exam-day-active .exam21-hero{
+  border-color:var(--v26-border-strong)!important;
+  background:
+    linear-gradient(145deg,color-mix(in srgb,var(--surface-2) 76%,transparent),color-mix(in srgb,var(--surface) 54%,transparent))!important;
+  box-shadow:var(--v26-shadow)!important;
+}
+.mapping-card,
+.capital-panel,
+.transition-map,
+.command-view .manager-quick-grid>*{
+  border-color:var(--v26-border)!important;
+  background:var(--v26-surface-soft)!important;
+  box-shadow:var(--v26-shadow-soft)!important;
+}
+.chart-panel,
+.subject-panel,
+.command-view .manager-command-card,
+.command-view .v14-deep-context.panel{
+  border-color:var(--v26-border)!important;
+  background:color-mix(in srgb,var(--surface) 38%,transparent)!important;
+}
+
+/* Home: ênfase sem voltar a cards pesados. */
+.command-view .countdown-card{
+  position:relative;
+  isolation:isolate;
+}
+.command-view .countdown-card::before{
+  position:absolute;
+  inset:-8px -20px -8px -28px;
+  z-index:-1;
+  border-radius:28px;
+  background:linear-gradient(100deg,color-mix(in srgb,var(--lime) 5%,transparent),transparent 64%);
+  content:"";
+  pointer-events:none;
+}
+.command-view .target-stack{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--paper) 2%,transparent),transparent 70%);
+}
+.command-view .focus-board,
+.command-view .journey-mini,
+.command-view .source-status-card{
+  position:relative;
+}
+.command-view .focus-board::after,
+.command-view .journey-mini::after,
+.command-view .source-status-card::after{
+  position:absolute;
+  right:0;
+  bottom:-1px;
+  left:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  content:"";
+  pointer-events:none;
+}
+.command-view .journey-node::before{
+  background:linear-gradient(90deg,color-mix(in srgb,var(--aqua) 34%,var(--border)),color-mix(in srgb,var(--lime) 30%,var(--border)))!important;
+}
+
+/* 2) Tipografia: menos microtexto, melhor leitura e ritmo. */
+.mission-copy>p,
+.view-heading p,
+.panel-heading p,
+.score-copy p,
+.mapping-card p,
+.timeline-panel p,
+.capital-panel p,
+.transition-map p{
+  font-size:clamp(.80rem,.76rem + .10vw,.90rem)!important;
+  line-height:1.68!important;
+}
+.context-line{font-size:.66rem!important}
+.metric-card small,
+.target-card-footer,
+.chart-legend,
+.data-table,
+.sheet-grid button small{
+  font-size:max(.62rem,11px)!important;
+}
+.view-heading h2{
+  max-width:980px;
+  text-wrap:balance;
+}
+.panel-heading h2,
+.target-card-main h2,
+.sync-command-card h2,
+.action-card h2{
+  text-wrap:balance;
+}
+.mission-strip h1{
+  text-wrap:balance;
+}
+
+/* 3) Sidebar: agrupamento visual e estado ativo mais maduro. */
+@media(min-width:1180px){
+  .main-tabs button{
+    position:relative;
+    min-height:44px;
+    transition:background .18s ease,color .18s ease,transform .18s ease;
+  }
+  .main-tabs button:nth-child(2),
+  .main-tabs button:nth-child(5),
+  .main-tabs button:nth-child(7){
+    margin-top:28px;
+  }
+  .main-tabs button:nth-child(2)::before,
+  .main-tabs button:nth-child(5)::before,
+  .main-tabs button:nth-child(7)::before{
+    position:absolute;
+    top:-20px;
+    left:10px;
+    color:var(--muted-2);
+    font-size:.49rem;
+    font-weight:850;
+    letter-spacing:.13em;
+    line-height:1;
+    pointer-events:none;
+  }
+  .main-tabs button:nth-child(2)::before{content:"ACOMPANHAMENTO"}
+  .main-tabs button:nth-child(5)::before{content:"PLANO"}
+  .main-tabs button:nth-child(7)::before{content:"SISTEMA"}
+  .main-tabs button:hover{transform:translateX(2px)}
+  .main-tabs button.active,
+  .main-tabs [data-exam-day-tab].active{
+    background:linear-gradient(90deg,color-mix(in srgb,var(--lime) 9%,transparent),color-mix(in srgb,var(--paper) 3%,transparent))!important;
+    box-shadow:inset 2px 0 0 var(--lime),inset 0 0 0 1px color-mix(in srgb,var(--lime) 7%,transparent)!important;
+  }
+}
+
+/* 4) Desempenho: leitura visual primeiro, moldura depois. */
+.performance-score{
+  overflow:hidden;
+  position:relative;
+}
+.performance-score::after{
+  position:absolute;
+  width:300px;
+  height:300px;
+  right:-150px;
+  bottom:-185px;
+  border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--aqua) 12%,transparent),transparent 68%);
+  content:"";
+  pointer-events:none;
+}
+.mapping-card{
+  position:relative;
+  overflow:hidden;
+}
+.mapping-number strong{
+  letter-spacing:-.075em!important;
+}
+.chart-panel{
+  border-top-color:color-mix(in srgb,var(--aqua) 22%,var(--v26-border))!important;
+}
+.chart-legend li{
+  min-height:42px;
+  transition:background .16s ease;
+}
+.chart-legend li:hover{
+  background:color-mix(in srgb,var(--paper) 3%,transparent);
+}
+.subject-panel .progress-track{
+  height:6px;
+  border-radius:999px;
+}
+.subject-panel .data-table tbody tr{
+  transition:background .16s ease;
+}
+.subject-panel .data-table tbody tr:hover{
+  background:color-mix(in srgb,var(--aqua) 3%,transparent);
+}
+.subject-panel .data-table th{
+  color:var(--muted-2);
+  font-size:.58rem;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+}
+
+/* 5) Jornada: a transição vira elemento gráfico do produto. */
+.transition-steps{
+  position:relative;
+  isolation:isolate;
+}
+.transition-steps::before{
+  position:absolute;
+  top:0;
+  right:calc(100% / 14);
+  left:calc(100% / 14);
+  z-index:0;
+  height:1px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--aqua) 48%,transparent),color-mix(in srgb,var(--lime) 54%,transparent),color-mix(in srgb,var(--amber) 42%,transparent));
+  content:"";
+  pointer-events:none;
+}
+.transition-step{
+  position:relative;
+  z-index:1;
+  border-top-color:transparent!important;
+  transition:transform .18s ease,color .18s ease;
+}
+.transition-step:hover{transform:translateY(-2px)}
+.transition-step::before{
+  border-color:var(--ink-soft)!important;
+  box-shadow:0 0 0 1px var(--v26-border),0 0 0 4px color-mix(in srgb,var(--aqua) 5%,transparent)!important;
+}
+.transition-step.done::before{
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 40%,transparent),0 0 0 4px color-mix(in srgb,var(--lime) 6%,transparent)!important;
+}
+.transition-step.active::before{
+  box-shadow:0 0 0 1px var(--amber),0 0 22px color-mix(in srgb,var(--amber) 28%,transparent)!important;
+}
+.timeline-index{
+  border:1px solid var(--v26-border)!important;
+  background:color-mix(in srgb,var(--surface-2) 46%,transparent)!important;
+}
+
+/* 6) Cores com semântica estável, sem decoração excessiva. */
+[data-state="success"],.is-success,.positive{--v26-state:var(--lime)}
+[data-state="info"],.is-info{--v26-state:var(--aqua)}
+[data-state="warning"],.is-warning{--v26-state:var(--amber)}
+[data-state="danger"],.is-danger,.negative{--v26-state:var(--coral)}
+
+/* 7) Controles e microinterações. */
+.icon-button,.control-button,.primary-button,.secondary-button,.ghost-button,.action-button,
+.main-tabs button,.mobile-dock button,.focus-list button,.sheet-grid button{
+  transition-duration:.16s!important;
+  transition-timing-function:ease!important;
+}
+.primary-button:hover,.secondary-button:hover,.ghost-button:hover,.action-button:hover{
+  transform:translateY(-1px);
+}
+.progress-track>i,.progress-track>span,
+[class*="progress"]>i,[class*="progress"]>span{
+  transition:width .42s cubic-bezier(.2,.8,.2,1);
+}
+
+/* 8) Topbar: utilitário, leve e mais preciso. */
+.topbar{
+  box-shadow:0 1px 0 var(--border-soft);
+}
+.brand-mark{
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 18%,transparent),0 8px 24px color-mix(in srgb,var(--lime) 8%,transparent);
+}
+.search-button,.refresh-button{
+  backdrop-filter:blur(12px);
+}
+
+/* 9) Dia da Prova: mantém identidade própria, só melhora acabamento. */
+.exam-day-active .exam21-hero{
+  position:relative;
+  overflow:hidden;
+}
+.exam-day-active .exam21-hero::after{
+  position:absolute;
+  right:-110px;
+  top:-120px;
+  width:300px;
+  height:300px;
+  border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--aqua) 9%,transparent),transparent 68%);
+  content:"";
+  pointer-events:none;
+}
+.exam-day-active .exam21-turn,
+.exam-day-active .exam21-checklist-card,
+.exam-day-active .exam21-rules>article{
+  border-color:var(--v26-border)!important;
+}
+
+/* 10) Mobile: app de verdade, não desktop empilhado. */
+@media(max-width:900px){
+  .mission-strip h1{font-size:clamp(2.05rem,11vw,3rem)!important;line-height:.98}
+  .mission-copy>p,
+  .view-heading p,
+  .panel-heading p{font-size:max(.84rem,13px)!important;line-height:1.62!important}
+  .context-line{font-size:max(.61rem,10px)!important}
+  .command-view .countdown-card::before{inset:-4px -12px -4px -12px;border-radius:20px}
+  .performance-score,.timeline-panel,.exam-day-active .exam21-hero{
+    box-shadow:0 12px 28px rgba(0,0,0,.10)!important;
+  }
+  .mobile-dock{
+    border-top-color:color-mix(in srgb,var(--paper) 11%,transparent)!important;
+    background:color-mix(in srgb,var(--ink-soft) 92%,transparent)!important;
+    box-shadow:0 -14px 34px rgba(0,0,0,.18)!important;
+    backdrop-filter:blur(22px) saturate(120%);
+  }
+  .mobile-dock button{min-height:50px}
+  .mobile-dock button.active{
+    background:color-mix(in srgb,var(--lime) 7%,transparent)!important;
+    color:var(--lime)!important;
+  }
+}
+
+@media(max-width:560px){
+  .view-heading{gap:16px;padding-bottom:20px}
+  .view-heading h2{font-size:clamp(1.9rem,10vw,2.65rem)!important}
+  .panel{border-radius:16px}
+  .metric-card{min-height:104px;padding:16px 14px 14px}
+  .chart-panel{padding:18px!important}
+  .performance-score,.mapping-card,.timeline-panel,.capital-panel,.transition-map{padding:20px!important}
+}
+
+/* Tema claro preserva contraste e profundidade. */
+html.light{
+  --v26-shadow:0 16px 42px rgba(35,50,41,.09);
+  --v26-shadow-soft:0 8px 24px rgba(35,50,41,.055);
+}
+html.light .brand-mark{box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 20%,transparent),0 7px 18px rgba(55,85,35,.10)}
+
+@media(prefers-reduced-motion:reduce){
+  .transition-step,.main-tabs button,.primary-button,.secondary-button,.ghost-button,.action-button,
+  .progress-track>i,.progress-track>span,[class*="progress"]>i,[class*="progress"]>span{
+    transition:none!important;
+    transform:none!important;
+  }
+}
