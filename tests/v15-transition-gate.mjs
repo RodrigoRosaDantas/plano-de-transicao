@@ -76,6 +76,11 @@ await scenario('pós-prova mobile: fechamento ativa, persiste e integra operaç�
 
   await page.click('#moreDockBtn');
   await page.waitForSelector('#moreSheet.open #v15TransitionOps');
+  // O bloco pode existir antes do render assíncrono refletir o estado persistido; valida o estado final, não o frame intermediário.
+  await page.waitForFunction(() => {
+    const text = document.querySelector('#moreSheet.open #v15TransitionOps')?.textContent || '';
+    return text.includes('Fechamento ativo') && text.includes('1/5');
+  }, null, { timeout: 5000 });
   const ops = await page.locator('#v15TransitionOps').innerText();
   if (!ops.includes('Fechamento ativo') || !ops.includes('1/5')) throw new Error(`Mais não refletiu o fechamento: ${ops}`);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
