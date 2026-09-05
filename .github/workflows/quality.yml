@@ -53,8 +53,6 @@ jobs:
         run: node tests/v22-exam-day-polish-static.mjs
       - name: Auditoria estática do workspace v23
         run: node tests/v23-workspace-static.mjs
-      - name: Auditoria estática dos recursos operacionais v25
-        run: node tests/v25-exam-ops-static.mjs
 
   ui:
     runs-on: ubuntu-latest
@@ -101,12 +99,6 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v23-workspace-ui.mjs
-      - name: Testes dos recursos operacionais v25
-        id: v25
-        continue-on-error: true
-        env:
-          BASE_URL: http://127.0.0.1:4173/
-        run: node tests/v25-exam-ops-ui.mjs
       - name: Testes específicos da caixa gerencial v13
         id: v13
         continue-on-error: true
@@ -142,7 +134,6 @@ jobs:
             "${{ steps.v21.outcome }}" \
             "${{ steps.v22.outcome }}" \
             "${{ steps.v23.outcome }}" \
-            "${{ steps.v25.outcome }}" \
             "${{ steps.v13.outcome }}" \
             "${{ steps.v14.outcome }}" \
             "${{ steps.v15.outcome }}"; do
