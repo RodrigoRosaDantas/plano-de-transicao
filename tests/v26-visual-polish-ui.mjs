@@ -44,7 +44,7 @@ await scenario('desktop: hierarquia, sidebar agrupada e profundidade seletiva', 
   await page.waitForSelector('.performance-score', { timeout: 10000 });
   const scoreStyle = await page.locator('.performance-score').evaluate(el => {
     const s = getComputedStyle(el);
-    return { shadow: s.boxShadow, bg: s.backgroundImage, border: s.borderTopColor };
+    return { shadow: s.boxShadow, bg: s.backgroundImage };
   });
   if (!scoreStyle.shadow || scoreStyle.shadow === 'none') throw new Error('Desempenho não recebeu profundidade seletiva.');
   if (!scoreStyle.bg || scoreStyle.bg === 'none') throw new Error('Desempenho não recebeu superfície elevada.');
@@ -55,13 +55,14 @@ await scenario('desktop: hierarquia, sidebar agrupada e profundidade seletiva', 
 await scenario('desktop: Jornada comunica transição sem novo conteúdo', { width: 1440, height: 1000 }, async page => {
   await page.locator('#mainTabs [data-view="journey"]').click();
   await page.waitForTimeout(220);
-  await page.waitForSelector('.journey-flow', { timeout: 10000 });
-  const line = await page.locator('.journey-flow').evaluate(el => {
+  await page.waitForSelector('.transition-steps', { timeout: 10000 });
+  const line = await page.locator('.transition-steps').evaluate(el => {
     const s = getComputedStyle(el, '::before');
     return { content: s.content, bg: s.backgroundImage, height: s.height };
   });
   if (line.content === 'none') throw new Error('Linha visual da Jornada não foi criada.');
   if (!line.bg || line.bg === 'none') throw new Error('Jornada sem gradiente de transição.');
+  if (parseFloat(line.height) < 1) throw new Error(`Linha da Jornada sem espessura: ${line.height}`);
   await page.screenshot({ path: 'artifacts/desktop-v26-journey.png', fullPage: true });
 });
 
@@ -77,12 +78,17 @@ await scenario('mobile 390px: legibilidade, dock e ausência de overflow', { wid
   const dockStyle = await dock.evaluate(el => ({ shadow: getComputedStyle(el).boxShadow, backdrop: getComputedStyle(el).backdropFilter }));
   if (!dockStyle.shadow || dockStyle.shadow === 'none') throw new Error('Dock mobile sem profundidade.');
 
-  await page.locator('#mobileDock [data-view="journey"]').click();
-  await page.waitForTimeout(180);
+  // Jornada não é garantida como atalho visível no dock em todos os breakpoints; usa o fluxo real pelo Mais.
+  await page.locator('#moreDockBtn').click();
+  await page.waitForSelector('#moreSheet.open', { timeout: 5000 });
+  await page.locator('#moreSheet [data-view="journey"]').click();
+  await page.waitForTimeout(220);
+  await page.waitForSelector('.transition-steps', { timeout: 10000 });
+
   const dimsJourney = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
   if (dimsJourney.sw - dimsJourney.cw > 2) throw new Error(`Overflow na Jornada mobile: ${dimsJourney.sw}px vs ${dimsJourney.cw}px`);
 
-  await page.screenshot({ path: 'artifacts/mobile-v26-home-journey.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/mobile-v26-journey.png', fullPage: true });
 });
 
 await browser.close();
