@@ -64,6 +64,7 @@ jobs:
         with:
           node-version: '22'
       - name: Instalar Playwright
+        timeout-minutes: 8
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
