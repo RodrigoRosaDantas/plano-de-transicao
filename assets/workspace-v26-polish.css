@@ -67,6 +67,9 @@
   content:"";
   pointer-events:none;
 }
+.command-view .journey-node::before{
+  background:linear-gradient(90deg,color-mix(in srgb,var(--aqua) 34%,var(--border)),color-mix(in srgb,var(--lime) 30%,var(--border)))!important;
+}
 
 /* 2) Tipografia: menos microtexto, melhor leitura e ritmo. */
 .mission-copy>p,
@@ -189,16 +192,16 @@
 }
 
 /* 5) Jornada: a transição vira elemento gráfico do produto. */
-.journey-flow{
+.transition-steps{
   position:relative;
   isolation:isolate;
 }
-.journey-flow::before{
+.transition-steps::before{
   position:absolute;
-  top:17px;
-  right:2.5%;
-  left:2.5%;
-  z-index:-1;
+  top:0;
+  right:calc(100% / 14);
+  left:calc(100% / 14);
+  z-index:0;
   height:1px;
   background:linear-gradient(90deg,color-mix(in srgb,var(--aqua) 48%,transparent),color-mix(in srgb,var(--lime) 54%,transparent),color-mix(in srgb,var(--amber) 42%,transparent));
   content:"";
@@ -206,24 +209,21 @@
 }
 .transition-step{
   position:relative;
+  z-index:1;
+  border-top-color:transparent!important;
   transition:transform .18s ease,color .18s ease;
 }
 .transition-step:hover{transform:translateY(-2px)}
-.transition-step::after{
-  position:absolute;
-  top:-2px;
-  left:50%;
-  width:7px;
-  height:7px;
-  border:2px solid var(--ink-soft);
-  border-radius:50%;
-  background:var(--aqua);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--aqua) 10%,transparent);
-  content:"";
-  transform:translateX(-50%);
-  pointer-events:none;
+.transition-step::before{
+  border-color:var(--ink-soft)!important;
+  box-shadow:0 0 0 1px var(--v26-border),0 0 0 4px color-mix(in srgb,var(--aqua) 5%,transparent)!important;
 }
-.transition-step:last-child::after{background:var(--lime)}
+.transition-step.done::before{
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 40%,transparent),0 0 0 4px color-mix(in srgb,var(--lime) 6%,transparent)!important;
+}
+.transition-step.active::before{
+  box-shadow:0 0 0 1px var(--amber),0 0 22px color-mix(in srgb,var(--amber) 28%,transparent)!important;
+}
 .timeline-index{
   border:1px solid var(--v26-border)!important;
   background:color-mix(in srgb,var(--surface-2) 46%,transparent)!important;
@@ -303,20 +303,6 @@
   .mobile-dock button.active{
     background:color-mix(in srgb,var(--lime) 7%,transparent)!important;
     color:var(--lime)!important;
-  }
-  .journey-flow::before{
-    top:0;
-    bottom:0;
-    left:16px;
-    right:auto;
-    width:1px;
-    height:auto;
-    background:linear-gradient(180deg,color-mix(in srgb,var(--aqua) 46%,transparent),color-mix(in srgb,var(--lime) 52%,transparent),color-mix(in srgb,var(--amber) 40%,transparent));
-  }
-  .transition-step::after{
-    top:18px;
-    left:16px;
-    transform:translate(-50%,-50%);
   }
 }
 
