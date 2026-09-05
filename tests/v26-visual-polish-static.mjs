@@ -15,7 +15,7 @@ has(sw, "'./assets/workspace-v26-polish.css'", 'PWA precache v26');
 
 has(css, '--v26-surface-raised', 'design token de profundidade');
 has(css, '.performance-score', 'refino de Desempenho');
-has(css, '.journey-flow::before', 'identidade visual da Jornada');
+has(css, '.transition-steps::before', 'identidade visual da Jornada');
 has(css, 'ACOMPANHAMENTO', 'agrupamento visual da sidebar');
 has(css, 'PLANO', 'grupo Plano da sidebar');
 has(css, 'SISTEMA', 'grupo Sistema da sidebar');
