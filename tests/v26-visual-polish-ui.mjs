@@ -82,8 +82,13 @@ await scenario('mobile 390px: legibilidade, dock e ausência de overflow', { wid
   await page.locator('#moreDockBtn').click();
   await page.waitForSelector('#moreSheet.open', { timeout: 5000 });
   await page.locator('#moreSheet [data-view="journey"]').click();
-  await page.waitForTimeout(220);
   await page.waitForSelector('.transition-steps', { timeout: 10000 });
+  await page.waitForFunction(() => {
+    const sheet = document.querySelector('#moreSheet');
+    if (!sheet) return false;
+    const style = getComputedStyle(sheet);
+    return !sheet.classList.contains('open') && style.visibility === 'hidden' && style.pointerEvents === 'none';
+  }, null, { timeout: 5000 });
 
   const dimsJourney = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
   if (dimsJourney.sw - dimsJourney.cw > 2) throw new Error(`Overflow na Jornada mobile: ${dimsJourney.sw}px vs ${dimsJourney.cw}px`);
