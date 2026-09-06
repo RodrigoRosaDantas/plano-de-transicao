@@ -1,30 +1,33 @@
 {
   "meta": {
-    "generatedAt": "2026-09-06T20:25:37.327Z",
+    "generatedAt": "2026-09-06T22:53:09.614Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
     "sourceUrl": "https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899",
-    "nextExam": "2026-09-06T08:00:00-03:00",
+    "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-06T20:25:38.185Z",
-    "dataWarnings": []
+    "workParityEnrichedAt": "2026-09-06T22:53:10.551Z",
+    "dataWarnings": [],
+    "phase": "post-exam",
+    "postExamNormalizedAt": "2026-09-06T22:53:10.602Z",
+    "postExamDate": "2026-09-06"
   },
-  "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
+  "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
     {
       "id": "tdas",
       "title": "TDAS — Cargo 202",
       "subtitle": "Técnico Administrativo",
-      "status": "Reta final",
+      "status": "Prova realizada · aguardando correção oficial",
       "tone": "primary"
     },
     {
       "id": "edas",
       "title": "EDAS — Cargo 400",
       "subtitle": "Administração",
-      "status": "Projeto paralelo estruturado",
+      "status": "Prova realizada · aguardando correção oficial",
       "tone": "secondary"
     }
   ],
@@ -118,7 +121,7 @@
       "score": "—",
       "rawAccuracy": null,
       "ranking": "—",
-      "status": "Próxima prova"
+      "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado"
     }
   ],
   "historyCycles": [
@@ -219,11 +222,11 @@
     {
       "date": "06/09/2026",
       "title": "SEDES/DF",
-      "detail": "Marco de conversão do capital acumulado em desempenho competitivo de prova."
+      "detail": "EDAS e TDAS realizadas em 06/09/2026. O ciclo entrou em correção, auditoria de questões, recursos e acompanhamento de resultado."
     }
   ],
   "strategy": {
-    "current": "TDAS 202 é a prioridade operacional até 06/09/2026; EDAS 400 permanece separado e estruturado em paralelo.",
+    "current": "As provas SEDES/DF foram concluídas em 06/09/2026. A prioridade agora é registrar a prova, corrigir pelo gabarito oficial, identificar recursos, calcular o resultado e só então decidir o próximo alvo.",
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
@@ -944,6 +947,23 @@
         "pending": 0,
         "unconfirmed": 0
       }
+    ]
+  },
+  "postExam": {
+    "phase": "active",
+    "examDate": "2026-09-06",
+    "examsCompleted": [
+      "EDAS · Cargo 400",
+      "TDAS · Cargo 202"
+    ],
+    "resultState": "Aguardando gabarito e resultado oficiais",
+    "scoreState": "Não calculado sem gabarito oficial",
+    "nextActions": [
+      "Registrar impressões e memória das duas provas enquanto ainda estão frescas.",
+      "Corrigir apenas contra gabarito oficial ou versão auditada.",
+      "Separar questões passíveis de recurso antes de consolidar a nota.",
+      "Calcular nota, posição provável e cenários somente com dados oficiais disponíveis.",
+      "Fechar o diagnóstico do ciclo antes de escolher o próximo concurso-alvo."
     ]
   }
 }
