@@ -33,12 +33,17 @@ async function waitForMoreClosed(page) {
   });
 }
 
-await scenario('desktop: aba dedicada, dados oficiais e persistência', { width: 1440, height: 1000 }, async page => {
+await scenario('desktop: aba dedicada acompanha a fase pós-prova', { width: 1440, height: 1000 }, async page => {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => document.documentElement.dataset.planPhase === 'post-exam', null, { timeout: 10000 });
   await page.waitForSelector('#mainTabs [data-exam-day-tab]');
+
+  const navText = await page.locator('#mainTabs [data-exam-day-tab]').innerText();
+  if (!navText.includes('Pós-prova')) throw new Error(`Aba dedicada não acompanhou a fase: ${navText}`);
+
   await page.click('#mainTabs [data-exam-day-tab]');
   await page.waitForURL(/#exam-day$/);
-  await page.waitForSelector('.exam21-shell');
+  await page.waitForSelector('[data-post-exam-v27]');
   await waitForMoreClosed(page);
 
   if (!(await page.locator('body').evaluate(node => node.classList.contains('exam-day-active')))) throw new Error('Shell dedicado não foi ativado.');
@@ -46,24 +51,18 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
   if (await page.locator('.context-line').isVisible()) throw new Error('Linha de contexto da Home continua visível na aba dedicada.');
   if (await page.locator('#examDayControl').isVisible()) throw new Error('Bloco antigo do Dia da Prova continua visível.');
 
-  const text = await page.locator('.exam21-shell').innerText();
-  const validPhaseHeadline = [
-    'Dia da prova, sem ruído.',
-    'Provas concluídas, registro preservado.'
-  ].some(value => text.includes(value));
-  if (!validPhaseHeadline) throw new Error('Cabeçalho do Dia da Prova não corresponde nem ao estado pré-prova nem ao pós-prova.');
+  const text = await page.locator('[data-post-exam-v27]').innerText();
+  for (const value of ['Provas concluídas.', 'EDAS · manhã', 'Administrador', 'TDAS · tarde', 'Técnico Administrativo', 'Aguardando gabarito']) {
+    if (!text.includes(value)) throw new Error(`Conteúdo pós-prova esperado ausente: ${value}`);
+  }
 
-  for (const value of [
-    'EDAS · CARGO 400', 'Administração', '06:45', '07:45', '1820',
-    'TDAS · CARGO 202', 'Técnico Administrativo', '13:45', '14:45', '1830',
-    'Não divulgado oficialmente', '4h após o início efetivo', '4 horas'
-  ]) if (!text.includes(value)) throw new Error(`Conteúdo esperado ausente: ${value}`);
+  if (await page.locator('.v27-archive').getAttribute('open') !== null) throw new Error('Logística histórica abriu por padrão.');
+  await page.locator('.v27-archive > summary').click();
+  const archiveText = await page.locator('.v27-archive').innerText();
+  for (const value of ['06:45–07:45', '1820', '13:45–14:45', '1830', '4 horas']) {
+    if (!archiveText.includes(value)) throw new Error(`Dado histórico preservado ausente: ${value}`);
+  }
 
-  // Reproduz a interação real: o input é visualmente oculto; o usuário toca no cartão/label.
-  await page.locator('.exam21-check').first().click();
-  await page.waitForFunction(() => JSON.parse(localStorage.getItem('plano-transicao:exam-day-v19:checks') || '{}').documento === true);
-
-  // Fluxo real do drawer no desktop: sair para Agora, abrir Mais e então entrar em Dia da Prova.
   await page.click('#mainTabs [data-view="command"]');
   await page.waitForURL(/#command$/);
   await page.evaluate(() => document.getElementById('moreTopBtn')?.click());
@@ -74,46 +73,49 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
     const rect = sheet.getBoundingClientRect();
     return rect.left < window.innerWidth && rect.right > 0;
   });
+  const sheetLabel = await page.locator('#moreSheet [data-exam-day-tab]').innerText();
+  if (!sheetLabel.includes('Pós-prova')) throw new Error(`Mais ainda anuncia Dia da Prova: ${sheetLabel}`);
   await page.click('#moreSheet [data-exam-day-tab]');
-  await page.waitForURL(/#exam-day$/);
-  await page.waitForSelector('.exam21-shell');
+  await page.waitForSelector('[data-post-exam-v27]');
   await waitForMoreClosed(page);
-  if (await page.locator('#moreSheet').evaluate(node => node.classList.contains('open'))) throw new Error('Menu Mais permaneceu aberto sobre a aba Dia da Prova.');
-  if (!(await page.locator('#exam21Checks input[value="documento"]').isChecked())) throw new Error('Checklist não persistiu ao retornar pelo menu Mais.');
+  if (await page.locator('#moreSheet').evaluate(node => node.classList.contains('open'))) throw new Error('Menu Mais permaneceu aberto sobre o pós-prova.');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal desktop: ${overflow}px`);
-  await page.screenshot({ path: 'artifacts/desktop-dia-da-prova-v21.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/desktop-pos-prova-v21-compat.png', fullPage: true });
 });
 
-await scenario('acesso direto: #exam-day sobrevive à inicialização do app', { width: 1180, height: 900 }, async page => {
+await scenario('acesso direto: #exam-day abre a versão pós-prova', { width: 1180, height: 900 }, async page => {
   await page.goto(`${baseURL}#exam-day`, { waitUntil: 'networkidle' });
-  await page.waitForSelector('.exam21-shell', { timeout: 10000 });
+  await page.waitForSelector('[data-post-exam-v27]', { timeout: 10000 });
   await waitForMoreClosed(page);
   if (new URL(page.url()).hash !== '#exam-day') throw new Error(`Hash direto foi perdido: ${page.url()}`);
   const active = await page.locator('#mainTabs [data-exam-day-tab]').getAttribute('aria-current');
   if (active !== 'page') throw new Error('Aba dedicada não ficou ativa no acesso direto.');
-  if (await page.locator('#examDayControl').isVisible()) throw new Error('Bloco legado reapareceu no acesso direto.');
+  const title = await page.title();
+  if (!title.includes('Pós-prova')) throw new Error(`Título do deep link continua pré-prova: ${title}`);
 });
 
-await scenario('mobile 390px: dock enxuto, cards empilhados e sem overflow', { width: 390, height: 844 }, async page => {
+await scenario('mobile 390px: dock pós-prova, cards empilhados e sem overflow', { width: 390, height: 844 }, async page => {
   await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => document.documentElement.dataset.planPhase === 'post-exam', null, { timeout: 10000 });
   await page.waitForSelector('#mobileDock [data-exam-day-tab]');
+  const label = await page.locator('#mobileDock [data-exam-day-tab]').innerText();
+  if (!label.includes('Pós-prova')) throw new Error(`Dock móvel continua pré-prova: ${label}`);
   await page.click('#mobileDock [data-exam-day-tab]');
-  await page.waitForSelector('.exam21-shell');
+  await page.waitForSelector('[data-post-exam-v27]');
   await waitForMoreClosed(page);
 
-  if (!(await page.locator('#mobileDock [data-exam-day-tab]').isVisible())) throw new Error('Atalho Dia da Prova não está visível no dock móvel.');
+  if (!(await page.locator('#mobileDock [data-exam-day-tab]').isVisible())) throw new Error('Atalho pós-prova não está visível no dock móvel.');
   if (await page.locator('#mobileDock [data-view="journey"]').isVisible()) throw new Error('Dock móvel manteve opção redundante e ficou superlotado.');
-  if (await page.locator('.exam21-turn').count() !== 2) throw new Error('Os dois turnos não foram renderizados.');
-  if (await page.locator('#moreSheet').evaluate(node => node.classList.contains('open'))) throw new Error('Menu Mais ficou aberto sobre a aba no mobile.');
+  if (await page.locator('.v27-exam-card').count() !== 2) throw new Error('Os dois turnos não foram renderizados.');
 
-  const turnColumns = await page.locator('.exam21-turns').evaluate(node => getComputedStyle(node).gridTemplateColumns);
+  const turnColumns = await page.locator('.v27-exam-grid').evaluate(node => getComputedStyle(node).gridTemplateColumns);
   if (turnColumns.trim().split(/\s+/).length !== 1) throw new Error(`Cards não empilharam no mobile: ${turnColumns}`);
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal mobile: ${overflow}px`);
-  await page.screenshot({ path: 'artifacts/mobile-dia-da-prova-v21.png', fullPage: true });
+  await page.screenshot({ path: 'artifacts/mobile-pos-prova-v21-compat.png', fullPage: true });
 });
 
 await browser.close();
@@ -122,4 +124,4 @@ if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   process.exit(1);
 }
-console.log('\n3/3 cenários da aba Dia da Prova aprovados.');
+console.log('\n3/3 cenários da aba dedicada aprovados no estado pós-prova.');
