@@ -87,6 +87,7 @@ async function renderNowBoard() {
   const edasRows = subjectRows('edas');
   const weak = [...tdasRows.slice(0, 2), ...edasRows.slice(0, 2)].sort((a, b) => b.priority - a.priority)[0];
   const days = daysToExam(data);
+  const completedExams = (data.exams || []).filter(exam => exam.id?.startsWith('sedes-2026-') && exam.attendance === 'completed').length;
   const generated = new Date(data.meta.generatedAt);
   const ageMinutes = Math.max(0, Math.round((Date.now() - generated.getTime()) / 60_000));
   const freshness = ageMinutes < 60 ? `${ageMinutes} min` : ageMinutes < 1440 ? `${Math.round(ageMinutes / 60)} h` : `${Math.round(ageMinutes / 1440)} d`;
@@ -97,7 +98,7 @@ async function renderNowBoard() {
   section.innerHTML = `
     <div class="manager-now-heading">
       <div><span class="eyebrow">AGORA</span><h2>O painel precisa responder antes de você perguntar.</h2><p>Leitura operacional gerada apenas com os dados publicados e tratados.</p></div>
-      <span class="manager-now-badge">${ICON.clock}<strong>${days}</strong><small>dias para a prova</small></span>
+      <span class="manager-now-badge">${ICON.clock}<strong>${completedExams || days}</strong><small>${completedExams ? (completedExams === 1 ? 'prova realizada' : 'provas realizadas') : 'dias para a prova'}</small></span>
     </div>
     <div class="manager-now-grid">
       <button type="button" data-view="performance" data-performance-scope-jump="tdas" class="manager-now-item">

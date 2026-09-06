@@ -64,7 +64,7 @@ check('IDs financeiros únicos', new Set((snapshot.financeEntries || []).map((x)
 
 const classified = (snapshot.exams || []).filter((x) => x.classification);
 check('Classificação sempre possui etapa', classified.every((x) => Boolean(x.classificationStage)));
-check('Prova futura não possui resultado inventado', (snapshot.exams || []).filter((x) => x.name.includes('SEDES')).every((x) => x.rawAccuracy == null));
+check('Prova sem realização confirmada não possui resultado inventado', (snapshot.exams || []).filter((x) => x.name.includes('SEDES') && x.attendance !== 'completed').every((x) => x.rawAccuracy == null));
 check('Caldas preserva não auditável financeiro', (snapshot.exams || []).filter((x) => x.name.includes('Caldas')).every((x) => String(x.financialStatus || '').includes('Não auditável')));
 check('Câmara preserva status financeiro fechado', (snapshot.exams || []).filter((x) => x.name.includes('Câmara')).every((x) => x.financialStatus === 'Fechado'));
 

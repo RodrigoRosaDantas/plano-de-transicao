@@ -10,6 +10,7 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 - Desempenho por matéria, combinações e atividades, com filtros independentes para histórico, TDAS e EDAS.
 - Jornada e marcos em mapa visual contínuo.
 - Provas e resultados com separação entre aproveitamento, nota, classificação e etapa do certame.
+- TDAS 202 e EDAS 400 com registros próprios de realização e resultado. Prova realizada sem nota permanece com resultado pendente, sem entrar nos gráficos de aproveitamento.
 - Financeiro completo com filtros, gráficos por ciclo/categoria, livro de lançamentos e exportação em CSV.
 - Fontes e auditoria com cadeia de verdade explícita.
 - Estratégia de carreira.

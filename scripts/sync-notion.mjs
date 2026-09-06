@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { syncSedesExams } from './sedes-exams.mjs';
 
 const token = process.env.NOTION_TOKEN;
 if (!token) throw new Error('NOTION_TOKEN não configurado.');
@@ -350,11 +351,17 @@ function dynamicExam(previousExam, needle) {
   };
 }
 
-const exams = previous.exams.map(e => {
+const exams = syncSedesExams(previous.exams.map(e => {
   if (e.name.includes('Caldas Novas')) return dynamicExam(e, 'Caldas Novas');
   if (e.name.includes('Câmara')) return dynamicExam(e, 'Câmara Goiânia');
   return e;
-});
+}), examRows.map(row => ({
+  project: textValue(row, 'Projeto'), date: dateValue(row, 'Data'),
+  questions: numberValue(row, 'Questões'), hits: numberValue(row, 'Acertos'),
+  accuracy: numberValue(row, 'Aproveitamento'), score: numberValue(row, 'Nota editalícia'),
+  maximum: numberValue(row, 'Pontuação máxima'), classification: numberValue(row, 'Classificação da etapa'),
+  stage: textValue(row, 'Etapa da classificação'), status: textValue(row, 'Situação competitiva'), url: row.url
+})));
 
 const fallbackPostExamGates = previous.strategy?.postExamGates || [
   'Registrar a prova e o resultado em Concursos, Provas e Resultados.',
@@ -379,6 +386,9 @@ const snapshot = {
   },
   strategy: {
     ...previous.strategy,
+    current: exams.filter(exam => exam.id?.startsWith('sedes-2026-') && exam.attendance === 'completed').length === 2
+      ? 'Provas TDAS 202 e EDAS 400 realizadas. Acompanhar correções, notas e classificações separadamente e consolidar o diagnóstico para os próximos passos.'
+      : previous.strategy.current,
     postExamSource: {
       page: '04 — Estratégia de Carreira e Próximas Etapas',
       url: 'https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293',
@@ -387,6 +397,12 @@ const snapshot = {
     },
     postExamGates
   },
+  priorities: previous.priorities.map(priority => {
+    const exam = exams.find(item => item.id === `sedes-2026-${priority.id}`);
+    return exam?.attendance === 'completed'
+      ? { ...priority, status: exam.rawAccuracy == null ? 'Prova realizada — resultado a registrar' : 'Prova realizada — resultado registrado' }
+      : priority;
+  }),
   metrics: {
     tdas: {
       questions: tdasQuestions,
