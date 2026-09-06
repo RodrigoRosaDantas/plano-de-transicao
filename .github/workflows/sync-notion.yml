@@ -9,6 +9,7 @@ on:
       - '.github/workflows/sync-notion.yml'
       - 'scripts/sync-notion.mjs'
       - 'scripts/enrich-work-parity.mjs'
+      - 'scripts/apply-post-exam-state.mjs'
       - 'scripts/audit-parity.mjs'
       - '.sync-trigger'
   schedule:
@@ -39,6 +40,8 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/enrich-work-parity.mjs
+      - name: Aplicar estado pós-prova
+        run: node scripts/apply-post-exam-state.mjs
       - name: Auditar dados e paridade antes do commit
         run: node scripts/audit-parity.mjs
       - name: Commit de atualização
