@@ -184,12 +184,14 @@ function commandView() {
   const historicalWeak = weakest("historical");
   const focus = [tdasWeak, edasWeak, historicalWeak].filter(Boolean);
   const sourceReady = data.meta.live && !(data.meta.syncWarnings || []).length;
+  const examSummary = data.exams.filter(exam => exam.id?.startsWith('sedes-2026-'))
+    .map(exam => `${exam.role.split(' — ')[0]}: ${exam.attendance === 'completed' ? 'prova realizada' : 'realização não confirmada'}`).join(' · ');
   return `<div class="view-stack command-view">
     <section class="cockpit-grid">
       <article class="panel countdown-card">
         <div class="countdown-topline"><span class="section-kicker">${svgIcon("clock")} Prova SEDES/DF</span><span>06/09/2026 · Brasília</span></div>
-        <div class="countdown-body"><div class="countdown-value"><strong data-countdown-days>${clock.days}</strong><span>${clock.ended ? "prova realizada" : "dias"}</span></div><div class="brasilia-clock">${svgIcon("clock")}<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div>
-        <p>${clock.ended ? "A contagem terminou. Agora o plano muda de preparação para registro de prova, resultado e decisão seguinte." : "Duas provas, duas trilhas. A reta final pede precisão: preservar o que já está forte e atacar apenas o erro que ainda custa ponto."}</p>
+        <div class="countdown-body"><div class="countdown-value"><strong data-countdown-days>${clock.days}</strong><span>${clock.ended ? "dias até a data da prova" : "dias"}</span></div><div class="brasilia-clock">${svgIcon("clock")}<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div>
+        <p>${esc(examSummary || "Duas provas, duas trilhas. Consulte a realização e os resultados de cada cargo em Concursos.")}</p>
       </article>
       <div class="target-stack">
         <button class="panel target-card" type="button" data-view="performance" data-performance-scope-jump="tdas">
@@ -199,7 +201,7 @@ function commandView() {
         </button>
         <button class="panel target-card edas" type="button" data-view="performance" data-performance-scope-jump="edas">
           <div class="target-card-top"><span>${svgIcon("layers")} Administração</span><b>Cargo 400</b></div>
-          <div class="target-card-main"><div><small>Projeto EDAS</small><h2>${fmt(m.edas.questions)} questões tratadas</h2></div><strong>${pct(m.edas.accuracy)}</strong></div>
+          <div class="target-card-main"><div><small>Projeto EDAS · ${esc(data.priorities.find(item => item.id === 'edas')?.status || '')}</small><h2>${fmt(m.edas.questions)} questões de preparação</h2></div><strong>${pct(m.edas.accuracy)}</strong></div>
           ${progress(m.edas.accuracy)}<div class="target-card-footer"><span>${fmt(m.edas.errorNotebook)} itens no caderno · ${fmt(m.edas.caseStudies)} casos</span><span>Abrir ${svgIcon("chevron")}</span></div>
         </button>
       </div>
@@ -253,23 +255,25 @@ function journeyView() {
   const data = state.data;
   const m = data.metrics.history;
   return `<div class="view-stack journey-view">${viewHeading("Jornada", "Uma transição construída, não um recomeço eterno.", "Cada marco conserva o capital anterior e muda a próxima decisão.", `<button class="secondary-button" type="button" data-copy-journey>${svgIcon("copy")} Copiar jornada</button>`)}
-    <section class="metric-grid">${metricCard("Início da preparação", "03/07/2025", "Retomada estruturada", "aqua")}${metricCard("Capital mensurável", fmt(m.questions), `${pct(m.accuracy)} de aproveitamento`, "lime")}${metricCard("Provas reais", fmt(data.exams.filter((exam) => exam.rawAccuracy != null).length), "Réguas externas registradas", "amber")}${metricCard("Próximo marco", dateBR(data.meta.nextExam, true).toUpperCase(), "SEDES/DF", "violet")}</section>
+    <section class="metric-grid">${metricCard("Início da preparação", "03/07/2025", "Retomada estruturada", "aqua")}${metricCard("Capital mensurável", fmt(m.questions), `${pct(m.accuracy)} de aproveitamento`, "lime")}${metricCard("Provas reais", fmt(data.exams.filter((exam) => exam.attendance === "completed" || exam.rawAccuracy != null).length), "Comparecimento registrado", "amber")}${metricCard("Próximo marco", dateBR(data.meta.nextExam, true).toUpperCase(), "SEDES/DF", "violet")}</section>
     <section class="journey-layout"><article class="panel timeline-panel"><div class="panel-heading"><div><span class="eyebrow">LINHA DO TEMPO</span><h2>Marcos que mudaram a trajetória</h2></div>${svgIcon("route")}</div><div class="timeline-list">${data.timeline.map((item, index) => `<article class="timeline-item ${index === data.timeline.length - 1 ? "active" : ""}"><div class="timeline-index">${String(index + 1).padStart(2, "0")}</div><div><time>${esc(item.date)}</time><h3>${esc(item.title)}</h3><p>${esc(item.detail)}</p></div></article>`).join("")}</div></article><aside class="panel capital-panel"><span class="eyebrow">CAPITAL ACUMULADO</span><h2>O que já não volta ao zero</h2><div class="capital-number"><strong>${fmt(m.rawRecords)}</strong><span>registros brutos</span></div><div class="capital-breakdown"><div><span>Mensuráveis</span><strong>${fmt(m.questions)}</strong></div><div><span>Sem resultado</span><strong>${fmt(m.withoutResult)}</strong></div><div><span>Acertos</span><strong>${fmt(m.hits)}</strong></div><div><span>Erros</span><strong>${fmt(m.errors)}</strong></div></div><blockquote>“Não recomeçar a cada edital” não é frase bonita. É regra de alocação de tempo.</blockquote></aside></section>
     <section class="panel transition-map"><div class="panel-heading"><div><span class="eyebrow">MAPA DA TRANSIÇÃO</span><h2>Do estudo à posse</h2><p>O fluxo continua depois da prova e transforma resultado em decisão.</p></div></div><div class="transition-steps">${[["Base", "03/07/2025", "done"], ["Câmara", "35/50", "done"], ["TDAS", "3.319 questões", "done"], ["SEDES/DF", "06/09/2026", "active"], ["Resultado", "classificação", "future"], ["Nomeação", "convocação", "future"], ["Posse", "transição", "future"]].map(([title, note, tone], index) => `<div class="transition-step ${tone}"><span>${String(index + 1).padStart(2, "0")}</span><strong>${title}</strong><small>${note}</small></div>`).join("")}</div></section>
   </div>`;
 }
 
 function examCard(exam) {
-  const upcoming = exam.rawAccuracy == null;
-  const status = upcoming ? statusChip("Próxima prova", "warning") : statusChip("Resultado auditado", "good");
-  return `<article class="panel exam-card"><div class="exam-card-head"><div><span class="eyebrow">${esc(exam.role)}</span><h3>${esc(exam.name)}</h3></div>${status}</div><div class="exam-result-block"><div><span>Resultado</span><strong>${esc(exam.score || "—")}</strong></div><div><span>Aproveitamento</span><strong>${exam.rawAccuracy == null ? "—" : pct(exam.rawAccuracy)}</strong></div><div><span>Nota editalícia</span><strong>${esc(exam.weightedScore || "—")}</strong></div></div><div class="exam-ranking"><span>Classificação / etapa</span><strong>${esc(exam.ranking || "Aguardando prova")}</strong></div><details><summary>Contexto auditado <span>${svgIcon("chevron")}</span></summary><p>${esc(exam.status || "Sem observação adicional.")}</p>${exam.competitionUniverse ? `<p><b>Universo:</b> ${esc(exam.competitionUniverse)}</p>` : ""}</details></article>`;
+  const measured = exam.rawAccuracy != null;
+  const status = measured ? statusChip("Resultado registrado", "good")
+    : exam.attendance === 'completed' ? statusChip("Prova realizada · resultado pendente", "aqua")
+    : statusChip(exam.attendance === 'unconfirmed' ? "Realização não confirmada" : "Próxima prova", "warning");
+  return `<article class="panel exam-card"><div class="exam-card-head"><div><span class="eyebrow">${esc(exam.role)}${exam.session ? ` · ${esc(exam.session)}` : ""}</span><h3>${esc(exam.name)}</h3></div>${status}</div><div class="exam-result-block"><div><span>Resultado</span><strong>${esc(exam.score || "—")}</strong></div><div><span>Aproveitamento</span><strong>${exam.rawAccuracy == null ? "—" : pct(exam.rawAccuracy)}</strong></div><div><span>Nota editalícia</span><strong>${esc(exam.weightedScore || "—")}</strong></div></div><div class="exam-ranking"><span>Classificação / etapa</span><strong>${esc(exam.ranking || "Aguardando prova")}</strong></div><details><summary>Contexto auditado <span>${svgIcon("chevron")}</span></summary><p>${esc(exam.status || "Sem observação adicional.")}</p>${exam.competitionUniverse ? `<p><b>Universo:</b> ${esc(exam.competitionUniverse)}</p>` : ""}</details></article>`;
 }
 
 function examsView() {
   const exams = state.data.exams;
   const measured = exams.filter((exam) => exam.rawAccuracy != null);
   return `<div class="view-stack exams-view">${viewHeading("Concursos", "Prova, nota, classificação e contexto no lugar certo.", "A prova real funciona como régua externa. O treino não é usado para maquiar resultado de concurso.", `<button class="secondary-button" type="button" data-copy-exams>${svgIcon("copy")} Copiar histórico</button>`)}
-    <section class="exam-hero panel"><div><span class="eyebrow">PRÓXIMA PROVA</span><h2>SEDES/DF · TDAS 202 + EDAS 400</h2><p>06 de setembro de 2026 · duas trilhas, mesma data, métricas separadas.</p></div><div class="exam-hero-date"><strong>06</strong><span>SET<br>2026</span></div><button class="primary-button" type="button" data-view="performance">${svgIcon("target")} Ver prioridades</button></section>
+    <section class="exam-hero panel"><div><span class="eyebrow">ACOMPANHAMENTO DAS PROVAS</span><h2>SEDES/DF · cada cargo com seu registro</h2><p>${exams.filter(exam => exam.id?.startsWith('sedes-2026-')).map(exam => `${esc(exam.role.split(' — ')[0])} · ${esc(exam.session)}: ${exam.attendance === 'completed' ? 'prova realizada' : 'realização não confirmada'}`).join('<br>') || '06 de setembro de 2026 · registros por cargo em preparação.'}</p></div><div class="exam-hero-date"><strong>06</strong><span>SET<br>2026</span></div><button class="primary-button" type="button" data-view="performance">${svgIcon("target")} Ver preparação</button></section>
     <section class="exam-grid">${exams.map(examCard).join("")}</section>
     <section class="performance-chart-grid"><article class="panel chart-panel"><div class="panel-heading"><div><span class="eyebrow">PROVAS REAIS</span><h2>Evolução do aproveitamento bruto</h2></div>${svgIcon("chart")}</div>${horizontalBars(measured.map((exam) => ({ name: exam.name, accuracy: exam.rawAccuracy, questions: Number(String(exam.score).split("/")[1] || 0) })), "accuracy", (value) => pct(value), 8)}</article><article class="panel competitive-card"><span class="eyebrow">RÉGUA COMPETITIVA</span><h2>Da nota ao contexto</h2><div class="competitive-compare">${measured.map((exam) => `<div><span>${esc(exam.name)}</span><strong>${pct(exam.rawAccuracy)}</strong><small>${esc(exam.ranking || "—")}</small></div>`).join("")}</div><p>Aproveitamento bruto, nota editalícia e classificação são grandezas diferentes. Aqui, elas não são empilhadas como se fossem a mesma coisa.</p></article></section>
     <section class="panel exam-matrix-panel"><div class="panel-heading"><div><span class="eyebrow">MATRIZ AUDITADA</span><h2>Comparação sem apagar o estágio do concurso</h2></div>${statusChip(`${measured.length} resultados reais`, "aqua")}</div><div class="subject-table-wrap"><table class="data-table exam-matrix"><thead><tr><th>Concurso</th><th>Data</th><th>Resultado</th><th>Aproveitamento</th><th>Classificação</th><th>Etapa / universo</th></tr></thead><tbody>${exams.map((exam) => `<tr><td><strong>${esc(exam.name)}</strong><small>${esc(exam.role)}</small></td><td>${dateBR(exam.date)}</td><td>${esc(exam.score || "—")}</td><td>${exam.rawAccuracy == null ? "—" : pct(exam.rawAccuracy)}</td><td>${exam.classification ? fmt(exam.classification) : "—"}</td><td>${esc(exam.classificationStage || exam.status || "—")}</td></tr>`).join("")}</tbody></table></div></section>
@@ -327,7 +331,7 @@ function auditChecks() {
     ["TDAS preservado separadamente", m.tdas.questions === m.tdas.hits + m.tdas.errors],
     ["EDAS preservado separadamente", m.edas.questions === m.edas.hits + m.edas.errors],
     ["Financeiro SEDES reconciliado", Math.abs(sedesOperational - m.finance.sedesConfirmed) < .01],
-    ["Provas reais fora do volume de treino", data.exams.every((exam) => exam.name !== "SEDES/DF" || exam.rawAccuracy == null)],
+    ["Resultado só após realização confirmada", data.exams.filter((exam) => exam.attendance === "unconfirmed").every((exam) => exam.rawAccuracy == null)],
     ["Classificação acompanhada da etapa", data.exams.filter((exam) => exam.classification).every((exam) => Boolean(exam.classificationStage))],
     ["Tratamento por matéria matematicamente válido", topicalValid],
     ["Snapshot sem alerta de sincronização", !(data.meta.syncWarnings || []).length],
@@ -576,6 +580,8 @@ async function loadSnapshot(feedback = false) {
     const data = await response.json();
     if (!data?.metrics?.history || !data?.governance?.truthChain) throw new Error("Snapshot incompleto");
     state.data = data;
+    window.__planoPublishedSnapshot = data;
+    window.dispatchEvent(new CustomEvent('plano:snapshot-loaded', { detail: data }));
     buildSearchIndex();
     updateShell();
     render();
@@ -658,7 +664,7 @@ function bindShell() {
       const m = scopeMetrics(state.performance.scope); copyText(`${m.label}: ${fmt(m.questions)} questões, ${fmt(m.correct)} acertos, ${fmt(m.errors)} erros e ${pct(m.accuracy)} de aproveitamento.`, "Resumo de desempenho copiado."); return;
     }
     if (event.target.closest("[data-copy-journey]")) { copyText(state.data.timeline.map((item) => `${item.date} — ${item.title}: ${item.detail}`).join("\n"), "Jornada copiada."); return; }
-    if (event.target.closest("[data-copy-exams]")) { copyText(state.data.exams.map((exam) => `${exam.name} (${exam.role}) — ${exam.score} — ${exam.ranking || exam.status}`).join("\n"), "Histórico de provas copiado."); return; }
+    if (event.target.closest("[data-copy-exams]")) { copyText(state.data.exams.map((exam) => `${exam.name} (${exam.role}) — ${exam.score} — ${exam.status}${exam.ranking && exam.ranking !== "—" ? ` · ${exam.ranking}` : ""}`).join("\n"), "Histórico de provas copiado."); return; }
     if (event.target.closest("[data-copy-strategy]")) { copyText([state.data.strategy.current, ...state.data.strategy.principles].join("\n• "), "Estratégia copiada."); return; }
     if (event.target.closest("[data-export-finance]")) { exportFinance(); return; }
     if (event.target.closest("[data-export-snapshot]")) { exportFile("snapshot-plano-de-transicao.json", JSON.stringify(state.data, null, 2)); toast("Snapshot exportado."); return; }

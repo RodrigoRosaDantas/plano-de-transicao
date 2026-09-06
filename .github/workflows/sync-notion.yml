@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/workflows/sync-notion.yml'
       - 'scripts/sync-notion.mjs'
+      - 'scripts/sedes-exams.mjs'
       - 'scripts/enrich-work-parity.mjs'
       - 'scripts/audit-parity.mjs'
       - '.sync-trigger'

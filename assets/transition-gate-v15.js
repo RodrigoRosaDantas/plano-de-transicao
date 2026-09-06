@@ -60,8 +60,8 @@ function model(data) {
   const state = readState();
   const completed = state.completed.filter((index) => index >= 0 && index < gates.length);
   const finished = gates.length > 0 && completed.length === gates.length;
-  const sedesExam = (data?.exams || []).find((exam) => String(exam.name || '').includes('SEDES'));
-  const resultRegistered = sedesExam?.rawAccuracy != null;
+  const sedesExams = (data?.exams || []).filter((exam) => String(exam.name || '').includes('SEDES'));
+  const resultRegistered = sedesExams.length > 0 && sedesExams.every(exam => exam.rawAccuracy != null);
   const snapshotAfterExam = new Date(data?.meta?.generatedAt || 0).getTime() >= examAt;
   const financeClosed = /fechado/i.test(String(data?.metrics?.finance?.status || ''));
   return {

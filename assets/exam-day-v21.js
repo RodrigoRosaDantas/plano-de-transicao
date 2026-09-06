@@ -22,6 +22,11 @@ const CHECK_KEY = 'plano-transicao:exam-day-v19:checks';
 const INITIAL_EXAM_DAY = location.hash === '#exam-day';
 let examDayTimer = null;
 let contentObserver = null;
+let examRecords = window.__planoPublishedSnapshot?.exams || [];
+window.addEventListener('plano:snapshot-loaded', event => {
+  examRecords = event.detail?.exams || [];
+  updateLive();
+});
 
 const ICONS = {
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
@@ -79,6 +84,10 @@ function nextMilestone(now = Date.now()) {
 }
 
 function gateStatus(exam, now = Date.now()) {
+  const record = examRecords.find(item => item.id === `sedes-2026-${exam.id}`);
+  if (record?.attendance === 'completed') return {
+    label: record.rawAccuracy == null ? 'Prova realizada · resultado pendente' : 'Prova realizada · resultado registrado', state: 'closed'
+  };
   const opens = new Date(exam.openIso).getTime();
   const closes = new Date(exam.closeIso).getTime();
   if (now < opens) return { label: `Abre às ${exam.open}`, state: 'waiting' };
