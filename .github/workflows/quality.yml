@@ -58,6 +58,8 @@ jobs:
         run: node tests/v23-workspace-static.mjs
       - name: Auditoria estática do refinamento v26
         run: node tests/v26-visual-polish-static.mjs
+      - name: Auditoria estática do pós-prova v27
+        run: node tests/v27-post-exam-static.mjs
 
   ui:
     runs-on: ubuntu-latest
@@ -93,13 +95,13 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/ui-smoke.mjs
-      - name: Testes da aba Dia da Prova v21
+      - name: Testes da aba dedicada v21 no estado atual
         id: v21
         continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v21-exam-day-tab.mjs
-      - name: Testes do polimento visual v22
+      - name: Testes do polimento visual v22 no estado atual
         id: v22
         continue-on-error: true
         env:
@@ -117,6 +119,12 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v26-visual-polish-ui.mjs
+      - name: Testes específicos do pós-prova v27
+        id: v27
+        continue-on-error: true
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v27-post-exam-ui.mjs
       - name: Testes específicos da caixa gerencial v13
         id: v13
         continue-on-error: true
@@ -154,6 +162,7 @@ jobs:
             "${{ steps.v22.outcome }}" \
             "${{ steps.v23.outcome }}" \
             "${{ steps.v26.outcome }}" \
+            "${{ steps.v27.outcome }}" \
             "${{ steps.v13.outcome }}" \
             "${{ steps.v14.outcome }}" \
             "${{ steps.v15.outcome }}"; do
