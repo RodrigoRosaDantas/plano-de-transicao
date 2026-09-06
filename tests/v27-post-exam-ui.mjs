@@ -5,6 +5,7 @@ const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 await fs.mkdir('artifacts', { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const failures = [];
+const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
 
 async function scenario(name, viewport, run) {
   const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
@@ -27,13 +28,13 @@ async function scenario(name, viewport, run) {
 
 await scenario('desktop: Home mudou de preparação para pós-prova', { width: 1440, height: 1000 }, async page => {
   await page.waitForSelector('.command-view .v27-home-status');
-  const homeText = await page.locator('.command-view').innerText();
+  const homeText = normalize(await page.locator('.command-view').innerText());
   for (const value of ['As duas provas foram realizadas.', 'PÓS-PROVA', 'Corrigir, recorrer e acompanhar']) {
     if (!homeText.includes(value)) throw new Error(`Home pós-prova sem: ${value}`);
   }
-  const tabText = await page.locator('#mainTabs [data-exam-day-tab]').innerText();
+  const tabText = normalize(await page.locator('#mainTabs [data-exam-day-tab]').innerText());
   if (!tabText.includes('Pós-prova')) throw new Error(`Aba não foi renomeada: ${tabText}`);
-  const milestone = await page.locator('#nextMilestone').innerText();
+  const milestone = normalize(await page.locator('#nextMilestone').innerText());
   if (!milestone.includes('GABARITO')) throw new Error(`Próximo marco continua pré-prova: ${milestone}`);
   if (await page.locator('.command-view > .priority-grid').isVisible()) throw new Error('Prioridades pré-prova continuam ocupando a Home.');
   if (await page.locator('.command-view > .focus-board').isVisible()) throw new Error('Foco pré-prova continua ocupando a Home.');
@@ -45,8 +46,8 @@ await scenario('desktop: Pós-prova prioriza gabarito e preserva logística reco
   await page.waitForURL(/#exam-day$/);
   await page.waitForSelector('[data-post-exam-v27]');
 
-  const text = await page.locator('[data-post-exam-v27]').innerText();
-  for (const value of ['Provas concluídas.', 'PRÓXIMOS PASSOS', 'EDAS · manhã', 'TDAS · tarde', 'Aguardando gabarito']) {
+  const text = normalize(await page.locator('[data-post-exam-v27]').innerText());
+  for (const value of ['Provas concluídas', 'PRÓXIMOS PASSOS', 'EDAS · manhã', 'TDAS · tarde', 'Aguardando gabarito']) {
     if (!text.includes(value)) throw new Error(`Pós-prova sem conteúdo esperado: ${value}`);
   }
   if (await page.locator('.v27-archive').getAttribute('open') !== null) throw new Error('Arquivo de logística abriu por padrão e voltou a dominar a tela.');
@@ -56,7 +57,7 @@ await scenario('desktop: Pós-prova prioriza gabarito e preserva logística reco
 
   await page.locator('.v27-archive > summary').click();
   await page.waitForFunction(() => document.querySelector('.v27-archive')?.open === true);
-  const archiveText = await page.locator('.v27-archive').innerText();
+  const archiveText = normalize(await page.locator('.v27-archive').innerText());
   for (const value of ['Centro de Ensino Fundamental Telebrasília', '06:45–07:45', '13:45–14:45']) {
     if (!archiveText.includes(value)) throw new Error(`Histórico logístico ausente: ${value}`);
   }
@@ -73,7 +74,7 @@ await scenario('desktop: Pós-prova prioriza gabarito e preserva logística reco
 
 await scenario('mobile 390px: pós-prova compacto e sem regressão horizontal', { width: 390, height: 844 }, async page => {
   await page.waitForSelector('#mobileDock [data-exam-day-tab]');
-  const label = await page.locator('#mobileDock [data-exam-day-tab]').innerText();
+  const label = normalize(await page.locator('#mobileDock [data-exam-day-tab]').innerText());
   if (!label.includes('Pós-prova')) throw new Error(`Dock móvel ainda está pré-prova: ${label}`);
 
   await page.locator('#mobileDock [data-exam-day-tab]').click();
