@@ -81,6 +81,10 @@ jobs:
           done
           cat /tmp/plano-http.log
           exit 1
+      - name: Diagnóstico da cauda vertical do layout
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/layout-tail-diagnostic.mjs
       - name: Testes da central, atualização, desempenho, operações e responsividade
         id: smoke
         continue-on-error: true
