@@ -56,6 +56,8 @@ jobs:
         run: node tests/v22-exam-day-polish-static.mjs
       - name: Auditoria estática do workspace v23
         run: node tests/v23-workspace-static.mjs
+      - name: Auditoria estática do refinamento v26
+        run: node tests/v26-visual-polish-static.mjs
 
   ui:
     runs-on: ubuntu-latest
@@ -65,6 +67,7 @@ jobs:
         with:
           node-version: '22'
       - name: Instalar Playwright
+        timeout-minutes: 8
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
@@ -102,6 +105,12 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v23-workspace-ui.mjs
+      - name: Testes do refinamento visual v26
+        id: v26
+        continue-on-error: true
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v26-visual-polish-ui.mjs
       - name: Testes específicos da caixa gerencial v13
         id: v13
         continue-on-error: true
@@ -137,13 +146,14 @@ jobs:
             "${{ steps.v21.outcome }}" \
             "${{ steps.v22.outcome }}" \
             "${{ steps.v23.outcome }}" \
+            "${{ steps.v26.outcome }}" \
             "${{ steps.v13.outcome }}" \
             "${{ steps.v14.outcome }}" \
             "${{ steps.v15.outcome }}"; do
             if [ "$outcome" != "success" ]; then failed=1; fi
           done
           if [ "$failed" -ne 0 ]; then
-            echo "Uma ou mais suítes de UI falharam. Consulte os passos acima e os screenshots."
+            echo "Uma ou mais suíítes de UI falharam. Consulte os passos acima e os screenshots."
             exit 1
           fi
           echo "Todas as suítes de UI passaram."
