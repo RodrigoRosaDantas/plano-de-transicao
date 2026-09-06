@@ -81,7 +81,9 @@ jobs:
           done
           cat /tmp/plano-http.log
           exit 1
-      - name: Diagnóstico da cauda vertical do layout
+      - name: Auditoria da cauda vertical do layout
+        id: tail
+        continue-on-error: true
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/layout-tail-diagnostic.mjs
@@ -146,6 +148,7 @@ jobs:
         run: |
           failed=0
           for outcome in \
+            "${{ steps.tail.outcome }}" \
             "${{ steps.smoke.outcome }}" \
             "${{ steps.v21.outcome }}" \
             "${{ steps.v22.outcome }}" \
@@ -157,7 +160,7 @@ jobs:
             if [ "$outcome" != "success" ]; then failed=1; fi
           done
           if [ "$failed" -ne 0 ]; then
-            echo "Uma ou mais suíítes de UI falharam. Consulte os passos acima e os screenshots."
+            echo "Uma ou mais suítes de UI falharam. Consulte os passos acima e os screenshots."
             exit 1
           fi
           echo "Todas as suítes de UI passaram."
