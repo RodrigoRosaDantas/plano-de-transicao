@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-06T22:53:51.492Z",
+    "generatedAt": "2026-09-06T22:56:26.949Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,10 +8,10 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-06T22:53:52.407Z",
+    "workParityEnrichedAt": "2026-09-06T22:56:27.838Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-06T22:53:52.457Z",
+    "postExamNormalizedAt": "2026-09-06T22:56:27.891Z",
     "postExamDate": "2026-09-06"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
@@ -116,12 +116,29 @@
     },
     {
       "name": "SEDES/DF",
-      "role": "TDAS 202 + EDAS 400",
+      "id": "sedes-2026-tdas",
+      "role": "TDAS 202 — Técnico Administrativo",
+      "session": "Tarde",
       "date": "2026-09-06",
+      "attendance": "completed",
       "score": "—",
       "rawAccuracy": null,
       "ranking": "—",
-      "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado"
+      "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado",
+      "sourceUrl": "https://app.notion.com/p/SEDES-DF-TDAS-202-prova-real-06-09-2026-tarde-3d3cf5a267318115afb3e21fbfbbb412"
+    },
+    {
+      "name": "SEDES/DF",
+      "id": "sedes-2026-edas",
+      "role": "EDAS 400 — Administração",
+      "session": "Manhã",
+      "date": "2026-09-06",
+      "attendance": "completed",
+      "score": "—",
+      "rawAccuracy": null,
+      "ranking": "—",
+      "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado",
+      "sourceUrl": "https://app.notion.com/p/SEDES-DF-EDAS-400-prova-real-06-09-2026-manh-3d3cf5a2673181a7881ff0f1010ff5c7"
     }
   ],
   "historyCycles": [
