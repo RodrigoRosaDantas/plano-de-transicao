@@ -54,8 +54,8 @@ await scenario('mobile: pós-prova reduz a Home sem reexpor controles pré-prova
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Pós-prova mobile criou overflow horizontal: ${overflow}px`);
 
-  const pageHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-  if (pageHeight <= window.innerHeight) throw new Error('Teste mobile não percorreu conteúdo suficiente para validar a composição.');
+  const [pageHeight, viewportHeight] = await page.evaluate(() => [document.documentElement.scrollHeight, window.innerHeight]);
+  if (pageHeight <= viewportHeight) throw new Error('Teste mobile não percorreu conteúdo suficiente para validar a composição.');
 
   await page.click('#moreDockBtn');
   await page.waitForSelector('#moreSheet.open');
