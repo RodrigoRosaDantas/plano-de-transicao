@@ -47,8 +47,13 @@ await scenario('desktop: aba dedicada, dados oficiais e persistência', { width:
   if (await page.locator('#examDayControl').isVisible()) throw new Error('Bloco antigo do Dia da Prova continua visível.');
 
   const text = await page.locator('.exam21-shell').innerText();
-  for (const value of [
+  const validPhaseHeadline = [
     'Dia da prova, sem ruído.',
+    'Provas concluídas, registro preservado.'
+  ].some(value => text.includes(value));
+  if (!validPhaseHeadline) throw new Error('Cabeçalho do Dia da Prova não corresponde nem ao estado pré-prova nem ao pós-prova.');
+
+  for (const value of [
     'EDAS · CARGO 400', 'Administração', '06:45', '07:45', '1820',
     'TDAS · CARGO 202', 'Técnico Administrativo', '13:45', '14:45', '1830',
     'Não divulgado oficialmente', '4h após o início efetivo', '4 horas'
