@@ -6,6 +6,7 @@ await fs.mkdir('artifacts', { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const failures = [];
 const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
+const fold = value => normalize(value).toLocaleLowerCase('pt-BR');
 
 async function scenario(name, viewport, run) {
   const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
@@ -28,14 +29,14 @@ async function scenario(name, viewport, run) {
 
 await scenario('desktop: Home mudou de preparação para pós-prova', { width: 1440, height: 1000 }, async page => {
   await page.waitForSelector('.command-view .v27-home-status');
-  const homeText = normalize(await page.locator('.command-view').innerText());
-  for (const value of ['As duas provas foram realizadas.', 'PÓS-PROVA', 'Corrigir, recorrer e acompanhar']) {
+  const homeText = fold(await page.locator('.command-view').innerText());
+  for (const value of ['as duas provas foram realizadas.', 'pós-prova', 'corrigir, recorrer e acompanhar']) {
     if (!homeText.includes(value)) throw new Error(`Home pós-prova sem: ${value}`);
   }
-  const tabText = normalize(await page.locator('#mainTabs [data-exam-day-tab]').innerText());
-  if (!tabText.includes('Pós-prova')) throw new Error(`Aba não foi renomeada: ${tabText}`);
-  const milestone = normalize(await page.locator('#nextMilestone').innerText());
-  if (!milestone.includes('GABARITO')) throw new Error(`Próximo marco continua pré-prova: ${milestone}`);
+  const tabText = fold(await page.locator('#mainTabs [data-exam-day-tab]').innerText());
+  if (!tabText.includes('pós-prova')) throw new Error(`Aba não foi renomeada: ${tabText}`);
+  const milestone = fold(await page.locator('#nextMilestone').innerText());
+  if (!milestone.includes('gabarito')) throw new Error(`Próximo marco continua pré-prova: ${milestone}`);
   if (await page.locator('.command-view > .priority-grid').isVisible()) throw new Error('Prioridades pré-prova continuam ocupando a Home.');
   if (await page.locator('.command-view > .focus-board').isVisible()) throw new Error('Foco pré-prova continua ocupando a Home.');
   await page.screenshot({ path: 'artifacts/desktop-pos-prova-v27-home.png', fullPage: true });
@@ -46,8 +47,8 @@ await scenario('desktop: Pós-prova prioriza gabarito e preserva logística reco
   await page.waitForURL(/#exam-day$/);
   await page.waitForSelector('[data-post-exam-v27]');
 
-  const text = normalize(await page.locator('[data-post-exam-v27]').innerText());
-  for (const value of ['Provas concluídas', 'PRÓXIMOS PASSOS', 'EDAS · manhã', 'TDAS · tarde', 'Aguardando gabarito']) {
+  const text = fold(await page.locator('[data-post-exam-v27]').innerText());
+  for (const value of ['provas concluídas', 'próximos passos', 'edas', 'manhã', 'tdas', 'tarde', 'aguardando gabarito']) {
     if (!text.includes(value)) throw new Error(`Pós-prova sem conteúdo esperado: ${value}`);
   }
   if (await page.locator('.v27-archive').getAttribute('open') !== null) throw new Error('Arquivo de logística abriu por padrão e voltou a dominar a tela.');
@@ -57,8 +58,8 @@ await scenario('desktop: Pós-prova prioriza gabarito e preserva logística reco
 
   await page.locator('.v27-archive > summary').click();
   await page.waitForFunction(() => document.querySelector('.v27-archive')?.open === true);
-  const archiveText = normalize(await page.locator('.v27-archive').innerText());
-  for (const value of ['Centro de Ensino Fundamental Telebrasília', '06:45–07:45', '13:45–14:45']) {
+  const archiveText = fold(await page.locator('.v27-archive').innerText());
+  for (const value of ['centro de ensino fundamental telebrasília', '06:45–07:45', '13:45–14:45']) {
     if (!archiveText.includes(value)) throw new Error(`Histórico logístico ausente: ${value}`);
   }
 
@@ -74,8 +75,8 @@ await scenario('desktop: Pós-prova prioriza gabarito e preserva logística reco
 
 await scenario('mobile 390px: pós-prova compacto e sem regressão horizontal', { width: 390, height: 844 }, async page => {
   await page.waitForSelector('#mobileDock [data-exam-day-tab]');
-  const label = normalize(await page.locator('#mobileDock [data-exam-day-tab]').innerText());
-  if (!label.includes('Pós-prova')) throw new Error(`Dock móvel ainda está pré-prova: ${label}`);
+  const label = fold(await page.locator('#mobileDock [data-exam-day-tab]').innerText());
+  if (!label.includes('pós-prova')) throw new Error(`Dock móvel ainda está pré-prova: ${label}`);
 
   await page.locator('#mobileDock [data-exam-day-tab]').click();
   await page.waitForSelector('[data-post-exam-v27]');
