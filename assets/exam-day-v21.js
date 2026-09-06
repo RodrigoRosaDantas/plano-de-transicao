@@ -76,7 +76,9 @@ function brasiliaTime(date = new Date()) {
 }
 
 function nextMilestone(now = Date.now()) {
-  const items = EXAM_DAY_V21.exams.flatMap(exam => [
+  const remainingExams = EXAM_DAY_V21.exams.filter(exam => !examRecords.some(record => record.id === `sedes-2026-${exam.id}` && record.attendance === 'completed'));
+  if (!remainingExams.length) return { at: null, label: 'Provas realizadas · acompanhar resultados', tone: 'done' };
+  const items = remainingExams.flatMap(exam => [
     { at: new Date(exam.openIso).getTime(), label: `Abertura dos portões · ${exam.id.toUpperCase()}`, tone: 'open' },
     { at: new Date(exam.closeIso).getTime(), label: `Fechamento dos portões · ${exam.id.toUpperCase()}`, tone: 'critical' }
   ]).sort((a, b) => a.at - b.at);

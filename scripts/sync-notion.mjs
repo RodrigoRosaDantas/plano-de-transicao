@@ -386,6 +386,9 @@ const snapshot = {
   },
   strategy: {
     ...previous.strategy,
+    current: exams.filter(exam => exam.id?.startsWith('sedes-2026-') && exam.attendance === 'completed').length === 2
+      ? 'Provas TDAS 202 e EDAS 400 realizadas. Acompanhar correções, notas e classificações separadamente e consolidar o diagnóstico para os próximos passos.'
+      : previous.strategy.current,
     postExamSource: {
       page: '04 — Estratégia de Carreira e Próximas Etapas',
       url: 'https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293',

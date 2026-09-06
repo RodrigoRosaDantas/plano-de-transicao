@@ -35,4 +35,7 @@ assert.equal(later[2].classification, 23);
 assert.deepEqual(later[1], tdas, 'EDAS results must not alter TDAS.');
 assert.equal(syncSedesExams([grouped], [{ ...completion, date: '2025-09-06' }])[1].attendance, 'unconfirmed');
 assert.equal(syncSedesExams([grouped], [{ ...completion, questions: 50 }])[1].rawAccuracy, null, 'A question count alone is not a zero score.');
+const bothCompleted = syncSedesExams(result, [completion, { ...completion, project: 'TDAS 202' }]);
+assert.equal(bothCompleted.filter(exam => exam.attendance === 'completed').length, 2);
+assert.ok(bothCompleted.filter(exam => exam.id?.startsWith('sedes-2026-')).every(exam => exam.rawAccuracy === null && exam.score === '—'));
 console.log('PASS: EDAS/TDAS separados, realização sem nota, sincronização repetida e resultado posterior.');

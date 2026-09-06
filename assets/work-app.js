@@ -107,6 +107,11 @@ function statusChip(label, tone = "") {
   return `<span class="status-chip ${tone}">${esc(label)}</span>`;
 }
 
+function sedesExamsCompleted() {
+  const exams = (state.data?.exams || []).filter(exam => exam.id?.startsWith('sedes-2026-'));
+  return exams.length === 2 && exams.every(exam => exam.attendance === 'completed');
+}
+
 function countdownParts() {
   const target = new Date(state.data?.meta?.nextExam || "2026-09-06T08:00:00-03:00");
   const diff = target.getTime() - Date.now();
@@ -178,6 +183,7 @@ function commandView() {
   const data = state.data;
   const m = data.metrics;
   const clock = countdownParts();
+  const examsCompleted = sedesExamsCompleted();
   const tdasProgress = m.tdas.stepsTotal ? m.tdas.stepsDone / m.tdas.stepsTotal * 100 : 0;
   const tdasWeak = weakest("tdas");
   const edasWeak = weakest("edas");
@@ -190,13 +196,13 @@ function commandView() {
     <section class="cockpit-grid">
       <article class="panel countdown-card">
         <div class="countdown-topline"><span class="section-kicker">${svgIcon("clock")} Prova SEDES/DF</span><span>06/09/2026 · Brasília</span></div>
-        <div class="countdown-body"><div class="countdown-value"><strong data-countdown-days>${clock.days}</strong><span>${clock.ended ? "dias até a data da prova" : "dias"}</span></div><div class="brasilia-clock">${svgIcon("clock")}<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div>
+        <div class="countdown-body"><div class="countdown-value">${examsCompleted ? '<strong>2</strong><span>provas realizadas</span>' : `<strong data-countdown-days>${clock.days}</strong><span>${clock.ended ? 'dias até a data da prova' : 'dias'}</span>`}</div><div class="brasilia-clock">${svgIcon("clock")}<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div>
         <p>${esc(examSummary || "Duas provas, duas trilhas. Consulte a realização e os resultados de cada cargo em Concursos.")}</p>
       </article>
       <div class="target-stack">
         <button class="panel target-card" type="button" data-view="performance" data-performance-scope-jump="tdas">
           <div class="target-card-top"><span>${svgIcon("target")} Técnico Administrativo</span><b>Cargo 202</b></div>
-          <div class="target-card-main"><div><small>Projeto TDAS</small><h2>${m.tdas.stepsDone} de ${m.tdas.stepsTotal} etapas</h2></div><strong>${pct(m.tdas.accuracy)}</strong></div>
+          <div class="target-card-main"><div><small>Projeto TDAS · ${esc(data.priorities.find(item => item.id === 'tdas')?.status || '')}</small><h2>${m.tdas.stepsDone} de ${m.tdas.stepsTotal} etapas de preparação</h2></div><strong>${pct(m.tdas.accuracy)}</strong></div>
           ${progress(tdasProgress)}<div class="target-card-footer"><span>${fmt(m.tdas.questions)} questões · ${fmt(m.tdas.errors)} erros</span><span>Abrir ${svgIcon("chevron")}</span></div>
         </button>
         <button class="panel target-card edas" type="button" data-view="performance" data-performance-scope-jump="edas">
@@ -255,7 +261,7 @@ function journeyView() {
   const data = state.data;
   const m = data.metrics.history;
   return `<div class="view-stack journey-view">${viewHeading("Jornada", "Uma transição construída, não um recomeço eterno.", "Cada marco conserva o capital anterior e muda a próxima decisão.", `<button class="secondary-button" type="button" data-copy-journey>${svgIcon("copy")} Copiar jornada</button>`)}
-    <section class="metric-grid">${metricCard("Início da preparação", "03/07/2025", "Retomada estruturada", "aqua")}${metricCard("Capital mensurável", fmt(m.questions), `${pct(m.accuracy)} de aproveitamento`, "lime")}${metricCard("Provas reais", fmt(data.exams.filter((exam) => exam.attendance === "completed" || exam.rawAccuracy != null).length), "Comparecimento registrado", "amber")}${metricCard("Próximo marco", dateBR(data.meta.nextExam, true).toUpperCase(), "SEDES/DF", "violet")}</section>
+    <section class="metric-grid">${metricCard("Início da preparação", "03/07/2025", "Retomada estruturada", "aqua")}${metricCard("Capital mensurável", fmt(m.questions), `${pct(m.accuracy)} de aproveitamento`, "lime")}${metricCard("Provas reais", fmt(data.exams.filter((exam) => exam.attendance === "completed" || exam.rawAccuracy != null).length), "Comparecimento registrado", "amber")}${metricCard(sedesExamsCompleted() ? "Próximo passo" : "Próximo marco", sedesExamsCompleted() ? "Registrar resultados" : dateBR(data.meta.nextExam, true).toUpperCase(), "SEDES/DF", "violet")}</section>
     <section class="journey-layout"><article class="panel timeline-panel"><div class="panel-heading"><div><span class="eyebrow">LINHA DO TEMPO</span><h2>Marcos que mudaram a trajetória</h2></div>${svgIcon("route")}</div><div class="timeline-list">${data.timeline.map((item, index) => `<article class="timeline-item ${index === data.timeline.length - 1 ? "active" : ""}"><div class="timeline-index">${String(index + 1).padStart(2, "0")}</div><div><time>${esc(item.date)}</time><h3>${esc(item.title)}</h3><p>${esc(item.detail)}</p></div></article>`).join("")}</div></article><aside class="panel capital-panel"><span class="eyebrow">CAPITAL ACUMULADO</span><h2>O que já não volta ao zero</h2><div class="capital-number"><strong>${fmt(m.rawRecords)}</strong><span>registros brutos</span></div><div class="capital-breakdown"><div><span>Mensuráveis</span><strong>${fmt(m.questions)}</strong></div><div><span>Sem resultado</span><strong>${fmt(m.withoutResult)}</strong></div><div><span>Acertos</span><strong>${fmt(m.hits)}</strong></div><div><span>Erros</span><strong>${fmt(m.errors)}</strong></div></div><blockquote>“Não recomeçar a cada edital” não é frase bonita. É regra de alocação de tempo.</blockquote></aside></section>
     <section class="panel transition-map"><div class="panel-heading"><div><span class="eyebrow">MAPA DA TRANSIÇÃO</span><h2>Do estudo à posse</h2><p>O fluxo continua depois da prova e transforma resultado em decisão.</p></div></div><div class="transition-steps">${[["Base", "03/07/2025", "done"], ["Câmara", "35/50", "done"], ["TDAS", "3.319 questões", "done"], ["SEDES/DF", "06/09/2026", "active"], ["Resultado", "classificação", "future"], ["Nomeação", "convocação", "future"], ["Posse", "transição", "future"]].map(([title, note, tone], index) => `<div class="transition-step ${tone}"><span>${String(index + 1).padStart(2, "0")}</span><strong>${title}</strong><small>${note}</small></div>`).join("")}</div></section>
   </div>`;
@@ -551,7 +557,9 @@ function updateShell() {
   const data = state.data;
   if ($("#missionText")) $("#missionText").textContent = data.mission;
   const milestone = $("#nextMilestone");
-  if (milestone) milestone.innerHTML = `<span>Próximo marco</span><strong>${dateBR(data.meta.nextExam, true).toUpperCase()}</strong><small>SEDES/DF 2026</small>`;
+  if (milestone) milestone.innerHTML = sedesExamsCompleted()
+    ? '<span>Próximo passo</span><strong>Registrar resultados</strong><small>TDAS e EDAS · provas realizadas</small>'
+    : `<span>Próximo marco</span><strong>${dateBR(data.meta.nextExam, true).toUpperCase()}</strong><small>SEDES/DF 2026</small>`;
   const generated = new Date(data.meta.generatedAt);
   if ($("#snapshotDate")) $("#snapshotDate").textContent = `corte ${dateBR(data.meta.homeSnapshot)} · desempenho ${dateBR(data.meta.performanceCut)}`;
   if ($("#contextStatus")) $("#contextStatus").textContent = data.meta.live ? "Notion vivo → tratamento → GitHub Pages" : "Snapshot auditado publicado";

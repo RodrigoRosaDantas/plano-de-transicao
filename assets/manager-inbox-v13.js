@@ -193,16 +193,18 @@ function snapshotItems(snapshot) {
   }));
 
   const examDays = daysUntil(snapshot.meta?.nextExam);
-  if (examDays != null && examDays >= 0 && examDays <= 7) {
+  const sedesExams = (snapshot.exams || []).filter(exam => exam.id?.startsWith('sedes-2026-'));
+  const examsCompleted = sedesExams.length === 2 && sedesExams.every(exam => exam.attendance === 'completed');
+  if (examsCompleted || (examDays != null && examDays >= 0 && examDays <= 7)) {
     items.push({
       id: 'exam:next-milestone',
       type: 'milestone',
       bucket: examDays <= 2 ? 'now' : 'today',
       tone: examDays <= 2 ? 'warning' : 'aqua',
       scope: 'Próximo marco',
-      title: examDays === 0 ? 'Marco da prova chegou' : `${examDays} ${examDays === 1 ? 'dia' : 'dias'} para a próxima prova`,
-      detail: 'Concentre a central no que já foi medido e evite ampliar escopo sem evidência.',
-      evidence: 'meta.nextExam',
+      title: examsCompleted ? 'Acompanhar os resultados de TDAS e EDAS' : examDays === 0 ? 'Marco da prova chegou' : `${examDays} ${examDays === 1 ? 'dia' : 'dias'} para a próxima prova`,
+      detail: examsCompleted ? 'Provas realizadas. Registrar correções, notas e classificações separadamente.' : 'Concentre a central no que já foi medido e evite ampliar escopo sem evidência.',
+      evidence: examsCompleted ? 'exams.attendance' : 'meta.nextExam',
       action: 'view',
       target: 'exams',
       score: 10,

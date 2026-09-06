@@ -1,15 +1,16 @@
 {
   "meta": {
-    "generatedAt": "2026-09-06T10:59:23.166Z",
-    "homeSnapshot": "2026-08-31",
+    "generatedAt": "2026-09-06T20:25:37.327Z",
+    "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
     "sourceUrl": "https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899",
     "nextExam": "2026-09-06T08:00:00-03:00",
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-06T10:59:24.139Z",
-    "dataWarnings": []
+    "workParityEnrichedAt": "2026-09-06T20:25:38.185Z",
+    "dataWarnings": [],
+    "examStatusUpdatedAt": "2026-09-06T21:40:37.621Z"
   },
   "mission": "Converter o capital de estudo acumulado desde 03/07/2025 em classificação competitiva, nomeação e posse.",
   "priorities": [
@@ -17,14 +18,14 @@
       "id": "tdas",
       "title": "TDAS — Cargo 202",
       "subtitle": "Técnico Administrativo",
-      "status": "Reta final",
+      "status": "Prova realizada — resultado a registrar",
       "tone": "primary"
     },
     {
       "id": "edas",
       "title": "EDAS — Cargo 400",
       "subtitle": "Administração",
-      "status": "Projeto paralelo estruturado",
+      "status": "Prova realizada — resultado a registrar",
       "tone": "secondary"
     }
   ],
@@ -113,12 +114,29 @@
     },
     {
       "name": "SEDES/DF",
-      "role": "TDAS 202 + EDAS 400",
+      "id": "sedes-2026-tdas",
+      "role": "TDAS 202 — Técnico Administrativo",
+      "session": "Tarde",
       "date": "2026-09-06",
+      "attendance": "completed",
       "score": "—",
       "rawAccuracy": null,
       "ranking": "—",
-      "status": "Próxima prova"
+      "status": "Prova realizada — tarde; nota e classificação pendentes de registro.",
+      "sourceUrl": "https://app.notion.com/p/3d3cf5a267318115afb3e21fbfbbb412"
+    },
+    {
+      "name": "SEDES/DF",
+      "id": "sedes-2026-edas",
+      "role": "EDAS 400 — Administração",
+      "session": "Manhã",
+      "date": "2026-09-06",
+      "attendance": "completed",
+      "score": "—",
+      "rawAccuracy": null,
+      "ranking": "—",
+      "status": "Prova realizada — manhã; nota e classificação pendentes de registro.",
+      "sourceUrl": "https://app.notion.com/p/3d3cf5a2673181a7881ff0f1010ff5c7"
     }
   ],
   "historyCycles": [
@@ -223,7 +241,7 @@
     }
   ],
   "strategy": {
-    "current": "TDAS 202 é a prioridade operacional até 06/09/2026; EDAS 400 permanece separado e estruturado em paralelo.",
+    "current": "Provas TDAS 202 e EDAS 400 realizadas. Acompanhar correções, notas e classificações separadamente e consolidar o diagnóstico para os próximos passos.",
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
