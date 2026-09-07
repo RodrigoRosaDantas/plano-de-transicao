@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-07T02:34:50.314Z",
+    "generatedAt": "2026-09-07T02:41:28.950Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,10 +8,10 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-07T02:34:51.182Z",
+    "workParityEnrichedAt": "2026-09-07T02:41:29.957Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-07T02:34:51.232Z",
+    "postExamNormalizedAt": "2026-09-07T02:41:30.004Z",
     "postExamDate": "2026-09-06"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
@@ -333,12 +333,12 @@
   "financeEntries": [
     {
       "id": "CST29",
-      "name": "Alimentação no dia da prova — café e almoço em casa",
+      "name": "Alimentação no dia da prova — refeições em casa",
       "date": "2026-09-06",
       "cycle": "SEDES/DF 2026",
       "category": "Alimentação",
       "situation": "Confirmado — sem custo",
-      "usage": "Utilizado",
+      "usage": "Não se aplica",
       "nature": "Direto do concurso",
       "recordType": "Despesa direta",
       "recurring": false,
@@ -352,7 +352,7 @@
     },
     {
       "id": "CST28",
-      "name": "99 Plus — retorno para casa após TDAS",
+      "name": "99 Plus — retorno após TDAS concluído · valor pendente",
       "date": "2026-09-06",
       "cycle": "SEDES/DF 2026",
       "category": "Transporte",
@@ -1051,7 +1051,7 @@
       },
       {
         "key": "Utilizado",
-        "transactions": 8,
+        "transactions": 7,
         "confirmed": 282.42,
         "estimated": 0,
         "paid": 282.42,
@@ -1065,6 +1065,16 @@
         "confirmed": 30,
         "estimated": 0,
         "paid": 30,
+        "reimbursed": 0,
+        "pending": 0,
+        "unconfirmed": 0
+      },
+      {
+        "key": "Não se aplica",
+        "transactions": 1,
+        "confirmed": 0,
+        "estimated": 0,
+        "paid": 0,
         "reimbursed": 0,
         "pending": 0,
         "unconfirmed": 0
