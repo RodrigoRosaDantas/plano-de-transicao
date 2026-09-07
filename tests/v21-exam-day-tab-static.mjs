@@ -14,7 +14,7 @@ const [index, sw, js, css, shellJs, shellCss, bootstrap] = await Promise.all([
 const has = (text, value, label) => assert.ok(text.includes(value), `${label}: ausente ${value}`);
 const lacks = (text, value, label) => assert.ok(!text.includes(value), `${label}: conteúdo indevido ${value}`);
 
-// Integração do shell e ordem de carregamento.
+// Integração consolidada do shell e ordem de carregamento.
 for (const asset of [
   'assets/exam-day-v21-bootstrap.js?v=21',
   'assets/exam-day-v21.css?v=21',
@@ -23,8 +23,23 @@ for (const asset of [
   'assets/exam-day-v21-shell.js?v=21'
 ]) has(index, asset, 'index v21');
 assert.ok(index.indexOf('exam-day-v21-bootstrap.js?v=21') < index.indexOf('assets/work-app.css?v=15'), 'bootstrap precisa nascer no head antes do app-base');
-assert.ok(index.indexOf('exam-day-v21.js?v=21') > index.indexOf('exam-day-v20.js?v=20'), 'v21 deve carregar depois da v20');
 assert.ok(index.indexOf('exam-day-v21-shell.js?v=21') > index.indexOf('exam-day-v21.js?v=21'), 'shell v21 deve carregar após a aba');
+
+// Legado v18/v19/v20 não deve mais compor o runtime nem o cache do PWA.
+for (const legacy of [
+  'assets/exam-day-v19.css?v=19',
+  'assets/exam-day-v19.js?v=19',
+  'assets/exam-day-v20.css?v=20',
+  'assets/exam-day-v20.js?v=20'
+]) lacks(index, legacy, 'runtime sem camada legada');
+for (const legacy of [
+  "'./assets/exam-day-v18.css'",
+  "'./assets/exam-day-v19.css'",
+  "'./assets/exam-day-v19.js'",
+  "'./assets/exam-day-v20.css'",
+  "'./assets/exam-day-v20.js'"
+]) lacks(sw, legacy, 'PWA sem camada legada');
+has(sw, "const CACHE='plano-transicao-v28-consolidated'", 'cache consolidado atual');
 
 for (const asset of [
   "'./assets/exam-day-v21-bootstrap.js'",
@@ -49,12 +64,12 @@ has(bootstrap, "const directExamDay = location.hash === '#exam-day'", 'captura d
 has(bootstrap, "history.replaceState(null, '', '#exam-day')", 'restaura deep link após inicialização');
 has(bootstrap, "window.dispatchEvent(new HashChangeEvent('hashchange'))", 'aciona a view dedicada restaurada');
 
-// Dados oficiais preservados.
+// Dados oficiais e regras antes espalhadas em v19/v20 agora pertencem à v21.
 for (const value of [
   "code: 'EDAS · CARGO 400'", "room: '1820'", "floor: 'T'", "open: '06:45'", "close: '07:45'",
   "code: 'TDAS · CARGO 202'", "room: '1830'", "floor: '1'", "open: '13:45'", "close: '14:45'",
-  '4 horas', '2h após o início', 'últimos 60 minutos'
-]) has(js, value, 'dado oficial');
+  '4 horas', '2h após o início', 'últimos 60 minutos', 'Saída + almoço + retorno'
+]) has(js, value, 'dado oficial consolidado');
 
 // Não transformar inferência em horário oficial.
 has(js, 'Não divulgado oficialmente', 'início nominal não publicado');
@@ -63,7 +78,7 @@ has(js, 'fechamento do portão não é rotulado como início da prova', 'regra d
 for (const forbidden of ["start: '08:00'", "start: '15:00'", "end: '12:00'", "end: '19:00'"]) lacks(js, forbidden, 'horário nominal inferido proibido');
 
 // UX, acessibilidade e responsividade.
-has(js, "plano-transicao:exam-day-v19:checks", 'checklist persistente compatível');
+has(js, "plano-transicao:exam-day-v19:checks", 'checklist persistente compatível com dados locais antigos');
 has(js, 'aria-label="Linha do tempo de domingo"', 'timeline acessível');
 has(css, '@media(max-width:760px)', 'mobile 760');
 has(css, '@media(max-width:430px)', 'mobile estreito');
@@ -79,4 +94,4 @@ assert.ok(!/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/.test(publicBundle), 'CPF formatado de
 assert.ok(!/Inscri[cç][aã]o:\s*\d+/i.test(publicBundle), 'número de inscrição detectado no bundle público');
 assert.ok(!/Documento:\s*RG\s*\d+/i.test(publicBundle), 'RG detectado no bundle público');
 
-console.log('PASS  v21: aba Dia da Prova integrada, responsiva, auditada e sem inferir horário nominal.');
+console.log('PASS  v21 consolidada: Dia da Prova atual sem dependência runtime de v18/v19/v20.');
