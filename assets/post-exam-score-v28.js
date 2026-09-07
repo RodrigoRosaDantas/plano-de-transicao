@@ -167,23 +167,31 @@
     if (!root || data?.meta?.phase !== 'post-exam') return;
     ensureStyles();
 
+    const signature = JSON.stringify({
+      generatedAt: data?.meta?.generatedAt || null,
+      stages: stageModel(data).map(({ label, detail, state }) => [label, detail, state]),
+    });
     let consoleNode = root.querySelector('[data-v28-transition-console]');
-    const html = transitionConsole(data);
     if (!consoleNode) {
       const commandGrid = root.querySelector('.command-grid');
-      if (commandGrid) commandGrid.insertAdjacentHTML('afterend', html);
-      else root.insertAdjacentHTML('afterbegin', html);
+      if (commandGrid) commandGrid.insertAdjacentHTML('afterend', transitionConsole(data));
+      else root.insertAdjacentHTML('afterbegin', transitionConsole(data));
       consoleNode = root.querySelector('[data-v28-transition-console]');
-    } else {
+      if (consoleNode) consoleNode.dataset.v28Signature = signature;
+    } else if (consoleNode.dataset.v28Signature !== signature) {
       const wrapper = document.createElement('div');
-      wrapper.innerHTML = html.trim();
+      wrapper.innerHTML = transitionConsole(data).trim();
       const replacement = wrapper.firstElementChild;
-      if (replacement && consoleNode.innerHTML !== replacement.innerHTML) consoleNode.replaceWith(replacement);
+      if (replacement) {
+        replacement.dataset.v28Signature = signature;
+        consoleNode.replaceWith(replacement);
+      }
     }
 
     const action = root.querySelector('.v27-next-action');
     const paragraph = action?.querySelector('p');
-    if (paragraph) paragraph.innerHTML = 'A SEDES agora roda como <strong>processo em acompanhamento</strong>: gabarito → conferência → recursos → nota → classificação. A nova preparação fica em trilhas próprias.';
+    const desired = 'A SEDES agora roda como processo em acompanhamento: gabarito → conferência → recursos → nota → classificação. A nova preparação fica em trilhas próprias.';
+    if (paragraph && paragraph.textContent.trim() !== desired) paragraph.innerHTML = 'A SEDES agora roda como <strong>processo em acompanhamento</strong>: gabarito → conferência → recursos → nota → classificação. A nova preparação fica em trilhas próprias.';
   }
 
   function patchRefreshSemantics(data = snapshot) {
@@ -195,10 +203,10 @@
     setText(refreshAge, `${age.label} · publicado`);
 
     document.querySelectorAll('[data-refresh]').forEach(button => {
-      button.setAttribute('title', 'Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente.');
-      button.setAttribute('aria-label', 'Recarregar snapshot publicado');
+      if (button.getAttribute('title') !== 'Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente.') button.setAttribute('title', 'Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente.');
+      if (button.getAttribute('aria-label') !== 'Recarregar snapshot publicado') button.setAttribute('aria-label', 'Recarregar snapshot publicado');
       const textNode = [...button.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
-      if (textNode && button.id === 'moreRefreshBtn') textNode.textContent = ' Recarregar snapshot';
+      if (textNode && button.id === 'moreRefreshBtn' && textNode.textContent.trim() !== 'Recarregar snapshot') textNode.textContent = ' Recarregar snapshot';
     });
 
     const sheetActions = document.querySelector('.sheet-actions');
