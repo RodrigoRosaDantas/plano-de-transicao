@@ -5,8 +5,12 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 ## O que já está implementado
 
 - Central “Agora” gerencial, com missão, prioridades por dados, contador e relógio de Brasília.
+- Home adaptativa por fase: no pós-prova, a SEDES/DF passa a ser tratada como processo em acompanhamento e a próxima transição aparece separadamente.
+- Fluxo longitudinal pós-prova: prova → gabarito → correção → recursos → resultado.
+- Trilhas estratégicas seguintes destacadas sem misturar bases: SEEDF e TJDFT.
 - Plano focado em decisão e acompanhamento; a execução de questões permanece fora deste site.
-- Central de operações com atualização visível, estado do snapshot, sincronização segura e PWA.
+- Central de operações com estado do snapshot, sincronização segura e PWA.
+- A interface diferencia explicitamente **Recarregar snapshot** de **Sincronizar Notion**.
 - Desempenho por matéria, combinações e atividades, com filtros independentes para histórico, TDAS e EDAS.
 - Jornada e marcos em mapa visual contínuo.
 - Provas e resultados com separação entre aproveitamento, nota, classificação e etapa do certame.
@@ -32,6 +36,15 @@ O site lê `data/snapshot.json`. Esse arquivo é atualizado pelo workflow a part
 O repositório publica somente o snapshot tratado necessário ao painel. O espelho bruto das páginas do Notion não é gerado nem exposto no GitHub Pages. O token do Notion fica somente nos GitHub Actions Secrets e nunca é enviado ao navegador.
 
 O sincronizador lê apenas a seção editorial necessária ao gatilho pós-prova e a converte em `strategy.postExamGates`. Os blocos brutos da página não são gravados no repositório.
+
+## Atualização x sincronização
+
+- **Recarregar snapshot**: baixa imediatamente do GitHub Pages o `data/snapshot.json` mais recente já publicado.
+- **Sincronizar Notion**: abre o workflow seguro `sync-notion.yml` no GitHub Actions para execução manual autenticada.
+- O navegador não recebe `NOTION_TOKEN` nem qualquer credencial de escrita.
+- A sincronização automática continua rodando a cada 3 horas.
+
+Essa separação evita uma falsa sensação de atualização em tempo real e preserva a segurança da fonte.
 
 ## Limite do produto
 
