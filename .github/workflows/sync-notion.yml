@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/workflows/sync-notion.yml'
       - 'scripts/sync-notion.mjs'
+      - 'scripts/sync-post-exam-notes.mjs'
       - 'scripts/enrich-work-parity.mjs'
       - 'scripts/apply-post-exam-state.mjs'
       - 'scripts/audit-parity.mjs'
@@ -36,6 +37,10 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/sync-notion.mjs
+      - name: Sincronizar anotações pós-prova
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: node scripts/sync-post-exam-notes.mjs
       - name: Enriquecer paridade Work
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
