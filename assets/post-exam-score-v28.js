@@ -197,10 +197,16 @@
   function patchRefreshSemantics(data = snapshot) {
     if (!data) return;
     const age = snapshotAge(data);
+    const refreshing = [...document.querySelectorAll('[data-refresh]')].some(button => button.classList.contains('spinning') || button.getAttribute('aria-busy') === 'true');
     const refreshLabel = document.getElementById('refreshLabel');
-    setText(refreshLabel, 'Recarregar snapshot');
+    setText(refreshLabel, refreshing ? 'Recarregando…' : 'Recarregar snapshot');
     const refreshAge = document.getElementById('refreshAge');
     setText(refreshAge, `${age.label} · publicado`);
+
+    const toast = document.getElementById('toast');
+    if (toast?.classList.contains('show') && toast.textContent.trim() === 'Dados publicados atualizados agora.') {
+      setText(toast, 'Snapshot publicado recarregado.');
+    }
 
     document.querySelectorAll('[data-refresh]').forEach(button => {
       if (button.getAttribute('title') !== 'Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente.') button.setAttribute('title', 'Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente.');
