@@ -89,13 +89,16 @@ const cachedAssets = [
   'assets/manager-inbox-v13.css', 'assets/manager-inbox-v13.js',
   'assets/home-focus-v14.css', 'assets/home-focus-v14.js',
   'assets/transition-gate-v15.css', 'assets/transition-gate-v15.js',
-  'assets/exam-day-v19.css', 'assets/exam-day-v19.js', 'assets/exam-day-v18.css',
+  'assets/exam-day-v21.css', 'assets/exam-day-v21-shell.css', 'assets/exam-day-v21.js', 'assets/exam-day-v21-shell.js', 'assets/exam-day-v21-bootstrap.js',
+  'assets/exam-day-v22.css', 'assets/exam-day-v22.js',
+  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js',
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está na versão v19', sw.includes("const CACHE='plano-transicao-v19'"));
+check('Cache PWA está consolidado na v28', sw.includes("const CACHE='plano-transicao-v28-consolidated'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
-check('Dia da Prova v19 está ligado no HTML', index.includes('exam-day-v19.css?v=19') && index.includes('exam-day-v19.js?v=19'));
+check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css?v=21') && index.includes('exam-day-v21.js?v=21'));
+check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
 check('Todas as camadas v9–v15 estão ligadas no HTML', [
   'work-manager-v9.js', 'work-intelligence-v10.js', 'work-decisions-v11.js', 'decision-history-v12.js', 'manager-inbox-v13.js', 'home-focus-v14.js', 'transition-gate-v15.js',
 ].every((asset) => index.includes(asset)));
@@ -106,7 +109,7 @@ check('Cache busting do shell está em v15', !index.includes('?v=14') && index.i
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
 
 check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
-check('Botão Atualizar é textual e visível', index.includes('id="refreshBtn"') && index.includes('data-refresh') && index.includes('Atualizar dados'));
+check('Botão Recarregar snapshot é textual e visível', index.includes('id="refreshBtn"') && index.includes('data-refresh') && index.includes('Recarregar snapshot'));
 check('Mais é central gerencial de navegação e operações', index.includes('CENTRAL GERENCIAL') && index.includes('Navegação e operações'));
 check('Site não oferece estudo nem acesso operacional', !index.includes('../sedes-df-questoes/') && !manager.includes('PLATFORM_URL') && !index.includes('data-view="study"'));
 check('Assets operacionais antigos não são publicados', !legacyStudyAssetsPublished);
