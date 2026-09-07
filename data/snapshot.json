@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-06T22:56:26.949Z",
+    "generatedAt": "2026-09-07T02:34:50.314Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,10 +8,10 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-06T22:56:27.838Z",
+    "workParityEnrichedAt": "2026-09-07T02:34:51.182Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-06T22:56:27.891Z",
+    "postExamNormalizedAt": "2026-09-07T02:34:51.232Z",
     "postExamDate": "2026-09-06"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
@@ -61,7 +61,7 @@
       "withoutResult": 90
     },
     "finance": {
-      "sedesConfirmed": 875.1,
+      "sedesConfirmed": 957.72,
       "status": "Parcial"
     }
   },
@@ -331,6 +331,101 @@
     ]
   },
   "financeEntries": [
+    {
+      "id": "CST29",
+      "name": "Alimentação no dia da prova — café e almoço em casa",
+      "date": "2026-09-06",
+      "cycle": "SEDES/DF 2026",
+      "category": "Alimentação",
+      "situation": "Confirmado — sem custo",
+      "usage": "Utilizado",
+      "nature": "Direto do concurso",
+      "recordType": "Despesa direta",
+      "recurring": false,
+      "countsInCycle": true,
+      "allocationPercent": null,
+      "confirmed": 0,
+      "estimated": 0,
+      "paid": 0,
+      "reimbursed": null,
+      "sourceAvailable": false
+    },
+    {
+      "id": "CST28",
+      "name": "99 Plus — retorno para casa após TDAS",
+      "date": "2026-09-06",
+      "cycle": "SEDES/DF 2026",
+      "category": "Transporte",
+      "situation": "Pendente",
+      "usage": "Utilizado",
+      "nature": "Direto do concurso",
+      "recordType": "Despesa direta",
+      "recurring": false,
+      "countsInCycle": true,
+      "allocationPercent": null,
+      "confirmed": 0,
+      "estimated": 0,
+      "paid": null,
+      "reimbursed": null,
+      "sourceAvailable": false
+    },
+    {
+      "id": "CST27",
+      "name": "99 Pop — ida para prova TDAS",
+      "date": "2026-09-06",
+      "cycle": "SEDES/DF 2026",
+      "category": "Transporte",
+      "situation": "Confirmado / pago",
+      "usage": "Utilizado",
+      "nature": "Direto do concurso",
+      "recordType": "Despesa direta",
+      "recurring": false,
+      "countsInCycle": true,
+      "allocationPercent": null,
+      "confirmed": 22.9,
+      "estimated": 0,
+      "paid": 22.9,
+      "reimbursed": null,
+      "sourceAvailable": false
+    },
+    {
+      "id": "CST26",
+      "name": "Uber Black — retorno para casa entre as provas",
+      "date": "2026-09-06",
+      "cycle": "SEDES/DF 2026",
+      "category": "Transporte",
+      "situation": "Confirmado / pago",
+      "usage": "Utilizado",
+      "nature": "Direto do concurso",
+      "recordType": "Despesa direta",
+      "recurring": false,
+      "countsInCycle": true,
+      "allocationPercent": null,
+      "confirmed": 25.62,
+      "estimated": 0,
+      "paid": 25.62,
+      "reimbursed": null,
+      "sourceAvailable": false
+    },
+    {
+      "id": "CST25",
+      "name": "99 Pop Expresso — ida para prova EDAS",
+      "date": "2026-09-06",
+      "cycle": "SEDES/DF 2026",
+      "category": "Transporte",
+      "situation": "Confirmado / pago",
+      "usage": "Utilizado",
+      "nature": "Direto do concurso",
+      "recordType": "Despesa direta",
+      "recurring": false,
+      "countsInCycle": true,
+      "allocationPercent": null,
+      "confirmed": 34.1,
+      "estimated": 0,
+      "paid": 34.1,
+      "reimbursed": null,
+      "sourceAvailable": false
+    },
     {
       "id": "CST24",
       "name": "ChatGPT Plus — 28/08/2026 — pagamento não confirmado",
@@ -790,32 +885,32 @@
   ],
   "financeSummary": {
     "totals": {
-      "confirmed": 1362.51,
+      "confirmed": 1445.13,
       "estimated": 90,
-      "paid": 1362.51,
+      "paid": 1445.13,
       "reimbursed": 0,
-      "transactions": 23,
+      "transactions": 28,
       "unconfirmed": 1,
-      "pending": 0
+      "pending": 1
     },
     "sedes": {
-      "confirmed": 875.1,
+      "confirmed": 957.72,
       "estimated": 0,
-      "transactions": 10,
-      "confirmedPaid": 10,
-      "noCost": 0,
+      "transactions": 15,
+      "confirmedPaid": 13,
+      "noCost": 1,
       "unconfirmed": 1,
-      "pending": 0
+      "pending": 1
     },
     "byCycle": [
       {
         "key": "SEDES/DF 2026",
-        "transactions": 10,
-        "confirmed": 875.1,
+        "transactions": 15,
+        "confirmed": 957.72,
         "estimated": 0,
-        "paid": 875.1,
+        "paid": 957.72,
         "reimbursed": 0,
-        "pending": 0,
+        "pending": 1,
         "unconfirmed": 0
       },
       {
@@ -862,12 +957,12 @@
       },
       {
         "key": "Transporte",
-        "transactions": 8,
-        "confirmed": 206.52,
+        "transactions": 12,
+        "confirmed": 289.14,
         "estimated": 20,
-        "paid": 206.52,
+        "paid": 289.14,
         "reimbursed": 0,
-        "pending": 0,
+        "pending": 1,
         "unconfirmed": 0
       },
       {
@@ -882,7 +977,7 @@
       },
       {
         "key": "Alimentação",
-        "transactions": 1,
+        "transactions": 2,
         "confirmed": 0,
         "estimated": 70,
         "paid": 0,
@@ -894,10 +989,10 @@
     "byStatus": [
       {
         "key": "Confirmado / pago",
-        "transactions": 19,
-        "confirmed": 1362.51,
+        "transactions": 22,
+        "confirmed": 1445.13,
         "estimated": 0,
-        "paid": 1362.51,
+        "paid": 1445.13,
         "reimbursed": 0,
         "pending": 0,
         "unconfirmed": 0
@@ -914,7 +1009,7 @@
       },
       {
         "key": "Confirmado — sem custo",
-        "transactions": 2,
+        "transactions": 3,
         "confirmed": 0,
         "estimated": 0,
         "paid": 0,
@@ -931,6 +1026,16 @@
         "reimbursed": 0,
         "pending": 0,
         "unconfirmed": 1
+      },
+      {
+        "key": "Pendente",
+        "transactions": 1,
+        "confirmed": 0,
+        "estimated": 0,
+        "paid": 0,
+        "reimbursed": 0,
+        "pending": 1,
+        "unconfirmed": 0
       }
     ],
     "byUsage": [
@@ -946,12 +1051,12 @@
       },
       {
         "key": "Utilizado",
-        "transactions": 3,
-        "confirmed": 199.8,
+        "transactions": 8,
+        "confirmed": 282.42,
         "estimated": 0,
-        "paid": 199.8,
+        "paid": 282.42,
         "reimbursed": 0,
-        "pending": 0,
+        "pending": 1,
         "unconfirmed": 1
       },
       {
