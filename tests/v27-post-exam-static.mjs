@@ -21,8 +21,8 @@ for (const asset of ['assets/post-exam-v27.css?v=27', 'assets/post-exam-v27.js?v
 assert.ok(index.indexOf('post-exam-v27.css?v=27') > index.indexOf('workspace-v26-polish.css?v=26'), 'CSS v27 deve sobrescrever o polimento anterior');
 assert.ok(index.indexOf('post-exam-v27.js?v=27') > index.indexOf('workspace-v23.js?v=23'), 'JS v27 deve carregar depois do workspace');
 
-for (const asset of ["'./assets/post-exam-v27.css'", "'./assets/post-exam-v27.js'"]) has(sw, asset, 'PWA v27');
-assert.ok(/const CACHE='plano-transicao-v(?:27|28)'/.test(sw), 'cache PWA precisa preservar compatibilidade com o pós-prova v27/v28');
+for (const asset of ["'./assets/post-exam-v27.css'", "'./assets/post-exam-v27.js'", "'./assets/post-exam-score-v28.js'"]) has(sw, asset, 'PWA pós-prova');
+assert.ok(sw.includes("const CACHE='plano-transicao-v28-consolidated'"), 'cache PWA precisa usar a arquitetura consolidada v28');
 
 for (const value of [
   "'Pós-prova'",
@@ -46,4 +46,4 @@ for (const value of [
 assert.ok(!/rawAccuracy\s*=\s*\d/.test(js), 'camada v27 não pode fabricar resultado');
 assert.ok(!/ranking\s*=\s*["'`]\d/.test(js), 'camada v27 não pode fabricar classificação');
 
-console.log('PASS  v27: modo pós-prova ativo, compacto e sem fabricar nota ou classificação.');
+console.log('PASS  v27: modo pós-prova ativo, compacto e compatível com o cache consolidado v28.');
