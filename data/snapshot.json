@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-07T12:35:54.998Z",
+    "generatedAt": "2026-09-07T13:01:44.195Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,11 +8,12 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-07T12:35:56.065Z",
+    "workParityEnrichedAt": "2026-09-07T13:01:45.793Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-07T12:35:56.107Z",
-    "postExamDate": "2026-09-06"
+    "postExamNormalizedAt": "2026-09-07T13:01:45.846Z",
+    "postExamDate": "2026-09-06",
+    "postExamNotesSyncedAt": "2026-09-07T13:01:44.694Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -125,7 +126,8 @@
       "rawAccuracy": null,
       "ranking": "—",
       "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado",
-      "sourceUrl": "https://app.notion.com/p/SEDES-DF-TDAS-202-prova-real-06-09-2026-tarde-3d3cf5a267318115afb3e21fbfbbb412"
+      "sourceUrl": "https://app.notion.com/p/SEDES-DF-TDAS-202-prova-real-06-09-2026-tarde-3d3cf5a267318115afb3e21fbfbbb412",
+      "postExamNote": "Reconstrução do gabarito anotado no caderno da prova TDAS 202: 1B, 2B, 3C, 4C, 5D, 6B, 7C, 8B, 9C, 10D, 11C, 12C, 13B, 14D, 15B, 16E, 17C, 18A, 19D, 20B, 21C, 22A, 23E, 24C, 25D, 26A, 27C, 28E, 29B, 30D (anotado no caderno), 31A, 32C, 33E, 34B, 35D, 36A, 37C, 38E, 39D, 40D, 41A, 42B, 43C, 44B, 45C, 46E, 47A, 48C, 49B, 50B, 51E, 52C, 53B, 54B, 55C, 56C, 57E, 58A, 59D, 60B. Observação crítica: no cartão/folha de respostas, a questão 30 recebeu duas marcações; para cálculo da nota real, tratar Q30 como dupla marca/resposta inválida, embora no caderno conste D. Q8 confirmado como B e Q24 confirmado como C. Fonte: fotos do caderno de prova e confirmações do candidato em 07/09/2026."
     },
     {
       "name": "SEDES/DF",
