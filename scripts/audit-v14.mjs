@@ -34,7 +34,7 @@ check('mobile também recolhe card institucional e atalhos redundantes', css.inc
 check('v14 mantém tratamento estreito em 390px', css.includes('@media (max-width: 390px)'));
 check('v14 não cria largura fixa problemática', !css.includes('width: 1000px') && !css.includes('min-width: 1000px'));
 
-check('service worker está no cache atual v19', sw.includes("const CACHE='plano-transicao-v19'"));
+check('service worker está no cache consolidado v28', sw.includes("const CACHE='plano-transicao-v28-consolidated'"));
 check('service worker preserva assets v14', sw.includes('home-focus-v14.css') && sw.includes('home-focus-v14.js'));
 
 const failures = checks.filter((item) => !item.pass);
