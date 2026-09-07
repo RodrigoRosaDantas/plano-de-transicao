@@ -46,11 +46,7 @@ jobs:
         run: node scripts/audit-v14.mjs
       - name: Auditoria estrutural da v15
         run: node scripts/audit-v15.mjs
-      - name: Auditoria do Dia da Prova v19
-        run: node tests/v19-exam-day.mjs
-      - name: Auditoria do horário da aplicação v20
-        run: node tests/v20-application-time.mjs
-      - name: Auditoria estática da aba Dia da Prova v21
+      - name: Auditoria consolidada da aba Dia da Prova v21
         run: node tests/v21-exam-day-tab-static.mjs
       - name: Auditoria estática do polimento v22
         run: node tests/v22-exam-day-polish-static.mjs
