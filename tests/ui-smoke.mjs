@@ -37,16 +37,16 @@ async function run(name, viewport, fn) {
   }
 }
 
-await run('desktop: central, atualização visível e busca global', { width: 1440, height: 1000 }, async page => {
+await run('desktop: central, recarga explícita e busca global', { width: 1440, height: 1000 }, async page => {
   await page.waitForSelector('.command-view');
-  if (!(await page.locator('#refreshBtn').isVisible())) throw new Error('Botão Atualizar dados não está visível.');
+  if (!(await page.locator('#refreshBtn').isVisible())) throw new Error('Botão Recarregar snapshot não está visível.');
   const refreshLabel = await page.locator('#refreshLabel').innerText();
-  if (!refreshLabel.includes('Atualizar dados')) throw new Error(`Rótulo de atualização incorreto: ${refreshLabel}`);
+  if (!refreshLabel.includes('Recarregar snapshot')) throw new Error(`Rótulo de recarga incorreto: ${refreshLabel}`);
   if (await page.locator('[data-view="study"], #studyWorkspaceFrame, iframe, a[href*="sedes-df-questoes"]').count()) throw new Error('Ainda existe uma ação operacional de estudo no Plano.');
   await page.click('#refreshBtn');
-  await page.waitForSelector('#toast.show');
+  await page.waitForFunction(() => document.querySelector('#toast.show')?.textContent?.includes('Snapshot publicado recarregado.'));
   const toast = await page.locator('#toast').innerText();
-  if (!toast.includes('atualizados')) throw new Error(`Feedback de atualização ausente: ${toast}`);
+  if (!toast.includes('Snapshot publicado recarregado.')) throw new Error(`Feedback de recarga ausente: ${toast}`);
   await page.keyboard.press('Control+K');
   await page.waitForSelector('#commandPalette:not(.hidden)');
   await page.fill('#searchInput', 'Português');
