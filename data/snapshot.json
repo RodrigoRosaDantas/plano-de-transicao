@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-07T13:31:47.906Z",
+    "generatedAt": "2026-09-07T13:33:44.194Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,12 +8,13 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-07T13:31:49.494Z",
+    "workParityEnrichedAt": "2026-09-07T13:33:47.426Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-07T13:31:49.552Z",
+    "postExamNormalizedAt": "2026-09-07T13:33:47.479Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-07T13:31:48.484Z"
+    "postExamNotesSyncedAt": "2026-09-07T13:33:44.719Z",
+    "postExamScoringUpdatedAt": "2026-09-07T13:33:44.808Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -217,6 +218,10 @@
         },
         "scoreState": "Aguardando gabarito preliminar oficial para estimativa",
         "source": "Anotação pós-prova no Notion"
+      },
+      "scoreTracking": {
+        "preliminary": null,
+        "definitive": null
       }
     },
     {
