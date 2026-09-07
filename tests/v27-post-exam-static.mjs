@@ -22,7 +22,7 @@ assert.ok(index.indexOf('post-exam-v27.css?v=27') > index.indexOf('workspace-v26
 assert.ok(index.indexOf('post-exam-v27.js?v=27') > index.indexOf('workspace-v23.js?v=23'), 'JS v27 deve carregar depois do workspace');
 
 for (const asset of ["'./assets/post-exam-v27.css'", "'./assets/post-exam-v27.js'"]) has(sw, asset, 'PWA v27');
-has(sw, "const CACHE='plano-transicao-v27'", 'cache PWA v27');
+assert.ok(/const CACHE='plano-transicao-v(?:27|28)'/.test(sw), 'cache PWA precisa preservar compatibilidade com o pós-prova v27/v28');
 
 for (const value of [
   "'Pós-prova'",
