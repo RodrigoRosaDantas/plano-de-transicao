@@ -32,8 +32,6 @@
   <link rel="stylesheet" href="assets/manager-inbox-v13.css?v=15" />
   <link rel="stylesheet" href="assets/home-focus-v14.css?v=15" />
   <link rel="stylesheet" href="assets/transition-gate-v15.css?v=15" />
-  <link rel="stylesheet" href="assets/exam-day-v19.css?v=19" />
-  <link rel="stylesheet" href="assets/exam-day-v20.css?v=20" />
   <link rel="stylesheet" href="assets/exam-day-v21.css?v=21" />
   <link rel="stylesheet" href="assets/exam-day-v21-shell.css?v=21" />
   <link rel="stylesheet" href="assets/workspace-v23.css?v=23" />
@@ -61,7 +59,7 @@
         <button id="searchTrigger" class="control-button search-button" type="button" aria-label="Buscar no plano">
           <span data-icon="search"></span><b>Buscar</b><kbd>Ctrl K</kbd>
         </button>
-        <button id="refreshBtn" class="control-button refresh-button" type="button" data-refresh aria-label="Atualizar dados publicados" title="Recarregar o snapshot mais recente publicado"><span class="refresh-icon" data-icon="refresh"></span><span><b id="refreshLabel">Atualizar dados</b><small id="refreshAge">último snapshot</small></span></button>
+        <button id="refreshBtn" class="control-button refresh-button" type="button" data-refresh aria-label="Recarregar snapshot publicado" title="Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente."><span class="refresh-icon" data-icon="refresh"></span><span><b id="refreshLabel">Recarregar snapshot</b><small id="refreshAge">último snapshot</small></span></button>
         <button id="themeBtn" class="icon-button" type="button" aria-label="Alternar tema" title="Alternar tema"><span data-icon="sun"></span></button>
         <button id="moreTopBtn" class="icon-button more-top-button" type="button" aria-label="Abrir mais opções"><span data-icon="menu"></span></button>
       </div>
@@ -122,7 +120,7 @@
     <section class="sheet-sync-card" aria-live="polite">
       <div class="sheet-sync-icon"><span data-icon="shield"></span></div>
       <div><span>Estado dos dados</span><strong id="moreSyncTitle">Carregando snapshot…</strong><small id="moreSyncDetail">Notion → GitHub Actions → site</small></div>
-      <button id="moreRefreshBtn" class="primary-button" type="button" data-refresh><span data-icon="refresh"></span>Atualizar dados</button>
+      <button id="moreRefreshBtn" class="primary-button" type="button" data-refresh aria-label="Recarregar snapshot publicado" title="Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente."><span data-icon="refresh"></span>Recarregar snapshot</button>
     </section>
     <div class="sheet-grid">
       <button type="button" data-view="command"><span data-icon="dashboard"></span><b>Agora</b><small>Comando e prioridades</small></button>
@@ -161,8 +159,6 @@
   <script type="module" src="assets/manager-inbox-v13.js?v=15"></script>
   <script type="module" src="assets/home-focus-v14.js?v=15"></script>
   <script type="module" src="assets/transition-gate-v15.js?v=15"></script>
-  <script type="module" src="assets/exam-day-v19.js?v=19"></script>
-  <script type="module" src="assets/exam-day-v20.js?v=20"></script>
   <script type="module" src="assets/exam-day-v21.js?v=21"></script>
   <script type="module" src="assets/exam-day-v21-shell.js?v=21"></script>
   <script type="module" src="assets/workspace-v23.js?v=23"></script>
