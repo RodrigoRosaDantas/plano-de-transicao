@@ -50,6 +50,46 @@ function date(page, name) {
   return property?.type === 'date' ? property.date?.start || null : null;
 }
 
+function parseCandidateResponse(note) {
+  const answers = {};
+  const invalidQuestions = [];
+  const regex = /\b(\d{2})\s*=\s*(A|B|C|D|E|INVÁLIDA_CARTÃO)\b/g;
+  let match;
+  while ((match = regex.exec(note)) !== null) {
+    const number = Number(match[1]);
+    const value = match[2];
+    if (number < 1 || number > 60) continue;
+    answers[number] = value === 'INVÁLIDA_CARTÃO' ? null : value;
+    if (value === 'INVÁLIDA_CARTÃO') invalidQuestions.push(number);
+  }
+
+  const registered = Object.keys(answers).length;
+  if (!registered) return null;
+
+  const generalValid = Array.from({ length: 20 }, (_, i) => i + 1)
+    .filter(number => answers[number] !== undefined && answers[number] !== null).length;
+  const specificValid = Array.from({ length: 40 }, (_, i) => i + 21)
+    .filter(number => answers[number] !== undefined && answers[number] !== null).length;
+
+  return {
+    version: 1,
+    status: registered === 60 ? 'complete' : 'partial',
+    registeredQuestions: registered,
+    validMarks: generalValid + specificValid,
+    invalidQuestions,
+    answers,
+    scoreModel: {
+      general: { from: 1, to: 20, pointsPerCorrect: 1, maxPoints: 20 },
+      specific: { from: 21, to: 60, pointsPerCorrect: 2, maxPoints: 80 },
+      objectiveMaxPoints: 100,
+      wrongBlankOrMultipleMarksPoints: 0,
+      annulledQuestionRule: 'pontuação integral atribuída a todos os candidatos'
+    },
+    scoreState: 'Aguardando gabarito preliminar oficial para estimativa',
+    source: 'Anotação pós-prova no Notion'
+  };
+}
+
 const snapshotUrl = new URL('../data/snapshot.json', import.meta.url);
 const snapshot = JSON.parse(await fs.readFile(snapshotUrl, 'utf8'));
 const rows = await databaseRows(REGISTRY_DATABASE);
@@ -70,8 +110,34 @@ snapshot.exams = (snapshot.exams || []).map(exam => {
   const project = projectById[exam.id];
   if (!project) return exam;
   const postExamNote = notesByProject.get(project) || exam.postExamNote || '';
-  return postExamNote ? { ...exam, postExamNote } : exam;
+  if (!postExamNote) return exam;
+
+  const updated = { ...exam, postExamNote };
+  if (exam.id === 'sedes-2026-tdas') {
+    const candidateResponse = parseCandidateResponse(postExamNote);
+    if (candidateResponse) updated.candidateResponse = candidateResponse;
+  }
+  return updated;
 });
+
+snapshot.postExam = {
+  ...(snapshot.postExam || {}),
+  scoring: {
+    ...(snapshot.postExam?.scoring || {}),
+    tdas: {
+      status: snapshot.exams.find(exam => exam.id === 'sedes-2026-tdas')?.candidateResponse
+        ? 'candidate-response-ready'
+        : 'candidate-response-pending',
+      preliminaryKey: null,
+      estimatedScore: null,
+      estimatedGeneralScore: null,
+      estimatedSpecificScore: null,
+      differences: [],
+      appealCandidates: [],
+      lastComparedAt: null
+    }
+  }
+};
 
 snapshot.meta = {
   ...(snapshot.meta || {}),
