@@ -1,6 +1,28 @@
 (() => {
   const POST_EXAM_AT = Date.parse('2026-09-06T22:30:00.000Z'); // 19:30 em Brasília
   const postExamActive = () => Date.now() >= POST_EXAM_AT;
+  const POST_EXAM_NOTE_KEY = 'plano-transicao:post-exam-v27:notes';
+  const TDAS_POST_EXAM_NOTE = 'Reconstrução do gabarito anotado no caderno da prova TDAS 202: 1B, 2B, 3C, 4C, 5D, 6B, 7C, 8B, 9C, 10D, 11C, 12C, 13B, 14D, 15B, 16E, 17C, 18A, 19D, 20B, 21C, 22A, 23E, 24C, 25D, 26A, 27C, 28E, 29B, 30D (anotado no caderno), 31A, 32C, 33E, 34B, 35D, 36A, 37C, 38E, 39D, 40D, 41A, 42B, 43C, 44B, 45C, 46E, 47A, 48C, 49B, 50B, 51E, 52C, 53B, 54B, 55C, 56C, 57E, 58A, 59D, 60B. Observação crítica: no cartão/folha de respostas, a questão 30 recebeu duas marcações; para cálculo da nota real, tratar Q30 como dupla marca/resposta inválida, embora no caderno conste D. Q8 confirmado como B e Q24 confirmado como C. Fonte: fotos do caderno de prova e confirmações do candidato em 07/09/2026.';
+
+  function seedPostExamNotes() {
+    if (!postExamActive()) return;
+    try {
+      const current = JSON.parse(localStorage.getItem(POST_EXAM_NOTE_KEY) || '{}');
+      const notes = current && typeof current === 'object' ? current : {};
+      if (!String(notes.tdas || '').trim()) {
+        localStorage.setItem(POST_EXAM_NOTE_KEY, JSON.stringify({
+          ...notes,
+          tdas: TDAS_POST_EXAM_NOTE,
+          tdasSource: 'Registro Histórico — Estudos e Desempenho / Notion',
+          updatedAt: new Date().toISOString()
+        }));
+      }
+    } catch {
+      // O site continua funcional mesmo se o navegador bloquear localStorage.
+    }
+  }
+
+  seedPostExamNotes();
 
   function normalizePostExamSnapshot(data) {
     if (!postExamActive() || !data || typeof data !== 'object') return data;
