@@ -9,6 +9,8 @@ on:
       - '.github/workflows/sync-notion.yml'
       - 'scripts/sync-notion.mjs'
       - 'scripts/sync-post-exam-notes.mjs'
+      - 'scripts/score-post-exam.mjs'
+      - 'data/official-keys.json'
       - 'scripts/enrich-work-parity.mjs'
       - 'scripts/apply-post-exam-state.mjs'
       - 'scripts/audit-parity.mjs'
@@ -41,6 +43,8 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/sync-post-exam-notes.mjs
+      - name: Calcular acompanhamento pós-gabarito
+        run: node scripts/score-post-exam.mjs
       - name: Enriquecer paridade Work
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
