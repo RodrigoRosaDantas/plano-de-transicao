@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-08T04:39:10.422Z",
+    "generatedAt": "2026-09-08T11:21:30.242Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,13 +8,13 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-08T04:39:12.656Z",
+    "workParityEnrichedAt": "2026-09-08T11:21:31.735Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-08T04:39:12.695Z",
+    "postExamNormalizedAt": "2026-09-08T11:21:31.778Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-08T04:39:10.946Z",
-    "postExamScoringUpdatedAt": "2026-09-08T04:39:10.980Z"
+    "postExamNotesSyncedAt": "2026-09-08T11:21:30.824Z",
+    "postExamScoringUpdatedAt": "2026-09-08T11:21:30.889Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
