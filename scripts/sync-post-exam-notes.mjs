@@ -91,7 +91,15 @@ function parseCandidateResponse(note) {
 }
 
 const snapshotUrl = new URL('../data/snapshot.json', import.meta.url);
+const manualResponsesUrl = new URL('../data/manual-candidate-responses.json', import.meta.url);
 const snapshot = JSON.parse(await fs.readFile(snapshotUrl, 'utf8'));
+let manualResponses = {};
+try {
+  manualResponses = JSON.parse(await fs.readFile(manualResponsesUrl, 'utf8'));
+} catch {
+  manualResponses = {};
+}
+
 const rows = await databaseRows(REGISTRY_DATABASE);
 
 const realExams = rows.filter(row => text(row, 'Escopo') === 'Prova real' && date(row, 'Data')?.slice(0, 10) === '2026-09-06');
@@ -109,40 +117,47 @@ const projectById = {
 snapshot.exams = (snapshot.exams || []).map(exam => {
   const project = projectById[exam.id];
   if (!project) return exam;
-  const postExamNote = notesByProject.get(project) || exam.postExamNote || '';
-  if (!postExamNote) return exam;
 
-  const updated = { ...exam, postExamNote };
-  if (exam.id === 'sedes-2026-tdas') {
+  const postExamNote = notesByProject.get(project) || exam.postExamNote || '';
+  const updated = postExamNote ? { ...exam, postExamNote } : { ...exam };
+
+  if (exam.id === 'sedes-2026-tdas' && postExamNote) {
     const candidateResponse = parseCandidateResponse(postExamNote);
     if (candidateResponse) updated.candidateResponse = candidateResponse;
   }
+
+  const manualResponse = manualResponses[exam.id];
+  if (manualResponse?.answers) {
+    updated.candidateResponse = manualResponse;
+  }
+
   return updated;
 });
+
+const currentScoring = snapshot.postExam?.scoring || {};
+const tdasResponse = snapshot.exams.find(exam => exam.id === 'sedes-2026-tdas')?.candidateResponse;
+const edasResponse = snapshot.exams.find(exam => exam.id === 'sedes-2026-edas')?.candidateResponse;
 
 snapshot.postExam = {
   ...(snapshot.postExam || {}),
   scoring: {
-    ...(snapshot.postExam?.scoring || {}),
+    ...currentScoring,
     tdas: {
-      status: snapshot.exams.find(exam => exam.id === 'sedes-2026-tdas')?.candidateResponse
-        ? 'candidate-response-ready'
-        : 'candidate-response-pending',
-      preliminaryKey: null,
-      estimatedScore: null,
-      estimatedGeneralScore: null,
-      estimatedSpecificScore: null,
-      differences: [],
-      appealCandidates: [],
-      lastComparedAt: null
+      ...(currentScoring.tdas || {}),
+      status: tdasResponse ? 'candidate-response-ready' : 'candidate-response-pending'
+    },
+    edas: {
+      ...(currentScoring.edas || {}),
+      status: edasResponse ? 'candidate-response-ready' : 'candidate-response-pending'
     }
   }
 };
 
 snapshot.meta = {
   ...(snapshot.meta || {}),
-  postExamNotesSyncedAt: new Date().toISOString()
+  postExamNotesSyncedAt: new Date().toISOString(),
+  postExamCandidateResponsesSyncedAt: new Date().toISOString()
 };
 
 await fs.writeFile(snapshotUrl, `${JSON.stringify(snapshot, null, 2)}\n`);
-console.log(`Anotações pós-prova sincronizadas: ${[...notesByProject.keys()].join(', ') || 'nenhuma'}.`);
+console.log(`Anotações pós-prova sincronizadas: ${[...notesByProject.keys()].join(', ') || 'nenhuma'}. Respostas manuais: ${Object.keys(manualResponses).join(', ') || 'nenhuma'}.`);
