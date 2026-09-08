@@ -11,6 +11,7 @@ on:
       - 'scripts/sync-post-exam-notes.mjs'
       - 'scripts/score-post-exam.mjs'
       - 'data/official-keys.json'
+      - 'data/manual-candidate-responses.json'
       - 'scripts/enrich-work-parity.mjs'
       - 'scripts/apply-post-exam-state.mjs'
       - 'scripts/audit-parity.mjs'
