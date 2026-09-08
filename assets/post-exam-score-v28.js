@@ -11,15 +11,11 @@
     return (data?.exams || []).find(exam => exam?.id === `sedes-2026-${id}`) || null;
   }
 
-  function tdasExam(data = snapshot) {
-    return sedesExam('tdas', data);
-  }
-
-  function scoreState(data = snapshot) {
-    const exam = tdasExam(data);
+  function scoreState(id, data = snapshot) {
+    const exam = sedesExam(id, data);
     const response = exam?.candidateResponse;
-    const preliminary = exam?.scoreTracking?.preliminary || data?.postExam?.scoring?.tdas?.preliminary || null;
-    const definitive = exam?.scoreTracking?.definitive || data?.postExam?.scoring?.tdas?.definitive || null;
+    const preliminary = exam?.scoreTracking?.preliminary || data?.postExam?.scoring?.[id]?.preliminary || null;
+    const definitive = exam?.scoreTracking?.definitive || data?.postExam?.scoring?.[id]?.definitive || null;
     return { exam, response, preliminary, definitive };
   }
 
@@ -47,6 +43,13 @@
 
   function setText(node, value) {
     if (node && node.textContent !== value) node.textContent = value;
+  }
+
+  function answerVector(response) {
+    return Object.entries(response?.answers || {})
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([number, answer]) => `${String(number).padStart(2, '0')}=${answer || 'INVÁLIDA'}`)
+      .join(' · ');
   }
 
   function ensureStyles() {
@@ -80,15 +83,21 @@
       .v28-source-sync{display:inline-flex!important;align-items:center;justify-content:center;gap:7px;text-decoration:none}
       .v28-source-sync:after{content:"↗";font-size:.9em}
       .v28-sync-note{margin-top:10px!important;font-size:.78rem!important;color:var(--text-muted,#8f9793)!important}
+      .v28-answer-vector{margin-top:10px;padding-top:10px;border-top:1px solid var(--line,#29312e)}
+      .v28-answer-vector summary{cursor:pointer;color:var(--text-muted,#8f9793);font-size:.78rem;font-weight:800;list-style:none}
+      .v28-answer-vector summary::-webkit-details-marker{display:none}
+      .v28-answer-vector summary:after{content:" +";font-weight:500}
+      .v28-answer-vector[open] summary:after{content:" −"}
+      .v28-answer-vector code{display:block;margin-top:8px;white-space:normal;overflow-wrap:anywhere;color:var(--text-muted,#8f9793);font-size:.72rem;line-height:1.65;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
       @media(max-width:900px){.v28-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.v28-flow-step:last-child{grid-column:1/-1}.v28-next-lanes{grid-template-columns:1fr 1fr}.v28-lane-intro{grid-column:1/-1}}
       @media(max-width:620px){.v28-transition-console{padding:18px!important}.v28-console-head{display:block}.v28-live-chip{margin-top:12px}.v28-flow{grid-template-columns:1fr}.v28-flow-step:last-child{grid-column:auto}.v28-next-lanes{grid-template-columns:1fr}.v28-lane-intro{grid-column:auto}}
     `;
     document.head.appendChild(style);
   }
 
-  function patchScoreCard(data = snapshot) {
-    const { response, preliminary, definitive } = scoreState(data);
-    const card = document.querySelector('.v27-exam-card--tdas');
+  function patchScoreCard(id, data = snapshot) {
+    const { response, preliminary, definitive } = scoreState(id, data);
+    const card = document.querySelector(`.v27-exam-card--${id}`);
     if (!card || !response) return;
 
     card.dataset.scoreTrackingV28 = '1';
@@ -108,27 +117,46 @@
       setText(strong, `${preliminary.total ?? preliminary.totalScore}/100`);
       setText(detail, `CG ${preliminary.general ?? preliminary.generalScore}/20 · CE ${preliminary.specific ?? preliminary.specificScore}/80 · preliminar`);
     } else {
-      setText(label, 'Gabarito do candidato pronto');
-      setText(strong, `${response.validMarks || 0} válidas · ${(response.invalidQuestions || []).length} inválida`);
+      const invalidCount = (response.invalidQuestions || []).length;
+      setText(label, id === 'edas' ? 'Respostas anotadas do candidato' : 'Gabarito do candidato pronto');
+      setText(strong, `${response.validMarks || 0} válidas · ${invalidCount} ${invalidCount === 1 ? 'inválida' : 'inválidas'}`);
       setText(detail, 'Aguardando gabarito preliminar oficial · previsão 09/09/2026');
     }
 
-    let note = card.querySelector('[data-v28-score-note]');
+    let note = card.querySelector(`[data-v28-score-note="${id}"]`);
     if (!note) {
       note = document.createElement('p');
-      note.dataset.v28ScoreNote = '1';
+      note.dataset.v28ScoreNote = id;
       note.className = 'v27-archive-note';
       result.insertAdjacentElement('afterend', note);
     }
-    setText(note, (response.invalidQuestions || []).includes(30)
-      ? 'Q30: dupla marca no cartão; vale 0 ponto, salvo eventual anulação da questão pela banca.'
-      : 'Respostas do candidato registradas para cruzamento com o gabarito oficial.');
+    if (id === 'tdas' && (response.invalidQuestions || []).includes(30)) {
+      setText(note, 'Q30: dupla marca no cartão; vale 0 ponto, salvo eventual anulação da questão pela banca.');
+    } else if (id === 'edas') {
+      setText(note, 'EDAS 400: 60 respostas anotadas da foto enviada em 08/09/2026. Este registro é do candidato e não é gabarito oficial.');
+    } else {
+      setText(note, 'Respostas do candidato registradas para cruzamento com o gabarito oficial.');
+    }
+
+    let vector = card.querySelector(`[data-v28-answer-vector="${id}"]`);
+    if (!vector) {
+      vector = document.createElement('details');
+      vector.className = 'v28-answer-vector';
+      vector.dataset.v28AnswerVector = id;
+      vector.innerHTML = `<summary>Ver ${response.registeredQuestions || 0} respostas registradas</summary><code></code>`;
+      note.insertAdjacentElement('afterend', vector);
+    }
+    const code = vector.querySelector('code');
+    setText(code, answerVector(response));
   }
 
   function stageModel(data = snapshot) {
     const edas = sedesExam('edas', data);
     const tdas = sedesExam('tdas', data);
-    const { preliminary, definitive } = scoreState(data);
+    const edasState = scoreState('edas', data);
+    const tdasState = scoreState('tdas', data);
+    const preliminary = edasState.preliminary || tdasState.preliminary;
+    const definitive = edasState.definitive || tdasState.definitive;
     const anyCorrection = hasCorrection(edas) || hasCorrection(tdas) || preliminary || definitive;
     const anyRanking = hasRanking(edas) || hasRanking(tdas);
     const hasOfficialKey = Boolean(preliminary || definitive || anyCorrection);
@@ -253,7 +281,8 @@
 
   function patch(data = snapshot) {
     if (data) snapshot = data;
-    patchScoreCard(snapshot);
+    patchScoreCard('edas', snapshot);
+    patchScoreCard('tdas', snapshot);
     patchHome(snapshot);
     patchRefreshSemantics(snapshot);
   }
