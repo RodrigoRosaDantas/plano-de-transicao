@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-09T19:14:33.652Z",
+    "generatedAt": "2026-09-09T19:15:16.292Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,14 +8,14 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-09T19:14:35.248Z",
+    "workParityEnrichedAt": "2026-09-09T19:15:18.420Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-09T19:14:35.301Z",
+    "postExamNormalizedAt": "2026-09-09T19:15:18.468Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-09T19:14:34.110Z",
-    "postExamScoringUpdatedAt": "2026-09-09T19:14:34.199Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:14:34.110Z"
+    "postExamNotesSyncedAt": "2026-09-09T19:15:17.074Z",
+    "postExamScoringUpdatedAt": "2026-09-09T19:15:17.157Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:15:17.074Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -248,8 +248,9 @@
       "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado",
       "sourceUrl": "https://app.notion.com/p/SEDES-DF-EDAS-400-prova-real-06-09-2026-manh-3d3cf5a2673181a7881ff0f1010ff5c7",
       "candidateResponse": {
-        "version": 1,
+        "version": 2,
         "status": "complete",
+        "examType": "A",
         "registeredQuestions": 60,
         "validMarks": 60,
         "invalidQuestions": [],
@@ -315,11 +316,37 @@
           "59": "B",
           "60": "D"
         },
-        "scoreState": "Aguardando gabarito preliminar oficial para estimativa",
+        "scoreModel": {
+          "type": "A",
+          "general": {
+            "from": 1,
+            "to": 20,
+            "pointsPerCorrect": 1,
+            "maxPoints": 20
+          },
+          "specificCommon": {
+            "from": 21,
+            "to": 40,
+            "pointsPerCorrect": 2,
+            "maxPoints": 40
+          },
+          "specialty": {
+            "from": 41,
+            "to": 60,
+            "pointsPerCorrect": 2,
+            "maxPoints": 40
+          },
+          "specificTotalMaxPoints": 80,
+          "objectiveMaxPoints": 100,
+          "wrongBlankOrMultipleMarksPoints": 0,
+          "annulledQuestionRule": "pontuação integral atribuída a todos os candidatos"
+        },
+        "scoreState": "Aguardando ou acompanhando gabarito oficial conforme estágio publicado",
         "source": "Foto do gabarito anotado pelo candidato enviada em 08/09/2026",
         "recordedAt": "2026-09-08T11:57:00-03:00",
         "normalizationNotes": [
-          "Q3 e Q33 foram normalizadas como alternativa E; a grafia manuscrita se parece com F, mas a prova utiliza alternativas A-E."
+          "Q3 e Q33 foram normalizadas como alternativa E; a grafia manuscrita se parece com F, mas a prova utiliza alternativas A-E.",
+          "O gabarito preliminar oficial de 09/09/2026 confirmou Q3=E e Q33=E para EDAS Administração Tipo A."
         ]
       },
       "examType": "A",
