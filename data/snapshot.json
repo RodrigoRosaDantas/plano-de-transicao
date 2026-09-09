@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-09T16:40:06.595Z",
+    "generatedAt": "2026-09-09T19:14:11.923Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,14 +8,14 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-09T16:40:08.319Z",
+    "workParityEnrichedAt": "2026-09-09T19:14:15.288Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-09T16:40:08.371Z",
+    "postExamNormalizedAt": "2026-09-09T19:14:15.338Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-09T16:40:07.072Z",
-    "postExamScoringUpdatedAt": "2026-09-09T16:40:07.156Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-09T16:40:07.072Z"
+    "postExamNotesSyncedAt": "2026-09-09T19:14:13.945Z",
+    "postExamScoringUpdatedAt": "2026-09-09T19:14:14.029Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:14:13.945Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -223,7 +223,8 @@
       "scoreTracking": {
         "preliminary": null,
         "definitive": null
-      }
+      },
+      "examType": "B"
     },
     {
       "name": "SEDES/DF",
@@ -311,6 +312,11 @@
         "normalizationNotes": [
           "Q3 e Q33 foram normalizadas como alternativa E; a grafia manuscrita se parece com F, mas a prova utiliza alternativas A-E."
         ]
+      },
+      "examType": "A",
+      "scoreTracking": {
+        "preliminary": null,
+        "definitive": null
       }
     }
   ],
@@ -420,8 +426,8 @@
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
-      "lastEditedAt": "2026-09-05T20:40:00.000Z",
-      "status": "treated-live"
+      "lastEditedAt": "2026-09-09T18:37:00.000Z",
+      "status": "treated-fallback"
     },
     "postExamGates": [
       "Registrar a prova e o resultado em 02 — Concursos, Provas e Resultados.",
