@@ -91,7 +91,108 @@ function areaFor(target, question) {
   return target.areas.find(area => question >= area.from && question <= area.to) || null;
 }
 
-function scoreWith(candidate, keyBlock, target, stage) {
+function buildQuestionAudit(candidate, keyBlock, source, question, status, candidateAnswer, official, pointsPossible) {
+  const invalidMarked = (candidate?.invalidQuestions || []).map(Number).includes(question);
+  const candidateLabel = candidateAnswer || (invalidMarked ? 'DUPLA-MARCAÇÃO' : 'SEM-RESPOSTA');
+  const candidateNote = candidate?.questionNotes?.[question] ?? candidate?.questionNotes?.[String(question)] ?? null;
+  const officialNote = keyBlock.questionAudit?.[String(question)] || null;
+  const relation = status === 'acerto'
+    ? 'coincide'
+    : status === 'anulada'
+      ? 'questao-anulada'
+      : candidateAnswer == null
+        ? 'sem-marcacao-valida'
+        : 'diverge';
+  const resultReason = status === 'acerto'
+    ? 'A resposta anotada coincide com a alternativa indicada no gabarito preliminar.'
+    : status === 'anulada'
+      ? 'A questão foi anulada; a pontuação integral é aplicada conforme a regra do edital.'
+      : invalidMarked
+        ? 'O registro do candidato informa mais de uma marcação no cartão; o cenário de pontuação é zero para o item.'
+        : candidateAnswer == null
+          ? 'Não há resposta válida anotada; o cenário de pontuação é zero para o item.'
+          : 'A resposta anotada diverge da alternativa indicada no gabarito preliminar; a justificativa de conteúdo depende do enunciado e da fonte normativa.';
+  const appealAssessment = status === 'acerto'
+    ? {
+        status: 'not-indicated',
+        label: 'Sem recurso necessário',
+        recommendation: 'A anotação coincide com a chave preliminar; não há divergência a contestar neste cruzamento.'
+      }
+      : status === 'anulada'
+        ? {
+            status: 'applied-to-all',
+            label: 'Anulação já aplicada',
+            recommendation: 'A pontuação integral foi atribuída; aguardar o resultado definitivo.'
+          }
+        : invalidMarked
+          ? {
+              status: 'question-review-only',
+              label: 'Só avaliar eventual anulação',
+              recommendation: 'A dupla marcação não é corrigida por troca de gabarito. Só avaliar recurso se houver vício objetivo no enunciado, nas alternativas ou na base normativa.'
+            }
+          : candidateAnswer == null
+            ? {
+                status: 'not-from-answer',
+                label: 'Sem fundamento pela falta de marcação',
+                recommendation: 'A ausência de resposta não demonstra erro da banca. Só avaliar recurso por eventual vício objetivo da questão.'
+              }
+            : {
+                status: 'low-signal',
+                label: 'Não priorizar só pela divergência',
+                recommendation: 'A diferença entre a anotação e a chave não prova erro da banca. Só protocolar se o enunciado, o edital ou a fonte normativa revelar fundamento objetivo para alteração ou anulação.'
+              };
+  return {
+    candidateLabel,
+    candidateNote,
+    comparison: {
+      relation,
+      candidate: candidateLabel,
+      official
+    },
+    resultReason,
+    officialBasis: officialNote?.basis || null,
+    officialJustificationSource: source?.justificationsPdfUrl || null,
+    appealAssessment,
+    potentialGainIfKeyChanges: ['acerto', 'anulada'].includes(status) ? 0 : pointsPossible
+  };
+}
+
+function buildScoreAudit(candidate, keyBlock, source, target, stage, results, differences) {
+  const preliminary = stage === 'preliminary';
+  return {
+    responseSource: candidate?.source || 'Registro de respostas anotadas do candidato',
+    responseIsOfficialKey: false,
+    responseLabel: 'Respostas anotadas pelo candidato',
+    keyLabel: preliminary ? 'Gabarito preliminar oficial' : 'Gabarito definitivo oficial',
+    keyIsDefinitive: !preliminary,
+    keyPublishedAt: keyBlock?.publishedAt || null,
+    keyVersion: keyBlock?.version || null,
+    sourceSeparation: 'As respostas anotadas e o gabarito da banca são fontes independentes; a nota resulta apenas do cruzamento entre os dois.',
+    comparisonMethod: 'Comparação literal por número de questão, respeitando o tipo de prova e os pesos do edital.',
+    questionCount: results.length,
+    differenceCount: differences.length,
+    resourceReview: preliminary
+      ? {
+          status: 'pre-analise',
+          conclusion: 'Nenhuma divergência entre a anotação e a chave, isoladamente, prova erro da banca. Cada recurso precisa apontar fundamento objetivo para alterar ou anular uma questão.',
+          questionByQuestion: true,
+          protocol: source?.resourceProtocol || null
+        }
+      : {
+          status: 'definitive-record',
+          conclusion: 'Registro definitivo; acompanhar o resultado oficial e eventuais efeitos das decisões da banca.',
+          questionByQuestion: true,
+          protocol: source?.resourceProtocol || null
+        },
+    sourceDocuments: {
+      keyPdfUrl: source?.keyPdfUrl || keyBlock?.sourceUrl || null,
+      justificationsPdfUrl: source?.justificationsPdfUrl || null,
+      resourceNoticePdfUrl: source?.resourceNoticePdfUrl || null
+    }
+  };
+}
+
+function scoreWith(candidate, keyBlock, target, stage, source) {
   if (!candidate || !keyBlock || keyBlock.status !== 'published' || !keyBlock.answers) return null;
 
   const results = [];
@@ -161,7 +262,8 @@ function scoreWith(candidate, keyBlock, target, stage) {
       official,
       status,
       points: earned,
-      pointsPossible: area.points
+      pointsPossible: area.points,
+      audit: buildQuestionAudit(candidate, keyBlock, source, q, status, candidateAnswer, official, area.points)
     });
   }
 
@@ -190,7 +292,8 @@ function scoreWith(candidate, keyBlock, target, stage) {
     objectiveMinimumsMet: generalScore >= 10 && specificScore >= 40,
     areaStats,
     differences,
-    questions: results
+    questions: results,
+    audit: buildScoreAudit(candidate, keyBlock, source, target, stage, results, differences)
   };
 }
 
@@ -205,8 +308,8 @@ for (const target of TARGETS) {
   const exam = (snapshot.exams || []).find(item => item.id === target.examId);
   const candidate = exam?.candidateResponse;
   const keySet = keys?.[target.keyId] || {};
-  const preliminaryScore = scoreWith(candidate, keySet.preliminary, target, 'preliminary');
-  const definitiveScore = scoreWith(candidate, keySet.definitive, target, 'definitive');
+  const preliminaryScore = scoreWith(candidate, keySet.preliminary, target, 'preliminary', keys.source);
+  const definitiveScore = scoreWith(candidate, keySet.definitive, target, 'definitive', keys.source);
   const activeScore = definitiveScore || preliminaryScore || null;
 
   snapshot.postExam.scoring[target.id] = {

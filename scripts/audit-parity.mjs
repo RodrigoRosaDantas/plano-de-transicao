@@ -54,6 +54,29 @@ check('TDAS fecha matematicamente', m.tdas.questions === m.tdas.hits + m.tdas.er
 check('EDAS fecha matematicamente', m.edas.questions === m.edas.hits + m.edas.errors, `${m.edas.questions}`);
 check('TDAS e EDAS continuam separados', m.tdas.questions !== m.edas.questions && m.tdas.accuracy !== m.edas.accuracy);
 
+const postExamScoring = snapshot.postExam?.scoring || {};
+const postExamAuditExpectations = {
+  tdas: { type: 'B', correct: 49, wrong: 10, invalid: 1, total: 83, differences: 11 },
+  edas: { type: 'A', correct: 53, wrong: 7, invalid: 0, total: 88, differences: 7 }
+};
+for (const [id, expected] of Object.entries(postExamAuditExpectations)) {
+  const scoring = postExamScoring[id] || {};
+  const preliminary = scoring.preliminary || {};
+  const questions = preliminary.questions || [];
+  const differences = preliminary.differences || [];
+  check(`Pós-prova ${id} mantém prova correta`, preliminary.examType === expected.type, `${preliminary.examType} × ${expected.type}`);
+  check(`Pós-prova ${id} possui 60 questões auditadas`, questions.length === 60, `${questions.length}`);
+  check(`Pós-prova ${id} fecha contagem de resultados`, preliminary.correct + preliminary.wrong + preliminary.invalid + preliminary.annulled === 60);
+  check(`Pós-prova ${id} mantém acertos esperados`, preliminary.correct === expected.correct, `${preliminary.correct} × ${expected.correct}`);
+  check(`Pós-prova ${id} mantém erros esperados`, preliminary.wrong === expected.wrong, `${preliminary.wrong} × ${expected.wrong}`);
+  check(`Pós-prova ${id} mantém inválidas esperadas`, preliminary.invalid === expected.invalid, `${preliminary.invalid} × ${expected.invalid}`);
+  check(`Pós-prova ${id} fecha pontuação pelas questões`, sum(questions.map((item) => item.points)) === preliminary.totalScore);
+  check(`Pós-prova ${id} possui divergências esperadas`, differences.length === expected.differences, `${differences.length} × ${expected.differences}`);
+  check(`Pós-prova ${id} mantém nota preliminar auditada`, preliminary.totalScore === expected.total, `${preliminary.totalScore} × ${expected.total}`);
+  check(`Pós-prova ${id} ordena questões de 1 a 60`, questions.every((item, index) => item.question === index + 1));
+  check(`Pós-prova ${id} preserva auditoria de fontes quando enriquecida`, !preliminary.audit || (preliminary.audit.responseIsOfficialKey === false && preliminary.audit.questionCount === 60));
+}
+
 const finance = snapshot.financeSummary || {};
 const sedesOperational = sum((snapshot.financeEntries || []).filter((x) => x.countsInCycle && x.cycle === 'SEDES/DF 2026').map((x) => x.confirmed));
 check('Financeiro SEDES banco = resumo', close(sedesOperational, finance.sedes?.confirmed), `${sedesOperational} × ${finance.sedes?.confirmed}`);

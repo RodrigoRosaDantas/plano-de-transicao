@@ -29,6 +29,15 @@ expect('módulo exibe leitura competitiva preliminar', competition.includes('dat
 expect('módulo chama taxa de correção de nominal', competition.includes('Taxa nominal de correção AC'));
 expect('módulo não confunde taxa nominal com chance pessoal', competition.includes('Chance pessoal: ainda não estimável com rigor') && competition.includes('não é sua probabilidade individual'));
 expect('motor registra probabilidade pessoal como indisponível', scoring.includes("available: false") && scoring.includes("personalProbabilityStatus: 'not-estimable-yet'"));
+expect('v28 exibe auditoria questão a questão', source.includes('AUDITORIA QUESTÃO A QUESTÃO') && source.includes('data-v28-answer-audit'));
+expect('v28 separa anotação do candidato e gabarito preliminar', source.includes('Anotadas na prova') && source.includes('não são gabarito oficial') && source.includes('Gabarito preliminar oficial'));
+expect('v28 expõe acertos, erros e pontos por questão', source.includes('Ver o cruzamento das') && source.includes('Sua anotação') && source.includes('Pontos'));
+expect('v28 expõe pré-análise de recursos', source.includes('Pré-análise de recursos') && source.includes('Não priorizar só pela divergência'));
+expect('motor registra fundamento da banca por questão', scoring.includes('officialBasis') && scoring.includes('officialJustificationSource'));
+expect('motor registra protocolo de recurso', scoring.includes('resourceProtocol') && scoring.includes('questionByQuestion'));
+expect('snapshot possui 60 linhas por cargo', snapshot.postExam?.scoring?.tdas?.preliminary?.questions?.length === 60 && snapshot.postExam?.scoring?.edas?.preliminary?.questions?.length === 60);
+expect('snapshot distingue fonte do candidato e chave', snapshot.postExam?.scoring?.tdas?.preliminary?.audit?.responseIsOfficialKey === false && snapshot.postExam?.scoring?.tdas?.preliminary?.audit?.keyLabel === 'Gabarito preliminar oficial');
+expect('snapshot preserva Q30 como registro inválido', snapshot.postExam?.scoring?.tdas?.preliminary?.questions?.find((item) => item.question === 30)?.status === 'inválida-ou-em-branco');
 expect('motor registra taxas auditáveis AC', scoring.includes('registrationsAC: 68345') && scoring.includes('correctionSlotsAC: 2387') && scoring.includes('registrationsAC: 4112') && scoring.includes('correctionSlotsAC: 282'));
 expect('estado pós-prova preserva scoring existente', postExamState.includes('...previousPostExam') && postExamState.includes('scoringPreserved'));
 expect('estado pós-prova reconhece gabarito preliminar', postExamState.includes('Gabarito preliminar incorporado · resultado objetivo oficial pendente'));

@@ -68,6 +68,146 @@
       .join(' · ');
   }
 
+
+  function auditState(id, data = snapshot) {
+    const exam = sedesExam(id, data);
+    const root = data?.postExam?.scoring?.[id] || {};
+    const definitive = root.definitive || null;
+    const preliminary = root.preliminary || null;
+    return { exam, response: exam?.candidateResponse || null, root, definitive, preliminary, active: definitive || preliminary };
+  }
+
+  function auditStatusLabel(status) {
+    return {
+      acerto: 'Acerto',
+      erro: 'Erro',
+      'inválida-ou-em-branco': 'Inválida / em branco',
+      anulada: 'Anulada'
+    }[status] || 'Não classificada';
+  }
+
+  function auditStatusClass(status) {
+    return String(status || 'unknown').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+  }
+
+  function auditCandidateLabel(item, response) {
+    if (item?.audit?.candidateLabel) return item.audit.candidateLabel;
+    if (item?.candidate) return item.candidate;
+    if ((response?.invalidQuestions || []).map(Number).includes(Number(item?.question))) return 'DUPLA-MARCAÇÃO';
+    return 'SEM-RESPOSTA';
+  }
+
+  function auditDateTime(value) {
+    if (!value) return '—';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return String(value);
+    return new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date).replace(',', ' ·');
+  }
+
+  function auditLink(href, label) {
+    return href ? '<a class="v28-audit-link" href="' + esc(href) + '" target="_blank" rel="noreferrer">' + esc(label) + ' ↗</a>' : '';
+  }
+
+  function auditMarkup(id, data = snapshot) {
+    const state = auditState(id, data);
+    const active = state.active;
+    const response = state.response || {};
+    const questions = active?.questions || [];
+    if (!active || !questions.length) return '';
+
+    const differences = active.differences || questions.filter(item => item.status !== 'acerto');
+    const isPreliminary = !state.definitive;
+    const audit = active.audit || {};
+    const documents = {
+      keyPdfUrl: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/9ecbb8fd-f3b7-4bc7-a1a8-3b64b5f38752.pdf',
+      justificationsPdfUrl: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/a6ca1138-66c1-4d2a-b0c0-04ad7285c239.pdf',
+      resourceNoticePdfUrl: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/bd001ca2-91ab-4291-ac42-aab7f0399170.pdf',
+      ...(audit.sourceDocuments || {})
+    };
+    const protocol = audit.resourceReview?.protocol || {};
+    const candidateSource = audit.responseSource || response.source || 'Registro de respostas anotadas pelo candidato';
+    const keyLabel = audit.keyLabel || (isPreliminary ? 'Gabarito preliminar oficial' : 'Gabarito definitivo oficial');
+    const scoreLabel = isPreliminary ? 'Nota objetiva estimada' : 'Nota objetiva definitiva';
+    const rawScore = state.exam?.score || '—';
+    const rawAccuracy = state.exam?.rawAccuracy;
+    const questionRows = questions.map(item => {
+      const candidate = auditCandidateLabel(item, response);
+      const status = auditStatusLabel(item.status);
+      const reason = item.audit?.resultReason || (item.status === 'acerto'
+        ? 'A resposta anotada coincide com a chave usada.'
+        : item.status === 'erro'
+          ? 'A resposta anotada diverge da chave usada.'
+          : 'O registro não contém uma marcação válida para pontuar.');
+      const basis = item.audit?.officialBasis || '';
+      const appeal = item.audit?.appealAssessment || null;
+      const candidateNote = item.audit?.candidateNote || '';
+      const review = item.status === 'acerto'
+        ? ''
+        : '<div class="v28-audit-basis"><b>Leitura:</b> ' + esc(reason) + '</div>'
+          + (basis ? '<div class="v28-audit-basis"><b>Justificativa preliminar:</b> ' + esc(basis) + '</div>' : '')
+          + (appeal ? '<div class="v28-audit-appeal"><b>Recurso:</b> ' + esc(appeal.label || 'avaliar') + '. ' + esc(appeal.recommendation || '') + '</div>' : '');
+      return '<tr class="v28-audit-row v28-audit-row--' + auditStatusClass(item.status) + '">'
+        + '<td data-label="Q">' + esc(String(item.question).padStart(2, '0')) + '</td>'
+        + '<td data-label="Área">' + esc(item.areaLabel || item.area || '—') + '</td>'
+        + '<td data-label="Sua anotação"><strong>' + esc(candidate) + '</strong>' + (candidateNote ? '<small>' + esc(candidateNote) + '</small>' : '') + '</td>'
+        + '<td data-label="Chave preliminar"><strong>' + esc(item.official || '—') + '</strong></td>'
+        + '<td data-label="Resultado"><span class="v28-audit-status v28-audit-status--' + auditStatusClass(item.status) + '">' + esc(status) + '</span></td>'
+        + '<td data-label="Pontos"><strong>' + esc(item.points) + '/' + esc(item.pointsPossible) + '</strong></td>'
+        + '<td data-label="Motivo" class="v28-audit-reading"><div>' + esc(reason) + '</div>' + review + '</td>'
+        + '</tr>';
+    }).join('');
+
+    const appealCards = differences.map(item => {
+      const candidate = auditCandidateLabel(item, response);
+      const appeal = item.audit?.appealAssessment || {
+        label: item.status === 'inválida-ou-em-branco' ? 'Só avaliar eventual anulação' : 'Não priorizar só pela divergência',
+        recommendation: 'Só protocolar se houver fundamento objetivo no enunciado, no edital, nas alternativas ou na fonte normativa.'
+      };
+      const basis = item.audit?.officialBasis || '';
+      const candidateNote = item.audit?.candidateNote || '';
+      return '<article class="v28-audit-appeal-item v28-audit-appeal-item--' + auditStatusClass(item.status) + '">'
+        + '<div class="v28-audit-appeal-head"><strong>Q' + esc(item.question) + '</strong><span>' + esc(item.areaLabel || item.area || '—') + ' · ' + esc(item.pointsPossible) + ' ponto(s) em disputa</span></div>'
+        + '<p><b>Sua anotação:</b> ' + esc(candidate) + ' · <b>gabarito preliminar:</b> ' + esc(item.official || '—') + (candidateNote ? ' · ' + esc(candidateNote) : '') + '</p>'
+        + (basis ? '<p><b>O que a banca fundamentou:</b> ' + esc(basis) + '</p>' : '<p><b>O que foi comparado:</b> ' + esc(item.audit?.resultReason || 'A anotação foi comparada com a chave preliminar.') + '</p>')
+        + '<p><b>Pré-análise:</b> ' + esc(appeal.label || 'avaliar') + '. ' + esc(appeal.recommendation || '') + '</p>'
+        + '</article>';
+    }).join('');
+
+    const protocolText = protocol.start && protocol.end
+      ? auditDateTime(protocol.start) + ' a ' + auditDateTime(protocol.end) + ' (horário de Brasília)'
+      : 'Período conforme comunicado oficial';
+    const keyDate = active.publishedAt ? formatDate(active.publishedAt) : '—';
+    const links = auditLink(documents.keyPdfUrl, 'Gabarito preliminar PDF')
+      + auditLink(documents.justificationsPdfUrl, 'Justificativas da banca')
+      + auditLink(documents.resourceNoticePdfUrl, 'Comunicado de recursos');
+
+    return '<div class="v28-audit-intro">'
+      + '<div class="v28-audit-head"><div><span class="eyebrow">AUDITORIA QUESTÃO A QUESTÃO</span><h4>' + esc(state.exam?.role || id.toUpperCase()) + ' · Tipo ' + esc(active.examType || state.exam?.examType || '—') + '</h4><p>Cruzamento entre as respostas anotadas na prova/registro do candidato e o gabarito preliminar oficial da Quadrix.</p></div><span class="v28-audit-stage">' + esc(keyLabel) + '</span></div>'
+      + '<div class="v28-audit-warning"><strong>Fontes separadas:</strong> suas respostas anotadas vêm do registro pós-prova e <b>não são gabarito oficial</b>. A chave usada nesta auditoria foi o <b>gabarito preliminar</b>, publicado em ' + esc(keyDate) + ', ainda sujeito a recurso e alteração.</div>'
+      + '<div class="v28-audit-source-grid">'
+      + '<article><span>SUAS RESPOSTAS</span><strong>Anotadas na prova</strong><small>' + esc(candidateSource) + '</small><small>Não substituem o cartão-resposta oficial.</small></article>'
+      + '<article><span>CHAVE USADA</span><strong>' + esc(keyLabel) + '</strong><small>Instituto Quadrix · publicação ' + esc(keyDate) + '</small><small>Resultado definitivo ainda pendente.</small></article>'
+      + '</div>'
+      + '<div class="v28-audit-kpis">'
+      + '<article><strong>' + esc(active.correct) + '</strong><small>acertos</small></article>'
+      + '<article><strong>' + esc(active.wrong) + '</strong><small>erros</small></article>'
+      + '<article><strong>' + esc(active.invalid) + '</strong><small>inválidas/em branco</small></article>'
+      + '<article><strong>' + esc(active.totalScore) + '/100</strong><small>' + esc(scoreLabel) + '</small></article>'
+      + '</div>'
+      + '<div class="v28-audit-score-note"><b>Leitura da pontuação:</b> o registro bruto anotado é ' + esc(rawScore) + ' (' + esc(formatPct(rawAccuracy)) + '), mas a nota do concurso é ponderada: ' + esc(active.generalScore) + '/20 em conhecimentos gerais + ' + esc(active.specificScore) + '/80 em conhecimentos específicos.</div>'
+      + '<details class="v28-audit-disclosure"><summary>Ver o cruzamento das ' + esc(questions.length) + ' questões</summary><div class="v28-audit-table-wrap"><table class="v28-audit-table"><thead><tr><th>Q</th><th>Área</th><th>Sua anotação</th><th>Chave</th><th>Resultado</th><th>Pontos</th><th>Motivo / leitura</th></tr></thead><tbody>' + questionRows + '</tbody></table></div></details>'
+      + '<details class="v28-audit-disclosure v28-audit-resources"><summary>Pré-análise de recursos · ' + esc(differences.length) + ' divergência(s)</summary><div class="v28-audit-resource-callout"><strong>Conclusão provisória:</strong> diferença entre a sua anotação e a chave, sozinha, não prova erro da banca. O recurso deve ser individualizado e apontar vício objetivo para alteração do gabarito ou anulação. Para a Q30 do TDAS, a dupla marcação é um problema de registro da resposta; eventual recurso teria de pedir anulação do item, não trocar a sua marcação.</div><div class="v28-audit-appeal-list">' + (appealCards || '<p class="v28-audit-empty">Nenhuma divergência registrada nesta etapa.</p>') + '</div><div class="v28-audit-protocol"><b>Janela oficial:</b> ' + esc(protocolText) + '. <b>Canal:</b> sistema eletrônico da Quadrix, na área do candidato. Para objetiva, é um recurso por questão e não são aceitos anexos.</div></details>'
+      + '<div class="v28-audit-links"><span>Documentos oficiais:</span>' + links + '</div>'
+      + '</div>';
+  }
+
   function ensureStyles() {
     if (document.getElementById('v28-product-upgrade-styles')) return;
     const style = document.createElement('style');
@@ -105,6 +245,64 @@
       .v28-answer-vector summary:after{content:" +";font-weight:500}
       .v28-answer-vector[open] summary:after{content:" −"}
       .v28-answer-vector code{display:block;margin-top:8px;white-space:normal;overflow-wrap:anywhere;color:var(--text-muted,#8f9793);font-size:.72rem;line-height:1.65;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+      .v28-answer-audit{margin-top:14px;padding-top:14px;border-top:1px solid var(--line,#29312e)}
+      .v28-audit-intro{display:grid;gap:12px}
+      .v28-audit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+      .v28-audit-head h4{margin:4px 0;font-size:1.05rem}
+      .v28-audit-head p{margin:0;color:var(--text-muted,#8f9793);line-height:1.45}
+      .v28-audit-stage{padding:6px 9px;border:1px solid color-mix(in srgb,#f3b562 45%,var(--line,#29312e));border-radius:999px;color:#f3b562;font-size:.72rem;font-weight:800;white-space:nowrap}
+      .v28-audit-warning{padding:12px 14px;border:1px solid color-mix(in srgb,#f3b562 38%,var(--line,#29312e));border-radius:13px;background:color-mix(in srgb,#f3b562 7%,var(--surface-2,#111816));color:var(--text-muted,#9ba39f);font-size:.8rem;line-height:1.55}
+      .v28-audit-warning strong,.v28-audit-warning b{color:var(--text,#eef3ee)}
+      .v28-audit-source-grid,.v28-audit-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+      .v28-audit-source-grid article,.v28-audit-kpis article{padding:12px;border:1px solid var(--line,#29312e);border-radius:13px;background:color-mix(in srgb,var(--surface-2,#111816) 88%,transparent)}
+      .v28-audit-source-grid span,.v28-audit-kpis small{display:block;color:var(--text-muted,#8f9793);font-size:.68rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+      .v28-audit-source-grid strong{display:block;margin:4px 0;font-size:.9rem}
+      .v28-audit-source-grid small{display:block;color:var(--text-muted,#8f9793);font-size:.75rem;line-height:1.4}
+      .v28-audit-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .v28-audit-kpis article{background:var(--surface-2,#111816)}
+      .v28-audit-kpis strong{display:block;font-size:1.35rem;line-height:1.1}
+      .v28-audit-kpis article:nth-child(1) strong{color:#b9ff59}
+      .v28-audit-kpis article:nth-child(2) strong{color:#f3b562}
+      .v28-audit-kpis article:nth-child(3) strong{color:#f08b8b}
+      .v28-audit-kpis article:nth-child(4) strong{color:#64d8cf}
+      .v28-audit-score-note{padding:11px 13px;border-left:3px solid #64d8cf;color:var(--text-muted,#9ba39f);font-size:.78rem;line-height:1.5;background:color-mix(in srgb,#64d8cf 5%,transparent)}
+      .v28-audit-score-note b{color:var(--text,#eef3ee)}
+      .v28-audit-disclosure{border-top:1px solid var(--line,#29312e);padding-top:10px}
+      .v28-audit-disclosure summary{cursor:pointer;list-style:none;color:var(--text,#eef3ee);font-size:.8rem;font-weight:800}
+      .v28-audit-disclosure summary::-webkit-details-marker{display:none}
+      .v28-audit-disclosure summary:after{content:" +";color:var(--text-muted,#8f9793);font-weight:500}
+      .v28-audit-disclosure[open] summary:after{content:" −"}
+      .v28-audit-table-wrap{margin-top:10px;overflow:auto;border:1px solid var(--line,#29312e);border-radius:12px}
+      .v28-audit-table{width:100%;min-width:980px;border-collapse:collapse;font-size:.73rem}
+      .v28-audit-table th{padding:9px 8px;text-align:left;color:var(--text-muted,#8f9793);font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;background:var(--surface-2,#111816)}
+      .v28-audit-table td{padding:9px 8px;border-top:1px solid var(--line,#29312e);vertical-align:top;line-height:1.4}
+      .v28-audit-table td small{display:block;margin-top:4px;color:var(--text-muted,#8f9793);font-size:.68rem}
+      .v28-audit-row--erro{background:color-mix(in srgb,#f3b562 5%,transparent)}
+      .v28-audit-row--invalida-ou-em-branco{background:color-mix(in srgb,#f08b8b 6%,transparent)}
+      .v28-audit-row--anulada{background:color-mix(in srgb,#64d8cf 6%,transparent)}
+      .v28-audit-status{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:.64rem;font-weight:800;white-space:nowrap}
+      .v28-audit-status--acerto{color:#b9ff59;background:color-mix(in srgb,#b9ff59 10%,transparent)}
+      .v28-audit-status--erro{color:#f3b562;background:color-mix(in srgb,#f3b562 10%,transparent)}
+      .v28-audit-status--invalida-ou-em-branco{color:#f08b8b;background:color-mix(in srgb,#f08b8b 10%,transparent)}
+      .v28-audit-status--anulada{color:#64d8cf;background:color-mix(in srgb,#64d8cf 10%,transparent)}
+      .v28-audit-reading{min-width:285px;color:var(--text-muted,#a7afab)}
+      .v28-audit-basis{margin-top:5px;color:var(--text-muted,#9ba39f)}
+      .v28-audit-basis b,.v28-audit-appeal b{color:var(--text,#eef3ee)}
+      .v28-audit-appeal{margin-top:6px;padding:7px 8px;border-left:2px solid #f3b562;color:#f3c98f}
+      .v28-audit-resource-callout{margin-top:10px;padding:12px 14px;border:1px solid color-mix(in srgb,#f3b562 38%,var(--line,#29312e));border-radius:12px;background:color-mix(in srgb,#f3b562 6%,transparent);color:var(--text-muted,#9ba39f);font-size:.78rem;line-height:1.5}
+      .v28-audit-resource-callout strong{color:#f3c98f}
+      .v28-audit-appeal-list{display:grid;gap:8px;margin-top:10px}
+      .v28-audit-appeal-item{padding:11px 12px;border:1px solid var(--line,#29312e);border-radius:12px;background:var(--surface-2,#111816);font-size:.76rem;line-height:1.5}
+      .v28-audit-appeal-item--invalida-ou-em-branco{border-color:color-mix(in srgb,#f08b8b 45%,var(--line,#29312e))}
+      .v28-audit-appeal-head{display:flex;align-items:baseline;gap:8px}
+      .v28-audit-appeal-head strong{color:#f3b562}
+      .v28-audit-appeal-head span{color:var(--text-muted,#8f9793);font-size:.68rem}
+      .v28-audit-appeal-item p{margin:5px 0 0;color:var(--text-muted,#a7afab)}
+      .v28-audit-appeal-item b{color:var(--text,#eef3ee)}
+      .v28-audit-empty{color:var(--text-muted,#8f9793);font-size:.8rem}
+      .v28-audit-links{display:flex;align-items:center;flex-wrap:wrap;gap:9px;color:var(--text-muted,#8f9793);font-size:.72rem}
+      .v28-audit-link{color:#64d8cf;text-decoration:none}
+      .v28-audit-link:hover{text-decoration:underline}
       @media(max-width:900px){.v28-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.v28-flow-step:last-child{grid-column:1/-1}.v28-next-lanes{grid-template-columns:1fr 1fr}.v28-lane-intro{grid-column:1/-1}}
       @media(max-width:620px){.v28-transition-console{padding:18px!important}.v28-console-head{display:block}.v28-live-chip{margin-top:12px}.v28-flow{grid-template-columns:1fr}.v28-flow-step:last-child{grid-column:auto}.v28-next-lanes{grid-template-columns:1fr}.v28-lane-intro{grid-column:auto}}
     `;
@@ -164,6 +362,28 @@
     }
     const code = vector.querySelector('code');
     setText(code, answerVector(response));
+
+    const activeAudit = auditState(id, data).active;
+    const auditQuestions = activeAudit?.questions || [];
+    let audit = card.querySelector(`[data-v28-answer-audit="${id}"]`);
+    if (!audit && auditQuestions.length) {
+      audit = document.createElement('section');
+      audit.className = 'v28-answer-audit';
+      audit.dataset.v28AnswerAudit = id;
+      vector.insertAdjacentElement('afterend', audit);
+    }
+    if (audit && auditQuestions.length) {
+      const auditSignature = JSON.stringify({
+        stage: activeAudit.stage,
+        comparedAt: activeAudit.comparedAt,
+        total: activeAudit.totalScore,
+        rows: auditQuestions.map(item => [item.question, item.candidate, item.official, item.status, item.audit?.officialBasis || ''])
+      });
+      if (audit.dataset.v28AuditSignature !== auditSignature) {
+        audit.innerHTML = auditMarkup(id, data);
+        audit.dataset.v28AuditSignature = auditSignature;
+      }
+    }
   }
 
   function stageModel(data = snapshot) {

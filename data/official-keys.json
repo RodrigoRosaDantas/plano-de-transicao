@@ -5,7 +5,25 @@
     "applicationDate": "2026-09-06",
     "publishedAt": "2026-09-09",
     "sourceUrl": "https://quadrix.org.br/informacoes/3056/",
-    "auditNote": "Transcrição conferida a partir do PDF oficial de gabarito preliminar enviado pelo candidato em 09/09/2026."
+    "auditNote": "O PDF de gabarito preliminar enviado pelo candidato foi conferido contra a transcrição abaixo. As marcações do candidato não são o gabarito: são o registro separado usado no cruzamento.",
+    "keyPdfUrl": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/9ecbb8fd-f3b7-4bc7-a1a8-3b64b5f38752.pdf",
+    "justificationsPdfUrl": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/a6ca1138-66c1-4d2a-b0c0-04ad7285c239.pdf",
+    "resourceNoticePdfUrl": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/bd001ca2-91ab-4291-ac42-aab7f0399170.pdf",
+    "candidateResponseNote": "As respostas do candidato são uma fonte separada, reconstruída das anotações/fotos e do registro no site; não constituem gabarito oficial.",
+    "resourceProtocol": {
+      "start": "2026-09-10T10:00:00-03:00",
+      "end": "2026-09-16T18:00:00-03:00",
+      "timeZone": "America/Sao_Paulo",
+      "channel": "Sistema Eletrônico de Interposição de Recurso da Quadrix, no ambiente do candidato",
+      "objectiveSubmission": "Um recurso individualizado por questão.",
+      "objectiveOptions": [
+        "alteração do gabarito preliminar",
+        "anulação da questão",
+        "manutenção do gabarito preliminar"
+      ],
+      "attachmentsAllowed": false,
+      "noExtension": true
+    }
   },
   "tdas202": {
     "role": "TDAS — Técnico Administrativo",
@@ -22,12 +40,101 @@
       "sourceUrl": "https://quadrix.org.br/informacoes/3056/",
       "version": "preliminar-2026-09-09",
       "answers": {
-        "1": "B", "2": "B", "3": "C", "4": "C", "5": "D", "6": "B", "7": "C", "8": "C", "9": "C", "10": "D",
-        "11": "C", "12": "C", "13": "B", "14": "E", "15": "B", "16": "B", "17": "C", "18": "A", "19": "D", "20": "B",
-        "21": "C", "22": "A", "23": "E", "24": "B", "25": "D", "26": "A", "27": "C", "28": "E", "29": "B", "30": "D",
-        "31": "A", "32": "C", "33": "E", "34": "B", "35": "D", "36": "A", "37": "C", "38": "E", "39": "B", "40": "D",
-        "41": "C", "42": "B", "43": "C", "44": "B", "45": "D", "46": "E", "47": "A", "48": "C", "49": "E", "50": "A",
-        "51": "E", "52": "C", "53": "B", "54": "B", "55": "D", "56": "C", "57": "E", "58": "A", "59": "D", "60": "B"
+        "1": "B",
+        "2": "B",
+        "3": "C",
+        "4": "C",
+        "5": "D",
+        "6": "B",
+        "7": "C",
+        "8": "C",
+        "9": "C",
+        "10": "D",
+        "11": "C",
+        "12": "C",
+        "13": "B",
+        "14": "E",
+        "15": "B",
+        "16": "B",
+        "17": "C",
+        "18": "A",
+        "19": "D",
+        "20": "B",
+        "21": "C",
+        "22": "A",
+        "23": "E",
+        "24": "B",
+        "25": "D",
+        "26": "A",
+        "27": "C",
+        "28": "E",
+        "29": "B",
+        "30": "D",
+        "31": "A",
+        "32": "C",
+        "33": "E",
+        "34": "B",
+        "35": "D",
+        "36": "A",
+        "37": "C",
+        "38": "E",
+        "39": "B",
+        "40": "D",
+        "41": "C",
+        "42": "B",
+        "43": "C",
+        "44": "B",
+        "45": "D",
+        "46": "E",
+        "47": "A",
+        "48": "C",
+        "49": "E",
+        "50": "A",
+        "51": "E",
+        "52": "C",
+        "53": "B",
+        "54": "B",
+        "55": "D",
+        "56": "C",
+        "57": "E",
+        "58": "A",
+        "59": "D",
+        "60": "B"
+      },
+      "questionAudit": {
+        "8": {
+          "basis": "A banca relaciona a precedência da proteção social básica ao caráter preventivo do SUAS: agir antes que riscos se convertam em violações de direitos."
+        },
+        "14": {
+          "basis": "A justificativa separa o Piso Básico Fixo do PAIF/CRAS e o Piso Básico Variável da equipe volante; ambos pertencem à proteção social básica."
+        },
+        "16": {
+          "basis": "A banca apontou a isenção da pessoa em situação de rua nas três refeições dos Restaurantes Comunitários, conforme a regulamentação distrital indicada."
+        },
+        "24": {
+          "basis": "A resposta oficial distingue desconcentração, dentro da mesma pessoa jurídica e com hierarquia, de descentralização, para outra pessoa jurídica e com controle finalístico."
+        },
+        "30": {
+          "basis": "A banca indicou que a absolvição penal só afasta a responsabilidade administrativa na hipótese legal específica; fora dela, a apuração administrativa prossegue."
+        },
+        "39": {
+          "basis": "A justificativa aplica a Lei nº 14.133/2021: a antecipação de fases exige ato motivado com benefícios explicitados e previsão expressa no edital."
+        },
+        "41": {
+          "basis": "A banca considerou correta a função do Cadastro Único de reunir dados sobre vulnerabilidades para subsidiar a formulação e a implementação de políticas públicas."
+        },
+        "45": {
+          "basis": "A justificativa trata o CAS/DF como órgão colegiado deliberativo do SUAS, articulado ao CNAS e sem subordinação administrativa ou competência legislativa própria."
+        },
+        "49": {
+          "basis": "A banca aplicou o art. 1º, § 2º, da LC nº 94/1998: município criado por desmembramento de município integrante passa a compor automaticamente a RIDE."
+        },
+        "50": {
+          "basis": "A alternativa oficial foi fundamentada na LODF, que inclui a criação e a execução de programas de assistência a gestantes carentes entre os mecanismos de proteção."
+        },
+        "55": {
+          "basis": "A justificativa descreve o eixo Educação para Igualdade como articulador de redução das desigualdades, enfrentamento de preconceitos, direitos humanos, prevenção e atuação em rede."
+        }
       }
     },
     "definitive": {
@@ -53,12 +160,89 @@
       "sourceUrl": "https://quadrix.org.br/informacoes/3056/",
       "version": "preliminar-2026-09-09",
       "answers": {
-        "1": "B", "2": "B", "3": "E", "4": "B", "5": "D", "6": "B", "7": "C", "8": "A", "9": "B", "10": "D",
-        "11": "A", "12": "A", "13": "E", "14": "C", "15": "E", "16": "B", "17": "A", "18": "D", "19": "E", "20": "D",
-        "21": "A", "22": "A", "23": "C", "24": "B", "25": "C", "26": "E", "27": "C", "28": "C", "29": "E", "30": "B",
-        "31": "A", "32": "B", "33": "E", "34": "C", "35": "D", "36": "A", "37": "C", "38": "B", "39": "C", "40": "D",
-        "41": "E", "42": "D", "43": "C", "44": "B", "45": "C", "46": "A", "47": "E", "48": "C", "49": "D", "50": "E",
-        "51": "A", "52": "B", "53": "C", "54": "B", "55": "A", "56": "D", "57": "A", "58": "C", "59": "A", "60": "D"
+        "1": "B",
+        "2": "B",
+        "3": "E",
+        "4": "B",
+        "5": "D",
+        "6": "B",
+        "7": "C",
+        "8": "A",
+        "9": "B",
+        "10": "D",
+        "11": "A",
+        "12": "A",
+        "13": "E",
+        "14": "C",
+        "15": "E",
+        "16": "B",
+        "17": "A",
+        "18": "D",
+        "19": "E",
+        "20": "D",
+        "21": "A",
+        "22": "A",
+        "23": "C",
+        "24": "B",
+        "25": "C",
+        "26": "E",
+        "27": "C",
+        "28": "C",
+        "29": "E",
+        "30": "B",
+        "31": "A",
+        "32": "B",
+        "33": "E",
+        "34": "C",
+        "35": "D",
+        "36": "A",
+        "37": "C",
+        "38": "B",
+        "39": "C",
+        "40": "D",
+        "41": "E",
+        "42": "D",
+        "43": "C",
+        "44": "B",
+        "45": "C",
+        "46": "A",
+        "47": "E",
+        "48": "C",
+        "49": "D",
+        "50": "E",
+        "51": "A",
+        "52": "B",
+        "53": "C",
+        "54": "B",
+        "55": "A",
+        "56": "D",
+        "57": "A",
+        "58": "C",
+        "59": "A",
+        "60": "D"
+      },
+      "questionAudit": {
+        "9": {
+          "basis": "A banca explicou que a RIDE foi criada por lei complementar federal para articular União, Goiás, Minas Gerais e Distrito Federal; não é ente federativo nem consórcio com personalidade própria."
+        },
+        "20": {
+          "basis": "A alternativa oficial descreve queimadura de segundo grau: atinge epiderme e derme e apresenta dor, vermelhidão e bolhas."
+        },
+        "43": {
+          "basis": "A departamentalização matricial foi associada à dupla subordinação e ao compartilhamento flexível de recursos entre projetos."
+        },
+        "46": {
+          "basis": "A banca associou a identificação e a organização das possíveis causas de um problema ao diagrama de Ishikawa, também chamado causa e efeito."
+        },
+        "47": {
+          "basis": "A justificativa interpreta o atraso como fila, gargalo ou distribuição do trabalho entre unidades, e não como excesso de etapas ou de exigências legais."
+        },
+        "51": {
+          "basis": "A banca considerou que registros orçamentários, financeiros e patrimoniais devem refletir as normas aplicáveis; autorização superior não legitima omissão para alterar indicadores."
+        },
+        "59": {
+          "basis": "A política de carreira deve alinhar incentivos e competências aos objetivos institucionais; reconhecer apenas tempo de serviço pode desestimular inovação."
+        }
       }
     },
     "definitive": {
