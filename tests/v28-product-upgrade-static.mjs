@@ -3,6 +3,11 @@ import fs from 'node:fs';
 const source = fs.readFileSync('assets/post-exam-score-v28.js', 'utf8');
 const followUp = fs.readFileSync('assets/post-exam-follow-up-v28.js', 'utf8');
 const competition = fs.readFileSync('assets/post-exam-competition-v28.js', 'utf8');
+const app = fs.readFileSync('assets/work-app.js', 'utf8');
+const pageStyles = fs.readFileSync('assets/transition-pages-v29.css', 'utf8');
+const transitionGate = fs.readFileSync('assets/transition-gate-v15.js', 'utf8');
+const workspace = fs.readFileSync('assets/workspace-v23.js', 'utf8');
+const serviceWorker = fs.readFileSync('sw.js', 'utf8');
 const index = fs.readFileSync('index.html', 'utf8');
 const scoring = fs.readFileSync('scripts/score-post-exam.mjs', 'utf8');
 const postExamState = fs.readFileSync('scripts/apply-post-exam-state.mjs', 'utf8');
@@ -13,8 +18,8 @@ function expect(label, condition) {
   if (!condition) failures.push(label);
 }
 
-expect('index carrega a camada v28', index.includes('assets/post-exam-score-v28.js?v=28'));
-expect('index carrega o módulo competitivo v28', index.includes('assets/post-exam-competition-v28.js?v=28'));
+expect('index carrega a camada v28', index.includes('assets/post-exam-score-v28.js?v=29'));
+expect('index carrega o módulo competitivo v28', index.includes('assets/post-exam-competition-v28.js?v=29'));
 expect('v28 mantém a nota pós-prova', source.includes('Nota objetiva estimada'));
 expect('v28 cria central adaptativa', source.includes('data-v28-transition-console'));
 expect('v28 separa SEDES da próxima preparação', source.includes('SEDES em acompanhamento. A transição já pode olhar para frente.'));
@@ -34,7 +39,7 @@ expect('v28 exibe auditoria questão a questão', source.includes('AUDITORIA QUE
 expect('v28 separa anotação do candidato e gabarito preliminar', source.includes('Anotadas na prova') && source.includes('não são gabarito oficial') && source.includes('Gabarito preliminar oficial'));
 expect('v28 expõe acertos, erros e pontos por questão', source.includes('Ver o cruzamento das') && source.includes('Sua anotação') && source.includes('Pontos'));
 expect('v28 expõe pré-análise de recursos', source.includes('Pré-análise de recursos') && source.includes('Não priorizar só pela divergência'));
-expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=28') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
+expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=29') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
 expect('v28 mostra gráficos de resultado', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-stack') && followUp.includes('v28-followup-area-row'));
 expect('v28 mostra linha do tempo oficial', followUp.includes('v28-followup-milestones') && followUp.includes('LINHA DO TEMPO OFICIAL'));
 expect('v28 não re-renderiza o painel em loop', followUp.includes('const followUpSignature =') && (followUp.split('const signature = followUpSignature(data);').length - 1) === 2);
@@ -58,6 +63,21 @@ expect('EDAS preliminar auditado em 88', snapshot.postExam?.competitionReading?.
 expect('taxa nominal TDAS AC é 3,49%', snapshot.postExam?.competitionReading?.exams?.tdas?.nominalCorrectionRateAC === 3.49);
 expect('taxa nominal EDAS AC é 6,86%', snapshot.postExam?.competitionReading?.exams?.edas?.nominalCorrectionRateAC === 6.86);
 expect('probabilidade pessoal não é inventada', snapshot.postExam?.competitionReading?.personalProbability?.available === false && snapshot.postExam?.competitionReading?.personalProbability?.value == null);
+expect('router possui página pré-prova', app.includes('function preExamView') && app.includes('"pre-exam": preExamView'));
+expect('router possui página pós-prova', app.includes('function postExamView') && app.includes('"post-exam": postExamView'));
+expect('Home mantém cartão de plano, não cartão pós-prova', app.includes('plan-control-card') && app.includes('A SEDES/DF está preservada como histórico'));
+expect('navegação expõe pré-prova', index.includes('data-view="pre-exam"') && index.includes('Pré-prova'));
+expect('navegação expõe pós-prova', index.includes('data-view="post-exam"') && index.includes('Pós-prova'));
+expect('pré-prova usa o modelo de prontidão', app.includes('data.preExamReadiness') && app.includes('CHECKLIST DE ATIVAÇÃO'));
+expect('pós-prova usa host dedicado', app.includes('data-post-exam-page') && app.includes('postExamControlSlot'));
+expect('follow-up não injeta na Home', followUp.includes("[data-post-exam-page]") && !followUp.includes("querySelector('.command-view')"));
+expect('console adaptativo foi movido para o host pós-prova', source.includes('function patchDedicated') && source.includes('[data-post-exam-page]'));
+expect('leitura competitiva não injeta na Home', competition.includes('function mountDedicated') && !competition.includes("querySelector('.command-view')"));
+expect('fechamento local saiu da Home', transitionGate.includes("$('#postExamControlSlot')") && !transitionGate.includes("const root = $('.command-view')"));
+expect('shell conhece as novas fases', workspace.includes("'pre-exam'") && workspace.includes("'post-exam'"));
+expect('cache v29 inclui estilos das fases', serviceWorker.includes("plano-transicao-v29-separate-phases") && serviceWorker.includes("'./assets/transition-pages-v29.css'"));
+expect('estilos das fases existem', pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
+
 
 if (failures.length) {
   console.error('Falhas na auditoria estática v28:');
