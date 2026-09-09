@@ -54,7 +54,7 @@ await scenario('desktop: aba dedicada acompanha a fase pós-prova', { width: 144
   if (await page.locator('#examDayControl').isVisible()) throw new Error('Bloco antigo do Dia da Prova continua visível.');
 
   const text = fold(await page.locator('[data-post-exam-v27]').innerText());
-  for (const value of ['provas concluídas', 'edas', 'manhã', 'administrador', 'tdas', 'tarde', 'técnico administrativo', 'aguardando gabarito']) {
+  for (const value of ['provas concluídas', 'edas', 'manhã', 'administrador', 'tdas', 'tarde', 'técnico administrativo', 'preliminar']) {
     if (!text.includes(value)) throw new Error(`Conteúdo pós-prova esperado ausente: ${value}`);
   }
 
