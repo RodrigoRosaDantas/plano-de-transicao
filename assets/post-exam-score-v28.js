@@ -45,6 +45,22 @@
     if (node && node.textContent !== value) node.textContent = value;
   }
 
+  function formatNumber(value) {
+    if (value == null || Number.isNaN(Number(value))) return '—';
+    return Number(value).toLocaleString('pt-BR');
+  }
+
+  function formatPct(value) {
+    if (value == null || Number.isNaN(Number(value))) return '—';
+    return `${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+  }
+
+  function formatDate(value) {
+    if (!value) return '—';
+    const [year, month, day] = String(value).slice(0, 10).split('-');
+    return year && month && day ? `${day}/${month}/${year}` : value;
+  }
+
   function answerVector(response) {
     return Object.entries(response?.answers || {})
       .sort((a, b) => Number(a[0]) - Number(b[0]))
@@ -73,6 +89,26 @@
       .v28-flow-step.done span{color:#64d8cf}
       .v28-flow-step.current{border-color:color-mix(in srgb,var(--accent,#b9ff59) 46%,var(--line,#29312e));background:color-mix(in srgb,var(--accent,#b9ff59) 5%,var(--surface-2,#111816))}
       .v28-flow-step.current span{color:var(--accent,#b9ff59)}
+      .v28-competition{display:grid;gap:12px;padding:17px;border:1px solid color-mix(in srgb,#64d8cf 24%,var(--line,#29312e));border-radius:18px;background:color-mix(in srgb,#64d8cf 3%,var(--surface-2,#111816))}
+      .v28-competition-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+      .v28-competition-head span{display:block;color:#64d8cf;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+      .v28-competition-head h3{margin:4px 0 0;font-size:1.05rem}
+      .v28-confidence{display:inline-flex!important;padding:6px 9px;border:1px solid var(--line,#29312e);border-radius:999px;color:var(--text-muted,#8f9793)!important;letter-spacing:0!important;text-transform:none!important;white-space:nowrap}
+      .v28-competition-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+      .v28-competition-card{padding:15px;border:1px solid var(--line,#29312e);border-radius:15px;background:var(--surface-2,#111816)}
+      .v28-competition-card header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+      .v28-competition-card header span{color:var(--text-muted,#8f9793);font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+      .v28-competition-score{font-size:1.35rem;line-height:1;font-weight:850}
+      .v28-competition-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      .v28-competition-metric{padding:10px;border-radius:12px;background:color-mix(in srgb,var(--surface,#0d1311) 70%,transparent)}
+      .v28-competition-metric small,.v28-competition-metric strong{display:block}
+      .v28-competition-metric small{color:var(--text-muted,#8f9793);font-size:.68rem;line-height:1.35}
+      .v28-competition-metric strong{margin-top:3px;font-size:.94rem}
+      .v28-probability-lock{margin-top:10px;padding:10px 12px;border-left:2px solid var(--accent,#b9ff59);background:color-mix(in srgb,var(--accent,#b9ff59) 4%,transparent);font-size:.78rem;line-height:1.5;color:var(--text-muted,#8f9793)}
+      .v28-probability-lock strong{color:var(--text,#eef4f1)}
+      .v28-competition-note{margin:0;color:var(--text-muted,#8f9793);font-size:.75rem;line-height:1.5}
+      .v28-milestones{display:flex;flex-wrap:wrap;gap:7px}
+      .v28-milestones span{padding:6px 9px;border-radius:999px;border:1px solid var(--line,#29312e);font-size:.7rem;color:var(--text-muted,#8f9793)}
       .v28-next-lanes{display:grid;grid-template-columns:minmax(0,1fr) repeat(2,minmax(190px,.62fr));gap:10px}
       .v28-lane-intro,.v28-lane{padding:16px;border:1px solid var(--line,#29312e);border-radius:17px;background:var(--surface-2,#111816)}
       .v28-lane-intro span,.v28-lane span{display:block;color:var(--text-muted,#8f9793);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
@@ -90,7 +126,8 @@
       .v28-answer-vector[open] summary:after{content:" −"}
       .v28-answer-vector code{display:block;margin-top:8px;white-space:normal;overflow-wrap:anywhere;color:var(--text-muted,#8f9793);font-size:.72rem;line-height:1.65;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
       @media(max-width:900px){.v28-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.v28-flow-step:last-child{grid-column:1/-1}.v28-next-lanes{grid-template-columns:1fr 1fr}.v28-lane-intro{grid-column:1/-1}}
-      @media(max-width:620px){.v28-transition-console{padding:18px!important}.v28-console-head{display:block}.v28-live-chip{margin-top:12px}.v28-flow{grid-template-columns:1fr}.v28-flow-step:last-child{grid-column:auto}.v28-next-lanes{grid-template-columns:1fr}.v28-lane-intro{grid-column:auto}}
+      @media(max-width:700px){.v28-competition-grid{grid-template-columns:1fr}.v28-competition-head{display:block}.v28-confidence{margin-top:8px}.v28-competition-metrics{grid-template-columns:1fr 1fr}}
+      @media(max-width:620px){.v28-transition-console{padding:18px!important}.v28-console-head{display:block}.v28-live-chip{margin-top:12px}.v28-flow{grid-template-columns:1fr}.v28-flow-step:last-child{grid-column:auto}.v28-next-lanes{grid-template-columns:1fr}.v28-lane-intro{grid-column:auto}.v28-competition-metrics{grid-template-columns:1fr}}
     `;
     document.head.appendChild(style);
   }
@@ -120,7 +157,7 @@
       const invalidCount = (response.invalidQuestions || []).length;
       setText(label, id === 'edas' ? 'Respostas anotadas do candidato' : 'Gabarito do candidato pronto');
       setText(strong, `${response.validMarks || 0} válidas · ${invalidCount} ${invalidCount === 1 ? 'inválida' : 'inválidas'}`);
-      setText(detail, 'Aguardando gabarito preliminar oficial · previsão 09/09/2026');
+      setText(detail, 'Aguardando gabarito oficial publicado');
     }
 
     let note = card.querySelector(`[data-v28-score-note="${id}"]`);
@@ -131,11 +168,11 @@
       result.insertAdjacentElement('afterend', note);
     }
     if (id === 'tdas' && (response.invalidQuestions || []).includes(30)) {
-      setText(note, 'Q30: dupla marca no cartão; vale 0 ponto, salvo eventual anulação da questão pela banca.');
+      setText(note, 'Q30: dupla marca no cartão; vale 0 ponto no cenário preliminar, salvo eventual anulação da questão pela banca.');
     } else if (id === 'edas') {
-      setText(note, 'EDAS 400: 60 respostas anotadas da foto enviada em 08/09/2026. Este registro é do candidato e não é gabarito oficial.');
+      setText(note, preliminary ? 'EDAS 400 · Tipo A: correção preliminar baseada no gabarito da Quadrix. Resultado oficial ainda pendente.' : 'EDAS 400: respostas do candidato registradas; este registro não é gabarito oficial.');
     } else {
-      setText(note, 'Respostas do candidato registradas para cruzamento com o gabarito oficial.');
+      setText(note, preliminary ? 'TDAS 202 · Tipo B: correção preliminar baseada no gabarito da Quadrix. Resultado oficial ainda pendente.' : 'Respostas do candidato registradas para cruzamento com o gabarito oficial.');
     }
 
     let vector = card.querySelector(`[data-v28-answer-vector="${id}"]`);
@@ -163,11 +200,54 @@
 
     return [
       { label: 'Provas', detail: '2 de 2 realizadas', state: 'done' },
-      { label: 'Gabarito', detail: hasOfficialKey ? 'publicação incorporada' : 'aguardando banca', state: hasOfficialKey ? 'done' : 'current' },
-      { label: 'Correção', detail: anyCorrection ? 'cruzamento disponível' : 'depois do gabarito', state: anyCorrection ? 'done' : hasOfficialKey ? 'current' : 'pending' },
+      { label: 'Gabarito', detail: hasOfficialKey ? 'preliminar incorporado' : 'aguardando banca', state: hasOfficialKey ? 'done' : 'current' },
+      { label: 'Correção', detail: anyCorrection ? 'cruzamento preliminar disponível' : 'depois do gabarito', state: anyCorrection ? 'done' : hasOfficialKey ? 'current' : 'pending' },
       { label: 'Recursos', detail: definitive ? 'janela encerrada/definitivo' : preliminary ? 'conferir itens recorríveis' : 'após correção', state: definitive ? 'done' : preliminary ? 'current' : 'pending' },
-      { label: 'Resultado', detail: anyRanking ? 'classificação registrada' : definitive ? 'acompanhar classificação' : 'etapa futura', state: anyRanking ? 'done' : definitive ? 'current' : 'pending' },
+      { label: 'Resultado', detail: anyRanking ? 'classificação registrada' : definitive ? 'acompanhar classificação' : 'aguardando etapas oficiais', state: anyRanking ? 'done' : definitive ? 'current' : 'pending' },
     ];
+  }
+
+  function competitionCard(id, reading) {
+    const item = reading?.exams?.[id];
+    if (!item) return '';
+    const label = id === 'tdas' ? 'TDAS · Técnico Administrativo' : 'EDAS · Administração';
+    const sample = item.communitySample || {};
+    return `
+      <article class="v28-competition-card" data-v28-competition-card="${id}">
+        <header><div><span>${esc(label)} · Tipo ${esc(item.examType)}</span></div><strong class="v28-competition-score">${esc(item.preliminaryScore ?? '—')}/100</strong></header>
+        <div class="v28-competition-metrics">
+          <div class="v28-competition-metric"><small>Correções AC / inscrições AC</small><strong>${formatNumber(item.correctionSlotsAC)} / ${formatNumber(item.registrationsAC)}</strong></div>
+          <div class="v28-competition-metric"><small>Taxa nominal bruta de avanço AC</small><strong>${formatPct(item.nominalCorrectionRateAC)}</strong></div>
+          <div class="v28-competition-metric"><small>Vagas imediatas + CR · AC</small><strong>${formatNumber(item.listedPositionsAC)}</strong></div>
+          <div class="v28-competition-metric"><small>Densidade nominal vagas+CR / inscrições AC</small><strong>${formatPct(item.nominalListedPositionRateAC)}</strong></div>
+        </div>
+        <div class="v28-probability-lock"><strong>Probabilidade pessoal: ainda não estimável com rigor.</strong> Falta a distribuição oficial das notas, a nota de corte e/ou a classificação objetiva. A taxa nominal acima não deve ser lida como sua chance.</div>
+        <p class="v28-competition-note">Amostra colaborativa observada: ${formatNumber(sample.participants)} participantes (${formatPct(sample.coverageOfRegistrationsAC)} das inscrições AC). Amostra autoselecionada; serve como contexto, não como base isolada de probabilidade.</p>
+      </article>`;
+  }
+
+  function competitionPanel(data = snapshot) {
+    const reading = data?.postExam?.competitionReading;
+    if (!reading || reading.status !== 'preliminary') return '';
+    const milestones = reading.milestones || {};
+    return `
+      <section class="v28-competition" data-v28-competition>
+        <div class="v28-competition-head">
+          <div><span>LEITURA COMPETITIVA · PRELIMINAR</span><h3>O que os dados permitem afirmar — sem inventar uma chance pessoal.</h3></div>
+          <span class="v28-confidence">probabilidade pessoal · dados insuficientes</span>
+        </div>
+        <div class="v28-competition-grid">
+          ${competitionCard('tdas', reading)}
+          ${competitionCard('edas', reading)}
+        </div>
+        <p class="v28-competition-note"><strong>Como ler:</strong> a taxa nominal é apenas correções previstas na ampla concorrência ÷ inscrições homologadas na ampla concorrência. Presença, eliminações, empates e eventual reversão de vagas de correção reservadas podem alterar o universo efetivo. Aprovação/classificação, vagas/CR e nomeação são etapas diferentes.</p>
+        <div class="v28-milestones" aria-label="Próximos marcos oficiais">
+          <span>13/10 · resultado preliminar objetiva</span>
+          <span>30/10 · objetiva definitiva + lista de correção</span>
+          <span>23/11 · discursiva preliminar</span>
+          <span>11/12 · discursiva definitiva</span>
+        </div>
+      </section>`;
   }
 
   function transitionConsole(data = snapshot) {
@@ -182,6 +262,7 @@
         <div class="v28-flow" aria-label="Fluxo pós-prova SEDES/DF">
           ${stages.map(stage => `<article class="v28-flow-step ${stage.state}"><span>${stage.state === 'done' ? 'concluído' : stage.state === 'current' ? 'agora' : 'depois'}</span><strong>${esc(stage.label)}</strong><small>${esc(stage.detail)}</small></article>`).join('')}
         </div>
+        ${competitionPanel(data)}
         <div class="v28-next-lanes">
           <article class="v28-lane-intro"><span>PRÓXIMA TRANSIÇÃO</span><strong>Não misturar acompanhamento da SEDES com a nova preparação.</strong><p>O histórico permanece como capital acumulado; cada projeto novo ganha metas, questões e erros próprios.</p></article>
           <button class="v28-lane" type="button" data-view="strategy"><span>TRILHA 01</span><strong>SEEDF</strong><small>administrativo · gestão educacional · curto prazo</small></button>
@@ -195,9 +276,17 @@
     if (!root || data?.meta?.phase !== 'post-exam') return;
     ensureStyles();
 
+    const reading = data?.postExam?.competitionReading;
     const signature = JSON.stringify({
       generatedAt: data?.meta?.generatedAt || null,
       stages: stageModel(data).map(({ label, detail, state }) => [label, detail, state]),
+      competition: reading ? {
+        auditedAt: reading.auditedAt,
+        tdas: reading.exams?.tdas?.preliminaryScore,
+        edas: reading.exams?.edas?.preliminaryScore,
+        tdasRate: reading.exams?.tdas?.nominalCorrectionRateAC,
+        edasRate: reading.exams?.edas?.nominalCorrectionRateAC
+      } : null
     });
     let consoleNode = root.querySelector('[data-v28-transition-console]');
     if (!consoleNode) {
