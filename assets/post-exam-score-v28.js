@@ -427,6 +427,7 @@
   }
 
   function patchHome(data = snapshot) {
+    if (window.__PLANO_SEPARATE_POST_EXAM__) return;
     const root = document.querySelector('.command-view');
     if (!root || data?.meta?.phase !== 'post-exam') return;
     ensureStyles();
@@ -464,6 +465,45 @@
     const paragraph = action?.querySelector('p');
     const desired = 'A SEDES agora roda como processo em acompanhamento: gabarito → conferência → recursos → nota → classificação. A nova preparação fica em trilhas próprias.';
     if (paragraph && paragraph.textContent.trim() !== desired) paragraph.innerHTML = 'A SEDES agora roda como <strong>processo em acompanhamento</strong>: gabarito → conferência → recursos → nota → classificação. A nova preparação fica em trilhas próprias.';
+  }
+
+  function patchDedicated(data = snapshot) {
+    if (!window.__PLANO_SEPARATE_POST_EXAM__ || data?.meta?.phase !== 'post-exam') return;
+    const root = document.querySelector('[data-post-exam-page]');
+    if (!root) return;
+    ensureStyles();
+    const reading = data?.postExam?.competitionReading;
+    const signature = JSON.stringify({
+      generatedAt: data?.meta?.generatedAt || null,
+      stages: stageModel(data).map(({ label, detail, state }) => [label, detail, state]),
+      competition: reading ? {
+        auditedAt: reading.auditedAt,
+        tdas: reading.exams?.tdas?.preliminaryScore,
+        edas: reading.exams?.edas?.preliminaryScore,
+        tdasRate: reading.exams?.tdas?.nominalCorrectionRateAC,
+        edasRate: reading.exams?.edas?.nominalCorrectionRateAC
+      } : null
+    });
+    let consoleNode = root.querySelector(':scope > [data-v28-transition-console]');
+    if (consoleNode?.dataset.v28Signature === signature) return;
+    if (!consoleNode) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = transitionConsole(data).trim();
+      const replacement = wrapper.firstElementChild;
+      if (!replacement) return;
+      replacement.dataset.v28Signature = signature;
+      const followup = root.querySelector(':scope > [data-v28-post-followup]');
+      if (followup) followup.insertAdjacentElement('beforebegin', replacement);
+      else root.prepend(replacement);
+      return;
+    }
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = transitionConsole(data).trim();
+    const replacement = wrapper.firstElementChild;
+    if (replacement) {
+      replacement.dataset.v28Signature = signature;
+      consoleNode.replaceWith(replacement);
+    }
   }
 
   function patchRefreshSemantics(data = snapshot) {
@@ -528,6 +568,7 @@
     patchScoreCard('edas', snapshot);
     patchScoreCard('tdas', snapshot);
     patchHome(snapshot);
+    patchDedicated(snapshot);
     patchRefreshSemantics(snapshot);
   }
 
