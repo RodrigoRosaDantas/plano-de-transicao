@@ -149,7 +149,6 @@
       '<section class="v28-followup-timeline"><div class="v28-followup-section-head"><div><span class="eyebrow">LINHA DO TEMPO OFICIAL</span><h3>O que já aconteceu e o que vem agora</h3></div><small>atualizado em ' + esc(fmtDate(fu.lastCalculatedAt)) + '</small></div><div class="v28-followup-milestones">' + milestoneRows(fu) + '</div></section>' +
       '<details class="v28-followup-disclosure"><summary>Recursos e divergências</summary><div class="v28-followup-resource-grid">' + resourceRows(fu) + '</div><p class="v28-followup-note">' + esc(fu.resources?.note || '') + '</p><p class="v28-followup-note"><b>Janela oficial:</b> ' + esc(fmtOfficialWindow(fu.resourceProtocol?.start, fu.resourceProtocol?.end)) + '. Um recurso por questão, pelo sistema da Quadrix, sem anexos.</p></details>' +
       '<details class="v28-followup-disclosure"><summary>Fontes e governança do acompanhamento</summary><div class="v28-followup-links">' + link(sourceDocs.contest, 'Página do concurso') + link(sourceDocs.updatedNotice, 'Edital atualizado') + link(sourceDocs.keyPdf, 'Gabarito preliminar') + link(sourceDocs.justificationsPdf, 'Justificativas') + link(sourceDocs.resourceNoticePdf, 'Comunicado de recursos') + '</div><p class="v28-followup-note">O painel é um snapshot publicado: respostas anotadas, gabarito preliminar, justificativas e resultado definitivo permanecem identificados como fontes diferentes.</p></details>' +
-      readinessMarkup(data) +
       '</section>';
   }
 
@@ -168,14 +167,13 @@
   }
 
   function patchPostExam(data) {
-    const root = document.querySelector('[data-post-exam-v27]');
+    const root = document.querySelector('[data-post-exam-page]');
     if (!root) return false;
     const html = followUpMarkup(data);
     if (!html) return false;
-    let node = root.querySelector('[data-v28-post-followup]');
+    let node = root.querySelector(':scope > [data-v28-post-followup]');
     if (!node) {
-      const anchor = root.querySelector('.v27-next-panel') || root.firstElementChild;
-      if (anchor) anchor.insertAdjacentHTML('afterend', html);
+      root.innerHTML = html;
       return true;
     }
     const signature = followUpSignature(data);
@@ -188,24 +186,15 @@
     return true;
   }
 
-  function patchHome(data) {
-    if (document.querySelector('[data-post-exam-v27]')) return;
-    const root = document.querySelector('.command-view');
-    if (!root) return;
-    const html = standbyMarkup(data);
-    if (!html) return;
-    let node = root.querySelector('[data-v28-preexam-standby]');
-    const anchor = root.querySelector('[data-v28-transition-console]') || root.querySelector('.command-grid');
-    if (!node && anchor) {
-      anchor.insertAdjacentHTML('afterend', html);
-    }
+  function patchHome() {
+    return false;
   }
 
   function patch(data = snapshot) {
     if (data) snapshot = data;
     if (!snapshot || snapshot.meta?.phase !== 'post-exam') return;
     ensureStyles();
-    if (!patchPostExam(snapshot)) patchHome(snapshot);
+    patchPostExam(snapshot);
   }
 
   function schedule(data = snapshot) {
