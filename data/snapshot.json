@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-09T19:56:53.066Z",
+    "generatedAt": "2026-09-09T20:43:40.255Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,15 +8,15 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-09T19:56:54.476Z",
+    "workParityEnrichedAt": "2026-09-09T20:43:42.127Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-09T19:56:54.530Z",
+    "postExamNormalizedAt": "2026-09-09T20:43:42.179Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-09T19:56:53.514Z",
-    "postExamScoringUpdatedAt": "2026-09-09T19:56:53.599Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:56:53.514Z",
-    "postExamCompetitionAuditedAt": "2026-09-09T19:56:53.599Z"
+    "postExamNotesSyncedAt": "2026-09-09T20:43:41.176Z",
+    "postExamScoringUpdatedAt": "2026-09-09T20:43:41.261Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-09T20:43:41.176Z",
+    "postExamCompetitionAuditedAt": "2026-09-09T20:43:41.261Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -1348,7 +1348,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-09T19:56:53.599Z",
+          "comparedAt": "2026-09-09T20:43:41.260Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -2316,7 +2316,7 @@
             "pointsPossible": 1
           }
         ],
-        "lastComparedAt": "2026-09-09T19:56:53.599Z"
+        "lastComparedAt": "2026-09-09T20:43:41.260Z"
       },
       "edas": {
         "examType": "A",
@@ -2329,7 +2329,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-09T19:56:53.599Z",
+          "comparedAt": "2026-09-09T20:43:41.260Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -3209,7 +3209,7 @@
             "pointsPossible": 2
           }
         ],
-        "lastComparedAt": "2026-09-09T19:56:53.599Z"
+        "lastComparedAt": "2026-09-09T20:43:41.260Z"
       }
     },
     "competitionReading": {
