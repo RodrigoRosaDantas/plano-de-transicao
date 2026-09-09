@@ -94,9 +94,7 @@ function scoreWith(candidate, keyBlock, target, stage) {
       stats.correct += 1;
     } else if (candidateAnswer == null) {
       status = 'inválida-ou-em-branco';
-      wrong += 1;
       invalid += 1;
-      stats.wrong += 1;
       stats.invalid += 1;
     } else {
       status = 'erro';
