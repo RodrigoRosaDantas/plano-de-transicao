@@ -37,7 +37,7 @@ expect('v28 expõe pré-análise de recursos', source.includes('Pré-análise de
 expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=28') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
 expect('v28 mostra gráficos de resultado', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-stack') && followUp.includes('v28-followup-area-row'));
 expect('v28 mostra linha do tempo oficial', followUp.includes('v28-followup-milestones') && followUp.includes('LINHA DO TEMPO OFICIAL'));
-expect('v28 deixa pré-prova pronta para ativação', followUp.includes('v28-preexam-ready') && followUp.includes('Pré-prova pronta para ativar'));
+expect('v28 deixa pré-prova pronta para ativação', followUp.includes('v28-preexam-ready') && snapshot.preExamReadiness?.title === 'Pré-prova pronta para ativar');
 expect('snapshot guarda acompanhamento pós-prova', Boolean(snapshot.postExam?.followUp?.milestones?.length) && Boolean(snapshot.postExam?.followUp?.exams?.tdas) && Boolean(snapshot.postExam?.followUp?.exams?.edas));
 expect('snapshot guarda modo pré-prova de espera', snapshot.preExamReadiness?.status === 'standby' && snapshot.preExamReadiness?.checklist?.length >= 7);
 expect('motor registra fundamento da banca por questão', scoring.includes('officialBasis') && scoring.includes('officialJustificationSource'));
