@@ -54,6 +54,8 @@ for (const value of [
   '@media(max-width:430px)'
 ]) has(css, value, 'CSS pós-prova');
 
+assert.ok(js.includes('function v27ScoreTracking(exam)'), 'v27 deve ler apenas scoreTracking auditável');
+assert.ok(js.includes('return Boolean(v27ScoreTracking(exam));'), 'v27 não pode tratar rawAccuracy/score bruto como correção oficial');
 assert.ok(!/rawAccuracy\s*=\s*\d/.test(js), 'camada v27 não pode fabricar resultado');
 assert.ok(!/ranking\s*=\s*["'`]\d/.test(js), 'camada v27 não pode fabricar classificação');
 

@@ -22,6 +22,8 @@ expect('v28 inclui trilha TJDFT', source.includes('<strong>TJDFT</strong>'));
 expect('v28 diferencia recarga de snapshot', source.includes('Recarregar snapshot'));
 expect('v28 oferece sincronização segura', source.includes('actions/workflows/sync-notion.yml'));
 expect('v28 não expõe token do Notion', !source.includes('NOTION_TOKEN') && !competition.includes('NOTION_TOKEN'));
+expect('v28 não mantém renderer competitivo legado', !source.includes('${competitionPanel(data)}') && !source.includes('function competitionPanel(') && competition.includes('removeLegacyCompetitionPanel'));
+expect('v28 ignora score bruto do candidato como correção oficial', source.includes('return Boolean(exam?.scoreTracking?.preliminary || exam?.scoreTracking?.definitive);'));
 expect('v28 não cria nova camada v29', !source.includes('v29') && !competition.includes('v29'));
 expect('módulo exibe leitura competitiva preliminar', competition.includes('data-v28-competition-panel'));
 expect('módulo chama taxa de correção de nominal', competition.includes('Taxa nominal de correção AC'));

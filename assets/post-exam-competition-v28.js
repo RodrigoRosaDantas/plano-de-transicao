@@ -17,6 +17,10 @@
     return data?.postExam?.competitionReading || null;
   }
 
+  function removeLegacyCompetitionPanel(root) {
+    root.querySelectorAll('[data-v28-competition]').forEach(node => node.remove());
+  }
+
   function ensureStyles() {
     if (document.getElementById('v28-competition-styles')) return;
     const style = document.createElement('style');
@@ -97,7 +101,9 @@
   function mountHome(data = snapshot) {
     if (location.hash === '#exam-day') return;
     const root = document.querySelector('.command-view');
-    if (!root || !reading(data)) return;
+    if (!root) return;
+    removeLegacyCompetitionPanel(root);
+    if (!reading(data)) return;
     const current = root.querySelector(':scope > [data-v28-competition-panel]');
     const signature = JSON.stringify({ generatedAt: data?.meta?.generatedAt || null, reading: reading(data) });
     if (current?.dataset.signature === signature) return;
@@ -117,7 +123,9 @@
   function mountPostExam(data = snapshot) {
     if (location.hash !== '#exam-day') return;
     const root = document.querySelector('[data-post-exam-v27]');
-    if (!root || !reading(data)) return;
+    if (!root) return;
+    removeLegacyCompetitionPanel(root);
+    if (!reading(data)) return;
     const existing = root.querySelector(':scope > [data-v28-competition-panel]');
     const signature = JSON.stringify({ generatedAt: data?.meta?.generatedAt || null, reading: reading(data) });
     if (existing?.dataset.signature === signature) return;

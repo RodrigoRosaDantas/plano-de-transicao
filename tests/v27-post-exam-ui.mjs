@@ -36,7 +36,7 @@ await scenario('desktop: Home mudou de preparação para pós-prova', { width: 1
   const tabText = fold(await page.locator('#mainTabs [data-exam-day-tab]').innerText());
   if (!tabText.includes('pós-prova')) throw new Error(`Aba não foi renomeada: ${tabText}`);
   const milestone = fold(await page.locator('#nextMilestone').innerText());
-  if (!milestone.includes('gabarito')) throw new Error(`Próximo marco continua pré-prova: ${milestone}`);
+  if (!milestone.includes('recursos')) throw new Error(`Próximo marco pós-prova não acompanha o gabarito preliminar: ${milestone}`);
   if (await page.locator('.command-view > .priority-grid').isVisible()) throw new Error('Prioridades pré-prova continuam ocupando a Home.');
   if (await page.locator('.command-view > .focus-board').isVisible()) throw new Error('Foco pré-prova continua ocupando a Home.');
   await page.screenshot({ path: 'artifacts/desktop-pos-prova-v27-home.png', fullPage: true });

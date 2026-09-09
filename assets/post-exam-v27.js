@@ -50,8 +50,12 @@ function v27Exam(id, data = postExamSnapshot) {
   return v27SedesExams(data).find((exam) => exam.id === `sedes-2026-${id}`) || null;
 }
 
+function v27ScoreTracking(exam) {
+  return exam?.scoreTracking?.definitive || exam?.scoreTracking?.preliminary || null;
+}
+
 function v27HasResult(exam) {
-  return exam?.rawAccuracy != null || (exam?.score && exam.score !== '—');
+  return Boolean(v27ScoreTracking(exam));
 }
 
 function v27HasRanking(exam) {
@@ -113,15 +117,29 @@ function v27UpgradeMission(data = postExamSnapshot) {
   const missionTitle = document.getElementById('missionTitle');
   const missionText = document.getElementById('missionText');
   const milestone = document.getElementById('nextMilestone');
+  const phase = v27Phase(data);
+  const milestoneCopy = phase.rankingKnown
+    ? { strong: 'RESULTADO', small: 'classificação · discursiva · próximos passos' }
+    : phase.resultKnown
+      ? { strong: 'RECURSOS', small: 'conferir itens · acompanhar gabarito definitivo' }
+      : { strong: 'GABARITO', small: 'correção · recursos · resultado' };
   if (missionTitle) missionTitle.innerHTML = 'Provas concluídas. <em>Agora, transformar correção em decisão.</em>';
   if (missionText) missionText.textContent = data?.mission || 'Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.';
+
+  const missionEyebrow = document.querySelector('.mission-copy > .eyebrow');
+  if (missionEyebrow) missionEyebrow.textContent = 'MISSÃO ATUAL · PÓS-PROVA';
+  const targets = document.querySelectorAll('.mission-targets span');
+  ['SEDES/DF · acompanhamento', 'SEEDF · preparação independente', 'TJDFT · preparação independente'].forEach((value, index) => {
+    if (targets[index]) targets[index].textContent = value;
+  });
+
   if (milestone) {
     const label = milestone.querySelector('span');
     const strong = milestone.querySelector('strong');
     const small = milestone.querySelector('small');
     if (label) label.textContent = 'Próximo marco';
-    if (strong) strong.textContent = 'GABARITO';
-    if (small) small.textContent = 'correção · recursos · resultado';
+    if (strong) strong.textContent = milestoneCopy.strong;
+    if (small) small.textContent = milestoneCopy.small;
     milestone.classList.add('v27-next-milestone');
   }
 }
@@ -208,11 +226,18 @@ function v27Step(label, state, detail) {
 function v27ExamCard(id, data = postExamSnapshot) {
   const spec = POST_EXAM_V27.turns[id];
   const exam = v27Exam(id, data);
-  const result = v27HasResult(exam);
+  const tracking = v27ScoreTracking(exam);
+  const result = Boolean(tracking);
   const ranking = v27HasRanking(exam);
+  const definitive = Boolean(exam?.scoreTracking?.definitive);
+  const resultLabel = definitive ? 'Gabarito definitivo' : 'Nota objetiva estimada';
+  const resultValue = tracking ? `${v27Esc(tracking.total ?? tracking.totalScore ?? '—')}/100` : 'Aguardando gabarito';
+  const resultDetail = tracking
+    ? `CG ${v27Esc(tracking.general ?? tracking.generalScore ?? '—')}/20 · CE ${v27Esc(tracking.specific ?? tracking.specificScore ?? '—')}/80${ranking ? ` · ${v27Esc(exam.ranking)}` : definitive ? '' : ' · preliminar'}`
+    : ranking ? v27Esc(exam.ranking) : 'Classificação ainda não registrada';
   return `<article class="exam21-turn v27-exam-card v27-exam-card--${id}">
     <div class="v27-exam-head"><div><span>${v27Esc(spec.label)}</span><h3>${v27Esc(spec.role)}</h3><small>${v27Esc(spec.cargo)}</small></div><span class="v27-done-chip">${v27Icon('check')} Realizada</span></div>
-    <div class="v27-exam-result"><small>Correção</small><strong>${result ? v27Pct(exam.rawAccuracy) : 'Aguardando gabarito'}</strong><span>${ranking ? v27Esc(exam.ranking) : 'Classificação ainda não registrada'}</span></div>
+    <div class="v27-exam-result"><small>${result ? resultLabel : 'Correção'}</small><strong>${resultValue}</strong><span>${resultDetail}</span></div>
     <div class="v27-exam-actions"><button type="button" data-view="exams">Abrir registros ${v27Icon('chevron')}</button>${exam?.sourceUrl ? `<a href="${v27Esc(exam.sourceUrl)}" target="_blank" rel="noreferrer">Fonte ${v27Icon('external')}</a>` : ''}</div>
   </article>`;
 }
@@ -250,12 +275,20 @@ function v27PostExamTemplate(data = postExamSnapshot) {
   const tdas = v27Exam('tdas', data);
   const resultKnown = [edas, tdas].some(v27HasResult);
   const rankingKnown = [edas, tdas].some(v27HasRanking);
+  const heroTitle = resultKnown
+    ? 'Provas concluídas. <em>Agora, conferir, recorrer e acompanhar.</em>'
+    : 'Provas concluídas. <em>Agora, gabarito, recursos e resultado.</em>';
+  const heroDescription = rankingKnown
+    ? 'A nota e a classificação registradas seguem a etapa indicada; aprovação, vagas/CR e nomeação continuam sendo etapas distintas.'
+    : resultKnown
+      ? 'A nota objetiva preliminar está registrada; classificação, correção da discursiva e resultado oficial continuam pendentes.'
+      : 'EDAS pela manhã e TDAS à tarde estão registradas como realizadas. Nota e classificação continuam vazias até existir dado de correção.';
   return `<div class="exam21-shell post-exam-v27-shell" data-exam21-view data-post-exam-v27>
     <section class="exam21-hero v27-hero">
       <div class="v27-hero-copy">
         <div class="v27-kicker">${v27Icon('check')} SEDES/DF · 06/09/2026 · 2 DE 2 REALIZADAS</div>
-        <h2>Provas concluídas. <em>Agora, gabarito, recursos e resultado.</em></h2>
-        <p>EDAS pela manhã e TDAS à tarde estão registradas como realizadas. Nota e classificação continuam vazias até existir dado de correção.</p>
+        <h2>${heroTitle}</h2>
+        <p>${heroDescription}</p>
         <div class="v27-hero-actions"><button class="primary-button" type="button" data-view="exams">${v27Icon('file')} Abrir registros</button><button class="secondary-button" type="button" data-v27-copy-summary>${v27Icon('copy')} Copiar resumo</button><a class="secondary-button" href="${POST_EXAM_V27.officialUrl}" target="_blank" rel="noreferrer">Quadrix ${v27Icon('external')}</a></div>
       </div>
       <aside class="v27-phase-card"><small>ETAPA ATUAL</small><strong>${v27Esc(phase.current)}</strong><span>${v27Esc(v27SnapshotLabel(data))}</span></aside>
@@ -266,7 +299,7 @@ function v27PostExamTemplate(data = postExamSnapshot) {
       <div class="v27-steps">
         ${v27Step('Impressões', phase.notesDone ? 'done' : 'current', phase.notesDone ? 'Registradas neste navegador' : 'Registre enquanto estiver fresco')}
         ${v27Step('Gabarito', resultKnown ? 'done' : phase.notesDone ? 'current' : 'pending', resultKnown ? 'Correção já registrada' : 'Aguardar publicação oficial')}
-        ${v27Step('Recursos', 'pending', 'Mapear somente após conferir itens')}
+        ${v27Step('Recursos', resultKnown ? 'current' : 'pending', resultKnown ? 'Conferir itens e prazos da banca' : 'Mapear somente após conferir itens')}
         ${v27Step('Nota', resultKnown ? 'done' : 'pending', resultKnown ? 'Há dado de correção' : 'Não registrar antes da correção')}
         ${v27Step('Resultado', rankingKnown ? 'done' : 'pending', rankingKnown ? 'Classificação registrada' : 'Acompanhar classificação oficial')}
       </div>
@@ -303,7 +336,8 @@ function v27BindPostExamView(data = postExamSnapshot) {
   });
 
   root.querySelector('[data-v27-copy-summary]')?.addEventListener('click', async (event) => {
-    const text = 'SEDES/DF · 06/09/2026\nEDAS · Administrador · manhã: prova realizada.\nTDAS · Técnico Administrativo · tarde: prova realizada.\nPróxima etapa: gabarito, correção, recursos e resultado.\nNota e classificação: aguardar dados oficiais.';
+     const hasTrackedScore = [v27Exam('edas', data), v27Exam('tdas', data)].some(v27HasResult);
+     const text = `SEDES/DF · 06/09/2026\nEDAS · Administrador · manhã: prova realizada.\nTDAS · Técnico Administrativo · tarde: prova realizada.\nPróxima etapa: gabarito, correção, recursos e resultado.\n${hasTrackedScore ? 'Nota objetiva preliminar registrada; classificação e resultado oficial pendentes.' : 'Nota e classificação: aguardar dados oficiais.'}`;
     try {
       await navigator.clipboard.writeText(text);
       const prior = event.currentTarget.innerHTML;

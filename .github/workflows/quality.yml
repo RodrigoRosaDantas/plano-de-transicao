@@ -8,15 +8,10 @@ on:
     paths:
       - 'index.html'
       - 'assets/**'
-      - 'data/snapshot.json'
-      - 'data/treated-performance-data.js'
+      - 'data/**'
+      - 'scripts/**'
       - 'manifest.webmanifest'
       - 'sw.js'
-      - 'scripts/audit-parity.mjs'
-      - 'scripts/sedes-exams.mjs'
-      - 'scripts/audit-v13.mjs'
-      - 'scripts/audit-v14.mjs'
-      - 'scripts/audit-v15.mjs'
       - 'tests/**'
       - '.github/workflows/quality.yml'
   pull_request:
@@ -58,6 +53,8 @@ jobs:
         run: node tests/v27-post-exam-static.mjs
       - name: Auditoria estática da central adaptativa v28
         run: node tests/v28-product-upgrade-static.mjs
+      - name: Auditoria de resiliência dos snapshots
+        run: node tests/data-resilience-static.mjs
 
   ui:
     runs-on: ubuntu-latest

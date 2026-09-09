@@ -158,7 +158,7 @@ catch (error) { warnings.push({source:'finance', error:String(error?.message || 
 try { registryRows = await databaseRows(DATABASES.registry); }
 catch (error) { warnings.push({source:'registry-enrichment', error:String(error?.message || error)}); }
 
-if (financeRows) {
+if (financeRows?.length) {
   const included = financeRows.filter(row => checkbox(row, 'Conta no total do ciclo'));
   const sedesIncluded = included.filter(row => text(row, 'Concurso / ciclo') === 'SEDES/DF 2026');
 
@@ -214,7 +214,7 @@ if (financeRows) {
   if (sedesIncluded.length) snapshot.metrics.finance.sedesConfirmed = sedesConfirmed;
 }
 
-if (registryRows) {
+if (registryRows?.length) {
   const realExams = registryRows.filter(row => text(row, 'Escopo') === 'Prova real');
   snapshot.exams = (snapshot.exams || []).map(exam => {
     const needle = exam.name.includes('Caldas') ? 'Caldas Novas' : exam.name.includes('Câmara') ? 'Câmara Goiânia' : null;

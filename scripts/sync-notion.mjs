@@ -226,7 +226,8 @@ let tdasStepsTotal = previous.metrics.tdas.stepsTotal;
 let tdasStepsDone = previous.metrics.tdas.stepsDone;
 let tdasSimulations = previous.metrics.tdas.simulations;
 
-if (tdasRows) {
+const tdasRowsUsable = Array.isArray(tdasRows) && tdasRows.some(r => /^PE\d+/i.test(textValue(r, 'Dia ID')));
+if (tdasRowsUsable) {
   const peRows = tdasRows.filter(r => /^PE\d+/i.test(textValue(r, 'Dia ID')));
   const concludedPEs = peRows.filter(r => textValue(r, 'Status') === 'Concluído');
 
@@ -252,7 +253,8 @@ if (tdasRows) {
 
 let edasQuestions = previous.metrics.edas.questions;
 let edasHits = previous.metrics.edas.hits;
-if (edasRows) {
+const edasRowsUsable = Array.isArray(edasRows) && edasRows.some(r => textValue(r, 'Status') === 'Concluído');
+if (edasRowsUsable) {
   const edasDone = edasRows.filter(r => textValue(r, 'Status') === 'Concluído');
   edasQuestions = sum(edasDone, r =>
     (numberValue(r, 'Material — feitas') || 0) +
@@ -273,17 +275,10 @@ let historyQuestions = previous.metrics.history.questions;
 let historyHits = previous.metrics.history.hits;
 let historyWithoutResult = previous.metrics.history.withoutResult;
 
-if (included.length) {
-  if (tdasRows) {
-    const nonTdasIncluded = included.filter(r => textValue(r, 'Projeto') !== 'TDAS 202');
-    historyQuestions = sum(nonTdasIncluded, r => numberValue(r, 'Questões')) + tdasQuestions;
-    historyHits = sum(nonTdasIncluded, r => numberValue(r, 'Acertos')) + tdasHits;
-    historyWithoutResult = sum(nonTdasIncluded, r => numberValue(r, 'Sem resultado'));
-  } else {
-    historyQuestions = sum(included, r => numberValue(r, 'Questões'));
-    historyHits = sum(included, r => numberValue(r, 'Acertos'));
-    historyWithoutResult = sum(included, r => numberValue(r, 'Sem resultado'));
-  }
+if (included.length && tdasRowsUsable) {
+  const nonTdasIncluded = included.filter(r => textValue(r, 'Projeto') !== 'TDAS 202');
+  historyQuestions = sum(nonTdasIncluded, r => numberValue(r, 'Questões')) + tdasQuestions;
+  historyHits = sum(nonTdasIncluded, r => numberValue(r, 'Acertos')) + tdasHits;
 }
 
 const historyErrors = historyQuestions - historyHits;
@@ -314,7 +309,9 @@ const cycleNames = {
   'TDAS 202': 'SEDES — TDAS Pós-edital'
 };
 
-const historyCycles = included
+const shouldRebuildHistory = Boolean(registryRows?.length && included.length && tdasRowsUsable);
+const historyCycles = shouldRebuildHistory
+  ? included
   .filter(r => (numberValue(r, 'Questões') || 0) > 0)
   .map(r => {
     const project = textValue(r, 'Projeto');
@@ -327,7 +324,8 @@ const historyCycles = included
     else if (record.includes('Agente Administrativo')) name = 'Câmara Goiânia — Agente Administrativo';
     else if (record.includes('Treino Quadrix')) name = 'Treino Quadrix — CRF-DF';
     return { name, questions: q, hits: h, errors: q - h, accuracy: accuracy(h, q) };
-  });
+  })
+  : (previous.historyCycles || []);
 
 const examRows = registry.filter(r => textValue(r, 'Escopo') === 'Prova real');
 function dynamicExam(previousExam, needle) {
@@ -399,8 +397,9 @@ const snapshot = {
   },
   priorities: previous.priorities.map(priority => {
     const exam = exams.find(item => item.id === `sedes-2026-${priority.id}`);
+    const hasTrackedScore = Boolean(exam?.scoreTracking?.preliminary || exam?.scoreTracking?.definitive);
     return exam?.attendance === 'completed'
-      ? { ...priority, status: exam.rawAccuracy == null ? 'Prova realizada — resultado a registrar' : 'Prova realizada — resultado registrado' }
+      ? { ...priority, status: hasTrackedScore ? 'Prova realizada — resultado preliminar registrado' : 'Prova realizada — resultado a registrar' }
       : priority;
   }),
   metrics: {
@@ -411,9 +410,9 @@ const snapshot = {
       accuracy: accuracy(tdasHits, tdasQuestions),
       stepsDone: tdasStepsDone,
       stepsTotal: tdasStepsTotal || previous.metrics.tdas.stepsTotal,
-      errorNotebook: tdasErrorRows ? tdasErrorRows.length : previous.metrics.tdas.errorNotebook,
-      essays: tdasEssayRows ? tdasEssayRows.length : previous.metrics.tdas.essays,
-      essaysGraded: tdasEssayRows ? tdasEssayRows.filter(hasStructuredScore).length : previous.metrics.tdas.essaysGraded,
+      errorNotebook: tdasErrorRows?.length ? tdasErrorRows.length : previous.metrics.tdas.errorNotebook,
+      essays: tdasEssayRows?.length ? tdasEssayRows.length : previous.metrics.tdas.essays,
+      essaysGraded: tdasEssayRows?.length ? tdasEssayRows.filter(hasStructuredScore).length : previous.metrics.tdas.essaysGraded,
       simulations: tdasSimulations
     },
     edas: {
@@ -421,8 +420,8 @@ const snapshot = {
       hits: edasHits,
       errors: edasQuestions - edasHits,
       accuracy: accuracy(edasHits, edasQuestions),
-      errorNotebook: edasErrorRows ? edasErrorRows.length : previous.metrics.edas.errorNotebook,
-      caseStudies: edasCaseRows ? edasCaseRows.length : previous.metrics.edas.caseStudies
+      errorNotebook: edasErrorRows?.length ? edasErrorRows.length : previous.metrics.edas.errorNotebook,
+      caseStudies: edasCaseRows?.length ? edasCaseRows.length : previous.metrics.edas.caseStudies
     },
     history: {
       questions: historyQuestions,
