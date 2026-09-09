@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-09T19:17:14.481Z",
+    "generatedAt": "2026-09-09T19:36:47.698Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,14 +8,14 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-09T19:17:16.248Z",
+    "workParityEnrichedAt": "2026-09-09T19:36:49.651Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-09T19:17:16.599Z",
+    "postExamNormalizedAt": "2026-09-09T19:36:49.703Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-09T19:17:15.074Z",
-    "postExamScoringUpdatedAt": "2026-09-09T19:17:15.137Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:17:15.074Z"
+    "postExamNotesSyncedAt": "2026-09-09T19:36:48.267Z",
+    "postExamScoringUpdatedAt": "2026-09-09T19:36:48.346Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:36:48.267Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -124,12 +124,12 @@
       "session": "Tarde",
       "date": "2026-09-06",
       "attendance": "completed",
-      "score": "—",
-      "rawAccuracy": null,
+      "score": "49/60",
+      "rawAccuracy": 81.6666666667,
       "ranking": "—",
       "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado",
       "sourceUrl": "https://app.notion.com/p/SEDES-DF-TDAS-202-prova-real-06-09-2026-tarde-3d3cf5a267318115afb3e21fbfbbb412",
-      "postExamNote": "TDAS 202 — RESPOSTAS DO CANDIDATO (reconstrução pós-prova)\nFonte primária: anotações/fotos do caderno de prova + confirmações do candidato em 07/09/2026. Este registro NÃO é gabarito oficial.\n\nVetor para cruzamento automático:\n01=B | 02=B | 03=C | 04=C | 05=D | 06=B | 07=C | 08=B | 09=C | 10=D | 11=C | 12=C | 13=B | 14=D | 15=B | 16=E | 17=C | 18=A | 19=D | 20=B | 21=C | 22=A | 23=E | 24=C | 25=D | 26=A | 27=C | 28=E | 29=B | 30=INVÁLIDA_CARTÃO | 31=A | 32=C | 33=E | 34=B | 35=D | 36=A | 37=C | 38=E | 39=D | 40=D | 41=A | 42=B | 43=C | 44=B | 45=C | 46=E | 47=A | 48=C | 49=B | 50=B | 51=E | 52=C | 53=B | 54=B | 55=C | 56=C | 57=E | 58=A | 59=D | 60=B.\n\nRessalvas de integridade:\n- Q30: no caderno consta D, porém o cartão/folha de respostas recebeu duas marcações. Para estimativa e nota real, tratar como resposta inválida/0 ponto, salvo se a questão vier a ser anulada pela banca.\n- Q8 confirmado como B.\n- Q24 confirmado como C.\n\nModelo de pontuação a aplicar no cruzamento:\n- Q1–Q20: conhecimentos gerais, 1 ponto por acerto.\n- Q21–Q60: conhecimentos específicos, 2 pontos por acerto.\n- Erro, ausência ou mais de uma marcação: 0 ponto.\n- Questão anulada após recursos: pontuação integral atribuída a todos, conforme edital.\n\nQuando o gabarito preliminar for publicado, o sistema deverá registrar separadamente: acertos/erros por bloco, nota objetiva estimada (0–100), divergências candidato × banca, questões anuláveis/passíveis de recurso e versão do gabarito utilizada. A estimativa não substitui o gabarito definitivo nem o resultado oficial.",
+      "postExamNote": "TDAS 202 — RESPOSTAS DO CANDIDATO (reconstrução pós-prova)\nFonte primária: anotações/fotos do caderno de prova + confirmações do candidato em 07/09/2026. Este registro NÃO é gabarito oficial.\n\nVetor para cruzamento automático:\n01=B | 02=B | 03=C | 04=C | 05=D | 06=B | 07=C | 08=B | 09=C | 10=D | 11=C | 12=C | 13=B | 14=D | 15=B | 16=E | 17=C | 18=A | 19=D | 20=B | 21=C | 22=A | 23=E | 24=C | 25=D | 26=A | 27=C | 28=E | 29=B | 30=INVÁLIDA_CARTÃO | 31=A | 32=C | 33=E | 34=B | 35=D | 36=A | 37=C | 38=E | 39=D | 40=D | 41=A | 42=B | 43=C | 44=B | 45=C | 46=E | 47=A | 48=C | 49=B | 50=B | 51=E | 52=C | 53=B | 54=B | 55=C | 56=C | 57=E | 58=A | 59=D | 60=B.\n\nRessalvas de integridade:\n- Prova realizada: TDAS Técnico Administrativo — TIPO B.\n- Q30: no caderno consta D, porém a folha de respostas recebeu duas marcações; na estimativa preliminar vale 0 ponto, salvo eventual anulação.\n- Q8 confirmado como B.\n- Q24 confirmado como C.\n\nModelo de pontuação correto para o TIPO B, conforme edital e gabarito preliminar:\n- Q1–Q20: Conhecimentos Específicos Comuns — 2 pontos por acerto.\n- Q21–Q40: Conhecimentos Específicos da Especialidade — 2 pontos por acerto.\n- Q41–Q60: Conhecimentos Gerais — 1 ponto por acerto.\n- Erro, ausência ou mais de uma marcação: 0 ponto.\n- Questão anulada após recursos: pontuação correspondente atribuída a todos.\n\nCORREÇÃO PRELIMINAR — Quadrix, 09/09/2026:\n- 49 acertos, 10 erros e 1 marca inválida (Q30).\n- Conhecimentos Gerais: 15/20 pontos.\n- Conhecimentos Específicos: 68/80 pontos.\n- Nota objetiva estimada: 83/100.\n- Erros: Q8, Q14, Q16, Q24, Q39, Q41, Q45, Q49, Q50 e Q55.\n- Gabarito definitivo e resultado oficial ainda pendentes.",
       "candidateResponse": {
         "version": 2,
         "status": "complete",
@@ -243,7 +243,8 @@
         },
         "definitive": null
       },
-      "examType": "B"
+      "examType": "B",
+      "weightedScore": "83/100"
     },
     {
       "name": "SEDES/DF",
@@ -252,8 +253,8 @@
       "session": "Manhã",
       "date": "2026-09-06",
       "attendance": "completed",
-      "score": "—",
-      "rawAccuracy": null,
+      "score": "53/60",
+      "rawAccuracy": 88.3333333333,
       "ranking": "—",
       "status": "Provas realizadas em 06/09/2026 · aguardando gabarito e resultado",
       "sourceUrl": "https://app.notion.com/p/SEDES-DF-EDAS-400-prova-real-06-09-2026-manh-3d3cf5a2673181a7881ff0f1010ff5c7",
@@ -373,7 +374,9 @@
           "status": "estimativa baseada no gabarito preliminar"
         },
         "definitive": null
-      }
+      },
+      "weightedScore": "88/100",
+      "postExamNote": "EDAS 400 — RESPOSTAS DO CANDIDATO (registro pós-prova)\nFonte primária: foto do gabarito anotado pelo candidato enviada em 08/09/2026. Este registro NÃO é gabarito oficial.\n\nTipo da prova: EDAS Administração — TIPO A.\n\nCORREÇÃO PRELIMINAR — Quadrix, 09/09/2026:\n- 53 acertos e 7 erros.\n- Conhecimentos Gerais (Q1–Q20): 18/20 pontos.\n- Conhecimentos Específicos Comuns (Q21–Q40): 20/20 acertos = 40/40 pontos.\n- Conhecimentos Específicos da especialidade Administração (Q41–Q60): 15/20 acertos = 30/40 pontos.\n- Conhecimentos Específicos totais: 70/80 pontos.\n- Nota objetiva estimada: 88/100.\n- Erros: Q9, Q20, Q43, Q46, Q47, Q51 e Q59.\n- Q3=E e Q33=E foram confirmadas pelo gabarito preliminar, validando a normalização da grafia manuscrita.\n- Gabarito definitivo e resultado oficial ainda pendentes.\n\nPesos oficiais do edital:\n- Conhecimentos Gerais: 1 ponto por acerto.\n- Conhecimentos Específicos: 2 pontos por acerto.\n- Erro, ausência ou mais de uma marcação: 0 ponto.\n- Questão anulada após recursos: pontuação correspondente atribuída a todos."
     }
   ],
   "historyCycles": [
