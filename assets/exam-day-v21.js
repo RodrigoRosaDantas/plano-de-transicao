@@ -19,7 +19,7 @@ const EXAM_DAY_V21 = {
 };
 
 const CHECK_KEY = 'plano-transicao:exam-day-v19:checks';
-const INITIAL_EXAM_DAY = location.hash === '#exam-day';
+const INITIAL_EXAM_DAY = location.hash === '#exam-day' && !window.__PLANO_SEPARATE_POST_EXAM__;
 let examDayTimer = null;
 let contentObserver = null;
 let examRecords = window.__planoPublishedSnapshot?.exams || [];
@@ -214,6 +214,7 @@ function viewTemplate() {
 }
 
 function addNavigation() {
+  if (window.__PLANO_SEPARATE_POST_EXAM__ || document.querySelector('[data-view="post-exam"]')) return;
   const mainTabs = document.getElementById('mainTabs');
   if (mainTabs && !mainTabs.querySelector('[data-exam-day-tab]')) {
     const button = document.createElement('button');
@@ -316,6 +317,10 @@ function updateLive() {
 }
 
 function renderExamDay({ push = true } = {}) {
+  if (window.__PLANO_SEPARATE_POST_EXAM__) {
+    if (location.hash === '#exam-day') history.replaceState(null, '', '#post-exam');
+    return;
+  }
   const content = document.getElementById('content');
   if (!content) return;
   if (push && location.hash !== '#exam-day') history.pushState(null, '', '#exam-day');
@@ -339,6 +344,10 @@ function leaveExamDay() {
 }
 
 function setup() {
+  if (window.__PLANO_SEPARATE_POST_EXAM__ && location.hash === '#exam-day') {
+    history.replaceState(null, '', '#post-exam');
+    return;
+  }
   addNavigation();
   document.getElementById('examDayControl')?.remove();
 
