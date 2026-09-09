@@ -16,14 +16,14 @@ const lacks = (text, value, label) => assert.ok(!text.includes(value), `${label}
 
 // Integração consolidada do shell e ordem de carregamento.
 for (const asset of [
-  'assets/exam-day-v21-bootstrap.js?v=21',
+  'assets/exam-day-v21-bootstrap.js?v=29',
   'assets/exam-day-v21.css?v=21',
   'assets/exam-day-v21-shell.css?v=21',
-  'assets/exam-day-v21.js?v=21',
+  'assets/exam-day-v21.js?v=29',
   'assets/exam-day-v21-shell.js?v=21'
 ]) has(index, asset, 'index v21');
-assert.ok(index.indexOf('exam-day-v21-bootstrap.js?v=21') < index.indexOf('assets/work-app.css?v=15'), 'bootstrap precisa nascer no head antes do app-base');
-assert.ok(index.indexOf('exam-day-v21-shell.js?v=21') > index.indexOf('exam-day-v21.js?v=21'), 'shell v21 deve carregar após a aba');
+assert.ok(index.indexOf('exam-day-v21-bootstrap.js?v=29') < index.indexOf('assets/work-app.css?v=15'), 'bootstrap precisa nascer no head antes do app-base');
+assert.ok(index.indexOf('exam-day-v21-shell.js?v=21') > index.indexOf('exam-day-v21.js?v=29'), 'shell v21 deve carregar após a aba');
 
 // Legado v18/v19/v20 não deve mais compor o runtime nem o cache do PWA.
 for (const legacy of [
@@ -39,7 +39,7 @@ for (const legacy of [
   "'./assets/exam-day-v20.css'",
   "'./assets/exam-day-v20.js'"
 ]) lacks(sw, legacy, 'PWA sem camada legada');
-has(sw, "const CACHE='plano-transicao-v28-consolidated'", 'cache consolidado atual');
+has(sw, "const CACHE='plano-transicao-v29-separate-phases'", 'cache consolidado atual');
 
 for (const asset of [
   "'./assets/exam-day-v21-bootstrap.js'",
@@ -60,9 +60,12 @@ has(shellCss, 'body.exam-day-active .mission-strip', 'shell dedicado sem faixa d
 has(shellCss, 'body.exam-day-active .context-line', 'shell dedicado sem contexto da Home');
 has(shellJs, "location.hash === '#exam-day'", 'estado dedicado do shell');
 has(shellJs, "closeMoreSheetForExamDay();\n  document.body.classList.add('exam-day-active')", 'fecha Mais imediatamente ao entrar');
-has(bootstrap, "const directExamDay = location.hash === '#exam-day'", 'captura deep link antes do roteador-base');
+has(bootstrap, "const directExamDay = location.hash === '#exam-day' && !separatePostExam", 'captura deep link antes do roteador-base');
 has(bootstrap, "history.replaceState(null, '', '#exam-day')", 'restaura deep link após inicialização');
 has(bootstrap, "window.dispatchEvent(new HashChangeEvent('hashchange'))", 'aciona a view dedicada restaurada');
+has(index, 'data-view="pre-exam"', 'navegação pré-prova separada');
+has(index, 'data-view="post-exam"', 'navegação pós-prova separada');
+has(bootstrap, "history.replaceState(null, '', '#post-exam')", 'legado redirecionado para a página pós-prova');
 
 // Dados oficiais e regras antes espalhadas em v19/v20 agora pertencem à v21.
 for (const value of [
