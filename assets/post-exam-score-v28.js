@@ -208,6 +208,8 @@
       + '</div>';
   }
 
+  window.__planoPostExamAudit = { render: auditMarkup, prepare: ensureStyles };
+
   function ensureStyles() {
     if (document.getElementById('v28-product-upgrade-styles')) return;
     const style = document.createElement('style');
