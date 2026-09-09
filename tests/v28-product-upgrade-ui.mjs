@@ -27,11 +27,19 @@ async function scenario(name, viewport, run) {
   }
 }
 
-await scenario('desktop: Home vira central longitudinal', { width: 1440, height: 1000 }, async page => {
+await scenario('desktop: Home vira central longitudinal e competitiva preliminar', { width: 1440, height: 1100 }, async page => {
   const text = fold(await page.locator('[data-v28-transition-console]').innerText());
   for (const expected of ['sedes em acompanhamento', 'gabarito', 'recursos', 'seedf', 'tjdft', 'próxima transição']) {
     if (!text.includes(expected)) throw new Error(`Central adaptativa sem: ${expected}`);
   }
+
+  const competition = page.locator('[data-v28-competition]');
+  if (await competition.count() !== 1) throw new Error('Painel competitivo preliminar não apareceu.');
+  const competitionText = fold(await competition.innerText());
+  for (const expected of ['leitura competitiva', 'preliminar', 'taxa nominal bruta de avanço ac', 'probabilidade pessoal', 'ainda não estimável', '3,49%', '6,86%', '83/100', '88/100']) {
+    if (!competitionText.includes(expected)) throw new Error(`Painel competitivo sem: ${expected}`);
+  }
+  if (competitionText.includes('40% de chance') || competitionText.includes('70% de chance')) throw new Error('Painel voltou a exibir probabilidade pessoal não auditável.');
 
   const refresh = fold(await page.locator('#refreshLabel').innerText());
   if (refresh !== 'recarregar snapshot') throw new Error(`Botão de snapshot ambíguo: ${refresh}`);
@@ -52,9 +60,11 @@ await scenario('desktop: trilha estratégica é acionável', { width: 1280, heig
   if (!await page.locator('.strategy-view').count()) throw new Error('Clique na trilha SEEDF não abriu Estratégia.');
 });
 
-await scenario('mobile 390px: central não cria overflow', { width: 390, height: 844 }, async page => {
+await scenario('mobile 390px: central e leitura competitiva não criam overflow', { width: 390, height: 844 }, async page => {
   const gridColumns = await page.locator('.v28-next-lanes').evaluate(node => getComputedStyle(node).gridTemplateColumns);
   if (gridColumns.trim().split(/\s+/).length !== 1) throw new Error(`Trilhas não empilharam no mobile: ${gridColumns}`);
+  const competitionColumns = await page.locator('.v28-competition-grid').evaluate(node => getComputedStyle(node).gridTemplateColumns);
+  if (competitionColumns.trim().split(/\s+/).length !== 1) throw new Error(`Cards competitivos não empilharam no mobile: ${competitionColumns}`);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal mobile: ${overflow}px`);
   await page.screenshot({ path: 'artifacts/mobile-central-adaptativa-v28.png', fullPage: true });
