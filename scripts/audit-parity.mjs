@@ -21,6 +21,7 @@ const focus = await read('assets/home-focus-v14.js');
 const focusStyles = await read('assets/home-focus-v14.css');
 const transition = await read('assets/transition-gate-v15.js');
 const transitionStyles = await read('assets/transition-gate-v15.css');
+const followUp = await read('assets/post-exam-follow-up-v28.js');
 const syncScript = await read('scripts/sync-notion.mjs');
 const enrichScript = await read('scripts/enrich-work-parity.mjs');
 const syncWorkflow = await read('.github/workflows/sync-notion.yml');
@@ -75,6 +76,9 @@ for (const [id, expected] of Object.entries(postExamAuditExpectations)) {
   check(`Pós-prova ${id} mantém nota preliminar auditada`, preliminary.totalScore === expected.total, `${preliminary.totalScore} × ${expected.total}`);
   check(`Pós-prova ${id} ordena questões de 1 a 60`, questions.every((item, index) => item.question === index + 1));
   check(`Pós-prova ${id} preserva auditoria de fontes quando enriquecida`, !preliminary.audit || (preliminary.audit.responseIsOfficialKey === false && preliminary.audit.questionCount === 60));
+  check(`Pós-prova ${id} possui acompanhamento estruturado`, Boolean(snapshot.postExam?.followUp?.exams?.[id]) && snapshot.postExam.followUp.exams[id].examType === expected.type);
+  check(`Pós-prova ${id} reconcilia acompanhamento com nota`, snapshot.postExam.followUp.exams[id].result?.totalScore === preliminary.totalScore);
+  check(`Pós-prova ${id} preserva gráfico por bloco`, snapshot.postExam.followUp.exams[id].areas?.length >= 3);
 }
 
 const finance = snapshot.financeSummary || {};
@@ -114,7 +118,7 @@ const cachedAssets = [
   'assets/transition-gate-v15.css', 'assets/transition-gate-v15.js',
   'assets/exam-day-v21.css', 'assets/exam-day-v21-shell.css', 'assets/exam-day-v21.js', 'assets/exam-day-v21-shell.js', 'assets/exam-day-v21-bootstrap.js',
   'assets/exam-day-v22.css', 'assets/exam-day-v22.js',
-  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js',
+  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js',
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
@@ -130,6 +134,10 @@ check('Todos os estilos v9–v15 estão ligados no HTML', [
 ].every((asset) => index.includes(asset)));
 check('Cache busting do shell está em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
+check('Pós-prova liga o painel de acompanhamento', index.includes('assets/post-exam-follow-up-v28.js?v=28') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
+check('Pré-prova fica pronta para novo concurso', Boolean(snapshot.preExamReadiness?.status === 'standby') && (snapshot.preExamReadiness?.checklist || []).length >= 7);
+check('Painel pós-prova possui gráficos e linha do tempo', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-milestones'));
+check('Painel mantém fonte e snapshot identificados', followUp.includes('snapshot publicado') && followUp.includes('Fontes e governança'));
 
 check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
 check('Botão Recarregar snapshot é textual e visível', index.includes('id="refreshBtn"') && index.includes('data-refresh') && index.includes('Recarregar snapshot'));

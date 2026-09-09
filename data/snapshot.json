@@ -16,7 +16,8 @@
     "postExamNotesSyncedAt": "2026-09-09T21:08:56.188Z",
     "postExamScoringUpdatedAt": "2026-09-09T21:08:56.278Z",
     "postExamCandidateResponsesSyncedAt": "2026-09-09T21:08:56.188Z",
-    "postExamCompetitionAuditedAt": "2026-09-09T21:08:56.278Z"
+    "postExamCompetitionAuditedAt": "2026-09-09T21:08:56.278Z",
+    "postExamFollowUpUpdatedAt": "2026-09-09T21:08:56.278Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -6176,6 +6177,302 @@
           "competitiveStatus": "Nota preliminar acima dos mínimos eliminatórios; faixa classificatória ainda indeterminada."
         }
       }
+    },
+    "followUp": {
+      "version": "post-exam-follow-up-v1",
+      "status": "active",
+      "title": "Acompanhamento pós-prova",
+      "description": "Painel permanente da SEDES/DF: correção, recursos, resultado e decisão seguinte, sem misturar os cargos.",
+      "currentStage": "Conferência e recursos",
+      "nextAction": "Revisar divergências e protocolar somente recursos fundamentados.",
+      "snapshotDate": "2026-09-06",
+      "lastCalculatedAt": "2026-09-09T21:08:56.278Z",
+      "milestones": [
+        {
+          "id": "exam",
+          "label": "Provas realizadas",
+          "date": "2026-09-06",
+          "status": "done",
+          "detail": "EDAS pela manhã · TDAS à tarde"
+        },
+        {
+          "id": "preliminary-key",
+          "label": "Gabarito preliminar",
+          "date": "2026-09-09",
+          "status": "done",
+          "detail": "Tipos A e B incorporados"
+        },
+        {
+          "id": "resources",
+          "label": "Recursos",
+          "start": "2026-09-10T10:00:00-03:00",
+          "end": "2026-09-16T18:00:00-03:00",
+          "status": "current",
+          "detail": "Conferir divergências com fundamento objetivo"
+        },
+        {
+          "id": "objective-result",
+          "label": "Resultado objetivo preliminar",
+          "date": "2026-10-13",
+          "status": "upcoming",
+          "detail": "Publicação oficial ainda pendente"
+        },
+        {
+          "id": "objective-definitive",
+          "label": "Resultado definitivo e lista da discursiva",
+          "date": "2026-10-30",
+          "status": "upcoming",
+          "detail": "Acompanhar lista de correção discursiva"
+        },
+        {
+          "id": "discursive-preliminary",
+          "label": "Resultado preliminar da discursiva",
+          "date": "2026-11-23",
+          "status": "upcoming",
+          "detail": "Somente após a correção da discursiva"
+        },
+        {
+          "id": "discursive-definitive",
+          "label": "Resultado definitivo da discursiva",
+          "date": "2026-12-11",
+          "status": "upcoming",
+          "detail": "Fechamento do ciclo oficial"
+        }
+      ],
+      "exams": {
+        "tdas": {
+          "role": "TDAS 202 — Técnico Administrativo",
+          "examType": "B",
+          "session": "Tarde",
+          "date": "2026-09-06",
+          "status": "preliminary",
+          "source": "Anotação pós-prova no Notion",
+          "candidate": {
+            "registeredQuestions": 60,
+            "validMarks": 59,
+            "rawAccuracy": 81.6666666667
+          },
+          "result": {
+            "correct": 49,
+            "wrong": 10,
+            "invalid": 1,
+            "annulled": 0,
+            "totalScore": 83,
+            "maxScore": 100,
+            "generalScore": 15,
+            "specificScore": 68,
+            "generalMinimumMet": true,
+            "specificMinimumMet": true,
+            "objectiveMinimumsMet": true
+          },
+          "areas": [
+            {
+              "id": "specificCommon",
+              "label": "Conhecimentos Específicos Comuns",
+              "from": 1,
+              "to": 20,
+              "pointsPerCorrect": 2,
+              "correct": 17,
+              "wrong": 3,
+              "invalid": 0,
+              "annulled": 0,
+              "score": 34,
+              "maxScore": 40,
+              "accuracy": 85
+            },
+            {
+              "id": "specialty",
+              "label": "Conhecimentos Específicos da Especialidade",
+              "from": 21,
+              "to": 40,
+              "pointsPerCorrect": 2,
+              "correct": 17,
+              "wrong": 2,
+              "invalid": 1,
+              "annulled": 0,
+              "score": 34,
+              "maxScore": 40,
+              "accuracy": 85
+            },
+            {
+              "id": "general",
+              "label": "Conhecimentos Gerais",
+              "from": 41,
+              "to": 60,
+              "pointsPerCorrect": 1,
+              "correct": 15,
+              "wrong": 5,
+              "invalid": 0,
+              "annulled": 0,
+              "score": 15,
+              "maxScore": 20,
+              "accuracy": 75
+            }
+          ],
+          "resources": {
+            "differenceCount": 11,
+            "generalDifferenceCount": 5,
+            "specificDifferenceCount": 6,
+            "potentialGainIfAllResolved": 17,
+            "conclusion": "Nenhuma divergência entre a anotação e a chave, isoladamente, prova erro da banca. Cada recurso precisa apontar fundamento objetivo para alterar ou anular uma questão."
+          }
+        },
+        "edas": {
+          "role": "EDAS 400 — Administração",
+          "examType": "A",
+          "session": "Manhã",
+          "date": "2026-09-06",
+          "status": "preliminary",
+          "source": "Foto do gabarito anotado pelo candidato enviada em 08/09/2026",
+          "candidate": {
+            "registeredQuestions": 60,
+            "validMarks": 60,
+            "rawAccuracy": 88.3333333333
+          },
+          "result": {
+            "correct": 53,
+            "wrong": 7,
+            "invalid": 0,
+            "annulled": 0,
+            "totalScore": 88,
+            "maxScore": 100,
+            "generalScore": 18,
+            "specificScore": 70,
+            "generalMinimumMet": true,
+            "specificMinimumMet": true,
+            "objectiveMinimumsMet": true
+          },
+          "areas": [
+            {
+              "id": "general",
+              "label": "Conhecimentos Gerais",
+              "from": 1,
+              "to": 20,
+              "pointsPerCorrect": 1,
+              "correct": 18,
+              "wrong": 2,
+              "invalid": 0,
+              "annulled": 0,
+              "score": 18,
+              "maxScore": 20,
+              "accuracy": 90
+            },
+            {
+              "id": "specificCommon",
+              "label": "Conhecimentos Específicos Comuns",
+              "from": 21,
+              "to": 40,
+              "pointsPerCorrect": 2,
+              "correct": 20,
+              "wrong": 0,
+              "invalid": 0,
+              "annulled": 0,
+              "score": 40,
+              "maxScore": 40,
+              "accuracy": 100
+            },
+            {
+              "id": "specialty",
+              "label": "Conhecimentos Específicos da Especialidade",
+              "from": 41,
+              "to": 60,
+              "pointsPerCorrect": 2,
+              "correct": 15,
+              "wrong": 5,
+              "invalid": 0,
+              "annulled": 0,
+              "score": 30,
+              "maxScore": 40,
+              "accuracy": 75
+            }
+          ],
+          "resources": {
+            "differenceCount": 7,
+            "generalDifferenceCount": 2,
+            "specificDifferenceCount": 5,
+            "potentialGainIfAllResolved": 12,
+            "conclusion": "Nenhuma divergência entre a anotação e a chave, isoladamente, prova erro da banca. Cada recurso precisa apontar fundamento objetivo para alterar ou anular uma questão."
+          }
+        }
+      },
+      "resources": {
+        "totalDifferenceCount": 18,
+        "totalPotentialGainIfAllResolved": 29,
+        "note": "Ganho potencial é um cenário máximo por mudança de chave ou anulação; não é previsão de deferimento."
+      },
+      "resourceProtocol": {
+        "start": "2026-09-10T10:00:00-03:00",
+        "end": "2026-09-16T18:00:00-03:00",
+        "timeZone": "America/Sao_Paulo",
+        "channel": "Sistema Eletrônico de Interposição de Recurso da Quadrix, no ambiente do candidato",
+        "objectiveSubmission": "Um recurso individualizado por questão.",
+        "objectiveOptions": [
+          "alteração do gabarito preliminar",
+          "anulação da questão",
+          "manutenção do gabarito preliminar"
+        ],
+        "attachmentsAllowed": false,
+        "noExtension": true
+      },
+      "sourceDocuments": {
+        "contest": "https://quadrix.org.br/informacoes/3056/",
+        "updatedNotice": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/b852c323-8771-4021-bbbd-8032e88e58e0.pdf",
+        "keyPdf": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/9ecbb8fd-f3b7-4bc7-a1a8-3b64b5f38752.pdf",
+        "justificationsPdf": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/a6ca1138-66c1-4d2a-b0c0-04ad7285c239.pdf",
+        "resourceNoticePdf": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/bd001ca2-91ab-4291-ac42-aab7f0399170.pdf"
+      }
     }
+  },
+  "preExamReadiness": {
+    "version": "pre-exam-ready-v1",
+    "status": "standby",
+    "title": "Pré-prova pronta para ativar",
+    "description": "A estrutura fica em espera para o próximo concurso. Quando um novo edital for cadastrado, ela recebe cargos, fontes, ciclo, questões, simulados e acompanhamento próprios.",
+    "activationRule": "Ativar somente após existir concurso, edital, cargo, banca e data de prova confirmados.",
+    "checklist": [
+      {
+        "id": "contest",
+        "title": "Concurso, cargos e banca",
+        "detail": "Cadastrar o concurso e separar cada cargo, prova e turno."
+      },
+      {
+        "id": "sources",
+        "title": "Edital e fontes oficiais",
+        "detail": "Fixar edital, retificações, legislação e página oficial."
+      },
+      {
+        "id": "verticalized",
+        "title": "Edital verticalizado",
+        "detail": "Transformar o conteúdo em matérias, assuntos e ordem de estudo."
+      },
+      {
+        "id": "cycle",
+        "title": "Ciclo de execução",
+        "detail": "Criar dias, metas, revisões e espaço para registro de dificuldades."
+      },
+      {
+        "id": "questions",
+        "title": "Banco de questões",
+        "detail": "Vincular questões por banca, cargo, matéria e assunto."
+      },
+      {
+        "id": "simulation",
+        "title": "Simulados e prova real",
+        "detail": "Preparar simulados, controle de tempo e fechamento do dia da prova."
+      },
+      {
+        "id": "followup",
+        "title": "Pós-prova automático",
+        "detail": "Ao terminar, abrir a mesma trilha de gabarito, recursos, nota e resultado."
+      }
+    ],
+    "outputs": [
+      "edital verticalizado",
+      "execução diária",
+      "banco de questões",
+      "caderno de erros",
+      "simulados",
+      "acompanhamento pós-prova"
+    ]
   }
 }

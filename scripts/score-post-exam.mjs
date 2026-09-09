@@ -366,6 +366,135 @@ for (const target of TARGETS) {
   }
 }
 
+
+const PRE_EXAM_READINESS = {
+  version: 'pre-exam-ready-v1',
+  status: 'standby',
+  title: 'Pré-prova pronta para ativar',
+  description: 'A estrutura fica em espera para o próximo concurso. Quando um novo edital for cadastrado, ela recebe cargos, fontes, ciclo, questões, simulados e acompanhamento próprios.',
+  activationRule: 'Ativar somente após existir concurso, edital, cargo, banca e data de prova confirmados.',
+  checklist: [
+    { id: 'contest', title: 'Concurso, cargos e banca', detail: 'Cadastrar o concurso e separar cada cargo, prova e turno.' },
+    { id: 'sources', title: 'Edital e fontes oficiais', detail: 'Fixar edital, retificações, legislação e página oficial.' },
+    { id: 'verticalized', title: 'Edital verticalizado', detail: 'Transformar o conteúdo em matérias, assuntos e ordem de estudo.' },
+    { id: 'cycle', title: 'Ciclo de execução', detail: 'Criar dias, metas, revisões e espaço para registro de dificuldades.' },
+    { id: 'questions', title: 'Banco de questões', detail: 'Vincular questões por banca, cargo, matéria e assunto.' },
+    { id: 'simulation', title: 'Simulados e prova real', detail: 'Preparar simulados, controle de tempo e fechamento do dia da prova.' },
+    { id: 'followup', title: 'Pós-prova automático', detail: 'Ao terminar, abrir a mesma trilha de gabarito, recursos, nota e resultado.' }
+  ],
+  outputs: ['edital verticalizado', 'execução diária', 'banco de questões', 'caderno de erros', 'simulados', 'acompanhamento pós-prova']
+};
+
+function followUpAreaRows(scoring) {
+  return Object.values(scoring?.areaStats || {})
+    .sort((a, b) => Number(a.from || 0) - Number(b.from || 0))
+    .map((area) => ({
+      id: area.id,
+      label: area.label,
+      from: area.from,
+      to: area.to,
+      pointsPerCorrect: area.pointsPerCorrect,
+      correct: area.correct,
+      wrong: area.wrong,
+      invalid: area.invalid,
+      annulled: area.annulled,
+      score: area.score,
+      maxScore: area.maxScore,
+      accuracy: pct(area.correct, (area.to - area.from + 1))
+    }));
+}
+
+function buildPostExamFollowUp() {
+  const scoring = snapshot.postExam?.scoring || {};
+  const exams = {};
+  for (const target of TARGETS) {
+    const exam = (snapshot.exams || []).find((item) => item.id === target.examId) || {};
+    const preliminary = scoring[target.id]?.preliminary || null;
+    const definitive = scoring[target.id]?.definitive || null;
+    const active = definitive || preliminary;
+    const differences = active?.differences || [];
+    const potentialGain = differences.reduce((total, item) => total + Number(item.pointsPossible || 0), 0);
+    const generalDifferences = differences.filter((item) => item.area === 'general' || item.block === 'geral');
+    const specificDifferences = differences.filter((item) => item.area !== 'general' && item.block !== 'geral');
+    exams[target.id] = {
+      role: target.role,
+      examType: target.examType,
+      session: exam.session || null,
+      date: exam.date || snapshot.meta?.postExamDate || null,
+      status: definitive ? 'definitive' : preliminary ? 'preliminary' : 'awaiting-key',
+      source: exam.candidateResponse?.source || null,
+      candidate: {
+        registeredQuestions: exam.candidateResponse?.registeredQuestions ?? null,
+        validMarks: exam.candidateResponse?.validMarks ?? null,
+        rawAccuracy: exam.rawAccuracy ?? null
+      },
+      result: active ? {
+        correct: active.correct,
+        wrong: active.wrong,
+        invalid: active.invalid,
+        annulled: active.annulled,
+        totalScore: active.totalScore,
+        maxScore: active.maxScore,
+        generalScore: active.generalScore,
+        specificScore: active.specificScore,
+        generalMinimumMet: active.generalMinimumMet,
+        specificMinimumMet: active.specificMinimumMet,
+        objectiveMinimumsMet: active.objectiveMinimumsMet
+      } : null,
+      areas: followUpAreaRows(active),
+      resources: {
+        differenceCount: differences.length,
+        generalDifferenceCount: generalDifferences.length,
+        specificDifferenceCount: specificDifferences.length,
+        potentialGainIfAllResolved: potentialGain,
+        conclusion: active?.audit?.resourceReview?.conclusion || null
+      }
+    };
+  }
+
+  const values = Object.values(exams);
+  const hasPreliminary = values.some((item) => item.status === 'preliminary' || item.status === 'definitive');
+  const hasDefinitive = values.some((item) => item.status === 'definitive');
+  const hasRanking = (snapshot.exams || []).some((item) => item.id?.startsWith('sedes-2026-') && item.ranking && item.ranking !== '—');
+  const protocol = keys.source?.resourceProtocol || null;
+  const milestones = [
+    { id: 'exam', label: 'Provas realizadas', date: snapshot.meta?.postExamDate || '2026-09-06', status: 'done', detail: 'EDAS pela manhã · TDAS à tarde' },
+    { id: 'preliminary-key', label: 'Gabarito preliminar', date: keys.source?.publishedAt || null, status: hasPreliminary ? 'done' : 'pending', detail: hasPreliminary ? 'Tipos A e B incorporados' : 'Aguardar publicação oficial' },
+    { id: 'resources', label: 'Recursos', start: protocol?.start || null, end: protocol?.end || null, status: hasDefinitive ? 'done' : hasPreliminary ? 'current' : 'pending', detail: hasDefinitive ? 'Janela encerrada ou resultado definitivo disponível' : hasPreliminary ? 'Conferir divergências com fundamento objetivo' : 'Depois do gabarito preliminar' },
+    { id: 'objective-result', label: 'Resultado objetivo preliminar', date: COMPETITION.milestones.objectivePreliminaryResult, status: hasRanking ? 'done' : hasDefinitive ? 'current' : 'upcoming', detail: hasRanking ? 'Classificação registrada' : 'Publicação oficial ainda pendente' },
+    { id: 'objective-definitive', label: 'Resultado definitivo e lista da discursiva', date: COMPETITION.milestones.objectiveDefinitiveAndDiscursiveCorrectionList, status: hasRanking ? 'done' : 'upcoming', detail: 'Acompanhar lista de correção discursiva' },
+    { id: 'discursive-preliminary', label: 'Resultado preliminar da discursiva', date: COMPETITION.milestones.discursivePreliminaryResult, status: 'upcoming', detail: 'Somente após a correção da discursiva' },
+    { id: 'discursive-definitive', label: 'Resultado definitivo da discursiva', date: COMPETITION.milestones.discursiveDefinitiveResult, status: 'upcoming', detail: 'Fechamento do ciclo oficial' }
+  ];
+  const totalDifferences = values.reduce((total, item) => total + Number(item.resources.differenceCount || 0), 0);
+  const totalPotentialGain = values.reduce((total, item) => total + Number(item.resources.potentialGainIfAllResolved || 0), 0);
+  return {
+    version: 'post-exam-follow-up-v1',
+    status: 'active',
+    title: 'Acompanhamento pós-prova',
+    description: 'Painel permanente da SEDES/DF: correção, recursos, resultado e decisão seguinte, sem misturar os cargos.',
+    currentStage: hasRanking ? 'Resultado e próximos passos' : hasDefinitive ? 'Classificação em acompanhamento' : hasPreliminary ? 'Conferência e recursos' : 'Aguardando gabarito e correção',
+    nextAction: hasRanking ? 'Registrar classificação, discursiva e decisão de carreira.' : hasDefinitive ? 'Acompanhar classificação e correção da discursiva.' : hasPreliminary ? 'Revisar divergências e protocolar somente recursos fundamentados.' : 'Aguardar fonte oficial de correção.',
+    snapshotDate: snapshot.meta?.postExamDate || null,
+    lastCalculatedAt: new Date().toISOString(),
+    milestones,
+    exams,
+    resources: {
+      totalDifferenceCount: totalDifferences,
+      totalPotentialGainIfAllResolved: totalPotentialGain,
+      note: 'Ganho potencial é um cenário máximo por mudança de chave ou anulação; não é previsão de deferimento.'
+    },
+    resourceProtocol: protocol,
+    sourceDocuments: {
+      contest: COMPETITION.sources.contest,
+      updatedNotice: COMPETITION.sources.updatedNotice,
+      keyPdf: keys.source?.keyPdfUrl || null,
+      justificationsPdf: keys.source?.justificationsPdfUrl || null,
+      resourceNoticePdf: keys.source?.resourceNoticePdfUrl || null
+    }
+  };
+}
+
 const competitionReading = {
   status: 'preliminary',
   auditedAt: COMPETITION.auditedAt,
@@ -418,11 +547,14 @@ for (const target of TARGETS) {
 }
 
 snapshot.postExam.competitionReading = competitionReading;
+snapshot.postExam.followUp = buildPostExamFollowUp();
+snapshot.preExamReadiness = PRE_EXAM_READINESS;
 
 snapshot.meta = {
   ...(snapshot.meta || {}),
   postExamScoringUpdatedAt: new Date().toISOString(),
-  postExamCompetitionAuditedAt: new Date().toISOString()
+  postExamCompetitionAuditedAt: new Date().toISOString(),
+  postExamFollowUpUpdatedAt: new Date().toISOString()
 };
 
 await fs.writeFile(snapshotUrl, `${JSON.stringify(snapshot, null, 2)}\n`);

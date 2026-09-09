@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 
 const source = fs.readFileSync('assets/post-exam-score-v28.js', 'utf8');
+const followUp = fs.readFileSync('assets/post-exam-follow-up-v28.js', 'utf8');
 const competition = fs.readFileSync('assets/post-exam-competition-v28.js', 'utf8');
 const index = fs.readFileSync('index.html', 'utf8');
 const scoring = fs.readFileSync('scripts/score-post-exam.mjs', 'utf8');
@@ -33,6 +34,12 @@ expect('v28 exibe auditoria questão a questão', source.includes('AUDITORIA QUE
 expect('v28 separa anotação do candidato e gabarito preliminar', source.includes('Anotadas na prova') && source.includes('não são gabarito oficial') && source.includes('Gabarito preliminar oficial'));
 expect('v28 expõe acertos, erros e pontos por questão', source.includes('Ver o cruzamento das') && source.includes('Sua anotação') && source.includes('Pontos'));
 expect('v28 expõe pré-análise de recursos', source.includes('Pré-análise de recursos') && source.includes('Não priorizar só pela divergência'));
+expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=28') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
+expect('v28 mostra gráficos de resultado', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-stack') && followUp.includes('v28-followup-area-row'));
+expect('v28 mostra linha do tempo oficial', followUp.includes('v28-followup-milestones') && followUp.includes('LINHA DO TEMPO OFICIAL'));
+expect('v28 deixa pré-prova pronta para ativação', followUp.includes('v28-preexam-ready') && followUp.includes('Pré-prova pronta para ativar'));
+expect('snapshot guarda acompanhamento pós-prova', Boolean(snapshot.postExam?.followUp?.milestones?.length) && Boolean(snapshot.postExam?.followUp?.exams?.tdas) && Boolean(snapshot.postExam?.followUp?.exams?.edas));
+expect('snapshot guarda modo pré-prova de espera', snapshot.preExamReadiness?.status === 'standby' && snapshot.preExamReadiness?.checklist?.length >= 7);
 expect('motor registra fundamento da banca por questão', scoring.includes('officialBasis') && scoring.includes('officialJustificationSource'));
 expect('motor registra protocolo de recurso', scoring.includes('resourceProtocol') && scoring.includes('questionByQuestion'));
 expect('snapshot possui 60 linhas por cargo', snapshot.postExam?.scoring?.tdas?.preliminary?.questions?.length === 60 && snapshot.postExam?.scoring?.edas?.preliminary?.questions?.length === 60);
