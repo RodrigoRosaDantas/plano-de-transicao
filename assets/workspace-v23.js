@@ -1,4 +1,4 @@
-const VIEW_CLASSES = ['command','performance','journey','exams','finance','strategy','sources','operations','exam-day'];
+const VIEW_CLASSES = ['command','performance','journey','pre-exam','post-exam','exams','finance','strategy','sources','operations','exam-day'];
 
 function currentWorkspaceView() {
   if (location.hash === '#exam-day' || document.querySelector('[data-exam-day-tab].active')) return 'exam-day';
