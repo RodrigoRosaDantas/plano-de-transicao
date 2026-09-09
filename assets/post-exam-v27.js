@@ -371,6 +371,7 @@ function v27UpgradeExamView(data = postExamSnapshot) {
 }
 
 function v27Apply(data = postExamSnapshot) {
+  if (window.__PLANO_SEPARATE_POST_EXAM__) return;
   if (!v27IsPostExam(data)) return;
   document.documentElement.dataset.planPhase = 'post-exam';
   document.body?.classList.add('post-exam-v27');
