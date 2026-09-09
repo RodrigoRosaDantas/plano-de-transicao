@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-09T19:14:11.923Z",
+    "generatedAt": "2026-09-09T19:14:33.652Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,14 +8,14 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-09T19:14:15.288Z",
+    "workParityEnrichedAt": "2026-09-09T19:14:35.248Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-09T19:14:15.338Z",
+    "postExamNormalizedAt": "2026-09-09T19:14:35.301Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-09T19:14:13.945Z",
-    "postExamScoringUpdatedAt": "2026-09-09T19:14:14.029Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:14:13.945Z"
+    "postExamNotesSyncedAt": "2026-09-09T19:14:34.110Z",
+    "postExamScoringUpdatedAt": "2026-09-09T19:14:34.199Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:14:34.110Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -131,8 +131,9 @@
       "sourceUrl": "https://app.notion.com/p/SEDES-DF-TDAS-202-prova-real-06-09-2026-tarde-3d3cf5a267318115afb3e21fbfbbb412",
       "postExamNote": "TDAS 202 — RESPOSTAS DO CANDIDATO (reconstrução pós-prova)\nFonte primária: anotações/fotos do caderno de prova + confirmações do candidato em 07/09/2026. Este registro NÃO é gabarito oficial.\n\nVetor para cruzamento automático:\n01=B | 02=B | 03=C | 04=C | 05=D | 06=B | 07=C | 08=B | 09=C | 10=D | 11=C | 12=C | 13=B | 14=D | 15=B | 16=E | 17=C | 18=A | 19=D | 20=B | 21=C | 22=A | 23=E | 24=C | 25=D | 26=A | 27=C | 28=E | 29=B | 30=INVÁLIDA_CARTÃO | 31=A | 32=C | 33=E | 34=B | 35=D | 36=A | 37=C | 38=E | 39=D | 40=D | 41=A | 42=B | 43=C | 44=B | 45=C | 46=E | 47=A | 48=C | 49=B | 50=B | 51=E | 52=C | 53=B | 54=B | 55=C | 56=C | 57=E | 58=A | 59=D | 60=B.\n\nRessalvas de integridade:\n- Q30: no caderno consta D, porém o cartão/folha de respostas recebeu duas marcações. Para estimativa e nota real, tratar como resposta inválida/0 ponto, salvo se a questão vier a ser anulada pela banca.\n- Q8 confirmado como B.\n- Q24 confirmado como C.\n\nModelo de pontuação a aplicar no cruzamento:\n- Q1–Q20: conhecimentos gerais, 1 ponto por acerto.\n- Q21–Q60: conhecimentos específicos, 2 pontos por acerto.\n- Erro, ausência ou mais de uma marcação: 0 ponto.\n- Questão anulada após recursos: pontuação integral atribuída a todos, conforme edital.\n\nQuando o gabarito preliminar for publicado, o sistema deverá registrar separadamente: acertos/erros por bloco, nota objetiva estimada (0–100), divergências candidato × banca, questões anuláveis/passíveis de recurso e versão do gabarito utilizada. A estimativa não substitui o gabarito definitivo nem o resultado oficial.",
       "candidateResponse": {
-        "version": 1,
+        "version": 2,
         "status": "complete",
+        "examType": "B",
         "registeredQuestions": 60,
         "validMarks": 59,
         "invalidQuestions": [
@@ -201,23 +202,31 @@
           "60": "B"
         },
         "scoreModel": {
-          "general": {
+          "type": "B",
+          "specificCommon": {
             "from": 1,
             "to": 20,
+            "pointsPerCorrect": 2,
+            "maxPoints": 40
+          },
+          "specialty": {
+            "from": 21,
+            "to": 40,
+            "pointsPerCorrect": 2,
+            "maxPoints": 40
+          },
+          "general": {
+            "from": 41,
+            "to": 60,
             "pointsPerCorrect": 1,
             "maxPoints": 20
           },
-          "specific": {
-            "from": 21,
-            "to": 60,
-            "pointsPerCorrect": 2,
-            "maxPoints": 80
-          },
+          "specificTotalMaxPoints": 80,
           "objectiveMaxPoints": 100,
           "wrongBlankOrMultipleMarksPoints": 0,
           "annulledQuestionRule": "pontuação integral atribuída a todos os candidatos"
         },
-        "scoreState": "Aguardando gabarito preliminar oficial para estimativa",
+        "scoreState": "Aguardando ou acompanhando gabarito oficial conforme estágio publicado",
         "source": "Anotação pós-prova no Notion"
       },
       "scoreTracking": {
