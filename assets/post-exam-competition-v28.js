@@ -66,7 +66,7 @@
         </header>
         <div class="v28-competition-stats">
           <div class="v28-competition-stat"><small>Mínimos objetivos</small><strong>${info.objectiveMinimumsMet ? 'Atingidos ✓' : 'A confirmar'}</strong><span>CG ${esc(info.preliminaryGeneralScore ?? '—')}/20 · CE ${esc(info.preliminarySpecificScore ?? '—')}/80</span></div>
-          <div class="v28-competition-stat"><small>Taxa nominal de correção AC</small><strong>${pct(info.nominalCorrectionRateAC)}</strong><span>${fmt(info.correctionSlotsAC)} correções ÷ ${fmt(info.registrationsAC)} inscrições AC</span></div>
+          <div class="v28-competition-stat"><small>Taxa nominal de correção AC</small><strong>${pct(info.nominalCorrectionRateAC)}</strong><span>${fmt(info.correctionSlotsAC)} correções ÷ ${fmt(info.registrationsAC)} inscrições homologadas AC</span></div>
           <div class="v28-competition-stat"><small>Vagas + CR previstos na AC</small><strong>${fmt(listed)}</strong><span>${fmt(info.immediateVacanciesAC)} imediatas + ${fmt(info.reservePositionsAC)} CR</span></div>
         </div>
         <div class="v28-probability-lock"><strong>Chance pessoal: ainda não estimável com rigor</strong><span>Faltam distribuição oficial das notas, nota de corte e classificação objetiva. A taxa nominal acima descreve o concurso; não é sua probabilidade individual.</span></div>
@@ -95,9 +95,10 @@
   }
 
   function mountHome(data = snapshot) {
+    if (location.hash === '#exam-day') return;
     const root = document.querySelector('.command-view');
     if (!root || !reading(data)) return;
-    const current = root.querySelector('[data-v28-competition-panel]');
+    const current = root.querySelector(':scope > [data-v28-competition-panel]');
     const signature = JSON.stringify({ generatedAt: data?.meta?.generatedAt || null, reading: reading(data) });
     if (current?.dataset.signature === signature) return;
     const wrapper = document.createElement('div');
@@ -114,9 +115,10 @@
   }
 
   function mountPostExam(data = snapshot) {
+    if (location.hash !== '#exam-day') return;
     const root = document.querySelector('[data-post-exam-v27]');
     if (!root || !reading(data)) return;
-    const existing = root.querySelector('[data-v28-competition-panel]');
+    const existing = root.querySelector(':scope > [data-v28-competition-panel]');
     const signature = JSON.stringify({ generatedAt: data?.meta?.generatedAt || null, reading: reading(data) });
     if (existing?.dataset.signature === signature) return;
     const wrapper = document.createElement('div');
