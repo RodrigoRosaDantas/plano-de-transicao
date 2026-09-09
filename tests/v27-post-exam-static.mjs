@@ -15,7 +15,18 @@ assert.equal(snapshot.meta?.phase, 'post-exam', 'snapshot precisa estar formalme
 const sedes = (snapshot.exams || []).filter(exam => String(exam.id || '').startsWith('sedes-2026-'));
 assert.equal(sedes.length, 2, 'devem existir dois registros SEDES independentes');
 assert.ok(sedes.every(exam => exam.attendance === 'completed'), 'EDAS e TDAS precisam estar realizados');
-assert.ok(sedes.every(exam => exam.rawAccuracy == null), 'não pode inventar nota antes da correção');
+
+for (const exam of sedes) {
+  const preliminary = exam.scoreTracking?.preliminary || null;
+  const definitive = exam.scoreTracking?.definitive || null;
+  const tracked = definitive || preliminary;
+  if (exam.rawAccuracy != null || (exam.weightedScore && exam.weightedScore !== '—')) {
+    assert.ok(tracked, `${exam.role}: resultado numérico só pode existir com scoreTracking auditável`);
+  }
+  if (preliminary && !definitive) {
+    assert.match(String(exam.status || ''), /Correção preliminar/i, `${exam.role}: nota baseada no preliminar precisa continuar rotulada como preliminar`);
+  }
+}
 
 for (const asset of ['assets/post-exam-v27.css?v=27', 'assets/post-exam-v27.js?v=27']) has(index, asset, 'index v27');
 assert.ok(index.indexOf('post-exam-v27.css?v=27') > index.indexOf('workspace-v26-polish.css?v=26'), 'CSS v27 deve sobrescrever o polimento anterior');
@@ -46,4 +57,4 @@ for (const value of [
 assert.ok(!/rawAccuracy\s*=\s*\d/.test(js), 'camada v27 não pode fabricar resultado');
 assert.ok(!/ranking\s*=\s*["'`]\d/.test(js), 'camada v27 não pode fabricar classificação');
 
-console.log('PASS  v27: modo pós-prova ativo, compacto e compatível com o cache consolidado v28.');
+console.log('PASS  v27: modo pós-prova aceita correção preliminar rastreável sem fabricar resultado/classificação.');
