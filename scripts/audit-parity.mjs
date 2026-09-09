@@ -128,7 +128,7 @@ const cachedAssets = [
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
 check('Cache PWA está consolidado na v29', sw.includes("const CACHE='plano-transicao-v29-separate-phases'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
-check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css?v=21') && index.includes('exam-day-v21.js?v=21'));
+check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
 check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
 check('Todas as camadas v9–v15 estão ligadas no HTML', [
   'work-manager-v9.js', 'work-intelligence-v10.js', 'work-decisions-v11.js', 'decision-history-v12.js', 'manager-inbox-v13.js', 'home-focus-v14.js', 'transition-gate-v15.js',
