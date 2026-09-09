@@ -65,27 +65,27 @@ function parseCandidateResponse(note) {
 
   const registered = Object.keys(answers).length;
   if (!registered) return null;
-
-  const generalValid = Array.from({ length: 20 }, (_, i) => i + 1)
-    .filter(number => answers[number] !== undefined && answers[number] !== null).length;
-  const specificValid = Array.from({ length: 40 }, (_, i) => i + 21)
-    .filter(number => answers[number] !== undefined && answers[number] !== null).length;
+  const validMarks = Object.values(answers).filter(value => value != null).length;
 
   return {
-    version: 1,
+    version: 2,
     status: registered === 60 ? 'complete' : 'partial',
+    examType: 'B',
     registeredQuestions: registered,
-    validMarks: generalValid + specificValid,
+    validMarks,
     invalidQuestions,
     answers,
     scoreModel: {
-      general: { from: 1, to: 20, pointsPerCorrect: 1, maxPoints: 20 },
-      specific: { from: 21, to: 60, pointsPerCorrect: 2, maxPoints: 80 },
+      type: 'B',
+      specificCommon: { from: 1, to: 20, pointsPerCorrect: 2, maxPoints: 40 },
+      specialty: { from: 21, to: 40, pointsPerCorrect: 2, maxPoints: 40 },
+      general: { from: 41, to: 60, pointsPerCorrect: 1, maxPoints: 20 },
+      specificTotalMaxPoints: 80,
       objectiveMaxPoints: 100,
       wrongBlankOrMultipleMarksPoints: 0,
       annulledQuestionRule: 'pontuação integral atribuída a todos os candidatos'
     },
-    scoreState: 'Aguardando gabarito preliminar oficial para estimativa',
+    scoreState: 'Aguardando ou acompanhando gabarito oficial conforme estágio publicado',
     source: 'Anotação pós-prova no Notion'
   };
 }
@@ -124,12 +124,14 @@ snapshot.exams = (snapshot.exams || []).map(exam => {
   if (exam.id === 'sedes-2026-tdas' && postExamNote) {
     const candidateResponse = parseCandidateResponse(postExamNote);
     if (candidateResponse) updated.candidateResponse = candidateResponse;
+    updated.examType = 'B';
   }
 
   const manualResponse = manualResponses[exam.id];
   if (manualResponse?.answers) {
     updated.candidateResponse = manualResponse;
   }
+  if (exam.id === 'sedes-2026-edas') updated.examType = 'A';
 
   return updated;
 });
@@ -144,10 +146,12 @@ snapshot.postExam = {
     ...currentScoring,
     tdas: {
       ...(currentScoring.tdas || {}),
+      examType: 'B',
       status: tdasResponse ? 'candidate-response-ready' : 'candidate-response-pending'
     },
     edas: {
       ...(currentScoring.edas || {}),
+      examType: 'A',
       status: edasResponse ? 'candidate-response-ready' : 'candidate-response-pending'
     }
   }
