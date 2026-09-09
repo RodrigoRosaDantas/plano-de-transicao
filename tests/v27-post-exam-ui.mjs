@@ -42,13 +42,13 @@ await scenario('desktop: Home mudou de preparação para pós-prova', { width: 1
   await page.screenshot({ path: 'artifacts/desktop-pos-prova-v27-home.png', fullPage: true });
 });
 
-await scenario('desktop: Pós-prova prioriza gabarito e preserva logística recolhida', { width: 1440, height: 1000 }, async page => {
+await scenario('desktop: Pós-prova prioriza correção preliminar e preserva logística recolhida', { width: 1440, height: 1000 }, async page => {
   await page.locator('#mainTabs [data-exam-day-tab]').click();
   await page.waitForURL(/#exam-day$/);
   await page.waitForSelector('[data-post-exam-v27]');
 
   const text = fold(await page.locator('[data-post-exam-v27]').innerText());
-  for (const value of ['provas concluídas', 'próximos passos', 'edas', 'manhã', 'tdas', 'tarde', 'aguardando gabarito']) {
+  for (const value of ['provas concluídas', 'próximos passos', 'edas', 'manhã', 'tdas', 'tarde', 'preliminar']) {
     if (!text.includes(value)) throw new Error(`Pós-prova sem conteúdo esperado: ${value}`);
   }
   if (await page.locator('.v27-archive').getAttribute('open') !== null) throw new Error('Arquivo de logística abriu por padrão e voltou a dominar a tela.');
