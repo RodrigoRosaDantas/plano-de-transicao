@@ -35,6 +35,17 @@
   const followUp = (data) => data?.postExam?.followUp || null;
   const readiness = (data) => data?.preExamReadiness || null;
 
+  const followUpSignature = (data) => {
+    const fu = followUp(data);
+    return JSON.stringify({
+      version: fu?.version,
+      lastCalculatedAt: fu?.lastCalculatedAt,
+      tdas: fu?.exams?.tdas?.result?.totalScore,
+      edas: fu?.exams?.edas?.result?.totalScore,
+      differences: number(fu?.resources?.totalDifferenceCount)
+    });
+  };
+
   function link(href, label) {
     return href
       ? '<a class="v28-followup-link" href="' + esc(href) + '" target="_blank" rel="noreferrer">' + esc(label) + ' ↗</a>'
@@ -120,7 +131,7 @@
     const totalDiff = number(fu.resources?.totalDifferenceCount);
     const potential = number(fu.resources?.totalPotentialGainIfAllResolved);
     const sourceDocs = fu.sourceDocuments || {};
-    const signature = JSON.stringify({ version: fu.version, lastCalculatedAt: fu.lastCalculatedAt, tdas: fu.exams?.tdas?.result?.totalScore, edas: fu.exams?.edas?.result?.totalScore, differences: totalDiff });
+    const signature = followUpSignature(data);
     return '<section class="panel v28-post-followup" data-v28-post-followup data-v28-followup-signature="' + esc(signature) + '">' +
       '<div class="v28-followup-header"><div><span class="eyebrow">ACOMPANHAMENTO PÓS-PROVA</span><h2>' + esc(fu.title) + '</h2><p>' + esc(fu.description) + '</p></div><span class="v28-followup-status v28-followup-status--active">' + esc(fu.currentStage || 'Em acompanhamento') + '</span></div>' +
       '<div class="v28-followup-kpis"><article><span>Próxima ação</span><strong>' + esc(fu.nextAction || 'Acompanhar atualização') + '</strong></article><article><span>Divergências para revisar</span><strong>' + fmt(totalDiff) + '</strong><small>somando os dois cargos</small></article><article><span>Ganho potencial máximo</span><strong>+' + fmt(potential) + ' pontos</strong><small>não é previsão de deferimento</small></article></div>' +
@@ -159,7 +170,7 @@
       if (anchor) anchor.insertAdjacentHTML('afterend', html);
       return true;
     }
-    const signature = JSON.stringify({ version: followUp(data)?.version, calculated: followUp(data)?.lastCalculatedAt, tdas: followUp(data)?.exams?.tdas?.result?.totalScore, edas: followUp(data)?.exams?.edas?.result?.totalScore });
+    const signature = followUpSignature(data);
     if (node.dataset.v28FollowupSignature !== signature) {
       const wrapper = document.createElement('div');
       wrapper.innerHTML = html;
