@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-09T19:15:16.292Z",
+    "generatedAt": "2026-09-09T19:15:56.484Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,14 +8,14 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-09T19:15:18.420Z",
+    "workParityEnrichedAt": "2026-09-09T19:15:58.212Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-09T19:15:18.468Z",
+    "postExamNormalizedAt": "2026-09-09T19:15:58.266Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-09T19:15:17.074Z",
-    "postExamScoringUpdatedAt": "2026-09-09T19:15:17.157Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:15:17.074Z"
+    "postExamNotesSyncedAt": "2026-09-09T19:15:56.935Z",
+    "postExamScoringUpdatedAt": "2026-09-09T19:15:57.015Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-09T19:15:56.935Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -230,7 +230,17 @@
         "source": "Anotação pós-prova no Notion"
       },
       "scoreTracking": {
-        "preliminary": null,
+        "preliminary": {
+          "total": 83,
+          "general": 15,
+          "specific": 68,
+          "correct": 49,
+          "wrong": 11,
+          "invalid": 1,
+          "annulled": 0,
+          "examType": "B",
+          "status": "estimativa baseada no gabarito preliminar"
+        },
         "definitive": null
       },
       "examType": "B"
@@ -351,7 +361,17 @@
       },
       "examType": "A",
       "scoreTracking": {
-        "preliminary": null,
+        "preliminary": {
+          "total": 88,
+          "general": 18,
+          "specific": 70,
+          "correct": 53,
+          "wrong": 7,
+          "invalid": 0,
+          "annulled": 0,
+          "examType": "A",
+          "status": "estimativa baseada no gabarito preliminar"
+        },
         "definitive": null
       }
     }
