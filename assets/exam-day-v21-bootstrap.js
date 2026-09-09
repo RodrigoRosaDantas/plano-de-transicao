@@ -41,12 +41,12 @@
       postExamDate: '2026-09-06'
     };
 
-    data.mission = 'Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.';
+    data.mission = 'Acompanhar dados, desempenho e decisões da transição, preservando o capital acumulado até o próximo concurso.';
 
     if (Array.isArray(data.priorities)) {
       data.priorities = data.priorities.map((item) => {
         if (item?.id === 'tdas' || item?.id === 'edas') {
-          return { ...item, status: 'Prova realizada · aguardando correção oficial' };
+          return { ...item, status: 'Capital preservado · ciclo em acompanhamento separado' };
         }
         return item;
       });
@@ -103,61 +103,9 @@
   };
 
   function patchPostExamDom() {
-    if (!postExamActive()) return;
-
-    document.body?.classList.add('post-exam-active');
-
-    const mission = document.querySelector('.mission-strip');
-    if (mission && mission.dataset.postExamPatched !== '1') {
-      mission.dataset.postExamPatched = '1';
-      const eyebrow = mission.querySelector('.mission-copy .eyebrow');
-      const title = mission.querySelector('.mission-copy h1');
-      const text = mission.querySelector('#missionText');
-      const milestone = mission.querySelector('#nextMilestone');
-      if (eyebrow) eyebrow.textContent = 'FASE ATUAL · PÓS-PROVA SEDES/DF';
-      if (title) title.innerHTML = 'Provas concluídas. Agora começa a fase de <em>correção, recurso e resultado.</em>';
-      if (text) text.textContent = 'EDAS e TDAS foram realizadas em 06/09/2026. O foco agora é registrar a prova, confrontar o gabarito oficial, auditar recursos e acompanhar o resultado sem inventar nota ou classificação.';
-      if (milestone) milestone.innerHTML = '<span>Próximo marco</span><strong>GABARITO</strong><small>correção + recursos</small>';
-    }
-
-    const command = document.querySelector('.command-view');
-    if (command && command.dataset.postExamPatched !== '1') {
-      command.dataset.postExamPatched = '1';
-
-      const card = document.createElement('article');
-      card.id = 'postExamStateCard';
-      card.className = 'panel action-card';
-      card.innerHTML = '<div><span class="eyebrow">PÓS-PROVA · 06/09/2026</span><h2>EDAS e TDAS concluídas.</h2></div><p>O ciclo de preparação fechou. A próxima régua é objetiva: prova registrada, gabarito auditado, recursos separados, nota calculada e resultado acompanhado.</p><div class="command-actions"><button class="primary-button" type="button" data-view="exams">Ver provas</button><button class="secondary-button" type="button" data-view="performance">Fechar diagnóstico</button><button class="secondary-button" type="button" data-view="strategy">Próxima decisão</button></div>';
-      command.prepend(card);
-
-      const countdown = command.querySelector('.countdown-card');
-      if (countdown) {
-        const kicker = countdown.querySelector('.section-kicker');
-        const label = countdown.querySelector('.countdown-value span');
-        const description = countdown.querySelector('p');
-        if (kicker) kicker.lastChild.textContent = ' Ciclo SEDES/DF';
-        if (label) label.textContent = 'provas concluídas';
-        if (description) description.textContent = 'A contagem terminou. Agora o plano passa para correção, recursos, resultado e decisão seguinte.';
-      }
-
-      command.querySelectorAll('.journey-node').forEach((node) => {
-        const label = node.querySelector('strong')?.textContent?.trim();
-        if (label === 'SEDES/DF') {
-          node.classList.remove('active');
-          node.classList.add('done');
-        }
-        if (label === 'Resultado') node.classList.add('active');
-      });
-    }
-
-    const examDay = document.querySelector('[data-exam21-view]');
-    if (examDay && examDay.dataset.postExamPatched !== '1') {
-      examDay.dataset.postExamPatched = '1';
-      const heroTitle = examDay.querySelector('.exam21-hero h2');
-      const heroText = examDay.querySelector('.exam21-hero__copy > p');
-      if (heroTitle) heroTitle.innerHTML = 'Provas concluídas, <em>registro preservado.</em>';
-      if (heroText) heroText.textContent = 'Os horários, salas, regras e checklist ficam preservados como registro do dia 06/09/2026. O cronograma de entrada está encerrado; a fase atual é correção e resultado.';
-    }
+    if (!postExamActive() || !window.__PLANO_SEPARATE_POST_EXAM__) return;
+    // A Home neutra é renderizada pelo roteador principal. O pós-prova vive em #post-exam.
+    document.documentElement.dataset.planPhase = 'post-exam';
   }
 
   let patchQueued = false;
@@ -179,7 +127,9 @@
     document.addEventListener('DOMContentLoaded', () => observer.observe(document.body, { childList: true, subtree: true }), { once: true });
   }
 
-  const directExamDay = location.hash === '#exam-day';
+  const separatePostExam = Boolean(window.__PLANO_SEPARATE_POST_EXAM__);
+  const directExamDay = location.hash === '#exam-day' && !separatePostExam;
+  if (separatePostExam && location.hash === '#exam-day') history.replaceState(null, '', '#post-exam');
   window.__EXAM_DAY_DIRECT_ENTRY__ = directExamDay;
   if (!directExamDay) return;
 
