@@ -22,6 +22,13 @@
     return match ? match[3] + '/' + match[2] + '/' + match[1] : String(value);
   };
   const fmtDateRange = (start, end) => start && end ? fmtDate(start) + ' a ' + fmtDate(end) : fmtDate(start || end);
+  const fmtTime = (value) => {
+    const match = String(value || '').match(/T(\d{2}):(\d{2})/);
+    return match ? match[1] + 'h' : '—';
+  };
+  const fmtOfficialWindow = (start, end) => start && end
+    ? fmtDate(start) + ' às ' + fmtTime(start) + ' até ' + fmtDate(end) + ' às ' + fmtTime(end) + ' (horário de Brasília)'
+    : fmtDateRange(start, end);
 
   const statusLabel = (status) => ({
     done: 'Concluído',
@@ -110,8 +117,9 @@
     return Object.entries(fu?.exams || {}).map(([id, exam]) => {
       const resources = exam.resources || {};
       const result = exam.result || {};
+      const minimumsMet = [result.generalMinimumMet, result.specificMinimumMet].filter(Boolean).length;
       return '<article class="v28-followup-resource"><div class="v28-followup-row-head"><strong>' + examTitle(id, exam) + '</strong><b>' + fmt(resources.differenceCount) + ' divergência(s)</b></div>' +
-        '<p>' + esc(exam.role || '') + '</p><div class="v28-followup-resource-metrics"><span><b>' + fmt(resources.potentialGainIfAllResolved) + '</b> pontos no cenário máximo</span><span><b>' + fmt(result.objectiveMinimumsMet ? 1 : 0) + '</b> mínimo objetivo atingido</span></div>' +
+        '<p>' + esc(exam.role || '') + '</p><div class="v28-followup-resource-metrics"><span><b>' + fmt(resources.potentialGainIfAllResolved) + '</b> pontos no cenário máximo</span><span><b>' + fmt(minimumsMet) + '/2</b> mínimos objetivos atingidos</span></div>' +
         '<small>' + esc(resources.conclusion || 'Pré-análise aguardando gabarito e justificativas.') + '</small></article>';
     }).join('');
   }
@@ -139,7 +147,7 @@
       '<article class="v28-followup-chart"><div class="v28-followup-section-head"><div><span class="eyebrow">COMPOSIÇÃO</span><h3>As 60 respostas</h3></div><small>acerto · erro · inválida</small></div>' + examEntries.map(([id, exam]) => compositionRow(id, exam)).join('') + '</article>' +
       '<article class="v28-followup-chart v28-followup-chart--areas"><div class="v28-followup-section-head"><div><span class="eyebrow">DIAGNÓSTICO</span><h3>Pontuação por bloco</h3></div><small>respeita Tipo A/B</small></div>' + examEntries.map(([id, exam]) => areaRows(id, exam)).join('') + '</article></div>' +
       '<section class="v28-followup-timeline"><div class="v28-followup-section-head"><div><span class="eyebrow">LINHA DO TEMPO OFICIAL</span><h3>O que já aconteceu e o que vem agora</h3></div><small>atualizado em ' + esc(fmtDate(fu.lastCalculatedAt)) + '</small></div><div class="v28-followup-milestones">' + milestoneRows(fu) + '</div></section>' +
-      '<details class="v28-followup-disclosure"><summary>Recursos e divergências</summary><div class="v28-followup-resource-grid">' + resourceRows(fu) + '</div><p class="v28-followup-note">' + esc(fu.resources?.note || '') + '</p><p class="v28-followup-note"><b>Janela oficial:</b> ' + esc(fmtDateRange(fu.resourceProtocol?.start, fu.resourceProtocol?.end)) + '. Um recurso por questão, pelo sistema da Quadrix, sem anexos.</p></details>' +
+      '<details class="v28-followup-disclosure"><summary>Recursos e divergências</summary><div class="v28-followup-resource-grid">' + resourceRows(fu) + '</div><p class="v28-followup-note">' + esc(fu.resources?.note || '') + '</p><p class="v28-followup-note"><b>Janela oficial:</b> ' + esc(fmtOfficialWindow(fu.resourceProtocol?.start, fu.resourceProtocol?.end)) + '. Um recurso por questão, pelo sistema da Quadrix, sem anexos.</p></details>' +
       '<details class="v28-followup-disclosure"><summary>Fontes e governança do acompanhamento</summary><div class="v28-followup-links">' + link(sourceDocs.contest, 'Página do concurso') + link(sourceDocs.updatedNotice, 'Edital atualizado') + link(sourceDocs.keyPdf, 'Gabarito preliminar') + link(sourceDocs.justificationsPdf, 'Justificativas') + link(sourceDocs.resourceNoticePdf, 'Comunicado de recursos') + '</div><p class="v28-followup-note">O painel é um snapshot publicado: respostas anotadas, gabarito preliminar, justificativas e resultado definitivo permanecem identificados como fontes diferentes.</p></details>' +
       readinessMarkup(data) +
       '</section>';
