@@ -49,7 +49,9 @@
       lastCalculatedAt: fu?.lastCalculatedAt,
       tdas: fu?.exams?.tdas?.result?.totalScore,
       edas: fu?.exams?.edas?.result?.totalScore,
-      differences: number(fu?.resources?.totalDifferenceCount)
+      differences: number(fu?.resources?.totalDifferenceCount),
+      tdasAudit: data?.postExam?.scoring?.tdas?.preliminary?.comparedAt || data?.postExam?.scoring?.tdas?.definitive?.comparedAt || null,
+      edasAudit: data?.postExam?.scoring?.edas?.preliminary?.comparedAt || data?.postExam?.scoring?.edas?.definitive?.comparedAt || null
     });
   };
 
@@ -140,12 +142,18 @@
     const potential = number(fu.resources?.totalPotentialGainIfAllResolved);
     const sourceDocs = fu.sourceDocuments || {};
     const signature = followUpSignature(data);
+    const auditRenderer = window.__planoPostExamAudit || null;
+    if (auditRenderer?.prepare) auditRenderer.prepare();
+    const questionAudit = auditRenderer?.render
+      ? examEntries.map(([id]) => auditRenderer.render(id, data)).filter(Boolean).join('')
+      : '';
     return '<section class="panel v28-post-followup" data-v28-post-followup data-v28-followup-signature="' + esc(signature) + '">' +
       '<div class="v28-followup-header"><div><span class="eyebrow">ACOMPANHAMENTO PÓS-PROVA</span><h2>' + esc(fu.title) + '</h2><p>' + esc(fu.description) + '</p></div><span class="v28-followup-status v28-followup-status--active">' + esc(fu.currentStage || 'Em acompanhamento') + '</span></div>' +
       '<div class="v28-followup-kpis"><article><span>Próxima ação</span><strong>' + esc(fu.nextAction || 'Acompanhar atualização') + '</strong></article><article><span>Divergências para revisar</span><strong>' + fmt(totalDiff) + '</strong><small>somando os dois cargos</small></article><article><span>Ganho potencial máximo</span><strong>+' + fmt(potential) + ' pontos</strong><small>não é previsão de deferimento</small></article></div>' +
       '<div class="v28-followup-chart-grid"><article class="v28-followup-chart"><div class="v28-followup-section-head"><div><span class="eyebrow">VISÃO COMPARATIVA</span><h3>Nota ponderada</h3></div><small>CG + CE · máximo 100</small></div>' + examEntries.map(([id, exam]) => scoreRow(id, exam)).join('') + '</article>' +
       '<article class="v28-followup-chart"><div class="v28-followup-section-head"><div><span class="eyebrow">COMPOSIÇÃO</span><h3>As 60 respostas</h3></div><small>acerto · erro · inválida</small></div>' + examEntries.map(([id, exam]) => compositionRow(id, exam)).join('') + '</article>' +
       '<article class="v28-followup-chart v28-followup-chart--areas"><div class="v28-followup-section-head"><div><span class="eyebrow">DIAGNÓSTICO</span><h3>Pontuação por bloco</h3></div><small>respeita Tipo A/B</small></div>' + examEntries.map(([id, exam]) => areaRows(id, exam)).join('') + '</article></div>' +
+      '<section class="v28-followup-question-audit" data-v28-question-audit><div class="v28-followup-section-head"><div><span class="eyebrow">RASTREABILIDADE DO CÁLCULO</span><h3>Auditoria questão a questão</h3><p>Respostas anotadas na prova × gabarito preliminar oficial, com leitura de acerto, erro, invalidez e pré-análise de recurso.</p></div><small>' + (questionAudit ? 'dados disponíveis' : 'aguardando dados') + '</small></div>' + (questionAudit || '<p class="v28-followup-empty">A auditoria detalhada será exibida quando o registro de respostas e a chave oficial estiverem disponíveis.</p>') + '</section>' +
       '<section class="v28-followup-timeline"><div class="v28-followup-section-head"><div><span class="eyebrow">LINHA DO TEMPO OFICIAL</span><h3>O que já aconteceu e o que vem agora</h3></div><small>atualizado em ' + esc(fmtDate(fu.lastCalculatedAt)) + '</small></div><div class="v28-followup-milestones">' + milestoneRows(fu) + '</div></section>' +
       '<details class="v28-followup-disclosure"><summary>Recursos e divergências</summary><div class="v28-followup-resource-grid">' + resourceRows(fu) + '</div><p class="v28-followup-note">' + esc(fu.resources?.note || '') + '</p><p class="v28-followup-note"><b>Janela oficial:</b> ' + esc(fmtOfficialWindow(fu.resourceProtocol?.start, fu.resourceProtocol?.end)) + '. Um recurso por questão, pelo sistema da Quadrix, sem anexos.</p></details>' +
       '<details class="v28-followup-disclosure"><summary>Fontes e governança do acompanhamento</summary><div class="v28-followup-links">' + link(sourceDocs.contest, 'Página do concurso') + link(sourceDocs.updatedNotice, 'Edital atualizado') + link(sourceDocs.keyPdf, 'Gabarito preliminar') + link(sourceDocs.justificationsPdf, 'Justificativas') + link(sourceDocs.resourceNoticePdf, 'Comunicado de recursos') + '</div><p class="v28-followup-note">O painel é um snapshot publicado: respostas anotadas, gabarito preliminar, justificativas e resultado definitivo permanecem identificados como fontes diferentes.</p></details>' +
