@@ -98,34 +98,9 @@
       </section>`;
   }
 
-  function mountHome(data = snapshot) {
-    if (location.hash === '#exam-day') return;
-    const root = document.querySelector('.command-view');
-    if (!root) return;
-    removeLegacyCompetitionPanel(root);
-    if (!reading(data)) return;
-    const current = root.querySelector(':scope > [data-v28-competition-panel]');
-    const signature = JSON.stringify({ generatedAt: data?.meta?.generatedAt || null, reading: reading(data) });
-    if (current?.dataset.signature === signature) return;
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = panelTemplate(data).trim();
-    const panel = wrapper.firstElementChild;
-    if (!panel) return;
-    panel.dataset.signature = signature;
-    if (current) current.replaceWith(panel);
-    else {
-      const transition = root.querySelector('[data-v28-transition-console]');
-      if (transition) transition.insertAdjacentElement('afterend', panel);
-      else root.prepend(panel);
-    }
-  }
-
-  function mountPostExam(data = snapshot) {
-    if (location.hash !== '#exam-day') return;
-    const root = document.querySelector('[data-post-exam-v27]');
-    if (!root) return;
-    removeLegacyCompetitionPanel(root);
-    if (!reading(data)) return;
+  function mountDedicated(data = snapshot) {
+    const root = document.querySelector('[data-post-exam-page]');
+    if (!root || !reading(data)) return;
     const existing = root.querySelector(':scope > [data-v28-competition-panel]');
     const signature = JSON.stringify({ generatedAt: data?.meta?.generatedAt || null, reading: reading(data) });
     if (existing?.dataset.signature === signature) return;
@@ -136,8 +111,8 @@
     panel.dataset.signature = signature;
     if (existing) existing.replaceWith(panel);
     else {
-      const grid = root.querySelector('.v27-exam-grid');
-      if (grid) grid.insertAdjacentElement('afterend', panel);
+      const followup = root.querySelector(':scope > [data-v28-post-followup]');
+      if (followup) followup.insertAdjacentElement('afterend', panel);
       else root.appendChild(panel);
     }
   }
@@ -146,8 +121,7 @@
     if (data) snapshot = data;
     if (!reading(snapshot)) return;
     ensureStyles();
-    mountHome(snapshot);
-    mountPostExam(snapshot);
+    mountDedicated(snapshot);
   }
 
   function schedule(data = snapshot) {
