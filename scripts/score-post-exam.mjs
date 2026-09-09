@@ -33,6 +33,52 @@ const TARGETS = [
   }
 ];
 
+const COMPETITION = {
+  auditedAt: '2026-09-09',
+  methodology: 'nominal-advancement-rate-not-personal-probability',
+  sources: {
+    contest: 'https://quadrix.org.br/informacoes/3056/',
+    updatedNotice: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/b852c323-8771-4021-bbbd-8032e88e58e0.pdf',
+    registrations: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/49fb4e92-f367-44a9-abc0-12e32eed31f8.pdf'
+  },
+  milestones: {
+    objectivePreliminaryResult: '2026-10-13',
+    objectiveDefinitiveAndDiscursiveCorrectionList: '2026-10-30',
+    discursivePreliminaryResult: '2026-11-23',
+    discursiveDefinitiveResult: '2026-12-11'
+  },
+  tdas: {
+    registrationsAC: 68345,
+    correctionSlotsAC: 2387,
+    immediateVacanciesAC: 198,
+    reservePositionsAC: 598,
+    communitySample: {
+      provider: 'Olho na Vaga',
+      url: 'https://olhonavaga.com.br/rankings/ranking?id=92071',
+      observedAt: '2026-09-09',
+      participants: 4968,
+      selfSelected: true
+    }
+  },
+  edas: {
+    registrationsAC: 4112,
+    correctionSlotsAC: 282,
+    immediateVacanciesAC: 23,
+    reservePositionsAC: 70,
+    communitySample: {
+      provider: 'Olho na Vaga',
+      url: 'https://olhonavaga.com.br/rankings/ranking?id=92478',
+      observedAt: '2026-09-09',
+      participants: 718,
+      selfSelected: true
+    }
+  }
+};
+
+function pct(numerator, denominator) {
+  return denominator ? Math.round((numerator / denominator) * 10000) / 100 : null;
+}
+
 function normalizeKeyEntry(value) {
   if (value == null) return null;
   const normalized = String(value).trim().toUpperCase();
@@ -217,9 +263,63 @@ for (const target of TARGETS) {
   }
 }
 
+const competitionReading = {
+  status: 'preliminary',
+  auditedAt: COMPETITION.auditedAt,
+  methodology: COMPETITION.methodology,
+  personalProbability: {
+    available: false,
+    value: null,
+    reason: 'A distribuição oficial das notas, a nota de corte e a classificação da objetiva ainda não foram publicadas. Taxas nominais do edital e amostras colaborativas não são probabilidades pessoais.'
+  },
+  rules: {
+    objectiveMinimums: 'mínimo de 10/20 em Conhecimentos Gerais e 40/80 em Conhecimentos Específicos',
+    discursiveMinimum: 'mínimo de 50/100 na prova discursiva para aprovação nessa etapa',
+    correctionRule: 'a discursiva é corrigida para os candidatos mais bem classificados na objetiva dentro do quantitativo de cada sistema; vagas de correção reservadas não preenchidas podem ser revertidas à ampla concorrência',
+    interpretation: 'aprovação/classificação, posição em vagas/CR e eventual nomeação são réguas distintas'
+  },
+  milestones: COMPETITION.milestones,
+  sources: COMPETITION.sources,
+  exams: {}
+};
+
+for (const target of TARGETS) {
+  const base = COMPETITION[target.id];
+  const preliminary = snapshot.postExam.scoring[target.id]?.preliminary || null;
+  const listedPositionsAC = base.immediateVacanciesAC + base.reservePositionsAC;
+  competitionReading.exams[target.id] = {
+    role: target.role,
+    examType: target.examType,
+    preliminaryScore: preliminary?.totalScore ?? null,
+    preliminaryGeneralScore: preliminary?.generalScore ?? null,
+    preliminarySpecificScore: preliminary?.specificScore ?? null,
+    objectiveMinimumsMet: preliminary?.objectiveMinimumsMet ?? null,
+    registrationsAC: base.registrationsAC,
+    correctionSlotsAC: base.correctionSlotsAC,
+    nominalCorrectionRateAC: pct(base.correctionSlotsAC, base.registrationsAC),
+    immediateVacanciesAC: base.immediateVacanciesAC,
+    reservePositionsAC: base.reservePositionsAC,
+    listedPositionsAC,
+    nominalListedPositionRateAC: pct(listedPositionsAC, base.registrationsAC),
+    communitySample: {
+      ...base.communitySample,
+      coverageOfRegistrationsAC: pct(base.communitySample.participants, base.registrationsAC),
+      warning: 'Amostra autoselecionada; não representa distribuição oficial de notas e não deve ser usada isoladamente para inferir chance pessoal.'
+    },
+    personalProbability: null,
+    personalProbabilityStatus: 'not-estimable-yet',
+    competitiveStatus: preliminary?.objectiveMinimumsMet
+      ? 'Nota preliminar acima dos mínimos eliminatórios; faixa classificatória ainda indeterminada.'
+      : 'Situação objetiva ainda não confirmada.'
+  };
+}
+
+snapshot.postExam.competitionReading = competitionReading;
+
 snapshot.meta = {
   ...(snapshot.meta || {}),
-  postExamScoringUpdatedAt: new Date().toISOString()
+  postExamScoringUpdatedAt: new Date().toISOString(),
+  postExamCompetitionAuditedAt: new Date().toISOString()
 };
 
 await fs.writeFile(snapshotUrl, `${JSON.stringify(snapshot, null, 2)}\n`);
@@ -234,3 +334,5 @@ for (const target of TARGETS) {
     console.log(`${target.role} · Tipo ${target.examType}: pronto para cruzamento; aguardando gabarito publicado.`);
   }
 }
+
+console.log('Leitura competitiva preliminar registrada sem converter taxa nominal em probabilidade pessoal.');
