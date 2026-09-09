@@ -4,6 +4,8 @@ const VIEW_NAMES = {
   command: "Agora",
   performance: "Desempenho",
   journey: "Jornada",
+  "pre-exam": "Pré-prova",
+  "post-exam": "Pós-prova",
   exams: "Concursos",
   finance: "Investimentos",
   strategy: "Estratégia",
@@ -190,15 +192,15 @@ function commandView() {
   const historicalWeak = weakest("historical");
   const focus = [tdasWeak, edasWeak, historicalWeak].filter(Boolean);
   const sourceReady = data.meta.live && !(data.meta.syncWarnings || []).length;
+  const hasActiveExam = Boolean(data.meta.nextExam) && !examsCompleted;
   const examSummary = data.exams.filter(exam => exam.id?.startsWith('sedes-2026-'))
     .map(exam => `${exam.role.split(' — ')[0]}: ${exam.attendance === 'completed' ? 'prova realizada' : 'realização não confirmada'}`).join(' · ');
+  const planCard = hasActiveExam
+    ? '<article class="panel countdown-card"><div class="countdown-topline"><span class="section-kicker">' + svgIcon("clock") + ' Prova SEDES/DF</span><span>06/09/2026 · Brasília</span></div><div class="countdown-body"><div class="countdown-value"><strong data-countdown-days>' + clock.days + '</strong><span>' + (clock.ended ? 'dias desde a data da prova' : 'dias') + '</span></div><div class="brasilia-clock">' + svgIcon("clock") + '<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div><p>' + esc(examSummary || 'Prova ativa no plano. Consulte a realização e os resultados de cada cargo em Concursos.') + '</p></article>'
+    : '<article class="panel countdown-card plan-control-card"><div class="countdown-topline"><span class="section-kicker">' + svgIcon("route") + ' Plano de transição</span><span>Dados publicados · ' + dateBR(data.meta.generatedAt) + '</span></div><div class="countdown-body"><div class="countdown-value"><strong>' + fmt(m.history.questions) + '</strong><span>questões no histórico</span></div><div class="brasilia-clock">' + svgIcon("chart") + '<div><strong>' + pct(m.history.accuracy) + '</strong><span>aproveitamento reconciliado</span></div></div></div><p>' + (data.meta.phase === 'post-exam' ? 'A SEDES/DF está preservada como histórico e acompanhamento próprio. O painel Agora volta ao que sustenta a transição: dados, desempenho, fontes e decisões.' : 'Sem edital novo confirmado, a estrutura de pré-prova permanece em prontidão. Use este painel para acompanhar dados, desempenho, fontes e decisões.') + '</p></article>';
   return `<div class="view-stack command-view">
     <section class="cockpit-grid">
-      <article class="panel countdown-card">
-        <div class="countdown-topline"><span class="section-kicker">${svgIcon("clock")} Prova SEDES/DF</span><span>06/09/2026 · Brasília</span></div>
-        <div class="countdown-body"><div class="countdown-value">${examsCompleted ? '<strong>2</strong><span>provas realizadas</span>' : `<strong data-countdown-days>${clock.days}</strong><span>${clock.ended ? 'dias até a data da prova' : 'dias'}</span>`}</div><div class="brasilia-clock">${svgIcon("clock")}<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div>
-        <p>${esc(examSummary || "Duas provas, duas trilhas. Consulte a realização e os resultados de cada cargo em Concursos.")}</p>
-      </article>
+      ${planCard}
       <div class="target-stack">
         <button class="panel target-card" type="button" data-view="performance" data-performance-scope-jump="tdas">
           <div class="target-card-top"><span>${svgIcon("target")} Técnico Administrativo</span><b>Cargo 202</b></div>
@@ -284,6 +286,56 @@ function examsView() {
     <section class="performance-chart-grid"><article class="panel chart-panel"><div class="panel-heading"><div><span class="eyebrow">PROVAS REAIS</span><h2>Evolução do aproveitamento bruto</h2></div>${svgIcon("chart")}</div>${horizontalBars(measured.map((exam) => ({ name: exam.name, accuracy: exam.rawAccuracy, questions: Number(String(exam.score).split("/")[1] || 0) })), "accuracy", (value) => pct(value), 8)}</article><article class="panel competitive-card"><span class="eyebrow">RÉGUA COMPETITIVA</span><h2>Da nota ao contexto</h2><div class="competitive-compare">${measured.map((exam) => `<div><span>${esc(exam.name)}</span><strong>${pct(exam.rawAccuracy)}</strong><small>${esc(exam.ranking || "—")}</small></div>`).join("")}</div><p>Aproveitamento bruto, nota editalícia e classificação são grandezas diferentes. Aqui, elas não são empilhadas como se fossem a mesma coisa.</p></article></section>
     <section class="panel exam-matrix-panel"><div class="panel-heading"><div><span class="eyebrow">MATRIZ AUDITADA</span><h2>Comparação sem apagar o estágio do concurso</h2></div>${statusChip(`${measured.length} resultados reais`, "aqua")}</div><div class="subject-table-wrap"><table class="data-table exam-matrix"><thead><tr><th>Concurso</th><th>Data</th><th>Resultado</th><th>Aproveitamento</th><th>Classificação</th><th>Etapa / universo</th></tr></thead><tbody>${exams.map((exam) => `<tr><td><strong>${esc(exam.name)}</strong><small>${esc(exam.role)}</small></td><td>${dateBR(exam.date)}</td><td>${esc(exam.score || "—")}</td><td>${exam.rawAccuracy == null ? "—" : pct(exam.rawAccuracy)}</td><td>${exam.classification ? fmt(exam.classification) : "—"}</td><td>${esc(exam.classificationStage || exam.status || "—")}</td></tr>`).join("")}</tbody></table></div></section>
   </div>`;
+}
+
+
+function preExamView() {
+  const data = state.data;
+  const model = data.preExamReadiness || {};
+  const checklist = Array.isArray(model.checklist) ? model.checklist : [];
+  const outputs = Array.isArray(model.outputs) ? model.outputs : [];
+  const ready = model.status === 'standby';
+  const previousCycle = (data.exams || []).filter((exam) => String(exam.id || '').startsWith('sedes-2026-')).length > 0;
+  return '<div class="view-stack pre-exam-view">' +
+    viewHeading('Pré-prova', 'Pré-prova pronta para o próximo concurso.', 'A estrutura permanece ativa em modo de prontidão. Quando houver edital, cargo, banca e data confirmados, o próximo ciclo recebe dados próprios sem apagar o histórico anterior.', '<button class="primary-button" type="button" data-view="strategy">' + svgIcon('compass') + ' Ver critérios</button><button class="secondary-button" type="button" data-view="post-exam">' + svgIcon('flag') + ' Acompanhar SEDES</button>') +
+    '<section class="panel preexam-hero">' +
+      '<div><div class="preexam-hero__top"><div><span class="eyebrow">ESTADO DA ESTRUTURA</span><h2>' + esc(model.title || 'Pré-prova pronta para ativar') + '</h2><p>' + esc(model.description || 'A estrutura aguarda o próximo edital.') + '</p></div>' + statusChip(ready ? 'Pronto para ativar' : 'Em configuração', ready ? 'good' : 'warning') + '</div></div>' +
+      '<div class="preexam-trigger"><strong>Gatilho de ativação</strong><span>' + esc(model.activationRule || 'Ativar somente após confirmar edital, cargo, banca e data de prova.') + '</span></div>' +
+    '</section>' +
+    '<section class="metric-grid">' +
+      metricCard('Status', ready ? 'Standby' : 'Configuração', 'sem concurso novo inventado', 'aqua') +
+      metricCard('Blocos preparados', fmt(checklist.length), 'recebem dados do próximo edital', 'lime') +
+      metricCard('Saídas previstas', fmt(outputs.length), 'entregas do ciclo ativado', 'violet') +
+      metricCard('Ciclo anterior', previousCycle ? 'Pós-prova' : 'Nenhum', previousCycle ? 'SEDES preservada em página própria' : 'aguardando primeiro edital', 'amber') +
+    '</section>' +
+    '<section class="preexam-layout">' +
+      '<article class="panel preexam-checklist"><div class="panel-heading"><div><span class="eyebrow">CHECKLIST DE ATIVAÇÃO</span><h2>O que entra quando houver edital</h2><p>Cada bloco é criado para o novo concurso, sem misturar metas, erros ou fontes de outro projeto.</p></div>' + svgIcon('check') + '</div><ol class="preexam-checklist-list">' +
+        checklist.map((item, index) => '<li class="preexam-checklist-item"><span>' + String(index + 1).padStart(2, '0') + '</span><div><strong>' + esc(item.title) + '</strong><small>' + esc(item.detail) + '</small></div></li>').join('') +
+      '</ol></article>' +
+      '<article class="panel preexam-output"><div class="panel-heading"><div><span class="eyebrow">SAÍDAS DO PRÓXIMO CICLO</span><h2>Pronto para receber</h2><p>O conteúdo aparece quando a ativação for autorizada pelos dados oficiais.</p></div>' + svgIcon('layers') + '</div>' +
+        outputs.map((item) => '<span class="preexam-output-tag">' + esc(item) + '</span>').join('') +
+      '</article>' +
+    '</section>' +
+    '<section class="panel preexam-boundary"><span>' + svgIcon('shield') + '</span><div><span class="eyebrow">REGRA DE SEPARAÇÃO</span><h2>Um novo concurso começa uma nova base.</h2><p>SEDES/DF fica no acompanhamento pós-prova. O próximo edital terá cargo, banca, fontes, ciclo, questões e caderno de erros próprios. O histórico continua disponível para comparação, mas não vira meta do novo projeto.</p></div><div class="preexam-boundary-actions"><button class="secondary-button" type="button" data-view="sources">' + svgIcon('database') + ' Ver fontes</button><button class="secondary-button" type="button" data-view="operations">' + svgIcon('settings') + ' Controles</button></div></section>' +
+  '</div>';
+}
+
+function postExamView() {
+  const data = state.data;
+  const fu = data.postExam?.followUp || null;
+  const exams = Object.entries(fu?.exams || {});
+  const summary = exams.map(([id, exam]) => (id === 'tdas' ? 'TDAS' : 'EDAS') + ' ' + String(exam?.result?.totalScore ?? '—') + '/100').join(' · ') || 'Resultado em acompanhamento';
+  const currentStage = fu?.currentStage || 'Em acompanhamento';
+  const updated = fu?.lastCalculatedAt ? dateBR(fu.lastCalculatedAt) : dateBR(data.meta.generatedAt);
+  const hasFollowUp = exams.length > 0;
+  return '<div class="view-stack post-exam-view">' +
+    viewHeading('Pós-prova', 'Acompanhamento pós-prova em página própria.', 'Esta página concentra a SEDES/DF depois da prova: dados preliminares, gráficos, divergências, recursos, cronograma e leitura competitiva. O Agora continua reservado ao plano de transição e aos seus controles.', '<button class="primary-button" type="button" data-view="pre-exam">' + svgIcon('book') + ' Abrir pré-prova</button><button class="secondary-button" type="button" data-view="exams">' + svgIcon('flag') + ' Ver registros</button>') +
+    '<section class="panel postexam-context"><div><span class="eyebrow">CICLO SEDES/DF · REGISTRO SEPARADO</span><h2>' + esc(fu?.title || 'Acompanhamento pós-prova') + '</h2><p>' + esc(fu?.description || 'O acompanhamento será preenchido quando houver dados oficiais publicados.') + ' Os resultados exibidos abaixo seguem identificados como preliminares enquanto não existir publicação definitiva.</p></div><div class="postexam-context__meta"><span>Etapa atual</span><strong>' + esc(currentStage) + '</strong><span>Última atualização</span><strong>' + esc(updated) + '</strong><span>Resumo</span><strong>' + esc(summary) + '</strong></div></section>' +
+    '<div class="postexam-control-slot" id="postExamControlSlot" data-post-exam-control-slot></div>' +
+    '<div id="postExamPage" data-post-exam-page>' +
+      (hasFollowUp ? '' : '<section class="panel postexam-fallback"><span class="eyebrow">DADOS AGUARDANDO</span><h3>O snapshot ainda não contém o acompanhamento estruturado.</h3><p>Recarregue os dados publicados ou abra Operações para conferir a cadeia de atualização.</p><button class="secondary-button" type="button" data-refresh>' + svgIcon('refresh') + ' Recarregar snapshot</button></section>') +
+    '</div>' +
+  '</div>';
 }
 
 function filteredFinanceEntries() {
@@ -382,7 +434,8 @@ function operationsView() {
   </div>`;
 }
 
-const viewRenderers = { command: commandView, performance: performanceView, journey: journeyView, exams: examsView, finance: financeView, strategy: strategyView, sources: sourcesView, operations: operationsView };
+const viewRenderers = { command: commandView, performance: performanceView, journey: journeyView, "pre-exam": preExamView, "post-exam": postExamView, exams: examsView, finance: financeView, strategy: strategyView, sources: sourcesView, operations: operationsView };
+const resolveHashView = (value) => value === "exam-day" ? "post-exam" : viewRenderers[value] ? value : "command";
 
 function render() {
   if (!state.data) return;
@@ -481,6 +534,7 @@ function buildSearchIndex() {
   const finance = data.financeEntries.map((entry) => ({ view: "finance", title: entry.name, description: `${entry.cycle} · ${money(entry.confirmed || entry.estimated)}`, group: "Investimentos" }));
   const timeline = data.timeline.map((item) => ({ view: "journey", title: item.title, description: `${item.date} · ${item.detail}`, group: "Jornada" }));
   const transitionGates = (data.strategy?.postExamGates || []).map((title, index) => ({ view: "strategy", title, description: `Fechamento do ciclo · etapa ${index + 1}`, group: "Estratégia" }));
+
   const dedupe = new Map();
   [...staticItems, ...transitionGates, ...subjects, ...exams, ...finance, ...timeline].forEach((item) => {
     const key = `${item.view}:${item.title}:${item.scope || ""}`;
@@ -494,7 +548,7 @@ function renderSearch(query = "") {
   const results = state.searchIndex.filter((item) => !normalized || normalize(`${item.title} ${item.description} ${item.group}`).includes(normalized)).slice(0, 18);
   const container = $("#searchResults");
   if (!container) return;
-  container.innerHTML = results.length ? results.map((item) => `<button type="button" data-search-view="${item.view}" data-search-scope="${item.scope || ""}" data-search-subject="${esc(item.subject || "")}"><span class="search-result-icon">${svgIcon(item.view === "finance" ? "wallet" : item.view === "exams" ? "flag" : item.view === "journey" ? "route" : item.view === "performance" ? "chart" : "spark")}</span><span><strong>${esc(item.title)}</strong><small>${esc(item.description)}</small></span><em>${esc(item.group)}</em>${svgIcon("chevron")}</button>`).join("") : '<div class="search-empty">Nada encontrado. Tente uma matéria, concurso, gasto ou marco.</div>';
+  container.innerHTML = results.length ? results.map((item) => `<button type="button" data-search-view="${item.view}" data-search-scope="${item.scope || ""}" data-search-subject="${esc(item.subject || "")}"><span class="search-result-icon">${svgIcon(item.view === "finance" ? "wallet" : item.view === "exams" ? "flag" : item.view === "journey" ? "route" : item.view === "performance" ? "chart" : item.view === "pre-exam" ? "book" : item.view === "post-exam" ? "flag" : "spark")}</span><span><strong>${esc(item.title)}</strong><small>${esc(item.description)}</small></span><em>${esc(item.group)}</em>${svgIcon("chevron")}</button>`).join("") : '<div class="search-empty">Nada encontrado. Tente uma matéria, concurso, gasto ou marco.</div>';
 }
 
 function openSearch() {
@@ -557,9 +611,11 @@ function updateShell() {
   const data = state.data;
   if ($("#missionText")) $("#missionText").textContent = data.mission;
   const milestone = $("#nextMilestone");
-  if (milestone) milestone.innerHTML = sedesExamsCompleted()
-    ? '<span>Próximo passo</span><strong>Registrar resultados</strong><small>TDAS e EDAS · provas realizadas</small>'
-    : `<span>Próximo marco</span><strong>${dateBR(data.meta.nextExam, true).toUpperCase()}</strong><small>SEDES/DF 2026</small>`;
+  if (milestone) milestone.innerHTML = data.meta.phase === "post-exam"
+    ? '<span>Foco do painel</span><strong>DADOS E DECISÕES</strong><small>plano de transição</small>'
+    : sedesExamsCompleted()
+      ? '<span>Próximo passo</span><strong>Registrar resultados</strong><small>TDAS e EDAS · provas realizadas</small>'
+      : `<span>Próximo marco</span><strong>${dateBR(data.meta.nextExam, true).toUpperCase()}</strong><small>SEDES/DF 2026</small>`;
   const generated = new Date(data.meta.generatedAt);
   if ($("#snapshotDate")) $("#snapshotDate").textContent = `corte ${dateBR(data.meta.homeSnapshot)} · desempenho ${dateBR(data.meta.performanceCut)}`;
   if ($("#contextStatus")) $("#contextStatus").textContent = data.meta.live ? "Notion vivo → tratamento → GitHub Pages" : "Snapshot auditado publicado";
@@ -689,8 +745,8 @@ function bindShell() {
   $("#closeMoreBtn")?.addEventListener("click", closeMoreSheet);
   $("#moreBackdrop")?.addEventListener("click", closeMoreSheet);
   $("#exportBtn")?.addEventListener("click", () => { if (state.data) { exportFile("snapshot-plano-de-transicao.json", JSON.stringify(state.data, null, 2)); toast("Snapshot exportado."); } });
-  window.addEventListener("popstate", () => { state.view = location.hash.slice(1) in viewRenderers ? location.hash.slice(1) : "command"; render(); });
-  window.addEventListener("hashchange", () => { const view = location.hash.slice(1); if (viewRenderers[view] && view !== state.view) { state.view = view; render(); } });
+  window.addEventListener("popstate", () => { const view = resolveHashView(location.hash.slice(1)); if (location.hash === "#exam-day") history.replaceState(null, "", "#post-exam"); if (view !== state.view) { state.view = view; render(); } });
+  window.addEventListener("hashchange", () => { const view = resolveHashView(location.hash.slice(1)); if (location.hash === "#exam-day") history.replaceState(null, "", "#post-exam"); if (view !== state.view) { state.view = view; render(); } });
   window.addEventListener("online", updateShell);
   window.addEventListener("offline", updateShell);
   document.addEventListener("keydown", (event) => {
@@ -703,7 +759,7 @@ function init() {
   const savedTheme = localStorage.getItem("plano.theme");
   if (savedTheme === "light") document.documentElement.classList.add("light");
   const hash = location.hash.slice(1);
-  state.view = viewRenderers[hash] ? hash : hash === "tools" ? "operations" : hash === "home" ? "command" : "command";
+  state.view = hash === "exam-day" ? "post-exam" : viewRenderers[hash] ? hash : hash === "tools" ? "operations" : hash === "home" ? "command" : "command";
   if (location.hash !== `#${state.view}`) history.replaceState(null, "", `#${state.view}`);
   bindShell();
   registerPwa();
