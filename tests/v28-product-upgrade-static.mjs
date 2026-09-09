@@ -38,6 +38,8 @@ expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-u
 expect('v28 mostra gráficos de resultado', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-stack') && followUp.includes('v28-followup-area-row'));
 expect('v28 mostra linha do tempo oficial', followUp.includes('v28-followup-milestones') && followUp.includes('LINHA DO TEMPO OFICIAL'));
 expect('v28 não re-renderiza o painel em loop', followUp.includes('const followUpSignature =') && (followUp.split('const signature = followUpSignature(data);').length - 1) === 2);
+expect('v28 exibe os dois mínimos objetivos corretamente', followUp.includes('minimumsMet') && followUp.includes('/2</b> mínimos objetivos atingidos'));
+expect('v28 exibe horário oficial dos recursos', followUp.includes('fmtOfficialWindow') && followUp.includes('horário de Brasília'));
 expect('v28 deixa pré-prova pronta para ativação', followUp.includes('v28-preexam-ready') && snapshot.preExamReadiness?.title === 'Pré-prova pronta para ativar');
 expect('snapshot guarda acompanhamento pós-prova', Boolean(snapshot.postExam?.followUp?.milestones?.length) && Boolean(snapshot.postExam?.followUp?.exams?.tdas) && Boolean(snapshot.postExam?.followUp?.exams?.edas));
 expect('snapshot guarda modo pré-prova de espera', snapshot.preExamReadiness?.status === 'standby' && snapshot.preExamReadiness?.checklist?.length >= 7);
