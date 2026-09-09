@@ -1,0 +1,276 @@
+/* v29 — fases separadas sem duplicar a base de dados */
+.pre-exam-view .preexam-hero,
+.post-exam-view .postexam-context {
+  padding: clamp(22px, 3vw, 34px);
+}
+.preexam-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  border-color: color-mix(in srgb, var(--aqua) 28%, transparent);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--aqua) 10%, var(--surface)), color-mix(in srgb, var(--surface) 82%, transparent));
+}
+.preexam-hero__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.preexam-hero h2 {
+  margin: 7px 0 8px;
+  font-size: clamp(1.45rem, 2.7vw, 2.25rem);
+  letter-spacing: -.045em;
+}
+.preexam-hero p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.preexam-trigger {
+  display: grid;
+  align-content: center;
+  min-width: min(100%, 310px);
+  padding: 16px;
+  border: 1px dashed color-mix(in srgb, var(--aqua) 42%, var(--border));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--aqua) 6%, transparent);
+}
+.preexam-trigger strong {
+  color: var(--aqua);
+  font-size: .76rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.preexam-trigger span {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+.preexam-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+  gap: 14px;
+}
+.preexam-checklist,
+.preexam-output,
+.preexam-boundary {
+  padding: 22px;
+}
+.preexam-checklist .panel-heading,
+.preexam-output .panel-heading,
+.preexam-boundary .panel-heading {
+  margin-bottom: 15px;
+}
+.preexam-checklist-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.preexam-checklist-item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-2) 82%, transparent);
+}
+.preexam-checklist-item > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--aqua);
+  background: color-mix(in srgb, var(--aqua) 11%, transparent);
+  font-size: .66rem;
+  font-weight: 850;
+}
+.preexam-checklist-item strong,
+.preexam-checklist-item small {
+  display: block;
+}
+.preexam-checklist-item strong {
+  font-size: .78rem;
+}
+.preexam-checklist-item small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .7rem;
+  line-height: 1.42;
+}
+.preexam-output {
+  display: flex;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.preexam-output .panel-heading {
+  width: 100%;
+}
+.preexam-output-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--aqua) 30%, var(--border));
+  border-radius: 999px;
+  color: var(--aqua);
+  background: color-mix(in srgb, var(--aqua) 6%, transparent);
+  font-size: .7rem;
+  font-weight: 760;
+}
+.preexam-boundary {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  border-color: color-mix(in srgb, var(--lime) 28%, transparent);
+}
+.preexam-boundary > svg {
+  width: 25px;
+  height: 25px;
+  color: var(--lime);
+}
+.preexam-boundary h2 {
+  margin: 4px 0 6px;
+  font-size: 1.1rem;
+}
+.preexam-boundary p {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.55;
+}
+.preexam-boundary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.plan-control-card {
+  border-color: color-mix(in srgb, var(--aqua) 30%, transparent);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--aqua) 10%, var(--surface)), color-mix(in srgb, var(--surface) 82%, transparent));
+}
+.plan-control-card::after {
+  display: none;
+}
+.plan-control-card .countdown-value strong {
+  color: var(--aqua);
+}
+.plan-control-card .countdown-topline > span:last-child {
+  color: var(--muted);
+}
+.postexam-context {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  border-color: color-mix(in srgb, var(--amber) 28%, transparent);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--amber) 8%, var(--surface)), color-mix(in srgb, var(--surface) 82%, transparent));
+}
+.postexam-context h2 {
+  margin: 6px 0;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  letter-spacing: -.035em;
+}
+.postexam-context p {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.postexam-context__meta {
+  display: grid;
+  gap: 8px;
+  min-width: 180px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--amber) 28%, var(--border));
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--amber) 5%, transparent);
+}
+.postexam-context__meta span {
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.postexam-context__meta strong {
+  color: var(--amber);
+  font-size: .98rem;
+}
+.post-exam-view [data-post-exam-page] {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.post-exam-view [data-post-exam-page] > .panel {
+  margin-top: 0;
+}
+.postexam-fallback {
+  padding: 22px;
+}
+.postexam-fallback h3 {
+  margin: 5px 0 7px;
+}
+.postexam-fallback p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.postexam-control-slot {
+  display: grid;
+  gap: 14px;
+}
+.postexam-control-slot:empty {
+  display: none;
+}
+.postexam-control-slot .v15-transition-summary {
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  .preexam-layout {
+    grid-template-columns: 1fr;
+  }
+  .preexam-boundary {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+  .preexam-boundary-actions {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 700px) {
+  .preexam-hero,
+  .postexam-context {
+    grid-template-columns: 1fr;
+  }
+  .preexam-hero__top {
+    display: block;
+  }
+  .preexam-trigger {
+    min-width: 0;
+  }
+  .preexam-checklist-list {
+    grid-template-columns: 1fr;
+  }
+  .postexam-context__meta {
+    min-width: 0;
+  }
+}
+@media (max-width: 430px) {
+  .preexam-checklist,
+  .preexam-output,
+  .preexam-boundary,
+  .postexam-context {
+    padding: 17px;
+  }
+}
