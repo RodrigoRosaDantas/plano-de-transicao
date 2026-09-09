@@ -134,8 +134,8 @@ function renderStrategy(view) {
 }
 
 function renderSummary(view) {
-  const root = $('.command-view');
-  if (!root || !view.gates.length) return;
+  const root = $('#postExamControlSlot');
+  if (!root || !view.active) return;
   let summary = $('#v15TransitionSummary', root);
   const phase = phaseCopy(view);
   const nextIndex = view.gates.findIndex((_, index) => !view.completed.includes(index));
@@ -145,15 +145,14 @@ function renderSummary(view) {
     summary = document.createElement('section');
     summary.id = 'v15TransitionSummary';
     summary.className = 'v15-transition-summary panel';
-    const anchor = $('#v14FocusControl', root) || $('#managerNowBoard', root) || $('#v13ManagerInbox', root) || root.firstElementChild;
-    anchor?.after(summary);
+    root.append(summary);
   }
   if (summary.dataset.signature === signature) return;
   summary.dataset.signature = signature;
   summary.innerHTML = `
     <span class="v15-summary-mark ${phase.tone}">15</span>
-    <div><span class="eyebrow">PRÓXIMA TRANSIÇÃO</span><strong>${esc(phase.label)}</strong><p>${esc(next)}</p></div>
-    <div class="v15-summary-progress"><b>${view.completed.length}/${view.gates.length}</b><small>${view.active ? 'etapas' : `ativa em ${view.days}d`}</small></div>
+    <div><span class="eyebrow">CONTROLE PÓS-PROVA</span><strong>${esc(phase.label)}</strong><p>${esc(next)}</p></div>
+    <div class="v15-summary-progress"><b>${view.completed.length}/${view.gates.length}</b><small>etapas locais</small></div>
     <button type="button" data-view="strategy" data-v15-open>Ver fechamento <span>→</span></button>`;
 }
 
