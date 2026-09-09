@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-09T20:43:40.255Z",
+    "generatedAt": "2026-09-09T21:08:55.714Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,15 +8,15 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-09T20:43:42.127Z",
+    "workParityEnrichedAt": "2026-09-09T21:08:57.154Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-09T20:43:42.179Z",
+    "postExamNormalizedAt": "2026-09-09T21:08:57.210Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-09T20:43:41.176Z",
-    "postExamScoringUpdatedAt": "2026-09-09T20:43:41.261Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-09T20:43:41.176Z",
-    "postExamCompetitionAuditedAt": "2026-09-09T20:43:41.261Z"
+    "postExamNotesSyncedAt": "2026-09-09T21:08:56.188Z",
+    "postExamScoringUpdatedAt": "2026-09-09T21:08:56.278Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-09T21:08:56.188Z",
+    "postExamCompetitionAuditedAt": "2026-09-09T21:08:56.278Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -1348,7 +1348,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-09T20:43:41.260Z",
+          "comparedAt": "2026-09-09T21:08:56.277Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3829,7 +3829,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-09T20:43:41.260Z"
+        "lastComparedAt": "2026-09-09T21:08:56.277Z"
       },
       "edas": {
         "examType": "A",
@@ -3842,7 +3842,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-09T20:43:41.260Z",
+          "comparedAt": "2026-09-09T21:08:56.278Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6091,7 +6091,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-09T20:43:41.260Z"
+        "lastComparedAt": "2026-09-09T21:08:56.278Z"
       }
     },
     "competitionReading": {
