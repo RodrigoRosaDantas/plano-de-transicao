@@ -15,7 +15,7 @@ const check = (name, condition) => {
 };
 
 check('shell mantém CSS do modo foco v14 sob shell v15', index.includes('assets/home-focus-v14.css?v=15'));
-check('shell mantém JS v14 entre as camadas v13 e v15', index.includes('assets/home-focus-v14.js?v=15') && index.indexOf('home-focus-v14.js?v=15') > index.indexOf('manager-inbox-v13.js?v=15') && index.indexOf('home-focus-v14.js?v=15') < index.indexOf('transition-gate-v15.js?v=29'));
+check('shell mantém JS v14 entre as camadas v13 e v15', index.includes('assets/home-focus-v14.js?v=15') && index.indexOf('home-focus-v14.js?v=15') > index.indexOf('manager-inbox-v13.js?v=15') && index.indexOf('home-focus-v14.js?v=15') < index.indexOf('transition-gate-v15.js?v=30'));
 check('cache busting da interface-base permanece em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('estudo embutido continua fora da navegação', !index.includes('data-view="study"'));
 
@@ -34,7 +34,7 @@ check('mobile também recolhe card institucional e atalhos redundantes', css.inc
 check('v14 mantém tratamento estreito em 390px', css.includes('@media (max-width: 390px)'));
 check('v14 não cria largura fixa problemática', !css.includes('width: 1000px') && !css.includes('min-width: 1000px'));
 
-check('service worker está no cache de fases separadas v29', sw.includes("const CACHE='plano-transicao-v29-separate-phases'"));
+check('service worker está no cache de fases separadas v30', sw.includes("const CACHE='plano-transicao-v30-separate-phases'"));
 check('service worker preserva assets v14', sw.includes('home-focus-v14.css') && sw.includes('home-focus-v14.js'));
 
 const failures = checks.filter((item) => !item.pass);
