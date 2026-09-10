@@ -66,7 +66,7 @@ expect('taxa nominal EDAS AC é 6,86%', snapshot.postExam?.competitionReading?.e
 expect('probabilidade pessoal não é inventada', snapshot.postExam?.competitionReading?.personalProbability?.available === false && snapshot.postExam?.competitionReading?.personalProbability?.value == null);
 expect('router possui página pré-prova', app.includes('function preExamView') && app.includes('"pre-exam": preExamView'));
 expect('router possui página pós-prova', app.includes('function postExamView') && app.includes('"post-exam": postExamView'));
-expect('atalhos de fases aparecem antes do cockpit', app.indexOf('phase-router') >= 0 && app.indexOf('phase-router') < app.indexOf('cockpit-grid'));
+expect('Agora usa a central de transição no lugar do cockpit antigo', app.includes('transition-now-hero') && app.includes('transition-next') && !app.includes('cockpit-grid'));
 expect('auditorias fechadas não expandem o layout', pageStyles.includes('.v28-audit-disclosure:not([open]) > :not(summary)'));
 expect('controle de expansão tem área de toque', pageStyles.includes('min-height: 44px') && pageStyles.includes('.v28-audit-table-wrap'));
 expect('Home Agora prioriza a continuidade do plano, sem cartão pós-prova', app.includes('transition-now-hero') && app.includes('transition-kpi-grid') && app.includes('next-cycle-grid') && app.includes('data-project="seedf"') && app.includes('data-project="tjdft"') && !app.includes('plan-control-card'));
