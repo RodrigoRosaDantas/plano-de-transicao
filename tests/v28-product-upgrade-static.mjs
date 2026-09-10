@@ -79,7 +79,7 @@ expect('console adaptativo foi movido para o host pós-prova', source.includes('
 expect('leitura competitiva não injeta na Home', competition.includes('function mountDedicated') && !competition.includes("querySelector('.command-view')"));
 expect('fechamento local saiu da Home', transitionGate.includes("$('#postExamControlSlot')") && !transitionGate.includes("const root = $('.command-view')"));
 expect('shell conhece as novas fases', workspace.includes("'pre-exam'") && workspace.includes("'post-exam'"));
-expect('cache v31 inclui estilos das fases', serviceWorker.includes("plano-transicao-v31-separate-phases") && serviceWorker.includes("'./assets/transition-pages-v29.css'"));
+expect('cache v32 inclui estilos das fases', serviceWorker.includes("plano-transicao-v32-ipad-layout") && serviceWorker.includes("'./assets/transition-pages-v29.css'"));
 expect('estilos das fases existem', pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
 
 

@@ -37,7 +37,7 @@ assert.ok(index.indexOf('post-exam-v27.js?v=31') > index.indexOf('workspace-v23.
 for (const asset of ["'./assets/post-exam-v27.css'", "'./assets/post-exam-v27.js'", "'./assets/post-exam-score-v28.js'", "'./assets/transition-pages-v29.css'"]) {
   has(sw, asset, 'PWA pós-prova');
 }
-assert.ok(sw.includes("const CACHE='plano-transicao-v31-separate-phases'"), 'cache PWA precisa usar as fases separadas v31');
+assert.ok(sw.includes("const CACHE='plano-transicao-v32-ipad-layout'"), 'cache PWA precisa usar as fases separadas v32');
 
 for (const value of [
   'if (window.__PLANO_SEPARATE_POST_EXAM__) return;',
