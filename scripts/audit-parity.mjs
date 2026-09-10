@@ -187,7 +187,7 @@ check('v12 explicita que comparação não prova causalidade', history.includes(
 check('v12 permite notas e revisão 24h/72h', history.includes('v12DecisionNote') && history.includes('data-v12-review-hours="24"') && history.includes('data-v12-review-hours="72"'));
 check('v12 exporta dossiê local', history.includes('Exportar dossiê') && history.includes('currentDecisionState') && history.includes('journal: readJournal()'));
 
-check('v13 adiciona Atenção à Home', inbox.includes("button.textContent = 'Atenção'") && inbox.includes("'#v13ManagerInbox'"));
+check('v13 mantém controles locais no Mais', inbox.includes('renderOpsSummary') && inbox.includes('v13InboxOps') && inbox.includes('v13RestoreInbox'));
 check('v13 agrega decisões, revisões, alertas e snapshot', inbox.includes('readDecisionCards()') && inbox.includes('reviewItems()') && inbox.includes('alertItems()') && inbox.includes('snapshotItems(snapshot)'));
 check('v13 classifica Agora/Hoje/Monitorar', inbox.includes("bucket === 'now'") && inbox.includes("bucket === 'today'") && inbox.includes("'Monitorar'"));
 check('v13 permite adiar e silenciar localmente', inbox.includes("kind === 'snooze'") && inbox.includes("kind === 'silence'") && inbox.includes('plano.managerInbox.v13'));

@@ -457,7 +457,7 @@ function openHistory() {
   const commandButton = $('[data-view="command"]');
   if (!$('.command-view') && commandButton) commandButton.click();
   $('#closeMoreBtn')?.click();
-  window.setTimeout(() => $('#v12DecisionHistory')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+  window.setTimeout(() => ($('#v12DecisionHistory') || $('#transitionControls') || $('.transition-decision-grid'))?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
 }
 
 function renderOps() {
@@ -474,11 +474,14 @@ function renderOps() {
   const notes = Object.values(journal.notes).filter((item) => item?.text?.trim()).length;
   const signature = `${journal.events.length}:${notes}`;
   if (section.dataset.signature === signature) return;
+  const hasDedicatedHistory = Boolean($('#v12DecisionHistory'));
+  const openLabel = hasDedicatedHistory ? 'Abrir histórico' : 'Abrir controles do plano';
+  const openDetail = hasDedicatedHistory ? 'Decisões, notas, prazos e leitura posterior' : 'Voltar aos controles atuais da transição';
   section.dataset.signature = signature;
   section.innerHTML = `
     <div class="sheet-section-label">Memória decisória</div>
     <div class="v12-ops-summary"><span>V12</span><div><small>Dossiê local</small><strong>${journal.events.length} movimentos · ${notes} notas registradas</strong></div></div>
-    <button id="v12OpenHistory" class="action-button" type="button"><span>↗</span><span><b>Abrir histórico</b><small>Decisões, notas, prazos e leitura posterior</small></span></button>
+    <button id="v12OpenHistory" class="action-button" type="button"><span>↗</span><span><b>${openLabel}</b><small>${openDetail}</small></span></button>
     <button id="v12ExportDossier" class="action-button" type="button"><span>⇩</span><span><b>Exportar dossiê</b><small>Baixar histórico e contexto em JSON</small></span></button>`;
 }
 

@@ -490,12 +490,15 @@ function renderOpsSummary(items) {
   }
   const signature = `${urgent}:${hidden}`;
   const complete = Boolean($('#v13OpenInbox', section) && $('#v13RestoreInbox', section));
+  const hasDedicatedInbox = Boolean($('#v13ManagerInbox'));
+  const openLabel = hasDedicatedInbox ? 'Abrir caixa de entrada' : 'Abrir controles do plano';
+  const openDetail = hasDedicatedInbox ? 'Ver decisões, revisões, prazos e ressalvas em uma fila' : 'Voltar aos controles de atenção, fontes e próximo movimento';
   if (section.dataset.signature === signature && complete) return;
   section.dataset.signature = signature;
   section.innerHTML = `
     <div class="sheet-section-label">Caixa de entrada gerencial</div>
     <div class="v13-ops-summary"><span>V13</span><div><small>Fila dinâmica</small><strong>${urgent} exigem atenção · ${hidden} fora da fila</strong></div></div>
-    <button id="v13OpenInbox" class="action-button" type="button"><span>↗</span><span><b>Abrir caixa de entrada</b><small>Ver decisões, revisões, prazos e ressalvas em uma fila</small></span></button>
+    <button id="v13OpenInbox" class="action-button" type="button"><span>↗</span><span><b>${openLabel}</b><small>${openDetail}</small></span></button>
     <button id="v13RestoreInbox" class="action-button" type="button"><span>↺</span><span><b>Restaurar itens ocultados</b><small>Remove adiamentos e silenciamentos locais da v13</small></span></button>`;
 }
 
@@ -547,7 +550,7 @@ function bindEvents() {
       $('#closeMoreBtn')?.click();
       const command = $('#mainTabs [data-view="command"]') || $('[data-view="command"]');
       if (!$('.command-view')) command?.click();
-      window.setTimeout(() => scrollHighlight($('#v13ManagerInbox')), 120);
+      window.setTimeout(() => scrollHighlight($('#v13ManagerInbox') || $('#transitionControls') || $('.transition-decision-grid')), 120);
       return;
     }
     if (event.target.closest?.('#v13RestoreInbox')) {

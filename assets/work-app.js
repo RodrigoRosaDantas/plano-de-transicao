@@ -228,7 +228,7 @@ function commandView() {
       </div>
     </section>
 
-    <section class="transition-decision-grid" aria-label="Controles da transição">
+    <section class="transition-decision-grid" id="transitionControls" aria-label="Controles da transição">
       <article class="panel transition-decision primary">
         <span class="eyebrow">PRÓXIMA AÇÃO</span><h3>${esc(nextAction)}</h3><p>O dado guia o movimento; a ansiedade não ganha um botão próprio.</p>
         <div class="command-actions"><button class="primary-button" type="button" data-view="strategy">${svgIcon("compass")} Ver estratégia</button><button class="secondary-button" type="button" data-view="journey">${svgIcon("route")} Ver jornada</button></div>
