@@ -148,7 +148,7 @@ check('Follow-up não tem fallback na Home', followUp.includes("[data-post-exam-
 check('Console pós-prova está no host dedicado', score.includes('function patchDedicated') && score.includes('[data-post-exam-page]'));
 check('Competitivo está no host dedicado', competition.includes('function mountDedicated') && !competition.includes("querySelector('.command-view')"));
 check('Fechamento local não renderiza na Home', transitionGate.includes("$('#postExamControlSlot')") && !transitionGate.includes("const root = $('.command-view')"));
-check('Estilos das fases estão publicados', index.includes('transition-pages-v29.css?v=31') && pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
+check('Estilos das fases estão publicados', index.includes('transition-pages-v29.css?v=32') && pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
 
 check('Painel pós-prova possui gráficos e linha do tempo', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-milestones'));
 check('Painel mantém fonte e snapshot identificados', followUp.includes('snapshot publicado') && followUp.includes('Fontes e governança'));
