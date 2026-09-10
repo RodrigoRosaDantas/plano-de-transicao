@@ -470,3 +470,38 @@
   }
 }
 
+/* v32 — cartão de dados legível na coluna estreita do iPad */
+@media (min-width: 761px) and (max-width: 1450px) {
+  .command-view .plan-control-card {
+    min-width: 0;
+  }
+  .command-view .plan-control-card .countdown-body {
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+  .command-view .plan-control-card .countdown-value {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 3px 9px;
+  }
+  .command-view .plan-control-card .countdown-value strong {
+    max-width: 100%;
+    font-size: clamp(5rem, 7.6vw, 6.2rem);
+    letter-spacing: -.085em;
+    line-height: .82;
+  }
+  .command-view .plan-control-card .countdown-value span {
+    flex: 1 1 100%;
+    max-width: 100%;
+    line-height: 1.35;
+  }
+  .command-view .plan-control-card .brasilia-clock {
+    max-width: 100%;
+  }
+}
