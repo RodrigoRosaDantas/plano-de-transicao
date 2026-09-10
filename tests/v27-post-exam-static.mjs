@@ -11,7 +11,7 @@ const [index, sw, js, css, score, followup, snapshotRaw] = await Promise.all([
   fs.readFile('data/snapshot.json', 'utf8'),
 ]);
 const snapshot = JSON.parse(snapshotRaw);
-const has = (text, value, label) => assert.ok(text.includes(value), \`\${label}: ausente \${value}\`);
+const has = (text, value, label) => assert.ok(text.includes(value), `${label}: ausente ${value}`);
 
 assert.equal(snapshot.meta?.phase, 'post-exam', 'snapshot precisa estar formalmente em pós-prova');
 const sedes = (snapshot.exams || []).filter(exam => String(exam.id || '').startsWith('sedes-2026-'));
@@ -23,10 +23,10 @@ for (const exam of sedes) {
   const definitive = exam.scoreTracking?.definitive || null;
   const tracked = definitive || preliminary;
   if (exam.rawAccuracy != null || (exam.weightedScore && exam.weightedScore !== '—')) {
-    assert.ok(tracked, \`\${exam.role}: resultado numérico só pode existir com scoreTracking auditável\`);
+    assert.ok(tracked, `${exam.role}: resultado numérico só pode existir com scoreTracking auditável`);
   }
   if (preliminary && !definitive) {
-    assert.match(String(exam.status || ''), /Correção preliminar/i, \`\${exam.role}: nota baseada no preliminar precisa continuar rotulada como preliminar\`);
+    assert.match(String(exam.status || ''), /Correção preliminar/i, `${exam.role}: nota baseada no preliminar precisa continuar rotulada como preliminar`);
   }
 }
 
