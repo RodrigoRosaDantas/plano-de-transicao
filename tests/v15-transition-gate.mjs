@@ -22,7 +22,7 @@ async function scenario(name, viewport, fixedNow, run) {
   page.on('pageerror', (error) => errors.push(String(error)));
   try {
     await page.goto(baseURL + '#post-exam', { waitUntil: 'networkidle' });
-    await page.waitForSelector('#v15TransitionSummary');
+    await page.waitForSelector('[data-post-exam-page]');
     await run(page);
     if (errors.length) throw new Error(`Erros JavaScript: ${errors.join(' | ')}`);
     console.log(`PASS  ${name}`);
@@ -35,12 +35,10 @@ async function scenario(name, viewport, fixedNow, run) {
 }
 
 await scenario('pré-prova: fechamento preparado, rastreável e sem execução antecipada', { width: 1440, height: 1000 }, '2026-09-01T15:00:00-03:00', async (page) => {
-  const summary = await page.locator('#v15TransitionSummary').innerText();
-  if (!summary.includes('Fechamento preparado')) throw new Error(`Fase pré-prova incorreta: ${summary}`);
-  if (!summary.toLowerCase().includes('ativa em 5d')) throw new Error(`Resumo não preservou D-5: ${summary}`);
-  await page.click('#v15TransitionSummary [data-v15-open]');
-  await page.waitForURL(/#strategy$/);
+  await page.goto(baseURL + '#strategy', { waitUntil: 'networkidle' });
   await page.waitForSelector('#transitionGateV15');
+  const phase = await page.locator('#transitionGateV15').getAttribute('data-v15-phase');
+  if (phase !== 'scheduled') throw new Error('Fase pré-prova deveria estar preparada, não ativa: ' + phase);
 
   const gates = page.locator('#transitionGateV15 [data-v15-step]');
   if (await gates.count() !== 5) throw new Error(`Esperava 5 etapas, recebeu ${await gates.count()}.`);
@@ -57,6 +55,7 @@ await scenario('pré-prova: fechamento preparado, rastreável e sem execução a
 });
 
 await scenario('pós-prova mobile: fechamento ativa, persiste e integra operações', { width: 390, height: 844 }, '2026-09-07T12:00:00-03:00', async (page) => {
+  await page.waitForSelector('#v15TransitionSummary');
   const summary = await page.locator('#v15TransitionSummary').innerText();
   if (!summary.includes('Fechamento ativo')) throw new Error(`Fase pós-prova incorreta: ${summary}`);
   await page.click('#v15TransitionSummary [data-v15-open]');
