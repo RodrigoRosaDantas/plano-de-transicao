@@ -50,11 +50,11 @@ for (const value of [
   '.postexam-milestone',
 ]) assert.ok(css.includes(value), `CSS sem ${value}`);
 
-assert.ok(index.includes('pre-post-v33.css?v=34'));
+assert.ok(index.includes('pre-post-v33.css?v=35'));
 assert.ok(index.includes('aria-label="Pré-prova / Pré-edital"'));
-assert.ok(index.includes('__PLANO_UI_RELEASE__ = "v34"'));
-assert.ok(index.includes('work-app.js?v=34&home=37'));
-assert.ok(sw.includes("const CACHE='plano-transicao-v34-pre-edital'"));
+assert.ok(index.includes('__PLANO_UI_RELEASE__ = "v35"'));
+assert.ok(index.includes('work-app.js?v=35&home=37'));
+assert.ok(sw.includes("const CACHE='plano-transicao-v35-pre-edital'"));
 assert.ok(sw.includes("'./assets/pre-post-v33.css'"));
 
 console.log('PASS  v33: radar pré-edital de TJDFT/SEEDF e comando pós-prova SEDES/DF estruturados.');

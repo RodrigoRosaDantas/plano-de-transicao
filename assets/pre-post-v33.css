@@ -131,6 +131,83 @@
   font-size: .86rem;
   line-height: 1.4;
 }
+.preexam-project-dossier {
+  display: grid;
+  gap: 10px;
+  padding: 13px 14px;
+  border: 1px solid color-mix(in srgb, var(--aqua) 22%, var(--border));
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--aqua) 4%, var(--surface-2));
+}
+.preexam-project-dossier__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.preexam-project-dossier__head span,
+.preexam-project-pending > span {
+  color: var(--aqua);
+  font-size: .64rem;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.preexam-project-dossier__head small {
+  color: var(--muted-2);
+  font-size: .6rem;
+}
+.preexam-project-dossier__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--border);
+}
+.preexam-project-dossier__grid > div {
+  min-width: 0;
+  padding: 10px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+}
+.preexam-project-dossier__grid span,
+.preexam-project-dossier__grid strong {
+  display: block;
+}
+.preexam-project-dossier__grid span {
+  color: var(--muted-2);
+  font-size: .56rem;
+  text-transform: uppercase;
+}
+.preexam-project-dossier__grid strong {
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: .68rem;
+  line-height: 1.35;
+}
+.preexam-project-pending {
+  display: grid;
+  gap: 7px;
+}
+.preexam-project-pending > span {
+  color: var(--muted-2);
+  font-size: .58rem;
+}
+.preexam-project-pending > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.preexam-project-pending b {
+  padding: 4px 7px;
+  border: 1px solid color-mix(in srgb, var(--amber) 28%, var(--border));
+  border-radius: 999px;
+  color: var(--amber);
+  font-size: .58rem;
+  font-weight: 800;
+}
 .preexam-project-section {
   display: grid;
   gap: 10px;
@@ -333,6 +410,44 @@
   color: var(--text);
   font-size: .67rem;
 }
+.preexam-alert.is-done {
+  border-color: color-mix(in srgb, var(--lime) 32%, var(--border));
+  background: color-mix(in srgb, var(--lime) 5%, var(--surface-2));
+}
+.preexam-alert.is-done .preexam-alert-icon {
+  color: var(--lime);
+  background: color-mix(in srgb, var(--lime) 10%, transparent);
+}
+.preexam-alert__actions,
+.postexam-milestone__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.local-alert-action {
+  min-height: 29px;
+  padding: 5px 9px;
+  border: 1px solid color-mix(in srgb, var(--aqua) 28%, var(--border));
+  border-radius: 8px;
+  color: var(--aqua);
+  background: color-mix(in srgb, var(--aqua) 5%, transparent);
+  font: inherit;
+  font-size: .61rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.local-alert-action:hover,
+.local-alert-action:focus-visible {
+  border-color: color-mix(in srgb, var(--lime) 48%, var(--border));
+  color: var(--lime);
+}
+.local-alert-action.is-done,
+.is-done .local-alert-action[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--lime) 34%, var(--border));
+  color: var(--lime);
+  background: color-mix(in srgb, var(--lime) 8%, transparent);
+}
 
 .postexam-action-panel {
   display: grid;
@@ -478,6 +593,9 @@
   border-color: color-mix(in srgb, var(--amber) 45%, var(--border));
   background: color-mix(in srgb, var(--amber) 8%, transparent);
 }
+.postexam-milestone.is-done {
+  border-color: color-mix(in srgb, var(--lime) 30%, var(--border));
+}
 .postexam-milestone-dot svg {
   width: 16px;
   height: 16px;
@@ -502,6 +620,12 @@
   color: var(--text);
   font-size: .72rem;
   font-weight: 750;
+}
+.postexam-milestone > div > span em {
+  color: var(--muted-2);
+  font-size: .62rem;
+  font-style: normal;
+  font-weight: 700;
 }
 .postexam-milestone p {
   margin: 4px 0 0;
@@ -570,6 +694,14 @@
   .preexam-role span {
     justify-self: start;
     text-align: left;
+  }
+  .preexam-project-dossier__grid {
+    grid-template-columns: 1fr;
+  }
+  .preexam-project-dossier__head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
   .postexam-milestone-head {
     display: block;

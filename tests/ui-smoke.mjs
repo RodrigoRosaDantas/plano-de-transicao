@@ -113,6 +113,7 @@ await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390
   if (!(await page.locator('.sheet-sync-card').isVisible())) throw new Error('Estado de atualização não aparece no Mais.');
   if (await page.locator('#moreSheet .sheet-grid button').count() < 8) throw new Error('Menu Mais não reúne todas as áreas.');
   if (await page.locator('#moreSheet [data-view="study"]').count()) throw new Error('Questões ainda aparece no menu Mais.');
+  await page.locator('#moreSheet .sheet-more-group summary').click();
   await page.click('#moreSheet [data-view="operations"]');
   await page.waitForSelector('.operations-view');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

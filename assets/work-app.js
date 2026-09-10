@@ -80,6 +80,111 @@ const dateTimeBR = (value) => {
 };
 const normalize = (value) => String(value ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const clamp = (value, min = 0, max = 100) => Math.min(max, Math.max(min, Number(value || 0)));
+const LOCAL_ALERT_STATE_KEY = "plano.alerts.v1";
+
+function readLocalAlertState() {
+  try {
+    const value = JSON.parse(localStorage.getItem(LOCAL_ALERT_STATE_KEY) || "{}");
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeLocalAlertState(value) {
+  try {
+    localStorage.setItem(LOCAL_ALERT_STATE_KEY, JSON.stringify(value));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function localAlertKey(prefix, item, index = 0) {
+  const source = item?.id || item?.title || item?.label || `item-${index + 1}`;
+  const slug = normalize(source).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || `item-${index + 1}`;
+  return `${prefix}-${slug}`;
+}
+
+function brasiliaDateKey(value) {
+  if (!value) return "";
+  const date = value instanceof Date ? value : new Date(String(value).length === 10 ? `${value}T12:00:00-03:00` : value);
+  if (Number.isNaN(date.getTime())) return "";
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "America/Sao_Paulo" }).formatToParts(date).filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+function relativeDateLabel(value) {
+  const target = brasiliaDateKey(value);
+  const today = brasiliaDateKey(new Date());
+  if (!target || !today) return "";
+  const diff = Math.round((Date.parse(`${target}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86_400_000);
+  if (diff === 0) return "hoje";
+  if (diff === 1) return "amanhã";
+  if (diff > 1) return `em ${diff} dias`;
+  if (diff === -1) return "encerrado ontem";
+  return `encerrado há ${Math.abs(diff)} dias`;
+}
+
+function addCalendarDay(value) {
+  const key = brasiliaDateKey(value);
+  if (!key) return "";
+  const date = new Date(`${key}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date.toISOString().slice(0, 10);
+}
+
+function calendarDateStamp(value) {
+  return brasiliaDateKey(value).replaceAll("-", "");
+}
+
+function calendarDateTimeStamp(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+}
+
+function calendarEscape(value) {
+  return String(value ?? "").replace(/\\/g, "\\\\").replace(/\r?\n/g, "\\n").replace(/([;,])/g, "\\$1");
+}
+
+function calendarFileName(title) {
+  const slug = normalize(title).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "lembrete-plano";
+  return `${slug}.ics`;
+}
+
+function exportCalendarEvent(button) {
+  const title = button.dataset.calendarTitle || "Lembrete do Plano de Transição";
+  const start = button.dataset.calendarStart || "";
+  const end = button.dataset.calendarEnd || (!String(start).includes("T") ? addCalendarDay(start) : start);
+  const allDay = !String(start).includes("T");
+  const startLine = allDay ? `DTSTART;VALUE=DATE:${calendarDateStamp(start)}` : `DTSTART:${calendarDateTimeStamp(start)}`;
+  const endLine = allDay ? `DTEND;VALUE=DATE:${calendarDateStamp(end)}` : `DTEND:${calendarDateTimeStamp(end)}`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Plano de Transicao//PT-BR",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${calendarFileName(title).replace(/\.ics$/, "")}-${Date.now()}@plano-de-transicao`,
+    `DTSTAMP:${calendarDateTimeStamp(new Date())}`,
+    startLine,
+    endLine,
+    `SUMMARY:${calendarEscape(title)}`,
+    `DESCRIPTION:${calendarEscape(button.dataset.calendarDescription || "Acompanhar o cronograma publicado no Plano de Transição.")}`,
+  ];
+  if (button.dataset.calendarUrl) lines.push(`URL:${calendarEscape(button.dataset.calendarUrl)}`);
+  lines.push("END:VEVENT", "END:VCALENDAR");
+  exportFile(calendarFileName(title), `${lines.join("\r\n")}\r\n`, "text/calendar;charset=utf-8");
+  toast("Evento exportado para o calendário.");
+}
+
+function syncLocalAlertButton(button, done) {
+  button.setAttribute("aria-pressed", done ? "true" : "false");
+  button.classList.toggle("is-done", done);
+  button.textContent = done ? "Acompanhado" : "Marcar acompanhado";
+}
 
 function svgIcon(name, label = "") {
   const title = label ? `<title>${esc(label)}</title>` : "";
@@ -327,17 +432,33 @@ function preExamProjectMarkup(id, project) {
   const roles = Array.isArray(project?.roles) ? project.roles : [];
   const news = Array.isArray(project?.news) ? project.news : [];
   const sources = Array.isArray(project?.sources) ? project.sources : [];
+  const checkedAt = project?.lastVerifiedAt || state.data?.preExamRadar?.lastVerifiedAt || state.data?.meta?.generatedAt;
+  const roleNames = roles.map((role) => role.name).filter(Boolean).join(" · ") || "A confirmar";
+  const dossier = [
+    ["Status", project?.status || "Pré-edital"],
+    ["Banca/comissão", project?.bank || project?.banca || "A confirmar em fonte oficial"],
+    ["Cargos foco", roleNames],
+    ["Última checagem", checkedAt ? dateBR(checkedAt) : "Não informado"],
+  ];
+  const pending = ["Edital", "Banca/comissão", "Requisitos", "Cronograma"];
   return `<article class="panel preexam-project-card preexam-project-card--${esc(id)}" data-pre-exam-project="${esc(id)}">
     <div class="preexam-project-head"><div><span class="eyebrow">${esc(project?.institution || "Concurso monitorado")}</span><h3>${esc(project?.label || id.toUpperCase())}</h3><p>${esc(project?.description || "Monitoramento separado para o próximo edital.")}</p></div>${statusChip(project?.status || "Pré-edital", project?.tone || "aqua")}</div>
     <div class="preexam-project-focus"><span>Foco no plano</span><strong>${esc(project?.focus || "Cargos e requisitos a confirmar")}</strong></div>
+    <div class="preexam-project-dossier"><div class="preexam-project-dossier__head"><span>Dossiê de prontidão</span><small>O que está registrado antes do edital</small></div><div class="preexam-project-dossier__grid">${dossier.map(([label, value]) => `<div><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join("")}</div><div class="preexam-project-pending"><span>Ainda a confirmar</span><div>${pending.map((item) => `<b>${esc(item)}</b>`).join("")}</div></div></div>
     <div class="preexam-project-section"><div class="preexam-project-section__title">${svgIcon("target")}<span>Cargos no radar</span></div><div class="preexam-role-list">${roles.map((role) => `<div class="preexam-role"><strong>${esc(role.name)}</strong><span>${esc(role.area || "Área a confirmar")}</span><small>${esc(role.note || "A confirmar no edital")}</small></div>`).join("") || '<p class="preexam-empty">Nenhum cargo cadastrado ainda.</p>'}</div></div>
     <div class="preexam-project-section"><div class="preexam-project-section__title">${svgIcon("spark")}<span>Notícias e sinais</span></div><div class="preexam-news-list">${news.map((item) => `<article class="preexam-news"><div class="preexam-news-meta"><span>${esc(dateBR(item.date))}</span><b class="preexam-news-badge preexam-news-badge--${esc(item.kind || "official")}">${item.kind === "external" ? "Externa" : "Oficial"}</b></div><strong>${esc(item.title)}</strong><p>${esc(item.summary)}</p><a href="${esc(item.url)}" target="_blank" rel="noreferrer">Ler fonte ${svgIcon("external")}</a></article>`).join("") || '<p class="preexam-empty">Sem notícia registrada.</p>'}</div></div>
     <div class="preexam-project-sources"><span>Fontes de confirmação</span>${sources.map(preExamSourceLink).join("")}</div>
   </article>`;
 }
 
-function preExamAlertMarkup(alert) {
-  return `<article class="preexam-alert"><span class="preexam-alert-icon">${svgIcon(alert?.icon || "alert")}</span><div><strong>${esc(alert?.title || "Alerta")}</strong><p>${esc(alert?.detail || "")}</p><small>${esc(alert?.action || "")}</small></div></article>`;
+function preExamAlertMarkup(alert, index) {
+  const alertId = localAlertKey("pre-alert", alert, index);
+  const done = Boolean(readLocalAlertState()[alertId]?.done);
+  const start = alert?.start || alert?.date || "";
+  const end = alert?.end || (!String(start).includes("T") ? addCalendarDay(start) : "");
+  const relative = relativeDateLabel(start);
+  const calendarButton = start ? `<button class="local-alert-action" type="button" data-calendar-event data-calendar-title="${esc(alert?.title || "Alerta pré-edital")}" data-calendar-start="${esc(start)}" data-calendar-end="${esc(end)}" data-calendar-description="${esc(`${alert?.detail || ""} ${alert?.action || ""}`.trim())}">Adicionar ao calendário</button>` : "";
+  return `<article class="preexam-alert ${done ? "is-done" : ""}" data-alert-id="${esc(alertId)}"><span class="preexam-alert-icon">${svgIcon(alert?.icon || "alert")}</span><div><strong>${esc(alert?.title || "Alerta")}</strong><p>${esc(alert?.detail || "")}</p><small>${esc(alert?.action || "")}${relative ? ` · ${esc(relative)}` : ""}</small><div class="preexam-alert__actions"><button class="local-alert-action" type="button" data-alert-toggle="${esc(alertId)}" aria-pressed="${done ? "true" : "false"}">${done ? "Acompanhado" : "Marcar acompanhado"}</button>${calendarButton}</div></div></article>`;
 }
 
 function preExamView() {
@@ -355,7 +476,7 @@ function preExamView() {
     <section class="panel preexam-radar-hero"><div><span class="eyebrow">MONITORAMENTO PRÉ-EDITAL</span><h2>O próximo movimento ainda não é um edital.</h2><p>${esc(radar.description || "Acompanhe os sinais oficiais e mantenha cada concurso em uma base própria até que edital, banca, cargos e cronograma estejam confirmados.")}</p></div><div class="preexam-radar-meta"><span>Última checagem</span><strong>${esc(dateBR(radar.lastVerifiedAt || data.meta.generatedAt))}</strong><span>Projetos ativos</span><strong>${fmt(projects.length)} trilhas</strong><small>Notícia externa fica identificada como expectativa.</small></div></section>
     <div class="preexam-filters" role="tablist" aria-label="Filtrar concursos pré-edital"><button class="active" type="button" role="tab" aria-selected="true" data-pre-exam-filter="all">Todos</button>${projects.map(([id, project]) => `<button type="button" role="tab" aria-selected="false" data-pre-exam-filter="${esc(id)}">${esc(project.label || id.toUpperCase())}</button>`).join("")}</div>
     <section class="preexam-project-grid" aria-label="Concursos em pré-edital">${projects.map(([id, project]) => preExamProjectMarkup(id, project)).join("")}</section>
-    <section class="panel preexam-alerts"><div class="panel-heading"><div><span class="eyebrow">ALERTAS QUE MUDAM O PLANO</span><h2>O que merece atenção primeiro</h2><p>O alerta serve para decidir a próxima ação; não transforma rumor em fato confirmado.</p></div>${svgIcon("alert")}</div><div class="preexam-alert-grid">${alerts.map(preExamAlertMarkup).join("") || '<p class="preexam-empty">Nenhum alerta cadastrado.</p>'}</div></section>
+    <section class="panel preexam-alerts"><div class="panel-heading"><div><span class="eyebrow">ALERTAS QUE MUDAM O PLANO</span><h2>O que merece atenção primeiro</h2><p>O alerta serve para decidir a próxima ação; marque o acompanhamento localmente quando já tiver conferido.</p></div>${svgIcon("alert")}</div><div class="preexam-alert-grid">${alerts.map(preExamAlertMarkup).join("") || '<p class="preexam-empty">Nenhum alerta cadastrado.</p>'}</div></section>
     <section class="panel preexam-hero"><div><div class="preexam-hero__top"><div><span class="eyebrow">ESTADO DA ESTRUTURA</span><h2>${esc(model.title || "Pré-prova pronta para ativar")}</h2><p>${esc(model.description || "A estrutura aguarda o próximo edital.")}</p></div>${statusChip(ready ? "Pronto para ativar" : "Em configuração", ready ? "good" : "warning")}</div></div><div class="preexam-trigger"><strong>Gatilho de ativação</strong><span>${esc(model.activationRule || "Ativar somente após confirmar edital, cargo, banca e data de prova.")}</span></div></section>
     <section class="metric-grid">${metricCard("Status", ready ? "Standby" : "Configuração", "sem concurso novo inventado", "aqua")}${metricCard("Blocos preparados", fmt(checklist.length), "recebem dados do próximo edital", "lime")}${metricCard("Saídas previstas", fmt(outputs.length), "entregas do ciclo ativado", "violet")}${metricCard("Ciclo anterior", previousCycle ? "Pós-prova" : "Nenhum", previousCycle ? "SEDES preservada em página própria" : "aguardando primeiro edital", "amber")}</section>
     <section class="preexam-layout"><article class="panel preexam-checklist"><div class="panel-heading"><div><span class="eyebrow">CHECKLIST DE ATIVAÇÃO</span><h2>O que entra quando houver edital</h2><p>Cada bloco é criado para o novo concurso, sem misturar metas, erros ou fontes de outro projeto.</p></div>${svgIcon("check")}</div><ol class="preexam-checklist-list">${checklist.map((item, index) => `<li class="preexam-checklist-item"><span>${String(index + 1).padStart(2, "0")}</span><div><strong>${esc(item.title)}</strong><small>${esc(item.detail)}</small></div></li>`).join("")}</ol></article><article class="panel preexam-output"><div class="panel-heading"><div><span class="eyebrow">SAÍDAS DO PRÓXIMO CICLO</span><h2>Pronto para receber</h2><p>O conteúdo aparece quando a ativação for autorizada pelos dados oficiais.</p></div>${svgIcon("layers")}</div>${outputs.map((item) => `<span class="preexam-output-tag">${esc(item)}</span>`).join("")}</article></section>
@@ -370,11 +491,19 @@ function postExamCargoMarkup(id, exam) {
   return `<article class="panel postexam-cargo-card postexam-cargo-card--${esc(id)}"><div class="postexam-cargo-head"><div><span class="eyebrow">${esc(id === "tdas" ? "TDAS · CARGO 202" : "EDAS · CARGO 400")}</span><h3>${esc(exam?.role || "Cargo SEDES/DF")}</h3><small>${esc(exam?.session || "Turno não informado")} · ${esc(exam?.examType ? `Tipo ${exam.examType}` : "prova objetiva")}</small></div>${statusChip(result.objectiveMinimumsMet ? "Mínimos objetivos" : "Acompanhar mínimos", result.objectiveMinimumsMet ? "good" : "warning")}</div><div class="postexam-cargo-score"><span>Nota objetiva preliminar</span><strong>${esc(total)}</strong><small>${esc(details)}</small></div><p>Esta nota é uma leitura preliminar baseada no gabarito publicado; não substitui resultado, classificação ou convocação oficial.</p></article>`;
 }
 
-function postExamMilestoneMarkup(item) {
+function postExamMilestoneMarkup(item, index) {
   const status = item?.status || "pending";
   const statusLabel = { done: "Concluído", current: "Agora", upcoming: "Programado", pending: "Aguardando" }[status] || "Em acompanhamento";
   const dateLabel = item?.start && item?.end ? `${dateTimeBR(item.start)} até ${dateTimeBR(item.end)} (Brasília)` : dateBR(item?.date);
-  return `<article class="postexam-milestone postexam-milestone--${esc(status)}"><span class="postexam-milestone-dot">${status === "done" ? svgIcon("check") : status === "current" ? svgIcon("clock") : svgIcon("flag")}</span><div><div class="postexam-milestone-head"><strong>${esc(item?.label || "Marco")}</strong>${statusChip(statusLabel, status === "done" ? "good" : status === "current" ? "amber" : "aqua")}</div><span>${esc(dateLabel)}</span><p>${esc(item?.detail || "")}</p></div></article>`;
+  const start = item?.start || item?.date || "";
+  const end = item?.end || (!String(start).includes("T") ? addCalendarDay(start) : "");
+  const alertId = localAlertKey("milestone", item, index);
+  const done = Boolean(readLocalAlertState()[alertId]?.done);
+  const relative = relativeDateLabel(start);
+  const title = item?.label || "Marco SEDES/DF";
+  const description = `${item?.detail || ""} Acompanhar a publicação oficial da banca.`.trim();
+  const actions = start ? `<div class="postexam-milestone__actions"><button class="local-alert-action" type="button" data-alert-toggle="${esc(alertId)}" aria-pressed="${done ? "true" : "false"}">${done ? "Acompanhado" : "Marcar acompanhado"}</button><button class="local-alert-action" type="button" data-calendar-event data-calendar-title="${esc(title)}" data-calendar-start="${esc(start)}" data-calendar-end="${esc(end)}" data-calendar-description="${esc(description)}">Adicionar ao calendário</button></div>` : "";
+  return `<article class="postexam-milestone postexam-milestone--${esc(status)} ${done ? "is-done" : ""}" data-alert-id="${esc(alertId)}"><span class="postexam-milestone-dot">${status === "done" ? svgIcon("check") : status === "current" ? svgIcon("clock") : svgIcon("flag")}</span><div><div class="postexam-milestone-head"><strong>${esc(title)}</strong>${statusChip(statusLabel, status === "done" ? "good" : status === "current" ? "amber" : "aqua")}</div><span>${esc(dateLabel)}${relative ? ` <em>${esc(relative)}</em>` : ""}</span><p>${esc(item?.detail || "")}</p>${actions}</div></article>`;
 }
 
 function postExamView() {
@@ -398,7 +527,7 @@ function postExamView() {
     <section class="panel postexam-action-panel"><div class="postexam-action-copy"><span class="eyebrow">AÇÃO DE AGORA</span><h2>${esc(fu?.nextAction || "Acompanhar a próxima publicação oficial.")}</h2><p>O painel preserva a separação entre anotação do candidato, gabarito preliminar, recurso e resultado oficial.</p></div><div class="postexam-action-window"><span>Janela de recursos</span><strong>${resourceWindow.start && resourceWindow.end ? `${esc(dateBR(resourceWindow.start))} a ${esc(dateBR(resourceWindow.end))}` : "A confirmar"}</strong><small>${resourceWindow.start && resourceWindow.end ? "Horário de Brasília · sem extensão" : "Consultar a fonte oficial"}</small></div></section>
     <section class="metric-grid">${metricCard("TDAS 202", scoring.tdas?.preliminary?.totalScore == null ? "Pendente" : `${fmt(scoring.tdas.preliminary.totalScore)}/100`, "Técnico Administrativo · preliminar", "lime")}${metricCard("EDAS 400", scoring.edas?.preliminary?.totalScore == null ? "Pendente" : `${fmt(scoring.edas.preliminary.totalScore)}/100`, "Administração · preliminar", "aqua")}${metricCard("Divergências", differences == null ? "—" : fmt(differences), "candidato × gabarito preliminar", "amber")}${metricCard("Próxima publicação", nextMilestone.date ? dateBR(nextMilestone.date) : "—", nextMilestone.label || "resultado oficial", "violet")}</section>
     <section class="postexam-cargo-grid" aria-label="Acompanhamento por cargo">${exams.map(([id, exam]) => postExamCargoMarkup(id, exam)).join("")}</section>
-    <section class="panel postexam-calendar"><div class="panel-heading"><div><span class="eyebrow">CRONOGRAMA SEDES/DF</span><h2>Datas e alertas importantes</h2><p>Calendário consolidado para os dois cargos prestados. A publicação definitiva da banca prevalece sobre qualquer previsão.</p></div>${svgIcon("clock")}</div><div class="postexam-milestone-list">${milestones.map(postExamMilestoneMarkup).join("") || '<p class="postexam-empty">Cronograma aguardando publicação estruturada.</p>'}</div><div class="postexam-source-bar"><span>${svgIcon("shield")} Fonte de confirmação: Instituto Quadrix</span><a href="${esc(contestSource)}" target="_blank" rel="noreferrer">Abrir página oficial ${svgIcon("external")}</a>${sourceDocuments.resourceNoticePdf ? `<a href="${esc(sourceDocuments.resourceNoticePdf)}" target="_blank" rel="noreferrer">Comunicado de recursos ${svgIcon("external")}</a>` : ""}</div></section>
+    <section class="panel postexam-calendar"><div class="panel-heading"><div><span class="eyebrow">CRONOGRAMA SEDES/DF</span><h2>Datas e alertas importantes</h2><p>Calendário consolidado para os dois cargos prestados. A publicação definitiva da banca prevalece sobre qualquer previsão. Os acompanhamentos ficam salvos apenas neste navegador.</p></div>${svgIcon("clock")}</div><div class="postexam-milestone-list">${milestones.map(postExamMilestoneMarkup).join("") || '<p class="postexam-empty">Cronograma aguardando publicação estruturada.</p>'}</div><div class="postexam-source-bar"><span>${svgIcon("shield")} Fonte de confirmação: Instituto Quadrix</span><a href="${esc(contestSource)}" target="_blank" rel="noreferrer">Abrir página oficial ${svgIcon("external")}</a>${sourceDocuments.resourceNoticePdf ? `<a href="${esc(sourceDocuments.resourceNoticePdf)}" target="_blank" rel="noreferrer">Comunicado de recursos ${svgIcon("external")}</a>` : ""}</div></section>
     <div class="postexam-control-slot" id="postExamControlSlot" data-post-exam-control-slot></div>
     <div id="postExamPage" data-post-exam-page>${hasFollowUp ? "" : `<section class="panel postexam-fallback"><span class="eyebrow">DADOS AGUARDANDO</span><h3>O snapshot ainda não contém o acompanhamento estruturado.</h3><p>Recarregue os dados publicados ou abra Operações para conferir a cadeia de atualização.</p><button class="secondary-button" type="button" data-refresh>${svgIcon("refresh")} Recarregar snapshot</button></section>`}</div>
   </div>`;
@@ -473,6 +602,7 @@ function sourcesView() {
     <section class="panel truth-panel"><div class="panel-heading"><div><span class="eyebrow">CADEIA DE VERDADE</span><h2>Quem prevalece quando há divergência</h2></div>${svgIcon("database")}</div><div class="truth-chain">${data.governance.truthChain.map((label, index) => `<div class="truth-node ${index === 0 ? "primary" : ""}"><span>0${index + 1}</span><strong>${esc(label)}</strong>${index < data.governance.truthChain.length - 1 ? svgIcon("arrow") : ""}</div>`).join("")}</div></section>
     <section class="audit-grid"><article class="panel audit-check-panel"><div class="panel-heading"><div><span class="eyebrow">VERIFICAÇÕES</span><h2>Fechamento automático</h2></div>${svgIcon("shield")}</div><div class="audit-checks">${checks.map(([label, ok]) => `<div class="audit-check ${ok ? "ok" : "bad"}"><span>${svgIcon(ok ? "check" : "alert")}</span><strong>${esc(label)}</strong><small>${ok ? "aprovado" : "revisar"}</small></div>`).join("")}</div></article><article class="panel source-summary"><span class="eyebrow">COBERTURA PUBLICADA</span><h2>O que o site sabe hoje</h2><div class="source-summary-list"><div><span>Registros brutos</span><strong>${fmt(data.metrics.history.rawRecords)}</strong></div><div><span>Questões mensuráveis</span><strong>${fmt(data.metrics.history.questions)}</strong></div><div><span>Linhas temáticas tratadas</span><strong>${fmt(treatedTopicalSeed.length)}</strong></div><div><span>Linhas só de matéria</span><strong>${fmt(subjectCount)}</strong></div><div><span>Atividades tratadas</span><strong>${fmt(treatedActivitySeed.length)}</strong></div><div><span>Lançamentos financeiros</span><strong>${fmt(data.financeEntries.length)}</strong></div></div></article></section>
     <section class="panel source-map"><div class="panel-heading"><div><span class="eyebrow">FONTES VIGENTES</span><h2>Bancos que alimentam o plano</h2></div><a class="text-button" href="${esc(data.meta.sourceUrl)}" target="_blank" rel="noreferrer">Abrir Notion ${svgIcon("external")}</a></div><div class="source-grid">${data.governance.sources.map((source) => `<article><div class="source-icon">${svgIcon("database")}</div><div><strong>${esc(source.name)}</strong><code>${esc(source.id.slice(0, 8))}…</code></div>${statusChip(source.status, "aqua")}</article>`).join("")}</div></section>
+    <section class="panel privacy-panel"><div class="privacy-panel-icon">${svgIcon("shield")}</div><div><span class="eyebrow">PUBLICAÇÃO PÚBLICA</span><h2>Revise o que fica exposto antes de compartilhar.</h2><p>Este endereço é público. O navegador recebe o snapshot tratado, sem credenciais, mas desempenho, histórico e custos podem aparecer no painel. Use apenas informações que você aceita tornar públicas.</p></div><div class="privacy-panel-points"><span>Sem credenciais</span><span>Snapshot tratado</span><span>Dados pessoais visíveis</span></div></section>
     <section class="panel governance-panel"><div class="panel-heading"><div><span class="eyebrow">REGRAS DE GOVERNANÇA</span><h2>O que o painel se recusa a fazer</h2></div></div><ol>${data.governance.rules.map((rule) => `<li><span>${String(data.governance.rules.indexOf(rule) + 1).padStart(2, "0")}</span><p>${esc(rule)}</p></li>`).join("")}</ol></section>
   </div>`;
 }
@@ -772,6 +902,26 @@ function registerPwa() {
 
 function bindShell() {
   document.addEventListener("click", (event) => {
+    const alertToggle = event.target.closest("[data-alert-toggle]");
+    if (alertToggle) {
+      event.preventDefault();
+      const id = alertToggle.dataset.alertToggle;
+      const done = alertToggle.getAttribute("aria-pressed") !== "true";
+      const saved = readLocalAlertState();
+      if (done) saved[id] = { done: true, updatedAt: new Date().toISOString() };
+      else delete saved[id];
+      const persisted = writeLocalAlertState(saved);
+      syncLocalAlertButton(alertToggle, done);
+      alertToggle.closest("[data-alert-id]")?.classList.toggle("is-done", done);
+      toast(persisted ? (done ? "Acompanhamento salvo neste navegador." : "Acompanhamento local removido.") : "Acompanhamento atualizado nesta sessão.");
+      return;
+    }
+    const calendarEvent = event.target.closest("[data-calendar-event]");
+    if (calendarEvent) {
+      event.preventDefault();
+      exportCalendarEvent(calendarEvent);
+      return;
+    }
     const viewButton = event.target.closest("[data-view]");
     if (viewButton) {
       const scope = viewButton.dataset.performanceScopeJump;

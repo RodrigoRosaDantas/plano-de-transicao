@@ -206,7 +206,7 @@ function enhanceMoreOperations() {
       <div id="managerHealthGrid" class="manager-health-grid">
         <div><small>Rede</small><strong id="managerHealthNetwork">${navigator.onLine ? 'Online' : 'Offline'}</strong></div>
         <div><small>Cache PWA</small><strong id="managerHealthCache">Verificando</strong></div>
-        <div><small>Interface</small><strong>v10</strong></div>
+        <div><small>Interface</small><strong>${esc(window.__PLANO_UI_RELEASE__ || 'v10')}</strong></div>
       </div>`);
   }
   const ecosystem = $('.manager-ecosystem-actions', sheet) || $('.sheet-actions', sheet);

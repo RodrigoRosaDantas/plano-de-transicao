@@ -22,7 +22,7 @@ for (const asset of [
   'assets/exam-day-v21.js?v=31',
   'assets/exam-day-v21-shell.js?v=21'
 ]) has(index, asset, 'index v21');
-assert.ok(index.indexOf('exam-day-v21-bootstrap.js?v=31') < index.indexOf('assets/work-app.css?v=15'), 'bootstrap precisa nascer no head antes do app-base');
+assert.ok(index.indexOf('exam-day-v21-bootstrap.js?v=31') < index.indexOf('assets/work-app.css?v=35'), 'bootstrap precisa nascer no head antes do app-base');
 assert.ok(index.indexOf('exam-day-v21-shell.js?v=21') > index.indexOf('exam-day-v21.js?v=31'), 'shell v21 deve carregar após a aba');
 
 // Legado v18/v19/v20 não deve mais compor o runtime nem o cache do PWA.
@@ -39,7 +39,7 @@ for (const legacy of [
   "'./assets/exam-day-v20.css'",
   "'./assets/exam-day-v20.js'"
 ]) lacks(sw, legacy, 'PWA sem camada legada');
-has(sw, "const CACHE='plano-transicao-v34-pre-edital'", 'cache consolidado v34');
+has(sw, "const CACHE='plano-transicao-v35-pre-edital'", 'cache consolidado v35');
 
 for (const asset of [
   "'./assets/exam-day-v21-bootstrap.js'",

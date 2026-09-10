@@ -20,14 +20,14 @@
   <meta name="twitter:description" content="Da preparação à posse: atenção primeiro, contexto sob demanda e decisões em uma única central." />
   <meta name="twitter:image" content="https://rodrigorosadantas.github.io/plano-de-transicao/assets/og.png" />
   <title>Plano de Transição</title>
-  <script>window.__PLANO_SEPARATE_POST_EXAM__ = true; window.__PLANO_UI_RELEASE__ = "v34";</script>
+  <script>window.__PLANO_SEPARATE_POST_EXAM__ = true; window.__PLANO_UI_RELEASE__ = "v35";</script>
   <script src="assets/exam-day-v21-bootstrap.js?v=31"></script>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="assets/work-app.css?v=15" />
-  <link rel="stylesheet" href="assets/transition-pages-v29.css?v=34&home=37" />
-  <link rel="stylesheet" href="assets/pre-post-v33.css?v=34" />
+  <link rel="stylesheet" href="assets/work-app.css?v=35" />
+  <link rel="stylesheet" href="assets/transition-pages-v29.css?v=35&home=37" />
+  <link rel="stylesheet" href="assets/pre-post-v33.css?v=35" />
   <link rel="stylesheet" href="assets/work-manager-v9.css?v=15" />
   <link rel="stylesheet" href="assets/work-intelligence-v10.css?v=15" />
   <link rel="stylesheet" href="assets/work-decisions-v11.css?v=15" />
@@ -127,18 +127,26 @@
       <div><span>Estado dos dados</span><strong id="moreSyncTitle">Carregando snapshot…</strong><small id="moreSyncDetail">Notion → GitHub Actions → site</small></div>
       <button id="moreRefreshBtn" class="primary-button" type="button" data-refresh aria-label="Recarregar snapshot publicado" title="Recarrega do GitHub Pages o snapshot mais recente já publicado. Não dispara o Notion diretamente."><span data-icon="refresh"></span>Recarregar snapshot</button>
     </section>
-    <div class="sheet-grid">
+    <div class="sheet-nav-group">
+      <div class="sheet-nav-label"><span>Navegação principal</span><small>Comece por aqui</small></div>
+      <div class="sheet-grid sheet-grid--primary">
       <button type="button" data-view="command"><span data-icon="dashboard"></span><b>Agora</b><small>Comando e prioridades</small></button>
       <button type="button" data-view="performance"><span data-icon="chart"></span><b>Desempenho</b><small>Matérias e visão geral</small></button>
       <button type="button" data-view="journey"><span data-icon="route"></span><b>Jornada</b><small>Marcos e evolução</small></button>
       <button type="button" data-view="pre-exam" aria-label="Pré-prova / Pré-edital"><span data-icon="book"></span><b>Pré-edital</b><small>Pré-prova, cargos e notícias</small></button>
       <button type="button" data-view="post-exam"><span data-icon="flag"></span><b>Pós-prova</b><small>Gabarito, recursos e resultado</small></button>
+      </div>
+    </div>
+    <details class="sheet-more-group">
+      <summary><span><b>Mais áreas</b><small>Concursos, investimentos, estratégia, fontes e operações</small></span><span data-icon="chevron"></span></summary>
+      <div class="sheet-grid sheet-grid--secondary">
       <button type="button" data-view="exams"><span data-icon="flag"></span><b>Concursos</b><small>Provas e resultados</small></button>
       <button type="button" data-view="finance"><span data-icon="wallet"></span><b>Investimentos</b><small>Custos por ciclo</small></button>
       <button type="button" data-view="strategy"><span data-icon="compass"></span><b>Estratégia</b><small>Próximas decisões</small></button>
       <button type="button" data-view="sources"><span data-icon="database"></span><b>Fontes</b><small>Cadeia e auditoria</small></button>
       <button type="button" data-view="operations"><span data-icon="settings"></span><b>Operações</b><small>Sincronização e PWA</small></button>
-    </div>
+      </div>
+    </details>
     <div class="sheet-section-title"><span>Ferramentas rápidas</span><small>Sem sair da central</small></div>
     <div class="sheet-actions">
       <button id="installBtn" class="action-button hidden" type="button" data-install><span data-icon="download"></span>Instalar aplicativo</button>
@@ -157,9 +165,9 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="assets/work-app.js?v=34&home=37"></script>
+  <script type="module" src="assets/work-app.js?v=35&home=37"></script>
   <script type="module" src="assets/work-manager-v9.js?v=15"></script>
-  <script type="module" src="assets/work-intelligence-v10.js?v=15"></script>
+  <script type="module" src="assets/work-intelligence-v10.js?v=35"></script>
   <script type="module" src="assets/work-decisions-v11.js?v=15"></script>
   <script type="module" src="assets/work-decisions-v11-fix.js?v=15"></script>
   <script type="module" src="assets/decision-history-v12.js?v=15"></script>
