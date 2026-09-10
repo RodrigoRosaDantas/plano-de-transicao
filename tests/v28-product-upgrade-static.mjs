@@ -40,6 +40,7 @@ expect('v28 separa anotação do candidato e gabarito preliminar', source.includ
 expect('v28 expõe acertos, erros e pontos por questão', source.includes('Ver o cruzamento das') && source.includes('Sua anotação') && source.includes('Pontos'));
 expect('v28 expõe pré-análise de recursos', source.includes('Pré-análise de recursos') && source.includes('Não priorizar só pela divergência'));
 expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=29') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
+expect('v28 mantém auditoria questão a questão no host dedicado', followUp.includes('data-v28-question-audit') && followUp.includes('questionAudit') && source.includes('window.__planoPostExamAudit'));
 expect('v28 mostra gráficos de resultado', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-stack') && followUp.includes('v28-followup-area-row'));
 expect('v28 mostra linha do tempo oficial', followUp.includes('v28-followup-milestones') && followUp.includes('LINHA DO TEMPO OFICIAL'));
 expect('v28 não re-renderiza o painel em loop', followUp.includes('const followUpSignature =') && (followUp.split('const signature = followUpSignature(data);').length - 1) === 2);
