@@ -631,10 +631,10 @@ function updateMoreSheet() {
 
 function updateShell() {
   const data = state.data;
-  if ($("#missionText")) $("#missionText").textContent = data.mission;
+  if ($("#missionText")) $("#missionText").textContent = data.meta.phase === "post-exam" ? "Preservar o histórico, acompanhar o resultado e escolher o próximo movimento entre SEEDF e TJDFT." : data.mission;
   const milestone = $("#nextMilestone");
   if (milestone) milestone.innerHTML = data.meta.phase === "post-exam"
-    ? '<span>Foco do painel</span><strong>DADOS E DECISÕES</strong><small>plano de transição</small>'
+    ? '<span>Próximos ciclos</span><strong>SEEDF + TJDFT</strong><small>preparação independente</small>'
     : sedesExamsCompleted()
       ? '<span>Próximo passo</span><strong>Registrar resultados</strong><small>TDAS e EDAS · provas realizadas</small>'
       : `<span>Próximo marco</span><strong>${dateBR(data.meta.nextExam, true).toUpperCase()}</strong><small>SEDES/DF 2026</small>`;

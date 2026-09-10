@@ -583,3 +583,7 @@
   .transition-kpi strong { font-size:2rem; }
   .transition-decision h3 { font-size:1rem; }
 }
+/* v33 — remove o controle técnico legado do Agora redesenhado */
+.command-view #v14FocusControl {
+  display: none !important;
+}
