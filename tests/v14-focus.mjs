@@ -34,7 +34,8 @@ await scenario('desktop: controle legado de foco é preservado, mas sai da hiera
 
   if (!(await page.locator('#v13ManagerInbox').isVisible())) throw new Error('Caixa gerencial de atenção foi removida junto com o foco legado.');
   if (!(await page.locator('#managerNowBoard').isVisible())) throw new Error('Resumo gerencial Agora deixou de existir no pós-prova.');
-  if (!(await page.locator('.v27-home-status').isVisible())) throw new Error('Resumo pós-prova não substituiu corretamente o foco legado.');
+  if (!(await page.locator('.plan-control-card').isVisible())) throw new Error('Cartão de controle do plano não está visível na Home.');
+  if (await page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view [data-post-exam-page]').count()) throw new Error('Detalhamento pós-prova vazou para a Home.');
 
   const mode = await page.locator('.command-view').getAttribute('data-v14-mode');
   if (!['expanded', 'focus'].includes(mode || '')) throw new Error(`Estado v14 deixou de ser preservado internamente: ${mode}`);
@@ -49,7 +50,8 @@ await scenario('mobile: pós-prova reduz a Home sem reexpor controles pré-prova
   if (await page.locator('.command-view > .focus-board').isVisible()) throw new Error('Quadro de foco pré-prova ficou visível no mobile pós-prova.');
   if (await page.locator('.command-view > .priority-grid').isVisible()) throw new Error('Prioridades pré-prova ficaram visíveis no mobile pós-prova.');
   if (!(await page.locator('#v13ManagerInbox').isVisible())) throw new Error('Atenção gerencial precisa continuar acessível no mobile.');
-  if (!(await page.locator('.v27-home-status').isVisible())) throw new Error('Status pós-prova precisa ser a entrada principal no mobile.');
+  if (!(await page.locator('.plan-control-card').isVisible())) throw new Error('Cartão de controle do plano precisa continuar acessível no mobile.');
+  if (await page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view [data-post-exam-page]').count()) throw new Error('Detalhamento pós-prova vazou para a Home móvel.');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Pós-prova mobile criou overflow horizontal: ${overflow}px`);
