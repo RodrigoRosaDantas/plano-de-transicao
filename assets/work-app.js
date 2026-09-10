@@ -184,65 +184,76 @@ function horizontalBars(items, valueKey = "questions", formatter = fmt, maxRows 
 function commandView() {
   const data = state.data;
   const m = data.metrics;
-  const clock = countdownParts();
-  const examsCompleted = sedesExamsCompleted();
-  const tdasProgress = m.tdas.stepsTotal ? m.tdas.stepsDone / m.tdas.stepsTotal * 100 : 0;
-  const tdasWeak = weakest("tdas");
-  const edasWeak = weakest("edas");
-  const historicalWeak = weakest("historical");
-  const focus = [tdasWeak, edasWeak, historicalWeak].filter(Boolean);
-  const sourceReady = data.meta.live && !(data.meta.syncWarnings || []).length;
-  const hasActiveExam = Boolean(data.meta.nextExam) && !examsCompleted;
-  const examSummary = data.exams.filter(exam => exam.id?.startsWith('sedes-2026-'))
-    .map(exam => `${exam.role.split(' — ')[0]}: ${exam.attendance === 'completed' ? 'prova realizada' : 'realização não confirmada'}`).join(' · ');
-  const planCard = hasActiveExam
-    ? '<article class="panel countdown-card"><div class="countdown-topline"><span class="section-kicker">' + svgIcon("clock") + ' Prova SEDES/DF</span><span>06/09/2026 · Brasília</span></div><div class="countdown-body"><div class="countdown-value"><strong data-countdown-days>' + clock.days + '</strong><span>' + (clock.ended ? 'dias desde a data da prova' : 'dias') + '</span></div><div class="brasilia-clock">' + svgIcon("clock") + '<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div><p>' + esc(examSummary || 'Prova ativa no plano. Consulte a realização e os resultados de cada cargo em Concursos.') + '</p></article>'
-    : '<article class="panel countdown-card plan-control-card"><div class="countdown-topline"><span class="section-kicker">' + svgIcon("route") + ' Plano de transição</span><span>Dados publicados · ' + dateBR(data.meta.generatedAt) + '</span></div><div class="countdown-body"><div class="countdown-value"><strong>' + fmt(m.history.questions) + '</strong><span>questões no histórico</span></div><div class="brasilia-clock">' + svgIcon("chart") + '<div><strong>' + pct(m.history.accuracy) + '</strong><span>aproveitamento reconciliado</span></div></div></div><p>' + (data.meta.phase === 'post-exam' ? 'A SEDES/DF está preservada como histórico e acompanhamento próprio. O painel Agora volta ao que sustenta a transição: dados, desempenho, fontes e decisões.' : 'Sem edital novo confirmado, a estrutura de pré-prova permanece em prontidão. Use este painel para acompanhar dados, desempenho, fontes e decisões.') + '</p></article>';
-  return `<div class="view-stack command-view">
-    <section class="panel phase-router" aria-label="Fases separadas do ciclo">
-      <div class="phase-router__head">
-        <div><span class="eyebrow">ESTRUTURA DO CICLO</span><h2>Pré-prova e Pós-prova estão em páginas próprias</h2><p>O Agora preserva dados, acompanhamento e controles do plano de transição. Abra cada fase para ver o conteúdo completo, sem misturar o próximo concurso com a SEDES/DF.</p></div>
-        <span class="phase-router__badge">Fases separadas</span>
+  const sourceReady = data.meta.live && !(data.meta.syncWarnings || []).length && !(data.meta.dataWarnings || []).length;
+  const history = [...(data.historyCycles || [])].sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
+  const historyChart = lineChart(history.slice(-6));
+  const weakestHistorical = weakest("historical");
+  const confirmed = data.financeSummary?.totals?.confirmed;
+  const pending = Number(data.financeSummary?.totals?.pending || 0) + Number(data.financeSummary?.totals?.unconfirmed || 0);
+  const nextAction = data.meta.phase === "post-exam"
+    ? "Acompanhar o resultado oficial da SEDES/DF e escolher a próxima preparação com dados."
+    : "Ativar a trilha do próximo edital quando concurso, banca e data estiverem confirmados.";
+  return \`<div class="view-stack command-view">
+    <section class="panel transition-now-hero">
+      <div class="transition-now-copy">
+        <span class="eyebrow">AGORA · PLANO DE TRANSIÇÃO</span>
+        <h2>O concurso terminou. O plano continua.</h2>
+        <p>Este painel não é mais uma sala de prova. É a central para preservar o histórico, acompanhar o que ainda está pendente e decidir o próximo movimento entre SEEDF e TJDFT.</p>
       </div>
-      <div class="phase-router__actions">
-        <button class="phase-router__action" type="button" data-view="pre-exam"><span class="phase-router__icon">${svgIcon("book")}</span><span><b>Pré-prova</b><small>Prontidão para o próximo edital</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
-        <button class="phase-router__action" type="button" data-view="post-exam"><span class="phase-router__icon">${svgIcon("flag")}</span><span><b>Pós-prova</b><small>Gabarito, recursos e resultado da SEDES/DF</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
+      <div class="transition-now-status">
+        <span class="status-dot"></span>
+        <div><strong>PÓS-PROVA EM ACOMPANHAMENTO</strong><small>SEDES/DF preservada como histórico, sem ocupar a operação futura.</small></div>
+        <button class="secondary-button" type="button" data-view="post-exam">\${svgIcon("flag")} Abrir acompanhamento</button>
       </div>
     </section>
 
-    <section class="cockpit-grid">
-      ${planCard}
-      <div class="target-stack">
-        <button class="panel target-card" type="button" data-view="performance" data-performance-scope-jump="tdas">
-          <div class="target-card-top"><span>${svgIcon("target")} Técnico Administrativo</span><b>Cargo 202</b></div>
-          <div class="target-card-main"><div><small>Projeto TDAS · ${esc(data.priorities.find(item => item.id === 'tdas')?.status || '')}</small><h2>${m.tdas.stepsDone} de ${m.tdas.stepsTotal} etapas de preparação</h2></div><strong>${pct(m.tdas.accuracy)}</strong></div>
-          ${progress(tdasProgress)}<div class="target-card-footer"><span>${fmt(m.tdas.questions)} questões · ${fmt(m.tdas.errors)} erros</span><span>Abrir ${svgIcon("chevron")}</span></div>
+    <section class="transition-kpi-grid" aria-label="Resumo do plano">
+      <article class="panel transition-kpi"><span>Capital acumulado</span><strong>\${fmt(m.history.questions)}</strong><small>questões no histórico reconciliado</small></article>
+      <article class="panel transition-kpi aqua"><span>Aproveitamento geral</span><strong>\${pct(m.history.accuracy, 1)}</strong><small>acertos sobre o histórico mensurável</small></article>
+      <article class="panel transition-kpi amber"><span>Investimento confirmado</span><strong>\${money(confirmed)}</strong><small>\${pending ? \`\${fmt(pending)} pendência(s) em aberto\` : "sem pendências registradas"}</small></article>
+    </section>
+
+    <section class="panel transition-next">
+      <div class="panel-heading">
+        <div><span class="eyebrow">PRÓXIMO CICLO</span><h2>Escolher onde colocar energia agora</h2><p>Dois projetos independentes, uma decisão consciente. O próximo edital define a ativação da pré-prova.</p></div>
+        <button class="text-button" type="button" data-view="pre-exam">Abrir pré-prova \${svgIcon("arrow")}</button>
+      </div>
+      <div class="next-cycle-grid">
+        <button class="next-cycle-card seedf" type="button" data-view="pre-exam" data-project="seedf">
+          <span class="next-cycle-icon">\${svgIcon("layers")}</span><div><strong>SEEDF</strong><small>Trilha administrativa e educação · projeto independente</small><b>Pré-edital · prontidão para receber o edital</b></div><span class="next-cycle-arrow">\${svgIcon("chevron")}</span>
         </button>
-        <button class="panel target-card edas" type="button" data-view="performance" data-performance-scope-jump="edas">
-          <div class="target-card-top"><span>${svgIcon("layers")} Administração</span><b>Cargo 400</b></div>
-          <div class="target-card-main"><div><small>Projeto EDAS · ${esc(data.priorities.find(item => item.id === 'edas')?.status || '')}</small><h2>${fmt(m.edas.questions)} questões de preparação</h2></div><strong>${pct(m.edas.accuracy)}</strong></div>
-          ${progress(m.edas.accuracy)}<div class="target-card-footer"><span>${fmt(m.edas.errorNotebook)} itens no caderno · ${fmt(m.edas.caseStudies)} casos</span><span>Abrir ${svgIcon("chevron")}</span></div>
+        <button class="next-cycle-card tjdft" type="button" data-view="pre-exam" data-project="tjdft">
+          <span class="next-cycle-icon">\${svgIcon("scale")}</span><div><strong>TJDFT</strong><small>Trilha de tribunais · projeto independente</small><b>Pré-edital · base comum preservada</b></div><span class="next-cycle-arrow">\${svgIcon("chevron")}</span>
         </button>
       </div>
     </section>
 
-    <section class="command-grid">
-      <article class="panel sync-command-card"><div class="sync-command-profile"><span class="profile-orb">${svgIcon("database")}</span><div><span>Dados do plano</span><strong>${sourceReady ? "Notion reconciliado" : "Snapshot preservado"}</strong></div></div><h2>Seu painel começa pela fonte certa.</h2><p>O último corte publicado foi gerado em ${new Date(data.meta.generatedAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).replace(".", "")}. Atualize o snapshot visível ou abra a sincronização segura do Notion.</p><div class="command-actions"><button class="primary-button" type="button" data-refresh>${svgIcon("refresh")} Atualizar dados</button><button class="secondary-button" type="button" data-view="operations">${svgIcon("settings")} Central de operações</button></div></article>
-      <article class="panel action-card"><div><span class="eyebrow">DECISÃO OPERACIONAL</span><h2>Seu trabalho agora é converter volume em ponto líquido.</h2></div><p><strong>${fmt(m.history.questions)} questões mensuráveis</strong> já formam uma base rara. O ganho marginal está menos em “ver tudo” e mais em escolher o próximo bloco com frieza.</p><div class="command-actions"><button class="primary-button" type="button" data-view="performance">${svgIcon("chart")} Ver prioridades</button><button class="secondary-button" type="button" data-view="exams">${svgIcon("flag")} Régua de prova real</button><button class="secondary-button" type="button" data-view="finance">${svgIcon("wallet")} Ver investimento</button></div></article>
+    <section class="transition-decision-grid" aria-label="Controles da transição">
+      <article class="panel transition-decision primary">
+        <span class="eyebrow">PRÓXIMA AÇÃO</span><h3>\${esc(nextAction)}</h3><p>O dado guia o movimento; a ansiedade não ganha um botão próprio.</p>
+        <div class="command-actions"><button class="primary-button" type="button" data-view="strategy">\${svgIcon("compass")} Ver estratégia</button><button class="secondary-button" type="button" data-view="journey">\${svgIcon("route")} Ver jornada</button></div>
+      </article>
+      <article class="panel transition-decision">
+        <span class="eyebrow">ESTADO DA FONTE</span><h3>\${sourceReady ? "Snapshot reconciliado" : "Snapshot preservado com ressalvas"}</h3><p>\${sourceReady ? "Os dados publicados estão sem avisos de sincronização." : "Há ressalvas que precisam ser lidas antes de decidir."}</p>
+        <button class="text-button" type="button" data-view="sources">Abrir fontes e auditoria \${svgIcon("arrow")}</button>
+      </article>
+      <article class="panel transition-decision">
+        <span class="eyebrow">PONTO DE ATENÇÃO</span><h3>\${weakestHistorical ? esc(weakestHistorical.name) : "Nenhuma exceção identificada"}</h3><p>\${weakestHistorical ? \`\${fmt(weakestHistorical.questions)} questões · \${pct(weakestHistorical.accuracy, 1)} de aproveitamento no recorte mais frágil.\` : "O histórico está pronto para nova leitura."}</p>
+        <button class="text-button" type="button" data-view="performance">Abrir desempenho \${svgIcon("arrow")}</button>
+      </article>
     </section>
 
-    <section class="priority-grid" aria-label="Prioridades por dados">
-      ${[tdasWeak, edasWeak, historicalWeak].map((row, index) => row ? `<article class="panel priority-card ${index === 1 ? "aqua" : index === 2 ? "coral" : ""}"><div class="priority-card-head"><span>${index === 0 ? "Atenção TDAS" : index === 1 ? "Atenção EDAS" : "Risco histórico"}</span><strong>${pct(row.accuracy, 1)}</strong></div><h3>${esc(row.name)}</h3><p>${fmt(row.questions)} questões · ${fmt(row.questions - row.correct)} erros observados no recorte tratado.</p>${progress(row.accuracy)}<button class="text-button" type="button" data-open-subject="${esc(row.name)}" data-open-scope="${row.scope}">Analisar matéria ${svgIcon("arrow")}</button></article>` : "").join("")}
+    <section class="panel transition-history">
+      <div class="panel-heading"><div><span class="eyebrow">HISTÓRICO CONSOLIDADO</span><h2>O que foi construído até aqui</h2><p>A curva mostra evolução do aproveitamento por ciclo; as provas SEDES/DF ficam detalhadas no Pós-prova.</p></div><button class="secondary-button" type="button" data-view="performance">\${svgIcon("chart")} Explorar desempenho</button></div>
+      <div class="transition-history-body">\${historyChart || '<p class="empty-state">Ainda não há ciclos suficientes para desenhar a curva.</p>'}</div>
     </section>
 
-    <section class="panel focus-board"><div class="focus-board-heading"><div><span class="eyebrow">FOCO ORIENTADO POR DADOS</span><h2>Três pontos que merecem o próximo clique</h2><p>Matérias aparecem separadas de revisões, simulados e blocos combinados.</p></div><button class="secondary-button" type="button" data-view="performance">Painel completo</button></div><div class="focus-list">${focus.map((row, index) => `<button type="button" data-open-subject="${esc(row.name)}" data-open-scope="${row.scope}"><span class="focus-order">0${index + 1}</span><div><strong>${esc(row.name)}</strong><small>${row.scope === "tdas" ? "TDAS 202" : row.scope === "edas" ? "EDAS 400" : "Histórico"} · ${fmt(row.questions)} questões</small></div><span class="focus-stat">${pct(row.accuracy, 1)}</span></button>`).join("")}</div></section>
-
-    <section class="panel journey-mini"><div class="panel-heading"><div><span class="eyebrow">JORNADA DA TRANSIÇÃO</span><h2>O plano não termina na prova</h2></div><button class="text-button" type="button" data-view="journey">Ver linha do tempo ${svgIcon("arrow")}</button></div><div class="journey-flow">${["Retomada", "Base", "Prova real", "Reta final", "SEDES/DF", "Resultado", "Posse"].map((label, index) => `<div class="journey-node ${index < 4 ? "done" : index === 4 ? "active" : ""}"><i></i><strong>${label}</strong><small>${["jul/25", "2025", "mar/26", "ago/26", "set/26", "próximo", "destino"][index]}</small></div>`).join("")}</div></section>
-
-    <section class="panel source-status-card"><div class="source-status-icon ${sourceReady ? "ready" : ""}">${svgIcon(sourceReady ? "shield" : "alert")}</div><div><span class="eyebrow">ESTADO DOS DADOS</span><h2>${sourceReady ? "Snapshot reconciliado e sem alertas" : "Último snapshot preservado com ressalvas"}</h2><p>${dateBR(data.meta.generatedAt)} · ${esc(data.meta.source)} · ${fmt(data.metrics.history.rawRecords)} registros brutos.</p></div><button class="text-button" type="button" data-view="sources">Abrir auditoria ${svgIcon("arrow")}</button></section>
-  </div>`;
+    <section class="panel transition-footer">
+      <div><span class="eyebrow">CONTROLE DO PLANO</span><h2>Dados, decisões e continuidade.</h2><p>\${dateBR(data.meta.generatedAt)} · \${esc(data.meta.source)} · \${fmt(data.metrics.history.rawRecords)} registros brutos.</p></div>
+      <div class="command-actions"><button class="secondary-button" type="button" data-view="post-exam">\${svgIcon("flag")} Pós-prova</button><button class="primary-button" type="button" data-refresh>\${svgIcon("refresh")} Atualizar snapshot</button></div>
+    </section>
+  </div>\`;
 }
-
 function performanceView() {
   const scope = state.performance.scope;
   const grain = state.performance.grain;
