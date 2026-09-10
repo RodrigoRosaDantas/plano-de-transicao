@@ -126,7 +126,7 @@ const cachedAssets = [
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está consolidado na v31', sw.includes("const CACHE='plano-transicao-v31-separate-phases'"));
+check('Cache PWA está consolidado na v32', sw.includes("const CACHE='plano-transicao-v32-ipad-layout'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
 check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
