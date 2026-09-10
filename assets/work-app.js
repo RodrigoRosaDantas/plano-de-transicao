@@ -193,7 +193,7 @@ function commandView() {
   const nextAction = data.meta.phase === "post-exam"
     ? "Acompanhar o resultado oficial da SEDES/DF e escolher a próxima preparação com dados."
     : "Ativar a trilha do próximo edital quando concurso, banca e data estiverem confirmados.";
-  return \`<div class="view-stack command-view">
+  return `<div class="view-stack command-view">
     <section class="panel transition-now-hero">
       <div class="transition-now-copy">
         <span class="eyebrow">AGORA · PLANO DE TRANSIÇÃO</span>
@@ -203,56 +203,56 @@ function commandView() {
       <div class="transition-now-status">
         <span class="status-dot"></span>
         <div><strong>PÓS-PROVA EM ACOMPANHAMENTO</strong><small>SEDES/DF preservada como histórico, sem ocupar a operação futura.</small></div>
-        <button class="secondary-button" type="button" data-view="post-exam">\${svgIcon("flag")} Abrir acompanhamento</button>
+        <button class="secondary-button" type="button" data-view="post-exam">${svgIcon("flag")} Abrir acompanhamento</button>
       </div>
     </section>
 
     <section class="transition-kpi-grid" aria-label="Resumo do plano">
-      <article class="panel transition-kpi"><span>Capital acumulado</span><strong>\${fmt(m.history.questions)}</strong><small>questões no histórico reconciliado</small></article>
-      <article class="panel transition-kpi aqua"><span>Aproveitamento geral</span><strong>\${pct(m.history.accuracy, 1)}</strong><small>acertos sobre o histórico mensurável</small></article>
-      <article class="panel transition-kpi amber"><span>Investimento confirmado</span><strong>\${money(confirmed)}</strong><small>\${pending ? \`\${fmt(pending)} pendência(s) em aberto\` : "sem pendências registradas"}</small></article>
+      <article class="panel transition-kpi"><span>Capital acumulado</span><strong>${fmt(m.history.questions)}</strong><small>questões no histórico reconciliado</small></article>
+      <article class="panel transition-kpi aqua"><span>Aproveitamento geral</span><strong>${pct(m.history.accuracy, 1)}</strong><small>acertos sobre o histórico mensurável</small></article>
+      <article class="panel transition-kpi amber"><span>Investimento confirmado</span><strong>${money(confirmed)}</strong><small>${pending ? `${fmt(pending)} pendência(s) em aberto` : "sem pendências registradas"}</small></article>
     </section>
 
     <section class="panel transition-next">
       <div class="panel-heading">
         <div><span class="eyebrow">PRÓXIMO CICLO</span><h2>Escolher onde colocar energia agora</h2><p>Dois projetos independentes, uma decisão consciente. O próximo edital define a ativação da pré-prova.</p></div>
-        <button class="text-button" type="button" data-view="pre-exam">Abrir pré-prova \${svgIcon("arrow")}</button>
+        <button class="text-button" type="button" data-view="pre-exam">Abrir pré-prova ${svgIcon("arrow")}</button>
       </div>
       <div class="next-cycle-grid">
         <button class="next-cycle-card seedf" type="button" data-view="pre-exam" data-project="seedf">
-          <span class="next-cycle-icon">\${svgIcon("layers")}</span><div><strong>SEEDF</strong><small>Trilha administrativa e educação · projeto independente</small><b>Pré-edital · prontidão para receber o edital</b></div><span class="next-cycle-arrow">\${svgIcon("chevron")}</span>
+          <span class="next-cycle-icon">${svgIcon("layers")}</span><div><strong>SEEDF</strong><small>Trilha administrativa e educação · projeto independente</small><b>Pré-edital · prontidão para receber o edital</b></div><span class="next-cycle-arrow">${svgIcon("chevron")}</span>
         </button>
         <button class="next-cycle-card tjdft" type="button" data-view="pre-exam" data-project="tjdft">
-          <span class="next-cycle-icon">\${svgIcon("scale")}</span><div><strong>TJDFT</strong><small>Trilha de tribunais · projeto independente</small><b>Pré-edital · base comum preservada</b></div><span class="next-cycle-arrow">\${svgIcon("chevron")}</span>
+          <span class="next-cycle-icon">${svgIcon("compass")}</span><div><strong>TJDFT</strong><small>Trilha de tribunais · projeto independente</small><b>Pré-edital · base comum preservada</b></div><span class="next-cycle-arrow">${svgIcon("chevron")}</span>
         </button>
       </div>
     </section>
 
     <section class="transition-decision-grid" aria-label="Controles da transição">
       <article class="panel transition-decision primary">
-        <span class="eyebrow">PRÓXIMA AÇÃO</span><h3>\${esc(nextAction)}</h3><p>O dado guia o movimento; a ansiedade não ganha um botão próprio.</p>
-        <div class="command-actions"><button class="primary-button" type="button" data-view="strategy">\${svgIcon("compass")} Ver estratégia</button><button class="secondary-button" type="button" data-view="journey">\${svgIcon("route")} Ver jornada</button></div>
+        <span class="eyebrow">PRÓXIMA AÇÃO</span><h3>${esc(nextAction)}</h3><p>O dado guia o movimento; a ansiedade não ganha um botão próprio.</p>
+        <div class="command-actions"><button class="primary-button" type="button" data-view="strategy">${svgIcon("compass")} Ver estratégia</button><button class="secondary-button" type="button" data-view="journey">${svgIcon("route")} Ver jornada</button></div>
       </article>
       <article class="panel transition-decision">
-        <span class="eyebrow">ESTADO DA FONTE</span><h3>\${sourceReady ? "Snapshot reconciliado" : "Snapshot preservado com ressalvas"}</h3><p>\${sourceReady ? "Os dados publicados estão sem avisos de sincronização." : "Há ressalvas que precisam ser lidas antes de decidir."}</p>
-        <button class="text-button" type="button" data-view="sources">Abrir fontes e auditoria \${svgIcon("arrow")}</button>
+        <span class="eyebrow">ESTADO DA FONTE</span><h3>${sourceReady ? "Snapshot reconciliado" : "Snapshot preservado com ressalvas"}</h3><p>${sourceReady ? "Os dados publicados estão sem avisos de sincronização." : "Há ressalvas que precisam ser lidas antes de decidir."}</p>
+        <button class="text-button" type="button" data-view="sources">Abrir fontes e auditoria ${svgIcon("arrow")}</button>
       </article>
       <article class="panel transition-decision">
-        <span class="eyebrow">PONTO DE ATENÇÃO</span><h3>\${weakestHistorical ? esc(weakestHistorical.name) : "Nenhuma exceção identificada"}</h3><p>\${weakestHistorical ? \`\${fmt(weakestHistorical.questions)} questões · \${pct(weakestHistorical.accuracy, 1)} de aproveitamento no recorte mais frágil.\` : "O histórico está pronto para nova leitura."}</p>
-        <button class="text-button" type="button" data-view="performance">Abrir desempenho \${svgIcon("arrow")}</button>
+        <span class="eyebrow">PONTO DE ATENÇÃO</span><h3>${weakestHistorical ? esc(weakestHistorical.name) : "Nenhuma exceção identificada"}</h3><p>${weakestHistorical ? `${fmt(weakestHistorical.questions)} questões · ${pct(weakestHistorical.accuracy, 1)} de aproveitamento no recorte mais frágil.` : "O histórico está pronto para nova leitura."}</p>
+        <button class="text-button" type="button" data-view="performance">Abrir desempenho ${svgIcon("arrow")}</button>
       </article>
     </section>
 
     <section class="panel transition-history">
-      <div class="panel-heading"><div><span class="eyebrow">HISTÓRICO CONSOLIDADO</span><h2>O que foi construído até aqui</h2><p>A curva mostra evolução do aproveitamento por ciclo; as provas SEDES/DF ficam detalhadas no Pós-prova.</p></div><button class="secondary-button" type="button" data-view="performance">\${svgIcon("chart")} Explorar desempenho</button></div>
-      <div class="transition-history-body">\${historyChart || '<p class="empty-state">Ainda não há ciclos suficientes para desenhar a curva.</p>'}</div>
+      <div class="panel-heading"><div><span class="eyebrow">HISTÓRICO CONSOLIDADO</span><h2>O que foi construído até aqui</h2><p>A curva mostra evolução do aproveitamento por ciclo; as provas SEDES/DF ficam detalhadas no Pós-prova.</p></div><button class="secondary-button" type="button" data-view="performance">${svgIcon("chart")} Explorar desempenho</button></div>
+      <div class="transition-history-body">${historyChart || '<p class="empty-state">Ainda não há ciclos suficientes para desenhar a curva.</p>'}</div>
     </section>
 
     <section class="panel transition-footer">
-      <div><span class="eyebrow">CONTROLE DO PLANO</span><h2>Dados, decisões e continuidade.</h2><p>\${dateBR(data.meta.generatedAt)} · \${esc(data.meta.source)} · \${fmt(data.metrics.history.rawRecords)} registros brutos.</p></div>
-      <div class="command-actions"><button class="secondary-button" type="button" data-view="post-exam">\${svgIcon("flag")} Pós-prova</button><button class="primary-button" type="button" data-refresh>\${svgIcon("refresh")} Atualizar snapshot</button></div>
+      <div><span class="eyebrow">CONTROLE DO PLANO</span><h2>Dados, decisões e continuidade.</h2><p>${dateBR(data.meta.generatedAt)} · ${esc(data.meta.source)} · ${fmt(data.metrics.history.rawRecords)} registros brutos.</p></div>
+      <div class="command-actions"><button class="secondary-button" type="button" data-view="post-exam">${svgIcon("flag")} Pós-prova</button><button class="primary-button" type="button" data-refresh>${svgIcon("refresh")} Atualizar snapshot</button></div>
     </section>
-  </div>\`;
+  </div>`;
 }
 function performanceView() {
   const scope = state.performance.scope;
