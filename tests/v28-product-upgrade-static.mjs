@@ -66,6 +66,9 @@ expect('taxa nominal EDAS AC é 6,86%', snapshot.postExam?.competitionReading?.e
 expect('probabilidade pessoal não é inventada', snapshot.postExam?.competitionReading?.personalProbability?.available === false && snapshot.postExam?.competitionReading?.personalProbability?.value == null);
 expect('router possui página pré-prova', app.includes('function preExamView') && app.includes('"pre-exam": preExamView'));
 expect('router possui página pós-prova', app.includes('function postExamView') && app.includes('"post-exam": postExamView'));
+expect('atalhos de fases aparecem antes do cockpit', app.indexOf('phase-router') >= 0 && app.indexOf('phase-router') < app.indexOf('cockpit-grid'));
+expect('auditorias fechadas não expandem o layout', pageStyles.includes('.v28-audit-disclosure:not([open]) > :not(summary)'));
+expect('controle de expansão tem área de toque', pageStyles.includes('min-height: 44px') && pageStyles.includes('.v28-audit-table-wrap'));
 expect('Home mantém cartão de plano, não cartão pós-prova', app.includes('plan-control-card') && app.includes('A SEDES/DF está preservada como histórico'));
 expect('navegação expõe pré-prova', index.includes('data-view="pre-exam"') && index.includes('Pré-prova'));
 expect('navegação expõe pós-prova', index.includes('data-view="post-exam"') && index.includes('Pós-prova'));
@@ -76,7 +79,7 @@ expect('console adaptativo foi movido para o host pós-prova', source.includes('
 expect('leitura competitiva não injeta na Home', competition.includes('function mountDedicated') && !competition.includes("querySelector('.command-view')"));
 expect('fechamento local saiu da Home', transitionGate.includes("$('#postExamControlSlot')") && !transitionGate.includes("const root = $('.command-view')"));
 expect('shell conhece as novas fases', workspace.includes("'pre-exam'") && workspace.includes("'post-exam'"));
-expect('cache v30 inclui estilos das fases', serviceWorker.includes("plano-transicao-v30-separate-phases") && serviceWorker.includes("'./assets/transition-pages-v29.css'"));
+expect('cache v31 inclui estilos das fases', serviceWorker.includes("plano-transicao-v31-separate-phases") && serviceWorker.includes("'./assets/transition-pages-v29.css'"));
 expect('estilos das fases existem', pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
 
 

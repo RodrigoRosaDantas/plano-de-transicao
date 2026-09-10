@@ -30,14 +30,14 @@ for (const exam of sedes) {
   }
 }
 
-for (const asset of ['assets/post-exam-v27.css?v=27', 'assets/post-exam-v27.js?v=30']) has(index, asset, 'loader v27/v30');
+for (const asset of ['assets/post-exam-v27.css?v=27', 'assets/post-exam-v27.js?v=30']) has(index, asset, 'loader v27/v31');
 assert.ok(index.indexOf('post-exam-v27.css?v=27') > index.indexOf('workspace-v26-polish.css?v=26'), 'CSS v27 deve sobrescrever o polimento anterior');
 assert.ok(index.indexOf('post-exam-v27.js?v=30') > index.indexOf('workspace-v23.js?v=30'), 'JS v27 deve carregar depois do workspace');
 
 for (const asset of ["'./assets/post-exam-v27.css'", "'./assets/post-exam-v27.js'", "'./assets/post-exam-score-v28.js'", "'./assets/transition-pages-v29.css'"]) {
   has(sw, asset, 'PWA pós-prova');
 }
-assert.ok(sw.includes("const CACHE='plano-transicao-v30-separate-phases'"), 'cache PWA precisa usar as fases separadas v30');
+assert.ok(sw.includes("const CACHE='plano-transicao-v31-separate-phases'"), 'cache PWA precisa usar as fases separadas v31');
 
 for (const value of [
   'if (window.__PLANO_SEPARATE_POST_EXAM__) return;',

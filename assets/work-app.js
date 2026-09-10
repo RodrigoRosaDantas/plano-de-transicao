@@ -199,6 +199,17 @@ function commandView() {
     ? '<article class="panel countdown-card"><div class="countdown-topline"><span class="section-kicker">' + svgIcon("clock") + ' Prova SEDES/DF</span><span>06/09/2026 · Brasília</span></div><div class="countdown-body"><div class="countdown-value"><strong data-countdown-days>' + clock.days + '</strong><span>' + (clock.ended ? 'dias desde a data da prova' : 'dias') + '</span></div><div class="brasilia-clock">' + svgIcon("clock") + '<div><strong data-brasilia-clock>--:--:--</strong><span data-brasilia-date>horário de Brasília</span></div></div></div><p>' + esc(examSummary || 'Prova ativa no plano. Consulte a realização e os resultados de cada cargo em Concursos.') + '</p></article>'
     : '<article class="panel countdown-card plan-control-card"><div class="countdown-topline"><span class="section-kicker">' + svgIcon("route") + ' Plano de transição</span><span>Dados publicados · ' + dateBR(data.meta.generatedAt) + '</span></div><div class="countdown-body"><div class="countdown-value"><strong>' + fmt(m.history.questions) + '</strong><span>questões no histórico</span></div><div class="brasilia-clock">' + svgIcon("chart") + '<div><strong>' + pct(m.history.accuracy) + '</strong><span>aproveitamento reconciliado</span></div></div></div><p>' + (data.meta.phase === 'post-exam' ? 'A SEDES/DF está preservada como histórico e acompanhamento próprio. O painel Agora volta ao que sustenta a transição: dados, desempenho, fontes e decisões.' : 'Sem edital novo confirmado, a estrutura de pré-prova permanece em prontidão. Use este painel para acompanhar dados, desempenho, fontes e decisões.') + '</p></article>';
   return `<div class="view-stack command-view">
+    <section class="panel phase-router" aria-label="Fases separadas do ciclo">
+      <div class="phase-router__head">
+        <div><span class="eyebrow">ESTRUTURA DO CICLO</span><h2>Pré-prova e Pós-prova estão em páginas próprias</h2><p>O Agora preserva dados, acompanhamento e controles do plano de transição. Abra cada fase para ver o conteúdo completo, sem misturar o próximo concurso com a SEDES/DF.</p></div>
+        <span class="phase-router__badge">Fases separadas</span>
+      </div>
+      <div class="phase-router__actions">
+        <button class="phase-router__action" type="button" data-view="pre-exam"><span class="phase-router__icon">${svgIcon("book")}</span><span><b>Pré-prova</b><small>Prontidão para o próximo edital</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
+        <button class="phase-router__action" type="button" data-view="post-exam"><span class="phase-router__icon">${svgIcon("flag")}</span><span><b>Pós-prova</b><small>Gabarito, recursos e resultado da SEDES/DF</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
+      </div>
+    </section>
+
     <section class="cockpit-grid">
       ${planCard}
       <div class="target-stack">
@@ -218,17 +229,6 @@ function commandView() {
     <section class="command-grid">
       <article class="panel sync-command-card"><div class="sync-command-profile"><span class="profile-orb">${svgIcon("database")}</span><div><span>Dados do plano</span><strong>${sourceReady ? "Notion reconciliado" : "Snapshot preservado"}</strong></div></div><h2>Seu painel começa pela fonte certa.</h2><p>O último corte publicado foi gerado em ${new Date(data.meta.generatedAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).replace(".", "")}. Atualize o snapshot visível ou abra a sincronização segura do Notion.</p><div class="command-actions"><button class="primary-button" type="button" data-refresh>${svgIcon("refresh")} Atualizar dados</button><button class="secondary-button" type="button" data-view="operations">${svgIcon("settings")} Central de operações</button></div></article>
       <article class="panel action-card"><div><span class="eyebrow">DECISÃO OPERACIONAL</span><h2>Seu trabalho agora é converter volume em ponto líquido.</h2></div><p><strong>${fmt(m.history.questions)} questões mensuráveis</strong> já formam uma base rara. O ganho marginal está menos em “ver tudo” e mais em escolher o próximo bloco com frieza.</p><div class="command-actions"><button class="primary-button" type="button" data-view="performance">${svgIcon("chart")} Ver prioridades</button><button class="secondary-button" type="button" data-view="exams">${svgIcon("flag")} Régua de prova real</button><button class="secondary-button" type="button" data-view="finance">${svgIcon("wallet")} Ver investimento</button></div></article>
-    </section>
-
-    <section class="panel phase-router" aria-label="Fases separadas do ciclo">
-      <div class="phase-router__head">
-        <div><span class="eyebrow">ESTRUTURA DO CICLO</span><h2>Pré-prova e Pós-prova estão em páginas próprias</h2><p>O Agora preserva dados, acompanhamento e controles do plano de transição. Abra cada fase para ver o conteúdo completo, sem misturar o próximo concurso com a SEDES/DF.</p></div>
-        <span class="phase-router__badge">Fases separadas</span>
-      </div>
-      <div class="phase-router__actions">
-        <button class="phase-router__action" type="button" data-view="pre-exam"><span class="phase-router__icon">${svgIcon("book")}</span><span><b>Pré-prova</b><small>Prontidão para o próximo edital</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
-        <button class="phase-router__action" type="button" data-view="post-exam"><span class="phase-router__icon">${svgIcon("flag")}</span><span><b>Pós-prova</b><small>Gabarito, recursos e resultado da SEDES/DF</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
-      </div>
     </section>
 
     <section class="priority-grid" aria-label="Prioridades por dados">
