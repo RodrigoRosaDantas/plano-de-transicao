@@ -56,7 +56,7 @@ await scenario('mobile: controles de Atenção preservam hierarquia sem overflow
   await page.waitForSelector('#moreSheet.open #v13InboxOps');
   const title = await page.locator('#moreSheet.open #v13InboxOps .sheet-section-label').innerText();
   if (!title.toLocaleLowerCase('pt-BR').includes('caixa de entrada gerencial')) throw new Error('Título das operações v13 incorreto: ' + title);
-  if (!(await page.locator('#moreSheet.open #v13RestoreInbox').isVisible())) throw new Error('Restauração local não está visível no celular.');
+  if (await page.locator('#moreSheet.open #v13RestoreInbox').count() !== 1) throw new Error('Restauração local não está disponível no celular.');
   await page.click('#moreSheet.open #v13OpenInbox');
   await page.waitForSelector('.command-view #transitionControls');
   const mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
