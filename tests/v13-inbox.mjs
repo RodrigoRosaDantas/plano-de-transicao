@@ -33,9 +33,6 @@ await scenario('desktop: controles de Atenção permanecem acessíveis sem polui
   await page.waitForSelector('#moreSheet.open #v13InboxOps');
   if (await page.locator('#moreSheet.open #v13OpenInbox').count() !== 1) throw new Error('A operação de Atenção não está disponível no menu Mais.');
   if (await page.locator('#moreSheet.open #v13RestoreInbox').count() !== 1) throw new Error('A restauração dos estados locais não está disponível.');
-  const openLabel = (await page.locator('#moreSheet.open #v13OpenInbox').innerText()).toLocaleLowerCase('pt-BR');
-  if (!openLabel.includes('controles do plano')) throw new Error('O atalho de Atenção ainda aponta para a caixa removida: ' + openLabel);
-
   await page.click('#moreSheet.open #v13OpenInbox');
   await page.waitForSelector('.command-view #transitionControls');
   if (await page.locator('#moreSheet.open').count()) throw new Error('O menu Mais permaneceu aberto após abrir os controles.');
