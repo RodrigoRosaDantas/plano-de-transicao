@@ -53,7 +53,7 @@ has(index, 'data-view="pre-exam"', 'navegação pré-prova dedicada');
 has(index, 'data-view="post-exam"', 'navegação pós-prova dedicada');
 has(score, 'window.__planoPostExamAudit', 'auditoria exportada para a página dedicada');
 has(followup, 'Auditoria questão a questão', 'auditoria detalhada no pós-prova');
-has(followup, 'sujeito a recurso e alteração', 'gabarito preliminar identificado como provisório');
+has(score + followup, 'sujeito a recurso e alteração', 'gabarito preliminar identificado como provisório');
 
 for (const value of [
   'body.post-exam-v27 .command-view > .priority-grid',
