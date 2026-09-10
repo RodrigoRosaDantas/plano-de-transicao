@@ -17,10 +17,10 @@ const has = (text, value, label) => assert.ok(text.includes(value), `${label}: a
 has(index, 'assets/workspace-v23.css?v=23', 'loader CSS v23 direto no index');
 has(index, 'assets/workspace-v23-home.css?v=23', 'loader Home v23 direto no index');
 has(index, 'assets/workspace-v24-hardening.css?v=24', 'loader hardening v24 direto no index');
-has(index, 'assets/workspace-v23.js?v=30', 'loader JS v23 direto no index');
+has(index, 'assets/workspace-v23.js?v=31', 'loader JS v23 direto no index');
 assert.ok(index.indexOf('workspace-v23.css?v=23') > index.indexOf('exam-day-v21-shell.css?v=21'), 'CSS global deve carregar após o shell específico da prova.');
 assert.ok(index.indexOf('workspace-v24-hardening.css?v=24') > index.indexOf('workspace-v23-home.css?v=23'), 'Hardening v24 deve carregar por último na pilha visual global.');
-assert.ok(index.indexOf('workspace-v23.js?v=30') > index.indexOf('exam-day-v21-shell.js?v=21'), 'JS global deve carregar independentemente após o shell específico da prova.');
+assert.ok(index.indexOf('workspace-v23.js?v=31') > index.indexOf('exam-day-v21-shell.js?v=21'), 'JS global deve carregar independentemente após o shell específico da prova.');
 assert.ok(!shellCss.includes('workspace-v23'), 'Shell CSS do Dia da Prova não deve carregar o workspace global.');
 assert.ok(!shellJs.includes('workspace-v23'), 'Shell JS do Dia da Prova não deve carregar o workspace global.');
 

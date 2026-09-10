@@ -20,7 +20,7 @@ const check = (name, condition) => {
 };
 
 check('shell carrega CSS v15', index.includes('assets/transition-gate-v15.css?v=15'));
-check('shell carrega JS v15 após v14', index.includes('assets/transition-gate-v15.js?v=30') && index.indexOf('transition-gate-v15.js?v=30') > index.indexOf('home-focus-v14.js?v=15'));
+check('shell carrega JS v15 após v14', index.includes('assets/transition-gate-v15.js?v=31') && index.indexOf('transition-gate-v15.js?v=31') > index.indexOf('home-focus-v14.js?v=15'));
 check('cache busting da interface-base permanece em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('estudo continua fora da navegação', !index.includes('data-view="study"'));
 

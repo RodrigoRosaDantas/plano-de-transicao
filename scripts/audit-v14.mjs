@@ -15,7 +15,7 @@ const check = (name, condition) => {
 };
 
 check('shell mantém CSS do modo foco v14 sob shell v15', index.includes('assets/home-focus-v14.css?v=15'));
-check('shell mantém JS v14 entre as camadas v13 e v15', index.includes('assets/home-focus-v14.js?v=15') && index.indexOf('home-focus-v14.js?v=15') > index.indexOf('manager-inbox-v13.js?v=15') && index.indexOf('home-focus-v14.js?v=15') < index.indexOf('transition-gate-v15.js?v=30'));
+check('shell mantém JS v14 entre as camadas v13 e v15', index.includes('assets/home-focus-v14.js?v=15') && index.indexOf('home-focus-v14.js?v=15') > index.indexOf('manager-inbox-v13.js?v=15') && index.indexOf('home-focus-v14.js?v=15') < index.indexOf('transition-gate-v15.js?v=31'));
 check('cache busting da interface-base permanece em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('estudo embutido continua fora da navegação', !index.includes('data-view="study"'));
 
