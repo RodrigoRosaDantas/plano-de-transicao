@@ -85,7 +85,7 @@ await scenario('desktop: Pós-prova dedicada concentra auditoria, gráficos e de
   if (await post.locator('[data-v28-competition-panel]').count() !== 1) throw new Error('Leitura competitiva não está no pós-prova dedicado.');
   if (await post.locator('[data-v28-post-followup]').count() !== 1) throw new Error('Acompanhamento estruturado não está no pós-prova dedicado.');
   const rows = post.locator('[data-v28-question-audit] .v28-audit-row');
-  await rows.first().waitFor();
+  await rows.first().waitFor({ state: 'attached' });
   if (await rows.count() !== 120) throw new Error('A auditoria deveria mostrar 120 registros de questões, não ' + await rows.count() + '.');
   const commandPostPanels = page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view [data-post-exam-page]');
   if (await commandPostPanels.count()) throw new Error('Pós-prova vazou para a tela Agora.');
