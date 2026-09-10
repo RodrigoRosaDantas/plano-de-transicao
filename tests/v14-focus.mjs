@@ -27,10 +27,10 @@ async function scenario(name, viewport, run) {
   }
 }
 
-await scenario('desktop: controle legado de foco é preservado, mas sai da hierarquia pós-prova', { width: 1440, height: 1000 }, async (page) => {
+await scenario('desktop: controle de foco e prioridades orientadas por dados permanecem na Home', { width: 1440, height: 1000 }, async (page) => {
   if (!(await page.locator('#v14FocusControl').isVisible())) throw new Error('Controle de foco do plano não está disponível na Home.');
-  if (await page.locator('.command-view > .focus-board').isVisible()) throw new Error('Quadro de foco pré-prova voltou a ocupar a Home pós-prova.');
-  if (await page.locator('.command-view > .priority-grid').isVisible()) throw new Error('Prioridades pré-prova voltaram a ocupar a Home pós-prova.');
+  if (!(await page.locator('.command-view > .focus-board').isVisible())) throw new Error('Quadro de foco orientado por dados foi removido da Home.');
+  if (!(await page.locator('.command-view > .priority-grid').isVisible())) throw new Error('Prioridades orientadas por dados foram removidas da Home.');
 
   if (!(await page.locator('#v13ManagerInbox').isVisible())) throw new Error('Caixa gerencial de atenção foi removida junto com o foco legado.');
   if (!(await page.locator('#managerNowBoard').isVisible())) throw new Error('Resumo gerencial Agora deixou de existir no pós-prova.');
@@ -45,10 +45,10 @@ await scenario('desktop: controle legado de foco é preservado, mas sai da hiera
   await page.screenshot({ path: 'artifacts/desktop-focus-v14-post-exam.png', fullPage: true });
 });
 
-await scenario('mobile: pós-prova reduz a Home sem reexpor controles pré-prova', { width: 390, height: 844 }, async (page) => {
+await scenario('mobile: mobile preserva controles de dados sem trazer o pós-prova detalhado', { width: 390, height: 844 }, async (page) => {
   if (!(await page.locator('#v14FocusControl').isVisible())) throw new Error('Controle v14 do plano não está disponível no mobile.');
-  if (await page.locator('.command-view > .focus-board').isVisible()) throw new Error('Quadro de foco pré-prova ficou visível no mobile pós-prova.');
-  if (await page.locator('.command-view > .priority-grid').isVisible()) throw new Error('Prioridades pré-prova ficaram visíveis no mobile pós-prova.');
+  if (!(await page.locator('.command-view > .focus-board').isVisible())) throw new Error('Quadro de foco orientado por dados sumiu no mobile.');
+  if (!(await page.locator('.command-view > .priority-grid').isVisible())) throw new Error('Prioridades orientadas por dados sumiram no mobile.');
   if (!(await page.locator('#v13ManagerInbox').isVisible())) throw new Error('Atenção gerencial precisa continuar acessível no mobile.');
   if (!(await page.locator('.plan-control-card').isVisible())) throw new Error('Cartão de controle do plano precisa continuar acessível no mobile.');
   if (await page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view [data-post-exam-page]').count()) throw new Error('Detalhamento pós-prova vazou para a Home móvel.');
