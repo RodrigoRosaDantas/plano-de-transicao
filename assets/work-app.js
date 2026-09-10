@@ -220,6 +220,17 @@ function commandView() {
       <article class="panel action-card"><div><span class="eyebrow">DECISÃO OPERACIONAL</span><h2>Seu trabalho agora é converter volume em ponto líquido.</h2></div><p><strong>${fmt(m.history.questions)} questões mensuráveis</strong> já formam uma base rara. O ganho marginal está menos em “ver tudo” e mais em escolher o próximo bloco com frieza.</p><div class="command-actions"><button class="primary-button" type="button" data-view="performance">${svgIcon("chart")} Ver prioridades</button><button class="secondary-button" type="button" data-view="exams">${svgIcon("flag")} Régua de prova real</button><button class="secondary-button" type="button" data-view="finance">${svgIcon("wallet")} Ver investimento</button></div></article>
     </section>
 
+    <section class="panel phase-router" aria-label="Fases separadas do ciclo">
+      <div class="phase-router__head">
+        <div><span class="eyebrow">ESTRUTURA DO CICLO</span><h2>Pré-prova e Pós-prova estão em páginas próprias</h2><p>O Agora preserva dados, acompanhamento e controles do plano de transição. Abra cada fase para ver o conteúdo completo, sem misturar o próximo concurso com a SEDES/DF.</p></div>
+        <span class="phase-router__badge">Fases separadas</span>
+      </div>
+      <div class="phase-router__actions">
+        <button class="phase-router__action" type="button" data-view="pre-exam"><span class="phase-router__icon">${svgIcon("book")}</span><span><b>Pré-prova</b><small>Prontidão para o próximo edital</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
+        <button class="phase-router__action" type="button" data-view="post-exam"><span class="phase-router__icon">${svgIcon("flag")}</span><span><b>Pós-prova</b><small>Gabarito, recursos e resultado da SEDES/DF</small></span><span class="phase-router__arrow">${svgIcon("chevron")}</span></button>
+      </div>
+    </section>
+
     <section class="priority-grid" aria-label="Prioridades por dados">
       ${[tdasWeak, edasWeak, historicalWeak].map((row, index) => row ? `<article class="panel priority-card ${index === 1 ? "aqua" : index === 2 ? "coral" : ""}"><div class="priority-card-head"><span>${index === 0 ? "Atenção TDAS" : index === 1 ? "Atenção EDAS" : "Risco histórico"}</span><strong>${pct(row.accuracy, 1)}</strong></div><h3>${esc(row.name)}</h3><p>${fmt(row.questions)} questões · ${fmt(row.questions - row.correct)} erros observados no recorte tratado.</p>${progress(row.accuracy)}<button class="text-button" type="button" data-open-subject="${esc(row.name)}" data-open-scope="${row.scope}">Analisar matéria ${svgIcon("arrow")}</button></article>` : "").join("")}
     </section>
