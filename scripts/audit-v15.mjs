@@ -44,7 +44,7 @@ check('v15 inclui etapas na busca global', app.includes('transitionGates') && ap
 
 check('CSS v15 é responsivo até 390px', css.includes('@media (max-width: 980px)') && css.includes('@media (max-width: 390px)'));
 check('CSS v15 evita largura fixa problemática', !css.includes('width: 1000px') && !css.includes('min-width: 1000px'));
-check('service worker está no cache de fases separadas v33', sw.includes("const CACHE='plano-transicao-v33-pre-edital'"));
+check('service worker está no cache de fases separadas v34', sw.includes("const CACHE='plano-transicao-v34-pre-edital'"));
 check('service worker inclui os dois assets v15', sw.includes('transition-gate-v15.css') && sw.includes('transition-gate-v15.js'));
 check('workflow executa auditoria e teste v15', workflow.includes('node scripts/audit-v15.mjs') && workflow.includes('node tests/v15-transition-gate.mjs'));
 
