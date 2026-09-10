@@ -5,8 +5,28 @@ const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 await fs.mkdir('artifacts', { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const failures = [];
-const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
-const fold = value => normalize(value).toLocaleLowerCase('pt-BR');
+const fold = value => String(value || '').replace(/\s+/g, ' ').trim().toLocaleLowerCase('pt-BR');
+
+async function boot(page) {
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#content[aria-busy="false"]', { timeout: 15000 });
+  await page.waitForFunction(() => document.documentElement.dataset.planPhase === 'post-exam', null, { timeout: 10000 });
+}
+
+async function openView(page, view) {
+  const link = page.locator('[data-view="' + view + '"]:visible').first();
+  await link.click();
+  await page.waitForURL(new RegExp('#' + view + '$'));
+}
+
+async function openPost(page) {
+  await openView(page, 'post-exam');
+  await page.waitForSelector('.post-exam-view [data-post-exam-page]', { timeout: 15000 });
+  await page.waitForSelector('.post-exam-view [data-v28-post-followup]', { timeout: 15000 });
+  await page.waitForSelector('.post-exam-view [data-v28-transition-console]', { timeout: 15000 });
+  await page.waitForSelector('.post-exam-view [data-v28-competition-panel]', { timeout: 15000 });
+  await page.waitForSelector('.post-exam-view [data-v28-question-audit]', { timeout: 15000 });
+}
 
 async function scenario(name, viewport, run) {
   const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
@@ -14,78 +34,76 @@ async function scenario(name, viewport, run) {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   try {
-    await page.goto(baseURL, { waitUntil: 'networkidle' });
-    await page.waitForFunction(() => document.documentElement.dataset.planPhase === 'post-exam', null, { timeout: 10000 });
+    await boot(page);
     await run(page);
-    if (errors.length) throw new Error(`Erros JavaScript: ${errors.join(' | ')}`);
-    console.log(`PASS  ${name}`);
+    if (errors.length) throw new Error('Erros JavaScript: ' + errors.join(' | '));
+    console.log('PASS  ' + name);
   } catch (error) {
     failures.push({ name, error: String(error?.stack || error) });
-    console.error(`FAIL  ${name}\n${error?.stack || error}`);
+    console.error('FAIL  ' + name + '\n' + (error?.stack || error));
   } finally {
     await context.close();
   }
 }
 
-await scenario('desktop: Home mudou de preparação para pós-prova', { width: 1440, height: 1000 }, async page => {
-  await page.waitForSelector('.command-view .v27-home-status');
-  const homeText = fold(await page.locator('.command-view').innerText());
-  for (const value of ['as duas provas foram realizadas.', 'pós-prova', 'corrigir, recorrer e acompanhar']) {
-    if (!homeText.includes(value)) throw new Error(`Home pós-prova sem: ${value}`);
+await scenario('desktop: Agora preserva o plano e Pré-prova fica pronta para o próximo edital', { width: 1440, height: 1000 }, async page => {
+  const home = page.locator('.command-view');
+  await page.waitForSelector('.command-view .plan-control-card');
+  if (await home.locator('[data-v28-transition-console], [data-v28-post-followup], [data-v28-competition-panel], [data-post-exam-page]').count()) {
+    throw new Error('A tela Agora voltou a receber painéis detalhados de pós-prova.');
   }
-  const tabText = fold(await page.locator('#mainTabs [data-exam-day-tab]').innerText());
-  if (!tabText.includes('pós-prova')) throw new Error(`Aba não foi renomeada: ${tabText}`);
+  const homeText = fold(await home.innerText());
+  for (const value of ['plano de transição', 'questões no histórico', 'aproveitamento reconciliado', 'dados, desempenho, fontes e decisões']) {
+    if (!homeText.includes(value)) throw new Error('Agora sem foco do plano: ' + value);
+  }
   const milestone = fold(await page.locator('#nextMilestone').innerText());
-  if (!milestone.includes('recursos')) throw new Error(`Próximo marco pós-prova não acompanha o gabarito preliminar: ${milestone}`);
-  if (await page.locator('.command-view > .priority-grid').isVisible()) throw new Error('Prioridades pré-prova continuam ocupando a Home.');
-  if (await page.locator('.command-view > .focus-board').isVisible()) throw new Error('Foco pré-prova continua ocupando a Home.');
-  await page.screenshot({ path: 'artifacts/desktop-pos-prova-v27-home.png', fullPage: true });
+  if (!milestone.includes('dados e decisões') || !milestone.includes('plano de transição')) throw new Error('Controle global da transição foi perdido: ' + milestone);
+
+  await openView(page, 'pre-exam');
+  await page.waitForSelector('.pre-exam-view .preexam-hero');
+  const pre = page.locator('.pre-exam-view');
+  const preText = fold(await pre.innerText());
+  for (const value of ['pré-prova pronta para o próximo concurso', 'modo de prontidão', 'gatilho de ativação', 'regra de separação']) {
+    if (!preText.includes(value)) throw new Error('Pré-prova sem: ' + value);
+  }
+  if (await pre.locator('.preexam-checklist-item').count() !== 7) throw new Error('Checklist de pré-prova incompleto.');
+  if (await pre.locator('.preexam-output-tag').count() !== 6) throw new Error('Saídas preparadas do próximo ciclo incompletas.');
+  if (await pre.locator('.post-exam-view').count()) throw new Error('Pré-prova incorporou o ciclo pós-prova.');
+
+  await page.screenshot({ path: 'artifacts/desktop-pre-prova-v29.png', fullPage: true });
 });
 
-await scenario('desktop: Pós-prova prioriza correção preliminar e preserva logística recolhida', { width: 1440, height: 1000 }, async page => {
-  await page.locator('#mainTabs [data-exam-day-tab]').click();
-  await page.waitForURL(/#exam-day$/);
-  await page.waitForSelector('[data-post-exam-v27]');
-
-  const text = fold(await page.locator('[data-post-exam-v27]').innerText());
-  for (const value of ['provas concluídas', 'próximos passos', 'edas', 'manhã', 'tdas', 'tarde', 'preliminar']) {
-    if (!text.includes(value)) throw new Error(`Pós-prova sem conteúdo esperado: ${value}`);
+await scenario('desktop: Pós-prova dedicada concentra auditoria, gráficos e decisões', { width: 1440, height: 1100 }, async page => {
+  await openPost(page);
+  const post = page.locator('.post-exam-view');
+  const text = fold(await post.textContent());
+  for (const value of ['acompanhamento pós-prova', 'tipo b', 'tipo a', 'gabarito preliminar', 'recursos e divergências', 'auditoria questão a questão', 'sua anotação', 'motivo / leitura', 'pré-análise']) {
+    if (!text.includes(value)) throw new Error('Pós-prova dedicada sem: ' + value);
   }
-  if (await page.locator('.v27-archive').getAttribute('open') !== null) throw new Error('Arquivo de logística abriu por padrão e voltou a dominar a tela.');
-  const route = page.getByText('Abrir rota', { exact: false });
-  if (await route.count() && await route.first().isVisible()) throw new Error('Rota pré-prova continua visível antes de abrir o histórico.');
-  if (await page.locator('.v27-exam-card').count() !== 2) throw new Error('EDAS e TDAS não ficaram separados no pós-prova.');
-
-  await page.locator('.v27-archive > summary').click();
-  await page.waitForFunction(() => document.querySelector('.v27-archive')?.open === true);
-  const archiveText = fold(await page.locator('.v27-archive').innerText());
-  for (const value of ['centro de ensino fundamental telebrasília', '06:45–07:45', '13:45–14:45']) {
-    if (!archiveText.includes(value)) throw new Error(`Histórico logístico ausente: ${value}`);
-  }
-
-  await page.locator('.v27-notes > summary').click();
-  await page.locator('[data-v27-note="edas"]').fill('Prova da manhã concluída; registrar depois pontos para recurso.');
-  await page.locator('[data-v27-save-notes]').click();
-  await page.waitForFunction(() => JSON.parse(localStorage.getItem('plano-transicao:post-exam-v27:notes') || '{}').edas?.includes('Prova da manhã'));
-
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  if (overflow > 2) throw new Error(`Overflow horizontal desktop: ${overflow}px`);
-  await page.screenshot({ path: 'artifacts/desktop-pos-prova-v27.png', fullPage: true });
+  if (await post.locator('[data-post-exam-page]').count() !== 1) throw new Error('Deve existir um único host de pós-prova.');
+  if (await post.locator('[data-v28-transition-console]').count() !== 1) throw new Error('Central adaptativa não está no pós-prova dedicado.');
+  if (await post.locator('[data-v28-competition-panel]').count() !== 1) throw new Error('Leitura competitiva não está no pós-prova dedicado.');
+  if (await post.locator('[data-v28-post-followup]').count() !== 1) throw new Error('Acompanhamento estruturado não está no pós-prova dedicado.');
+  const rows = post.locator('[data-v28-question-audit] .v28-audit-row');
+  await rows.first().waitFor();
+  if (await rows.count() !== 120) throw new Error('A auditoria deveria mostrar 120 registros de questões, não ' + await rows.count() + '.');
+  const commandPostPanels = page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view [data-post-exam-page]');
+  if (await commandPostPanels.count()) throw new Error('Pós-prova vazou para a tela Agora.');
+  await page.screenshot({ path: 'artifacts/desktop-pos-prova-v29.png', fullPage: true });
 });
 
-await scenario('mobile 390px: pós-prova compacto e sem regressão horizontal', { width: 390, height: 844 }, async page => {
-  await page.waitForSelector('#mobileDock [data-exam-day-tab]');
-  const label = fold(await page.locator('#mobileDock [data-exam-day-tab]').innerText());
-  if (!label.includes('pós-prova')) throw new Error(`Dock móvel ainda está pré-prova: ${label}`);
-
-  await page.locator('#mobileDock [data-exam-day-tab]').click();
-  await page.waitForSelector('[data-post-exam-v27]');
-  if (await page.locator('.v27-exam-card').count() !== 2) throw new Error('Cards dos dois cargos não renderizaram no mobile.');
-  const cols = await page.locator('.v27-exam-grid').evaluate(node => getComputedStyle(node).gridTemplateColumns);
-  if (cols.trim().split(/\s+/).length !== 1) throw new Error(`Cards não empilharam no mobile: ${cols}`);
+await scenario('mobile 390px: fases separadas e dados densos sem overflow', { width: 390, height: 844 }, async page => {
+  await openPost(page);
+  const post = page.locator('.post-exam-view');
+  const followupCols = await post.locator('.v28-followup-chart-grid').evaluate(node => getComputedStyle(node).gridTemplateColumns);
+  if (followupCols.trim().split(/\s+/).length !== 1) throw new Error('Gráficos do pós-prova não empilharam: ' + followupCols);
+  const competitionCols = await post.locator('.v28-competition-grid').evaluate(node => getComputedStyle(node).gridTemplateColumns);
+  if (competitionCols.trim().split(/\s+/).length !== 1) throw new Error('Cards competitivos não empilharam: ' + competitionCols);
+  const auditWrap = post.locator('.v28-audit-table-wrap').first();
+  if ((await auditWrap.evaluate(node => getComputedStyle(node).overflowX)) === 'visible') throw new Error('Tabela de auditoria não ganhou rolagem interna no mobile.');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  if (overflow > 2) throw new Error(`Overflow horizontal mobile: ${overflow}px`);
-  await page.screenshot({ path: 'artifacts/mobile-pos-prova-v27.png', fullPage: true });
+  if (overflow > 2) throw new Error('Overflow horizontal mobile: ' + overflow + 'px');
+  await page.screenshot({ path: 'artifacts/mobile-pos-prova-v29.png', fullPage: true });
 });
 
 await browser.close();
@@ -93,4 +111,4 @@ if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   process.exit(1);
 }
-console.log('\n3/3 cenários pós-prova v27 aprovados.');
+console.log('\n3/3 cenários de fases separadas aprovados.');
