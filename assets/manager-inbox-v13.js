@@ -482,11 +482,12 @@ function renderOpsSummary(items) {
   const hidden = Object.keys(state.silenced).length + Object.keys(state.snoozed).length;
 
   let section = $('#v13InboxOps', moreSheet);
+  let sectionIsNew = false;
   if (!section) {
     section = document.createElement('div');
     section.id = 'v13InboxOps';
     section.className = 'v13-inbox-ops';
-    anchor.after(section);
+    sectionIsNew = true;
   }
   const signature = `${urgent}:${hidden}`;
   const complete = Boolean($('#v13OpenInbox', section) && $('#v13RestoreInbox', section));
@@ -500,6 +501,7 @@ function renderOpsSummary(items) {
     <div class="v13-ops-summary"><span>V13</span><div><small>Fila dinâmica</small><strong>${urgent} exigem atenção · ${hidden} fora da fila</strong></div></div>
     <button id="v13OpenInbox" class="action-button" type="button"><span>↗</span><span><b>${openLabel}</b><small>${openDetail}</small></span></button>
     <button id="v13RestoreInbox" class="action-button" type="button"><span>↺</span><span><b>Restaurar itens ocultados</b><small>Remove adiamentos e silenciamentos locais da v13</small></span></button>`;
+  if (sectionIsNew) anchor.after(section);
 }
 
 async function renderAll(forceSnapshot = false) {
