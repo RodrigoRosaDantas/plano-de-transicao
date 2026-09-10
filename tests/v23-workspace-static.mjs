@@ -17,10 +17,10 @@ const has = (text, value, label) => assert.ok(text.includes(value), `${label}: a
 has(index, 'assets/workspace-v23.css?v=23', 'loader CSS v23 direto no index');
 has(index, 'assets/workspace-v23-home.css?v=23', 'loader Home v23 direto no index');
 has(index, 'assets/workspace-v24-hardening.css?v=24', 'loader hardening v24 direto no index');
-has(index, 'assets/workspace-v23.js?v=23', 'loader JS v23 direto no index');
+has(index, 'assets/workspace-v23.js?v=29', 'loader JS v23 direto no index');
 assert.ok(index.indexOf('workspace-v23.css?v=23') > index.indexOf('exam-day-v21-shell.css?v=21'), 'CSS global deve carregar após o shell específico da prova.');
 assert.ok(index.indexOf('workspace-v24-hardening.css?v=24') > index.indexOf('workspace-v23-home.css?v=23'), 'Hardening v24 deve carregar por último na pilha visual global.');
-assert.ok(index.indexOf('workspace-v23.js?v=23') > index.indexOf('exam-day-v21-shell.js?v=21'), 'JS global deve carregar independentemente após o shell específico da prova.');
+assert.ok(index.indexOf('workspace-v23.js?v=29') > index.indexOf('exam-day-v21-shell.js?v=21'), 'JS global deve carregar independentemente após o shell específico da prova.');
 assert.ok(!shellCss.includes('workspace-v23'), 'Shell CSS do Dia da Prova não deve carregar o workspace global.');
 assert.ok(!shellJs.includes('workspace-v23'), 'Shell JS do Dia da Prova não deve carregar o workspace global.');
 
@@ -28,6 +28,7 @@ has(sw, "'./assets/workspace-v23.css'", 'PWA CSS v23');
 has(sw, "'./assets/workspace-v23-home.css'", 'PWA Home v23');
 has(sw, "'./assets/workspace-v23.js'", 'PWA JS v23');
 has(sw, "'./assets/workspace-v24-hardening.css'", 'PWA hardening v24');
+has(sw, "const CACHE='plano-transicao-v29-separate-phases'", 'cache PWA v29 com fases separadas');
 has(sw, 'caches.match(req,{ignoreSearch:true})', 'fallback offline ignora query de versionamento');
 
 has(css, '@media(min-width:1180px)', 'breakpoint desktop');
@@ -46,6 +47,8 @@ has(hardeningCss, '.more-sheet.open', 'drawer aberto restaura estado visual');
 has(hardeningCss, 'visibility:visible', 'drawer aberto fica visível');
 has(js, "document.body.dataset.workspaceVersion = '23'", 'marca runtime v23');
 has(js, "v23-view-${view}", 'classe por view');
+has(js, "'pre-exam'", 'view pré-prova no workspace');
+has(js, "'post-exam'", 'view pós-prova no workspace');
 has(js, "location.hash === '#exam-day'", 'compatibilidade Dia da Prova');
 
 // Design system global não pode duplicar dados operacionais ou regras de negócio.
