@@ -143,6 +143,7 @@ check('Pré-prova fica pronta para novo concurso', Boolean(snapshot.preExamReadi
 check('Navegação possui fases separadas', index.includes('data-view="pre-exam"') && index.includes('data-view="post-exam"'));
 check('Roteador possui fases separadas', app.includes('function preExamView') && app.includes('function postExamView') && app.includes('"pre-exam": preExamView') && app.includes('"post-exam": postExamView'));
 check('Agora prioriza plano de transição', app.includes('transition-now-hero') && app.includes('transition-kpi-grid') && app.includes('next-cycle-grid') && app.includes('data-project="seedf"') && app.includes('data-project="tjdft"') && app.includes('HISTÓRICO CONSOLIDADO'));
+check('Agora não exibe cargos pós-prova no resumo', app.includes('/SEDES|TDAS|EDAS/i') && app.includes('historyCycles'));
 check('Pós-prova tem host próprio', app.includes('data-post-exam-page') && app.includes('postExamControlSlot'));
 check('Follow-up não tem fallback na Home', followUp.includes("[data-post-exam-page]") && !followUp.includes("querySelector('.command-view')"));
 check('Console pós-prova está no host dedicado', score.includes('function patchDedicated') && score.includes('[data-post-exam-page]'));

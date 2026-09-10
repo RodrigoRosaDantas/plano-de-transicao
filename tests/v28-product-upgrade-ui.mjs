@@ -48,6 +48,7 @@ await scenario('desktop: controles do plano permanecem na Home', { width: 1440, 
   await page.waitForSelector('.command-view .transition-now-hero');
   const home = page.locator('.command-view');
   const text = fold(await home.innerText());
+  if (text.includes('tdas') || text.includes('edas')) throw new Error('TDAS/EDAS ainda aparecem no resumo do Agora.');
   for (const expected of ['plano de transição', 'capital acumulado', 'investimento confirmado', 'próximo ciclo', 'seedf', 'tjdft']) {
     if (!text.includes(expected)) throw new Error('Home sem foco de controle: ' + expected);
   }

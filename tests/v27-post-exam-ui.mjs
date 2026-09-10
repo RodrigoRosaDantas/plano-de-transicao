@@ -53,6 +53,7 @@ await scenario('desktop: Agora preserva o plano e Pré-prova fica pronta para o 
     throw new Error('A tela Agora voltou a receber painéis detalhados de pós-prova.');
   }
   const homeText = fold(await home.innerText());
+  if (homeText.includes('tdas') || homeText.includes('edas')) throw new Error('TDAS/EDAS ainda aparecem no resumo do Agora.');
   for (const value of ['plano de transição', 'capital acumulado', 'próximo ciclo', 'seedf', 'tjdft', 'histórico consolidado']) {
     if (!homeText.includes(value)) throw new Error('Agora sem foco do plano: ' + value);
   }

@@ -185,7 +185,7 @@ function commandView() {
   const data = state.data;
   const m = data.metrics;
   const sourceReady = data.meta.live && !(data.meta.syncWarnings || []).length && !(data.meta.dataWarnings || []).length;
-  const history = [...(data.historyCycles || [])].sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
+  const history = [...(data.historyCycles || [])].filter((item) => !/SEDES|TDAS|EDAS/i.test(String(item.name || item.label || ""))).sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
   const historyChart = lineChart(history.slice(-6));
   const weakestHistorical = weakest("historical");
   const confirmed = data.financeSummary?.totals?.confirmed;
