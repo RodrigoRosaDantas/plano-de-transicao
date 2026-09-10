@@ -18,8 +18,8 @@ function expect(label, condition) {
   if (!condition) failures.push(label);
 }
 
-expect('index carrega a camada v28', index.includes('assets/post-exam-score-v28.js?v=29'));
-expect('index carrega o módulo competitivo v28', index.includes('assets/post-exam-competition-v28.js?v=29'));
+expect('index carrega a camada v28', index.includes('assets/post-exam-score-v28.js?v=30'));
+expect('index carrega o módulo competitivo v28', index.includes('assets/post-exam-competition-v28.js?v=30'));
 expect('v28 mantém a nota pós-prova', source.includes('Nota objetiva estimada'));
 expect('v28 cria central adaptativa', source.includes('data-v28-transition-console'));
 expect('v28 separa SEDES da próxima preparação', source.includes('SEDES em acompanhamento. A transição já pode olhar para frente.'));
@@ -39,7 +39,7 @@ expect('v28 exibe auditoria questão a questão', source.includes('AUDITORIA QUE
 expect('v28 separa anotação do candidato e gabarito preliminar', source.includes('Anotadas na prova') && source.includes('não são gabarito oficial') && source.includes('Gabarito preliminar oficial'));
 expect('v28 expõe acertos, erros e pontos por questão', source.includes('Ver o cruzamento das') && source.includes('Sua anotação') && source.includes('Pontos'));
 expect('v28 expõe pré-análise de recursos', source.includes('Pré-análise de recursos') && source.includes('Não priorizar só pela divergência'));
-expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=29') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
+expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=30') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
 expect('v28 mantém auditoria questão a questão no host dedicado', followUp.includes('data-v28-question-audit') && followUp.includes('questionAudit') && source.includes('window.__planoPostExamAudit'));
 expect('v28 mostra gráficos de resultado', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-stack') && followUp.includes('v28-followup-area-row'));
 expect('v28 mostra linha do tempo oficial', followUp.includes('v28-followup-milestones') && followUp.includes('LINHA DO TEMPO OFICIAL'));
@@ -76,7 +76,7 @@ expect('console adaptativo foi movido para o host pós-prova', source.includes('
 expect('leitura competitiva não injeta na Home', competition.includes('function mountDedicated') && !competition.includes("querySelector('.command-view')"));
 expect('fechamento local saiu da Home', transitionGate.includes("$('#postExamControlSlot')") && !transitionGate.includes("const root = $('.command-view')"));
 expect('shell conhece as novas fases', workspace.includes("'pre-exam'") && workspace.includes("'post-exam'"));
-expect('cache v29 inclui estilos das fases', serviceWorker.includes("plano-transicao-v29-separate-phases") && serviceWorker.includes("'./assets/transition-pages-v29.css'"));
+expect('cache v30 inclui estilos das fases', serviceWorker.includes("plano-transicao-v30-separate-phases") && serviceWorker.includes("'./assets/transition-pages-v29.css'"));
 expect('estilos das fases existem', pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
 
 
