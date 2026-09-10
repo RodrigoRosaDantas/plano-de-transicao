@@ -44,7 +44,7 @@ await scenario('desktop: pré e pós-prova são páginas próprias', { width: 14
   await page.waitForURL(/#pre-exam$/);
   await page.waitForSelector('.pre-exam-view');
   const preText = fold(await page.locator('.pre-exam-view').innerText());
-  for (const value of ['pré-prova pronta para ativar', 'checklist de ativação', 'aguarda', 'novo edital']) {
+  for (const value of ['pré-prova pronta para ativar', 'checklist de ativação', 'estrutura permanece', 'novo edital']) {
     if (!preText.includes(value)) throw new Error(`Pré-prova sem: ${value}`);
   }
 
