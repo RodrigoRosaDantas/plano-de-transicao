@@ -142,6 +142,12 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v35-command-center-ui.mjs
+      - name: Compatibilidade da camada v11 com a Home v35
+        id: v11
+        continue-on-error: true
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v11-decision-debug.mjs
       - name: Testes específicos da caixa gerencial v13
         id: v13
         continue-on-error: true
@@ -183,6 +189,7 @@ jobs:
             "${{ steps.v28.outcome }}" \
             "${{ steps.v33.outcome }}" \
             "${{ steps.v35.outcome }}" \
+            "${{ steps.v11.outcome }}" \
             "${{ steps.v13.outcome }}" \
             "${{ steps.v14.outcome }}" \
             "${{ steps.v15.outcome }}"; do

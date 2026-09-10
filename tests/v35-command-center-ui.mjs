@@ -1,4 +1,5 @@
 import { chromium } from 'playwright';
+import fs from 'node:fs/promises';
 
 const baseURL = process.env.BASE_URL || 'http://127.0.0.1:4173/';
 const browser = await chromium.launch({ headless: true });
@@ -40,6 +41,22 @@ await scenario('pós-prova: cronograma acionável e calendário', { width: 390, 
   const milestoneButton = page.locator('.postexam-milestone [data-alert-toggle]').first();
   await milestoneButton.click();
   if (await milestoneButton.getAttribute('aria-pressed') !== 'true') throw new Error('Marco não foi marcado como acompanhado.');
+  await page.click('[data-view="pre-exam"]');
+  await page.waitForSelector('.pre-exam-view');
+  await page.click('[data-view="post-exam"]');
+  await page.waitForSelector('.post-exam-view');
+  if (await page.locator('.postexam-milestone [data-alert-toggle]').first().getAttribute('aria-pressed') !== 'true') throw new Error('Acompanhamento do marco não persistiu ao trocar de área.');
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('.postexam-milestone [data-calendar-event]').first().click();
+  const download = await downloadPromise;
+  if (!download.suggestedFilename().endsWith('.ics')) throw new Error(`Calendário exportou extensão inesperada: ${download.suggestedFilename()}`);
+  const downloadPath = await download.path();
+  if (!downloadPath) throw new Error('O arquivo de calendário não ficou disponível para leitura.');
+  const calendar = await fs.readFile(downloadPath, 'utf8');
+  for (const value of ['BEGIN:VCALENDAR', 'SUMMARY:Provas realizadas', 'DTSTART;VALUE=DATE:20260906', 'DTEND;VALUE=DATE:20260907', 'END:VCALENDAR']) {
+    if (!calendar.includes(value)) throw new Error(`Arquivo ICS sem ${value}.`);
+  }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error(`Overflow horizontal no pós-prova: ${overflow}px`);
 });

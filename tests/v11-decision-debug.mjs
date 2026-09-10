@@ -7,23 +7,22 @@ const page = await context.newPage();
 const pageErrors = [];
 page.on('pageerror', error => pageErrors.push(String(error)));
 await page.goto(baseURL, { waitUntil: 'networkidle' });
-await page.waitForSelector('#v11DecisionCenter .v11-decision-card');
-const before = await page.evaluate(() => ({
-  centers: document.querySelectorAll('#v11DecisionCenter').length,
+await page.waitForSelector('.command-view .transition-now-hero');
+
+const currentHome = await page.evaluate(() => ({
+  legacyCenters: document.querySelectorAll('#v11DecisionCenter, #v11AlertRadar, #v11WeeklyHorizon').length,
+  currentHome: document.querySelectorAll('.transition-now-hero, .transition-kpi-grid, .transition-next, .transition-decision-grid').length,
   fixScript: [...document.scripts].some(s => s.src.includes('work-decisions-v11-fix.js')),
-  cards: [...document.querySelectorAll('#v11DecisionCenter .v11-decision-card')].map(card => ({ id: card.dataset.decisionId, cls: card.className, status: card.querySelector('.v11-decision-status')?.textContent })),
 }));
-console.log('V11_BEFORE', JSON.stringify(before));
-const first = page.locator('#v11DecisionCenter .v11-decision-card').first();
-const id = await first.getAttribute('data-decision-id');
-await first.locator('[data-v11-decision-status="adopted"]').click();
-await page.waitForTimeout(500);
-const after = await page.evaluate((decisionId) => ({
-  centers: document.querySelectorAll('#v11DecisionCenter').length,
-  stored: JSON.parse(localStorage.getItem('plano.decisions.v11') || '{}')[decisionId] || null,
-  matches: [...document.querySelectorAll('#v11DecisionCenter .v11-decision-card')].filter(card => card.dataset.decisionId === decisionId).map(card => ({ cls: card.className, status: card.querySelector('.v11-decision-status')?.textContent, html: card.outerHTML.slice(0, 700) })),
-}), id);
-console.log('V11_AFTER', JSON.stringify(after));
-console.log('V11_PAGE_ERRORS', JSON.stringify(pageErrors));
+if (currentHome.legacyCenters !== 0) throw new Error('Painéis v11 legados vazaram para a Home v35.');
+if (currentHome.currentHome !== 4) throw new Error('A Home v35 não montou seus quatro blocos principais.');
+if (!currentHome.fixScript) throw new Error('Camada de compatibilidade v11 não foi carregada.');
+
+await page.click('#moreTopBtn');
+await page.waitForSelector('#moreSheet.open #v11DecisionOps');
+const operations = await page.locator('#moreSheet.open #v11DecisionOps').textContent();
+const normalizedOperations = operations.toLocaleLowerCase('pt-BR');
+if (!normalizedOperations.includes('decisões locais') || !normalizedOperations.includes('exportar decisões')) throw new Error('Operações locais v11 não estão acessíveis no menu Mais.');
+if (pageErrors.length) throw new Error(`Erros JavaScript: ${pageErrors.join(' | ')}`);
+console.log('V11_COMPATIBILITY', JSON.stringify({ ...currentHome, operations: 'available' }));
 await browser.close();
-if (!after.stored || after.stored.status !== 'adopted') process.exit(2);
