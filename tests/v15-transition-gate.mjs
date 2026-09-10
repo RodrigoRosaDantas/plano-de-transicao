@@ -21,7 +21,7 @@ async function scenario(name, viewport, fixedNow, run) {
   const errors = [];
   page.on('pageerror', (error) => errors.push(String(error)));
   try {
-    await page.goto(baseURL, { waitUntil: 'networkidle' });
+    await page.goto(baseURL + '#post-exam', { waitUntil: 'networkidle' });
     await page.waitForSelector('#v15TransitionSummary');
     await run(page);
     if (errors.length) throw new Error(`Erros JavaScript: ${errors.join(' | ')}`);
