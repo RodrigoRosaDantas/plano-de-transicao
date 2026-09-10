@@ -16,14 +16,14 @@ const lacks = (text, value, label) => assert.ok(!text.includes(value), `${label}
 
 // Integração consolidada do shell e ordem de carregamento.
 for (const asset of [
-  'assets/exam-day-v21-bootstrap.js?v=29',
+  'assets/exam-day-v21-bootstrap.js?v=30',
   'assets/exam-day-v21.css?v=21',
   'assets/exam-day-v21-shell.css?v=21',
-  'assets/exam-day-v21.js?v=29',
+  'assets/exam-day-v21.js?v=30',
   'assets/exam-day-v21-shell.js?v=21'
 ]) has(index, asset, 'index v21');
-assert.ok(index.indexOf('exam-day-v21-bootstrap.js?v=29') < index.indexOf('assets/work-app.css?v=15'), 'bootstrap precisa nascer no head antes do app-base');
-assert.ok(index.indexOf('exam-day-v21-shell.js?v=21') > index.indexOf('exam-day-v21.js?v=29'), 'shell v21 deve carregar após a aba');
+assert.ok(index.indexOf('exam-day-v21-bootstrap.js?v=30') < index.indexOf('assets/work-app.css?v=15'), 'bootstrap precisa nascer no head antes do app-base');
+assert.ok(index.indexOf('exam-day-v21-shell.js?v=21') > index.indexOf('exam-day-v21.js?v=30'), 'shell v21 deve carregar após a aba');
 
 // Legado v18/v19/v20 não deve mais compor o runtime nem o cache do PWA.
 for (const legacy of [
@@ -39,7 +39,7 @@ for (const legacy of [
   "'./assets/exam-day-v20.css'",
   "'./assets/exam-day-v20.js'"
 ]) lacks(sw, legacy, 'PWA sem camada legada');
-has(sw, "const CACHE='plano-transicao-v29-separate-phases'", 'cache consolidado atual');
+has(sw, "const CACHE='plano-transicao-v30-separate-phases'", 'cache consolidado atual');
 
 for (const asset of [
   "'./assets/exam-day-v21-bootstrap.js'",
