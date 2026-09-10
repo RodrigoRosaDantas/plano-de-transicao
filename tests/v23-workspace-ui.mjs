@@ -48,13 +48,15 @@ await scenario('desktop: rail lateral, Home editorial e páginas internas sem mi
   await page.screenshot({ path: 'artifacts/desktop-workspace-v23.png', fullPage: true });
 });
 
-await scenario('desktop: Dia da Prova continua integrado ao workspace', { width: 1440, height: 1000 }, async page => {
-  await page.locator('[data-exam-day-tab]').first().click();
-  await page.waitForSelector('.exam21-shell', { timeout: 10000 });
+await scenario('desktop: Pós-prova dedicado continua integrado ao workspace', { width: 1440, height: 1000 }, async page => {
+  await page.locator('[data-view="post-exam"]:visible').first().click();
+  await page.waitForURL(/#post-exam$/);
+  await page.waitForSelector('.post-exam-view', { timeout: 10000 });
   const bodyClass = await page.locator('body').getAttribute('class');
-  if (!bodyClass?.includes('v23-view-exam-day')) throw new Error(`Dia da Prova sem classe v23: ${bodyClass}`);
+  if (!bodyClass?.includes('v23-view-post-exam')) throw new Error('Pós-prova sem classe v23: ' + bodyClass);
+  if (await page.locator('[data-post-exam-page]').count() !== 1) throw new Error('Pós-prova não montou o host dedicado.');
   const railPos = await page.locator('.tab-rail').evaluate(el => getComputedStyle(el).position);
-  if (railPos !== 'fixed') throw new Error('Dia da Prova perdeu o rail lateral desktop.');
+  if (railPos !== 'fixed') throw new Error('Pós-prova perdeu o rail lateral desktop.');
 });
 
 await scenario('mobile 390px: sem overflow e dock preservado', { width: 390, height: 844 }, async page => {
