@@ -53,6 +53,8 @@ jobs:
         run: node tests/v27-post-exam-static.mjs
       - name: Auditoria estática da central adaptativa v28
         run: node tests/v28-product-upgrade-static.mjs
+      - name: Auditoria estática do radar pré-edital e pós-prova v33
+        run: node tests/v33-pre-edital-static.mjs
       - name: Auditoria de resiliência dos snapshots
         run: node tests/data-resilience-static.mjs
 
@@ -126,6 +128,12 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v28-product-upgrade-ui.mjs
+      - name: Testes do radar pré-edital e cronograma pós-prova v33
+        id: v33
+        continue-on-error: true
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v33-pre-edital-ui.mjs
       - name: Testes específicos da caixa gerencial v13
         id: v13
         continue-on-error: true
@@ -165,6 +173,7 @@ jobs:
             "${{ steps.v26.outcome }}" \
             "${{ steps.v27.outcome }}" \
             "${{ steps.v28.outcome }}" \
+            "${{ steps.v33.outcome }}" \
             "${{ steps.v13.outcome }}" \
             "${{ steps.v14.outcome }}" \
             "${{ steps.v15.outcome }}"; do

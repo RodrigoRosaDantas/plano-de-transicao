@@ -7,6 +7,8 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 - Central “Agora” gerencial, com missão, prioridades por dados, contador e relógio de Brasília.
 - Home adaptativa por fase: no pós-prova, a SEDES/DF passa a ser tratada como processo em acompanhamento e a próxima transição aparece separadamente.
 - Fluxo longitudinal pós-prova: prova → gabarito → correção → recursos → resultado.
+- Central pré-edital para TJDFT e SEEDF, com cargos no radar, notícias identificadas por tipo de fonte, links oficiais e alertas de ativação.
+- Pós-prova SEDES/DF com visão separada de TDAS 202 e EDAS 400, janela de recursos, cronograma de publicações e fontes da banca.
 - Trilhas estratégicas seguintes destacadas sem misturar bases: SEEDF e TJDFT.
 - Plano focado em decisão e acompanhamento; a execução de questões permanece fora deste site.
 - Central de operações com estado do snapshot, sincronização segura e PWA.

@@ -6423,6 +6423,151 @@
       }
     }
   },
+  "preExamRadar": {
+    "version": "pre-edital-radar-v1",
+    "lastVerifiedAt": "2026-09-10",
+    "description": "Radar editorial dos dois próximos concursos. A página acompanha sinais e fontes, mas só ativa uma preparação nova depois de edital, cargos, banca e cronograma confirmados.",
+    "projects": {
+      "tjdft": {
+        "label": "TJDFT",
+        "institution": "Tribunal de Justiça do Distrito Federal e dos Territórios",
+        "status": "Pré-edital · fonte oficial",
+        "tone": "aqua",
+        "focus": "Técnico e Analista Judiciário · trilha administrativa",
+        "description": "O radar acompanha a página oficial de Analista e Técnico Judiciário, provimentos, cargos vagos e eventual novo edital.",
+        "roles": [
+          {
+            "name": "Técnico Judiciário",
+            "area": "Administrativa",
+            "note": "Cargo no radar; especialidade e requisitos dependem do próximo edital."
+          },
+          {
+            "name": "Analista Judiciário",
+            "area": "Administrativa",
+            "note": "Cargo no radar; área/especialidade e requisitos dependem do próximo edital."
+          }
+        ],
+        "news": [
+          {
+            "date": "2026-09-02",
+            "kind": "official",
+            "title": "Página oficial de Analista e Técnico Judiciário atualizada",
+            "summary": "A página oficial mantém o Concurso 2022, provimentos em andamento, aproveitamentos e cargos vagos como referências de acompanhamento; não há novo edital publicado nessa página.",
+            "url": "https://www.tjdft.jus.br/informacoes/concursos/analista-e-tecnico-judiciario"
+          },
+          {
+            "date": "2026-09-02",
+            "kind": "official",
+            "title": "Provimentos de cargos efetivos seguem em andamento",
+            "summary": "O TJDFT publica quadro consolidado de nomeados por cargo e portarias de nomeação, dado útil para acompanhar o contexto do concurso vigente sem tratá-lo como edital novo.",
+            "url": "https://www.tjdft.jus.br/informacoes/concursos/analista-e-tecnico-judiciario/provimentos-de-cargo-em-andamento"
+          }
+        ],
+        "sources": [
+          {
+            "label": "Concursos TJDFT",
+            "url": "https://www.tjdft.jus.br/informacoes/concursos/analista-e-tecnico-judiciario"
+          },
+          {
+            "label": "Provimentos em andamento",
+            "url": "https://www.tjdft.jus.br/informacoes/concursos/analista-e-tecnico-judiciario/provimentos-de-cargo-em-andamento"
+          },
+          {
+            "label": "Concurso 2022",
+            "url": "https://www.tjdft.jus.br/informacoes/concursos/analista-e-tecnico-judiciario/concurso-2022"
+          }
+        ]
+      },
+      "seedf": {
+        "label": "SEEDF",
+        "institution": "Secretaria de Estado de Educação do Distrito Federal",
+        "status": "Pré-edital · confirmação oficial pendente",
+        "tone": "lime",
+        "focus": "Gestor e Analista PPGE · Monitor no radar",
+        "description": "A trilha considera Gestor e Analista como foco do plano e mantém Monitor no radar, com nomenclatura e requisitos sujeitos à confirmação oficial.",
+        "roles": [
+          {
+            "name": "Gestor",
+            "area": "PPGE",
+            "note": "Foco declarado para o próximo ciclo; requisitos aguardam edital."
+          },
+          {
+            "name": "Analista",
+            "area": "PPGE",
+            "note": "Foco declarado para o próximo ciclo; especialidade aguarda edital."
+          },
+          {
+            "name": "Monitor",
+            "area": "A confirmar",
+            "note": "Mantido no radar; cargo e nomenclatura precisam ser confirmados em fonte oficial."
+          }
+        ],
+        "news": [
+          {
+            "date": "2026-09-08",
+            "kind": "external",
+            "title": "Expectativa de edital até o fim de setembro",
+            "summary": "Notícia externa reporta comissão formada e expectativa de publicação; banca, cargos, quantitativos e cronograma continuam sem confirmação oficial no painel.",
+            "url": "https://blog.grancursosonline.com.br/concurso-sedf/"
+          },
+          {
+            "date": "2026-09-10",
+            "kind": "official",
+            "title": "SEEDF e DODF são as fontes de confirmação",
+            "summary": "Edital, comissão, banca, cargos, retificações e datas devem ser validados na página oficial da Educação e no Diário Oficial do DF.",
+            "url": "https://www.educacao.df.gov.br"
+          },
+          {
+            "date": "2026-09-10",
+            "kind": "official",
+            "title": "Pesquisa DODF concentra atos de pessoal e editais",
+            "summary": "O DODF permite acompanhar atos de pessoal e editais por seção, funcionando como alerta complementar para nomeações, comissão e publicação do certame.",
+            "url": "https://dodf.df.gov.br/"
+          }
+        ],
+        "sources": [
+          {
+            "label": "Portal oficial SEEDF",
+            "url": "https://www.educacao.df.gov.br"
+          },
+          {
+            "label": "Pesquisa DODF",
+            "url": "https://dodf.df.gov.br/"
+          },
+          {
+            "label": "Notícia externa · Gran Cursos",
+            "url": "https://blog.grancursosonline.com.br/concurso-sedf/"
+          }
+        ]
+      }
+    },
+    "alerts": [
+      {
+        "icon": "flag",
+        "title": "Edital publicado",
+        "detail": "Ativar uma base própria para o concurso escolhido e congelar cargos, requisitos, banca, conteúdo e datas pela fonte oficial.",
+        "action": "Ação: abrir o ciclo do edital e revisar aderência antes de estudar."
+      },
+      {
+        "icon": "database",
+        "title": "Banca ou comissão confirmada",
+        "detail": "Subir o nível de monitoramento, mas ainda sem inventar conteúdo ou cronograma que não foi publicado.",
+        "action": "Ação: registrar a fonte e preparar o mapa de ativação."
+      },
+      {
+        "icon": "alert",
+        "title": "Retificação ou cronograma",
+        "detail": "Qualquer mudança em cargo, especialidade, inscrição, prova ou prazo pode alterar a decisão do ciclo.",
+        "action": "Ação: comparar a versão nova com a anterior e gerar alerta local."
+      },
+      {
+        "icon": "shield",
+        "title": "Notícia externa sem confirmação",
+        "detail": "Expectativa ajuda a priorizar a checagem, mas não vale como edital nem como autorização para misturar metas.",
+        "action": "Ação: manter o rótulo de expectativa até a confirmação oficial."
+      }
+    ]
+  },
   "preExamReadiness": {
     "version": "pre-exam-ready-v1",
     "status": "standby",

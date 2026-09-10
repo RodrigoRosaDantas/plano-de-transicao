@@ -122,11 +122,11 @@ const cachedAssets = [
   'assets/transition-gate-v15.css', 'assets/transition-gate-v15.js',
   'assets/exam-day-v21.css', 'assets/exam-day-v21-shell.css', 'assets/exam-day-v21.js', 'assets/exam-day-v21-shell.js', 'assets/exam-day-v21-bootstrap.js',
   'assets/exam-day-v22.css', 'assets/exam-day-v22.js',
-  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js', 'assets/post-exam-competition-v28.js', 'assets/transition-pages-v29.css',
+  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js', 'assets/post-exam-competition-v28.js', 'assets/transition-pages-v29.css', 'assets/pre-post-v33.css',
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está consolidado na v32', sw.includes("const CACHE='plano-transicao-v32-ipad-layout'"));
+check('Cache PWA está consolidado na v33', sw.includes("const CACHE='plano-transicao-v33-pre-edital'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
 check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
@@ -149,7 +149,7 @@ check('Follow-up não tem fallback na Home', followUp.includes("[data-post-exam-
 check('Console pós-prova está no host dedicado', score.includes('function patchDedicated') && score.includes('[data-post-exam-page]'));
 check('Competitivo está no host dedicado', competition.includes('function mountDedicated') && !competition.includes("querySelector('.command-view')"));
 check('Fechamento local não renderiza na Home', transitionGate.includes("$('#postExamControlSlot')") && !transitionGate.includes("const root = $('.command-view')"));
-check('Estilos das fases estão publicados', index.includes('transition-pages-v29.css?v=32') && pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
+check('Estilos das fases estão publicados', index.includes('transition-pages-v29.css?v=33') && index.includes('pre-post-v33.css?v=33') && pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
 
 check('Painel pós-prova possui gráficos e linha do tempo', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-milestones'));
 check('Painel mantém fonte e snapshot identificados', followUp.includes('snapshot publicado') && followUp.includes('Fontes e governança'));

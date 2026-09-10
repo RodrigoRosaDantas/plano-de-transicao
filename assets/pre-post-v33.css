@@ -1,0 +1,595 @@
+/* v33 — radar pré-edital e comando pós-prova */
+
+.preexam-radar-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  padding: clamp(22px, 3vw, 34px);
+  border-color: color-mix(in srgb, var(--lime) 30%, var(--border));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--lime) 8%, var(--surface)), color-mix(in srgb, var(--surface) 84%, transparent));
+}
+.preexam-radar-hero h2 {
+  margin: 8px 0 9px;
+  max-width: 22ch;
+  font-size: clamp(1.55rem, 3vw, 2.45rem);
+  letter-spacing: -.05em;
+}
+.preexam-radar-hero p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.preexam-radar-meta {
+  display: grid;
+  align-content: center;
+  min-width: 205px;
+  gap: 7px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--lime) 34%, var(--border));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--lime) 6%, transparent);
+}
+.preexam-radar-meta span {
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.preexam-radar-meta strong {
+  color: var(--lime);
+  font-size: 1rem;
+}
+.preexam-radar-meta small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.4;
+}
+.preexam-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.preexam-filters button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface);
+  font: inherit;
+  font-size: .75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease, transform .2s ease;
+}
+.preexam-filters button:hover,
+.preexam-filters button:focus-visible {
+  border-color: color-mix(in srgb, var(--lime) 45%, var(--border));
+  color: var(--text);
+  transform: translateY(-1px);
+}
+.preexam-filters button.active {
+  border-color: color-mix(in srgb, var(--lime) 52%, var(--border));
+  color: var(--lime);
+  background: color-mix(in srgb, var(--lime) 9%, var(--surface));
+}
+.preexam-project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.preexam-project-card[hidden] {
+  display: none !important;
+}
+.preexam-project-card {
+  display: grid;
+  gap: 17px;
+  min-width: 0;
+  padding: 22px;
+  border-top: 3px solid color-mix(in srgb, var(--aqua) 72%, transparent);
+}
+.preexam-project-card--seedf {
+  border-top-color: color-mix(in srgb, var(--lime) 72%, transparent);
+}
+.preexam-project-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+.preexam-project-head h3 {
+  margin: 6px 0 5px;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  letter-spacing: -.045em;
+}
+.preexam-project-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+.preexam-project-focus {
+  display: grid;
+  gap: 5px;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--surface-2) 80%, transparent);
+}
+.preexam-project-focus span,
+.preexam-project-sources > span {
+  color: var(--muted);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.preexam-project-focus strong {
+  font-size: .86rem;
+  line-height: 1.4;
+}
+.preexam-project-section {
+  display: grid;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+.preexam-project-section__title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text);
+  font-size: .75rem;
+  font-weight: 850;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.preexam-project-section__title svg,
+.preexam-source-link svg,
+.preexam-news a svg,
+.postexam-source-bar svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.preexam-project-section__title svg {
+  color: var(--aqua);
+}
+.preexam-role-list,
+.preexam-news-list {
+  display: grid;
+  gap: 8px;
+}
+.preexam-role {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 10px;
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--surface-2) 68%, transparent);
+}
+.preexam-role strong {
+  min-width: 0;
+  font-size: .78rem;
+}
+.preexam-role span,
+.preexam-role small {
+  color: var(--muted);
+  font-size: .68rem;
+}
+.preexam-role span {
+  justify-self: end;
+  text-align: right;
+}
+.preexam-role small {
+  grid-column: 1 / -1;
+  line-height: 1.4;
+}
+.preexam-news {
+  display: grid;
+  gap: 5px;
+  padding: 11px;
+  border-left: 2px solid color-mix(in srgb, var(--aqua) 45%, transparent);
+  background: color-mix(in srgb, var(--surface-2) 48%, transparent);
+}
+.preexam-news-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .66rem;
+}
+.preexam-news-badge {
+  padding: 3px 7px;
+  border: 1px solid color-mix(in srgb, var(--aqua) 35%, var(--border));
+  border-radius: 999px;
+  color: var(--aqua);
+  font-size: .6rem;
+  font-weight: 850;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.preexam-news-badge--external {
+  border-color: color-mix(in srgb, var(--amber) 42%, var(--border));
+  color: var(--amber);
+}
+.preexam-news > strong {
+  font-size: .78rem;
+  line-height: 1.35;
+}
+.preexam-news p,
+.preexam-alert p,
+.preexam-alert small {
+  margin: 0;
+  color: var(--muted);
+  font-size: .7rem;
+  line-height: 1.48;
+}
+.preexam-news a,
+.preexam-source-link,
+.postexam-source-bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  color: var(--aqua);
+  font-size: .7rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.preexam-news a:hover,
+.preexam-source-link:hover,
+.postexam-source-bar a:hover {
+  text-decoration: underline;
+}
+.preexam-project-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 14px;
+  align-items: center;
+  padding-top: 2px;
+}
+.preexam-project-sources > span {
+  width: 100%;
+}
+.preexam-source-link {
+  color: var(--muted);
+  font-size: .68rem;
+}
+.preexam-source-link:hover {
+  color: var(--aqua);
+}
+.preexam-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: .74rem;
+}
+.preexam-alerts {
+  padding: 22px;
+}
+.preexam-alerts .panel-heading {
+  margin-bottom: 15px;
+}
+.preexam-alerts .panel-heading > svg,
+.postexam-calendar .panel-heading > svg {
+  width: 24px;
+  height: 24px;
+  color: var(--amber);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.preexam-alert-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.preexam-alert {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-2) 68%, transparent);
+}
+.preexam-alert-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 10%, transparent);
+}
+.preexam-alert-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.preexam-alert strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: .78rem;
+}
+.preexam-alert small {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: .67rem;
+}
+
+.postexam-action-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, .38fr);
+  gap: 18px;
+  align-items: stretch;
+  padding: 22px;
+  border-color: color-mix(in srgb, var(--amber) 35%, var(--border));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--amber) 7%, var(--surface)), color-mix(in srgb, var(--surface) 85%, transparent));
+}
+.postexam-action-copy h2 {
+  margin: 7px 0 8px;
+  max-width: 36ch;
+  font-size: clamp(1.15rem, 2.25vw, 1.75rem);
+  letter-spacing: -.04em;
+}
+.postexam-action-copy p,
+.postexam-cargo-card > p,
+.postexam-calendar .panel-heading p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.postexam-action-copy p {
+  max-width: 760px;
+  font-size: .78rem;
+}
+.postexam-action-window {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 15px;
+  border: 1px solid color-mix(in srgb, var(--amber) 38%, var(--border));
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--amber) 7%, transparent);
+}
+.postexam-action-window span,
+.postexam-action-window small {
+  color: var(--muted);
+  font-size: .68rem;
+}
+.postexam-action-window span {
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.postexam-action-window strong {
+  color: var(--amber);
+  font-size: 1.05rem;
+}
+.postexam-cargo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.postexam-cargo-card {
+  display: grid;
+  gap: 15px;
+  min-width: 0;
+  padding: 21px;
+  border-top: 3px solid var(--aqua);
+}
+.postexam-cargo-card--tdas {
+  border-top-color: var(--lime);
+}
+.postexam-cargo-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+.postexam-cargo-head h3 {
+  margin: 6px 0 4px;
+  font-size: 1.2rem;
+  letter-spacing: -.035em;
+}
+.postexam-cargo-head small {
+  color: var(--muted);
+  font-size: .72rem;
+}
+.postexam-cargo-score {
+  display: grid;
+  gap: 4px;
+  padding: 13px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.postexam-cargo-score span,
+.postexam-cargo-score small {
+  color: var(--muted);
+  font-size: .7rem;
+}
+.postexam-cargo-score strong {
+  color: var(--text);
+  font-size: 1.45rem;
+}
+.postexam-cargo-card > p {
+  font-size: .72rem;
+}
+.postexam-calendar {
+  padding: 22px;
+}
+.postexam-calendar .panel-heading {
+  margin-bottom: 15px;
+}
+.postexam-calendar .panel-heading p {
+  max-width: 760px;
+  font-size: .78rem;
+}
+.postexam-milestone-list {
+  display: grid;
+  gap: 8px;
+}
+.postexam-milestone {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-2) 68%, transparent);
+}
+.postexam-milestone--current {
+  border-color: color-mix(in srgb, var(--amber) 40%, var(--border));
+  background: color-mix(in srgb, var(--amber) 6%, var(--surface-2));
+}
+.postexam-milestone-dot {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--aqua);
+}
+.postexam-milestone--done .postexam-milestone-dot {
+  color: var(--lime);
+  border-color: color-mix(in srgb, var(--lime) 42%, var(--border));
+  background: color-mix(in srgb, var(--lime) 8%, transparent);
+}
+.postexam-milestone--current .postexam-milestone-dot {
+  color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 45%, var(--border));
+  background: color-mix(in srgb, var(--amber) 8%, transparent);
+}
+.postexam-milestone-dot svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.postexam-milestone-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.postexam-milestone-head strong {
+  font-size: .78rem;
+}
+.postexam-milestone > div > span {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: .72rem;
+  font-weight: 750;
+}
+.postexam-milestone p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: .7rem;
+  line-height: 1.42;
+}
+.postexam-source-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 16px;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.postexam-source-bar > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  color: var(--muted);
+  font-size: .68rem;
+}
+.postexam-source-bar > span svg {
+  color: var(--lime);
+}
+.postexam-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: .75rem;
+}
+
+@media (max-width: 900px) {
+  .preexam-project-grid,
+  .postexam-cargo-grid {
+    grid-template-columns: 1fr;
+  }
+  .preexam-alert-grid {
+    grid-template-columns: 1fr;
+  }
+  .postexam-action-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .preexam-radar-hero,
+  .postexam-action-panel {
+    grid-template-columns: 1fr;
+  }
+  .preexam-radar-meta {
+    min-width: 0;
+  }
+  .preexam-project-head,
+  .postexam-cargo-head {
+    grid-template-columns: 1fr;
+  }
+  .preexam-project-head .status-chip,
+  .postexam-cargo-head .status-chip {
+    justify-self: start;
+  }
+  .preexam-role {
+    grid-template-columns: 1fr;
+  }
+  .preexam-role span {
+    justify-self: start;
+    text-align: left;
+  }
+  .postexam-milestone-head {
+    display: block;
+  }
+  .postexam-milestone-head .status-chip {
+    display: inline-flex;
+    margin-top: 6px;
+  }
+  .postexam-source-bar > span {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 430px) {
+  .preexam-alerts,
+  .postexam-calendar,
+  .preexam-project-card,
+  .postexam-cargo-card,
+  .postexam-action-panel {
+    padding: 17px;
+  }
+}

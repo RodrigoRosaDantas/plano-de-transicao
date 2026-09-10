@@ -72,6 +72,12 @@ const dateBR = (value, short = false) => {
   if (Number.isNaN(date.getTime())) return String(value);
   return new Intl.DateTimeFormat("pt-BR", short ? { day: "2-digit", month: "short", timeZone: "America/Sao_Paulo" } : { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "America/Sao_Paulo" }).format(date).replace(".", "");
 };
+const dateTimeBR = (value) => {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "America/Sao_Paulo" }).format(date).replace(",", " ·");
+};
 const normalize = (value) => String(value ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const clamp = (value, min = 0, max = 100) => Math.min(max, Math.max(min, Number(value || 0)));
 
@@ -311,53 +317,91 @@ function examsView() {
 }
 
 
+function preExamSourceLink(source) {
+  return source?.url
+    ? `<a class="preexam-source-link" href="${esc(source.url)}" target="_blank" rel="noreferrer">${svgIcon("external")}<span>${esc(source.label || "Abrir fonte")}</span></a>`
+    : "";
+}
+
+function preExamProjectMarkup(id, project) {
+  const roles = Array.isArray(project?.roles) ? project.roles : [];
+  const news = Array.isArray(project?.news) ? project.news : [];
+  const sources = Array.isArray(project?.sources) ? project.sources : [];
+  return `<article class="panel preexam-project-card preexam-project-card--${esc(id)}" data-pre-exam-project="${esc(id)}">
+    <div class="preexam-project-head"><div><span class="eyebrow">${esc(project?.institution || "Concurso monitorado")}</span><h3>${esc(project?.label || id.toUpperCase())}</h3><p>${esc(project?.description || "Monitoramento separado para o próximo edital.")}</p></div>${statusChip(project?.status || "Pré-edital", project?.tone || "aqua")}</div>
+    <div class="preexam-project-focus"><span>Foco no plano</span><strong>${esc(project?.focus || "Cargos e requisitos a confirmar")}</strong></div>
+    <div class="preexam-project-section"><div class="preexam-project-section__title">${svgIcon("target")}<span>Cargos no radar</span></div><div class="preexam-role-list">${roles.map((role) => `<div class="preexam-role"><strong>${esc(role.name)}</strong><span>${esc(role.area || "Área a confirmar")}</span><small>${esc(role.note || "A confirmar no edital")}</small></div>`).join("") || '<p class="preexam-empty">Nenhum cargo cadastrado ainda.</p>'}</div></div>
+    <div class="preexam-project-section"><div class="preexam-project-section__title">${svgIcon("spark")}<span>Notícias e sinais</span></div><div class="preexam-news-list">${news.map((item) => `<article class="preexam-news"><div class="preexam-news-meta"><span>${esc(dateBR(item.date))}</span><b class="preexam-news-badge preexam-news-badge--${esc(item.kind || "official")}">${item.kind === "external" ? "Externa" : "Oficial"}</b></div><strong>${esc(item.title)}</strong><p>${esc(item.summary)}</p><a href="${esc(item.url)}" target="_blank" rel="noreferrer">Ler fonte ${svgIcon("external")}</a></article>`).join("") || '<p class="preexam-empty">Sem notícia registrada.</p>'}</div></div>
+    <div class="preexam-project-sources"><span>Fontes de confirmação</span>${sources.map(preExamSourceLink).join("")}</div>
+  </article>`;
+}
+
+function preExamAlertMarkup(alert) {
+  return `<article class="preexam-alert"><span class="preexam-alert-icon">${svgIcon(alert?.icon || "alert")}</span><div><strong>${esc(alert?.title || "Alerta")}</strong><p>${esc(alert?.detail || "")}</p><small>${esc(alert?.action || "")}</small></div></article>`;
+}
+
 function preExamView() {
   const data = state.data;
   const model = data.preExamReadiness || {};
+  const radar = data.preExamRadar || {};
+  const projects = Object.entries(radar.projects || {});
+  const alerts = Array.isArray(radar.alerts) ? radar.alerts : [];
   const checklist = Array.isArray(model.checklist) ? model.checklist : [];
   const outputs = Array.isArray(model.outputs) ? model.outputs : [];
-  const ready = model.status === 'standby';
-  const previousCycle = (data.exams || []).filter((exam) => String(exam.id || '').startsWith('sedes-2026-')).length > 0;
-  return '<div class="view-stack pre-exam-view">' +
-    viewHeading('Pré-prova', 'Pré-prova pronta para o próximo concurso.', 'A estrutura permanece ativa em modo de prontidão. Quando houver edital, cargo, banca e data confirmados, o próximo ciclo recebe dados próprios sem apagar o histórico anterior.', '<button class="primary-button" type="button" data-view="strategy">' + svgIcon('compass') + ' Ver critérios</button><button class="secondary-button" type="button" data-view="post-exam">' + svgIcon('flag') + ' Acompanhar SEDES</button>') +
-    '<section class="panel preexam-hero">' +
-      '<div><div class="preexam-hero__top"><div><span class="eyebrow">ESTADO DA ESTRUTURA</span><h2>' + esc(model.title || 'Pré-prova pronta para ativar') + '</h2><p>' + esc(model.description || 'A estrutura aguarda o próximo edital.') + '</p></div>' + statusChip(ready ? 'Pronto para ativar' : 'Em configuração', ready ? 'good' : 'warning') + '</div></div>' +
-      '<div class="preexam-trigger"><strong>Gatilho de ativação</strong><span>' + esc(model.activationRule || 'Ativar somente após confirmar edital, cargo, banca e data de prova.') + '</span></div>' +
-    '</section>' +
-    '<section class="metric-grid">' +
-      metricCard('Status', ready ? 'Standby' : 'Configuração', 'sem concurso novo inventado', 'aqua') +
-      metricCard('Blocos preparados', fmt(checklist.length), 'recebem dados do próximo edital', 'lime') +
-      metricCard('Saídas previstas', fmt(outputs.length), 'entregas do ciclo ativado', 'violet') +
-      metricCard('Ciclo anterior', previousCycle ? 'Pós-prova' : 'Nenhum', previousCycle ? 'SEDES preservada em página própria' : 'aguardando primeiro edital', 'amber') +
-    '</section>' +
-    '<section class="preexam-layout">' +
-      '<article class="panel preexam-checklist"><div class="panel-heading"><div><span class="eyebrow">CHECKLIST DE ATIVAÇÃO</span><h2>O que entra quando houver edital</h2><p>Cada bloco é criado para o novo concurso, sem misturar metas, erros ou fontes de outro projeto.</p></div>' + svgIcon('check') + '</div><ol class="preexam-checklist-list">' +
-        checklist.map((item, index) => '<li class="preexam-checklist-item"><span>' + String(index + 1).padStart(2, '0') + '</span><div><strong>' + esc(item.title) + '</strong><small>' + esc(item.detail) + '</small></div></li>').join('') +
-      '</ol></article>' +
-      '<article class="panel preexam-output"><div class="panel-heading"><div><span class="eyebrow">SAÍDAS DO PRÓXIMO CICLO</span><h2>Pronto para receber</h2><p>O conteúdo aparece quando a ativação for autorizada pelos dados oficiais.</p></div>' + svgIcon('layers') + '</div>' +
-        outputs.map((item) => '<span class="preexam-output-tag">' + esc(item) + '</span>').join('') +
-      '</article>' +
-    '</section>' +
-    '<section class="panel preexam-boundary"><span>' + svgIcon('shield') + '</span><div><span class="eyebrow">REGRA DE SEPARAÇÃO</span><h2>Um novo concurso começa uma nova base.</h2><p>SEDES/DF fica no acompanhamento pós-prova. O próximo edital terá cargo, banca, fontes, ciclo, questões e caderno de erros próprios. O histórico continua disponível para comparação, mas não vira meta do novo projeto.</p></div><div class="preexam-boundary-actions"><button class="secondary-button" type="button" data-view="sources">' + svgIcon('database') + ' Ver fontes</button><button class="secondary-button" type="button" data-view="operations">' + svgIcon('settings') + ' Controles</button></div></section>' +
-  '</div>';
+  const ready = model.status === "standby";
+  const previousCycle = (data.exams || []).filter((exam) => String(exam.id || "").startsWith("sedes-2026-")).length > 0;
+  return `<div class="view-stack pre-exam-view">
+    ${viewHeading("Pré-edital", "Radar pré-edital: TJDFT e SEEDF.", "A Pré-prova pronta para o próximo concurso permanece em modo de prontidão e aguarda um novo edital. As duas trilhas acompanham cargos, notícias e gatilhos oficiais sem misturar a preparação com o pós-prova da SEDES/DF.", `<button class="primary-button" type="button" data-view="strategy">${svgIcon("compass")} Ver critérios</button><button class="secondary-button" type="button" data-view="post-exam">${svgIcon("flag")} Acompanhar SEDES/DF</button>`)}
+    <section class="panel preexam-radar-hero"><div><span class="eyebrow">MONITORAMENTO PRÉ-EDITAL</span><h2>O próximo movimento ainda não é um edital.</h2><p>${esc(radar.description || "Acompanhe os sinais oficiais e mantenha cada concurso em uma base própria até que edital, banca, cargos e cronograma estejam confirmados.")}</p></div><div class="preexam-radar-meta"><span>Última checagem</span><strong>${esc(dateBR(radar.lastVerifiedAt || data.meta.generatedAt))}</strong><span>Projetos ativos</span><strong>${fmt(projects.length)} trilhas</strong><small>Notícia externa fica identificada como expectativa.</small></div></section>
+    <div class="preexam-filters" role="tablist" aria-label="Filtrar concursos pré-edital"><button class="active" type="button" role="tab" aria-selected="true" data-pre-exam-filter="all">Todos</button>${projects.map(([id, project]) => `<button type="button" role="tab" aria-selected="false" data-pre-exam-filter="${esc(id)}">${esc(project.label || id.toUpperCase())}</button>`).join("")}</div>
+    <section class="preexam-project-grid" aria-label="Concursos em pré-edital">${projects.map(([id, project]) => preExamProjectMarkup(id, project)).join("")}</section>
+    <section class="panel preexam-alerts"><div class="panel-heading"><div><span class="eyebrow">ALERTAS QUE MUDAM O PLANO</span><h2>O que merece atenção primeiro</h2><p>O alerta serve para decidir a próxima ação; não transforma rumor em fato confirmado.</p></div>${svgIcon("alert")}</div><div class="preexam-alert-grid">${alerts.map(preExamAlertMarkup).join("") || '<p class="preexam-empty">Nenhum alerta cadastrado.</p>'}</div></section>
+    <section class="panel preexam-hero"><div><div class="preexam-hero__top"><div><span class="eyebrow">ESTADO DA ESTRUTURA</span><h2>${esc(model.title || "Pré-prova pronta para ativar")}</h2><p>${esc(model.description || "A estrutura aguarda o próximo edital.")}</p></div>${statusChip(ready ? "Pronto para ativar" : "Em configuração", ready ? "good" : "warning")}</div></div><div class="preexam-trigger"><strong>Gatilho de ativação</strong><span>${esc(model.activationRule || "Ativar somente após confirmar edital, cargo, banca e data de prova.")}</span></div></section>
+    <section class="metric-grid">${metricCard("Status", ready ? "Standby" : "Configuração", "sem concurso novo inventado", "aqua")}${metricCard("Blocos preparados", fmt(checklist.length), "recebem dados do próximo edital", "lime")}${metricCard("Saídas previstas", fmt(outputs.length), "entregas do ciclo ativado", "violet")}${metricCard("Ciclo anterior", previousCycle ? "Pós-prova" : "Nenhum", previousCycle ? "SEDES preservada em página própria" : "aguardando primeiro edital", "amber")}</section>
+    <section class="preexam-layout"><article class="panel preexam-checklist"><div class="panel-heading"><div><span class="eyebrow">CHECKLIST DE ATIVAÇÃO</span><h2>O que entra quando houver edital</h2><p>Cada bloco é criado para o novo concurso, sem misturar metas, erros ou fontes de outro projeto.</p></div>${svgIcon("check")}</div><ol class="preexam-checklist-list">${checklist.map((item, index) => `<li class="preexam-checklist-item"><span>${String(index + 1).padStart(2, "0")}</span><div><strong>${esc(item.title)}</strong><small>${esc(item.detail)}</small></div></li>`).join("")}</ol></article><article class="panel preexam-output"><div class="panel-heading"><div><span class="eyebrow">SAÍDAS DO PRÓXIMO CICLO</span><h2>Pronto para receber</h2><p>O conteúdo aparece quando a ativação for autorizada pelos dados oficiais.</p></div>${svgIcon("layers")}</div>${outputs.map((item) => `<span class="preexam-output-tag">${esc(item)}</span>`).join("")}</article></section>
+    <section class="panel preexam-boundary"><span>${svgIcon("shield")}</span><div><span class="eyebrow">REGRA DE SEPARAÇÃO</span><h2>Um novo concurso começa uma nova base.</h2><p>SEDES/DF fica no acompanhamento pós-prova. TJDFT e SEEDF terão cargos, bancas, fontes, ciclo, questões e caderno de erros próprios. O histórico continua disponível para comparação, mas não vira meta do novo projeto.</p></div><div class="preexam-boundary-actions"><button class="secondary-button" type="button" data-view="sources">${svgIcon("database")} Ver fontes</button><button class="secondary-button" type="button" data-view="operations">${svgIcon("settings")} Controles</button></div></section>
+  </div>`;
+}
+
+function postExamCargoMarkup(id, exam) {
+  const result = exam?.result || {};
+  const total = result.totalScore == null ? "Pendente" : `${fmt(result.totalScore)}/${fmt(result.maxScore || 100)}`;
+  const details = result.correct == null ? "Resultado oficial pendente" : `${fmt(result.correct)} acertos · ${fmt(result.wrong)} erros${result.invalid ? ` · ${fmt(result.invalid)} inválida` : ""}`;
+  return `<article class="panel postexam-cargo-card postexam-cargo-card--${esc(id)}"><div class="postexam-cargo-head"><div><span class="eyebrow">${esc(id === "tdas" ? "TDAS · CARGO 202" : "EDAS · CARGO 400")}</span><h3>${esc(exam?.role || "Cargo SEDES/DF")}</h3><small>${esc(exam?.session || "Turno não informado")} · ${esc(exam?.examType ? `Tipo ${exam.examType}` : "prova objetiva")}</small></div>${statusChip(result.objectiveMinimumsMet ? "Mínimos objetivos" : "Acompanhar mínimos", result.objectiveMinimumsMet ? "good" : "warning")}</div><div class="postexam-cargo-score"><span>Nota objetiva preliminar</span><strong>${esc(total)}</strong><small>${esc(details)}</small></div><p>Esta nota é uma leitura preliminar baseada no gabarito publicado; não substitui resultado, classificação ou convocação oficial.</p></article>`;
+}
+
+function postExamMilestoneMarkup(item) {
+  const status = item?.status || "pending";
+  const statusLabel = { done: "Concluído", current: "Agora", upcoming: "Programado", pending: "Aguardando" }[status] || "Em acompanhamento";
+  const dateLabel = item?.start && item?.end ? `${dateTimeBR(item.start)} até ${dateTimeBR(item.end)} (Brasília)` : dateBR(item?.date);
+  return `<article class="postexam-milestone postexam-milestone--${esc(status)}"><span class="postexam-milestone-dot">${status === "done" ? svgIcon("check") : status === "current" ? svgIcon("clock") : svgIcon("flag")}</span><div><div class="postexam-milestone-head"><strong>${esc(item?.label || "Marco")}</strong>${statusChip(statusLabel, status === "done" ? "good" : status === "current" ? "amber" : "aqua")}</div><span>${esc(dateLabel)}</span><p>${esc(item?.detail || "")}</p></div></article>`;
 }
 
 function postExamView() {
   const data = state.data;
   const fu = data.postExam?.followUp || null;
+  const scoring = data.postExam?.scoring || {};
   const exams = Object.entries(fu?.exams || {});
-  const summary = exams.map(([id, exam]) => (id === 'tdas' ? 'TDAS' : 'EDAS') + ' ' + String(exam?.result?.totalScore ?? '—') + '/100').join(' · ') || 'Resultado em acompanhamento';
-  const currentStage = fu?.currentStage || 'Em acompanhamento';
+  const summary = exams.map(([id, exam]) => (id === "tdas" ? "TDAS" : "EDAS") + " " + String(exam?.result?.totalScore ?? "—") + "/100").join(" · ") || "Resultado em acompanhamento";
+  const currentStage = fu?.currentStage || "Em acompanhamento";
   const updated = fu?.lastCalculatedAt ? dateBR(fu.lastCalculatedAt) : dateBR(data.meta.generatedAt);
   const hasFollowUp = exams.length > 0;
-  return '<div class="view-stack post-exam-view">' +
-    viewHeading('Pós-prova', 'Acompanhamento pós-prova em página própria.', 'Esta página concentra a SEDES/DF depois da prova: dados preliminares, gráficos, divergências, recursos, cronograma e leitura competitiva. O Agora continua reservado ao plano de transição e aos seus controles.', '<button class="primary-button" type="button" data-view="pre-exam">' + svgIcon('book') + ' Abrir pré-prova</button><button class="secondary-button" type="button" data-view="exams">' + svgIcon('flag') + ' Ver registros</button>') +
-    '<section class="panel postexam-context"><div><span class="eyebrow">CICLO SEDES/DF · REGISTRO SEPARADO</span><h2>' + esc(fu?.title || 'Acompanhamento pós-prova') + '</h2><p>' + esc(fu?.description || 'O acompanhamento será preenchido quando houver dados oficiais publicados.') + ' Os resultados exibidos abaixo seguem identificados como preliminares enquanto não existir publicação definitiva.</p></div><div class="postexam-context__meta"><span>Etapa atual</span><strong>' + esc(currentStage) + '</strong><span>Última atualização</span><strong>' + esc(updated) + '</strong><span>Resumo</span><strong>' + esc(summary) + '</strong></div></section>' +
-    '<div class="postexam-control-slot" id="postExamControlSlot" data-post-exam-control-slot></div>' +
-    '<div id="postExamPage" data-post-exam-page>' +
-      (hasFollowUp ? '' : '<section class="panel postexam-fallback"><span class="eyebrow">DADOS AGUARDANDO</span><h3>O snapshot ainda não contém o acompanhamento estruturado.</h3><p>Recarregue os dados publicados ou abra Operações para conferir a cadeia de atualização.</p><button class="secondary-button" type="button" data-refresh>' + svgIcon('refresh') + ' Recarregar snapshot</button></section>') +
-    '</div>' +
-  '</div>';
+  const milestones = Array.isArray(fu?.milestones) ? fu.milestones : [];
+  const resourceWindow = scoring.resourceProtocol || milestones.find((item) => item.id === "resources") || {};
+  const nextMilestone = milestones.find((item) => item.status === "upcoming") || {};
+  const sourceDocuments = scoring.sourceDocuments || {};
+  const differences = scoring.resources?.totalDifferenceCount ?? fu?.resources?.totalDifferenceCount;
+  const contestSource = sourceDocuments.contest || "https://quadrix.org.br/informacoes/3056/";
+  return `<div class="view-stack post-exam-view">
+    ${viewHeading("Pós-prova", "SEDES/DF: ação, cronograma e resultado.", "O acompanhamento agora começa pela ação certa: registrar a janela de recurso, separar TDAS 202 e EDAS 400, acompanhar cada publicação e só recalibrar a estratégia quando houver resultado oficial.", `<button class="primary-button" type="button" data-view="pre-exam">${svgIcon("book")} Abrir pré-edital</button><button class="secondary-button" type="button" data-view="exams">${svgIcon("flag")} Ver registros</button>`)}
+    <section class="panel postexam-context"><div><span class="eyebrow">CICLO SEDES/DF · REGISTRO SEPARADO</span><h2>${esc(fu?.title || "Acompanhamento pós-prova")}</h2><p>${esc(fu?.description || "O acompanhamento será preenchido quando houver dados oficiais publicados.")} Os resultados exibidos abaixo seguem identificados como preliminares enquanto não existir publicação definitiva.</p></div><div class="postexam-context__meta"><span>Etapa atual</span><strong>${esc(currentStage)}</strong><span>Última atualização</span><strong>${esc(updated)}</strong><span>Resumo</span><strong>${esc(summary)}</strong></div></section>
+    <section class="panel postexam-action-panel"><div class="postexam-action-copy"><span class="eyebrow">AÇÃO DE AGORA</span><h2>${esc(fu?.nextAction || "Acompanhar a próxima publicação oficial.")}</h2><p>O painel preserva a separação entre anotação do candidato, gabarito preliminar, recurso e resultado oficial.</p></div><div class="postexam-action-window"><span>Janela de recursos</span><strong>${resourceWindow.start && resourceWindow.end ? `${esc(dateBR(resourceWindow.start))} a ${esc(dateBR(resourceWindow.end))}` : "A confirmar"}</strong><small>${resourceWindow.start && resourceWindow.end ? "Horário de Brasília · sem extensão" : "Consultar a fonte oficial"}</small></div></section>
+    <section class="metric-grid">${metricCard("TDAS 202", scoring.tdas?.preliminary?.totalScore == null ? "Pendente" : `${fmt(scoring.tdas.preliminary.totalScore)}/100`, "Técnico Administrativo · preliminar", "lime")}${metricCard("EDAS 400", scoring.edas?.preliminary?.totalScore == null ? "Pendente" : `${fmt(scoring.edas.preliminary.totalScore)}/100`, "Administração · preliminar", "aqua")}${metricCard("Divergências", differences == null ? "—" : fmt(differences), "candidato × gabarito preliminar", "amber")}${metricCard("Próxima publicação", nextMilestone.date ? dateBR(nextMilestone.date) : "—", nextMilestone.label || "resultado oficial", "violet")}</section>
+    <section class="postexam-cargo-grid" aria-label="Acompanhamento por cargo">${exams.map(([id, exam]) => postExamCargoMarkup(id, exam)).join("")}</section>
+    <section class="panel postexam-calendar"><div class="panel-heading"><div><span class="eyebrow">CRONOGRAMA SEDES/DF</span><h2>Datas e alertas importantes</h2><p>Calendário consolidado para os dois cargos prestados. A publicação definitiva da banca prevalece sobre qualquer previsão.</p></div>${svgIcon("clock")}</div><div class="postexam-milestone-list">${milestones.map(postExamMilestoneMarkup).join("") || '<p class="postexam-empty">Cronograma aguardando publicação estruturada.</p>'}</div><div class="postexam-source-bar"><span>${svgIcon("shield")} Fonte de confirmação: Instituto Quadrix</span><a href="${esc(contestSource)}" target="_blank" rel="noreferrer">Abrir página oficial ${svgIcon("external")}</a>${sourceDocuments.resourceNoticePdf ? `<a href="${esc(sourceDocuments.resourceNoticePdf)}" target="_blank" rel="noreferrer">Comunicado de recursos ${svgIcon("external")}</a>` : ""}</div></section>
+    <div class="postexam-control-slot" id="postExamControlSlot" data-post-exam-control-slot></div>
+    <div id="postExamPage" data-post-exam-page>${hasFollowUp ? "" : `<section class="panel postexam-fallback"><span class="eyebrow">DADOS AGUARDANDO</span><h3>O snapshot ainda não contém o acompanhamento estruturado.</h3><p>Recarregue os dados publicados ou abra Operações para conferir a cadeia de atualização.</p><button class="secondary-button" type="button" data-refresh>${svgIcon("refresh")} Recarregar snapshot</button></section>`}</div>
+  </div>`;
 }
 
 function filteredFinanceEntries() {
@@ -556,9 +600,14 @@ function buildSearchIndex() {
   const finance = data.financeEntries.map((entry) => ({ view: "finance", title: entry.name, description: `${entry.cycle} · ${money(entry.confirmed || entry.estimated)}`, group: "Investimentos" }));
   const timeline = data.timeline.map((item) => ({ view: "journey", title: item.title, description: `${item.date} · ${item.detail}`, group: "Jornada" }));
   const transitionGates = (data.strategy?.postExamGates || []).map((title, index) => ({ view: "strategy", title, description: `Fechamento do ciclo · etapa ${index + 1}`, group: "Estratégia" }));
+  const preExamRadar = Object.entries(data.preExamRadar?.projects || {}).flatMap(([id, project]) => [
+    { view: "pre-exam", title: project.label || id.toUpperCase(), description: `${project.status || "Pré-edital"} · ${project.focus || "cargos no radar"}`, group: "Pré-edital" },
+    ...(project.roles || []).map((role) => ({ view: "pre-exam", title: role.name, description: `${project.label || id.toUpperCase()} · ${role.area || "área a confirmar"}`, group: "Cargos no radar" })),
+    ...(project.news || []).map((item) => ({ view: "pre-exam", title: item.title, description: `${project.label || id.toUpperCase()} · ${item.kind === "external" ? "notícia externa" : "fonte oficial"}`, group: "Notícias pré-edital" })),
+  ]);
 
   const dedupe = new Map();
-  [...staticItems, ...transitionGates, ...subjects, ...exams, ...finance, ...timeline].forEach((item) => {
+  [...staticItems, ...transitionGates, ...preExamRadar, ...subjects, ...exams, ...finance, ...timeline].forEach((item) => {
     const key = `${item.view}:${item.title}:${item.scope || ""}`;
     if (!dedupe.has(key)) dedupe.set(key, item);
   });
@@ -727,6 +776,19 @@ function bindShell() {
     if (viewButton) {
       const scope = viewButton.dataset.performanceScopeJump;
       navigate(viewButton.dataset.view, { scope });
+      return;
+    }
+    const preExamFilter = event.target.closest("[data-pre-exam-filter]");
+    if (preExamFilter) {
+      const value = preExamFilter.dataset.preExamFilter || "all";
+      $$('[data-pre-exam-filter]').forEach((button) => {
+        const active = button.dataset.preExamFilter === value;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      $$('[data-pre-exam-project]').forEach((card) => {
+        card.hidden = value !== "all" && card.dataset.preExamProject !== value;
+      });
       return;
     }
     const performanceSection = event.target.closest("[data-performance-section]");
