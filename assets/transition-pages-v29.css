@@ -168,6 +168,95 @@
 .plan-control-card .countdown-topline > span:last-child {
   color: var(--muted);
 }
+.phase-router {
+  border-color: color-mix(in srgb, var(--lime) 24%, var(--border));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--lime) 7%, var(--surface)), color-mix(in srgb, var(--surface) 90%, transparent));
+}
+.phase-router__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+.phase-router__head h2 {
+  margin: 6px 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+  letter-spacing: -.035em;
+}
+.phase-router__head p {
+  max-width: 820px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.phase-router__badge {
+  padding: 8px 11px;
+  border: 1px solid color-mix(in srgb, var(--lime) 36%, var(--border));
+  border-radius: 999px;
+  color: var(--lime);
+  background: color-mix(in srgb, var(--lime) 7%, transparent);
+  font-size: .68rem;
+  font-weight: 820;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.phase-router__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+.phase-router__action {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 18px;
+  gap: 11px;
+  align-items: center;
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface-2) 76%, transparent);
+  text-align: left;
+  transition: border-color .2s ease, transform .2s ease, background .2s ease;
+}
+.phase-router__action:hover,
+.phase-router__action:focus-visible {
+  border-color: color-mix(in srgb, var(--lime) 46%, var(--border));
+  background: color-mix(in srgb, var(--lime) 8%, var(--surface-2));
+  transform: translateY(-1px);
+}
+.phase-router__icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--lime);
+  background: color-mix(in srgb, var(--lime) 11%, transparent);
+}
+.phase-router__icon svg,
+.phase-router__arrow svg {
+  width: 17px;
+  height: 17px;
+}
+.phase-router__action b,
+.phase-router__action small {
+  display: block;
+}
+.phase-router__action b {
+  font-size: .8rem;
+}
+.phase-router__action small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: .7rem;
+  line-height: 1.35;
+}
+.phase-router__arrow {
+  color: var(--muted);
+}
 .postexam-context {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
