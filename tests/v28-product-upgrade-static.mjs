@@ -69,7 +69,7 @@ expect('router possui página pós-prova', app.includes('function postExamView')
 expect('atalhos de fases aparecem antes do cockpit', app.indexOf('phase-router') >= 0 && app.indexOf('phase-router') < app.indexOf('cockpit-grid'));
 expect('auditorias fechadas não expandem o layout', pageStyles.includes('.v28-audit-disclosure:not([open]) > :not(summary)'));
 expect('controle de expansão tem área de toque', pageStyles.includes('min-height: 44px') && pageStyles.includes('.v28-audit-table-wrap'));
-expect('Home mantém cartão de plano, não cartão pós-prova', app.includes('plan-control-card') && app.includes('A SEDES/DF está preservada como histórico'));
+expect('Home Agora prioriza a continuidade do plano, sem cartão pós-prova', app.includes('transition-now-hero') && app.includes('transition-kpi-grid') && app.includes('next-cycle-grid') && app.includes('data-project="seedf"') && app.includes('data-project="tjdft"') && !app.includes('plan-control-card'));
 expect('navegação expõe pré-prova', index.includes('data-view="pre-exam"') && index.includes('Pré-prova'));
 expect('navegação expõe pós-prova', index.includes('data-view="post-exam"') && index.includes('Pós-prova'));
 expect('pré-prova usa o modelo de prontidão', app.includes('data.preExamReadiness') && app.includes('CHECKLIST DE ATIVAÇÃO'));

@@ -14,7 +14,7 @@ async function scenario(name, viewport, run) {
   try {
     await page.goto(baseURL, { waitUntil: 'networkidle' });
     await page.waitForFunction(() => document.documentElement.dataset.planPhase === 'post-exam', null, { timeout: 10000 });
-    await page.waitForSelector('#v13ManagerInbox', { state: 'attached' });
+    await page.waitForSelector('.command-view .transition-now-hero', { state: 'attached' });
     await page.waitForSelector('#v14FocusControl', { state: 'attached' });
     await run(page);
     if (errors.length) throw new Error(`Erros JavaScript: ${errors.join(' | ')}`);
@@ -28,13 +28,11 @@ async function scenario(name, viewport, run) {
 }
 
 await scenario('desktop: controle de foco e prioridades orientadas por dados permanecem na Home', { width: 1440, height: 1000 }, async (page) => {
-  if (!(await page.locator('#v14FocusControl').isVisible())) throw new Error('Controle de foco do plano não está disponível na Home.');
-  if (!(await page.locator('.command-view > .focus-board').isVisible())) throw new Error('Quadro de foco orientado por dados foi removido da Home.');
-  if (!(await page.locator('.command-view > .priority-grid').isVisible())) throw new Error('Prioridades orientadas por dados foram removidas da Home.');
-
-  if (!(await page.locator('#v13ManagerInbox').isVisible())) throw new Error('Caixa gerencial de atenção foi removida junto com o foco legado.');
-  if (!(await page.locator('#managerNowBoard').isVisible())) throw new Error('Resumo gerencial Agora deixou de existir no pós-prova.');
-  if (!(await page.locator('.plan-control-card').isVisible())) throw new Error('Cartão de controle do plano não está visível na Home.');
+  if (await page.locator('#v14FocusControl').count() !== 1 || await page.locator('#v14FocusControl').isVisible()) throw new Error('Controle de foco legado deveria ficar recolhido no Agora redesenhado.');
+  for (const selector of ['.command-view > .transition-now-hero', '.command-view > .transition-kpi-grid', '.command-view > .transition-next', '.command-view > .transition-decision-grid', '.command-view > .transition-history', '.command-view > .transition-footer']) {
+    if (!(await page.locator(selector).isVisible())) throw new Error('Central de transição sem: ' + selector);
+  }
+  if (await page.locator('.command-view #v13ManagerInbox, .command-view #managerNowBoard, .command-view #v11DecisionCenter, .command-view #v11AlertRadar, .command-view #v12DecisionHistory, .command-view #v15TransitionSummary, .command-view .plan-control-card, .command-view .focus-board, .command-view .priority-grid').count()) throw new Error('Conteúdo legado ou pós-prova vazou para a Home.');
   if (await page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view [data-post-exam-page]').count()) throw new Error('Detalhamento pós-prova vazou para a Home.');
 
   const mode = await page.locator('.command-view').getAttribute('data-v14-mode');
@@ -46,11 +44,11 @@ await scenario('desktop: controle de foco e prioridades orientadas por dados per
 });
 
 await scenario('mobile: mobile preserva controles de dados sem trazer o pós-prova detalhado', { width: 390, height: 844 }, async (page) => {
-  if (!(await page.locator('#v14FocusControl').isVisible())) throw new Error('Controle v14 do plano não está disponível no mobile.');
-  if (!(await page.locator('.command-view > .focus-board').isVisible())) throw new Error('Quadro de foco orientado por dados sumiu no mobile.');
-  if (!(await page.locator('.command-view > .priority-grid').isVisible())) throw new Error('Prioridades orientadas por dados sumiram no mobile.');
-  if (!(await page.locator('#v13ManagerInbox').isVisible())) throw new Error('Atenção gerencial precisa continuar acessível no mobile.');
-  if (!(await page.locator('.plan-control-card').isVisible())) throw new Error('Cartão de controle do plano precisa continuar acessível no mobile.');
+  if (await page.locator('#v14FocusControl').count() !== 1 || await page.locator('#v14FocusControl').isVisible()) throw new Error('Controle v14 legado deveria ficar recolhido no mobile.');
+  for (const selector of ['.command-view > .transition-now-hero', '.command-view > .transition-kpi-grid', '.command-view > .transition-next', '.command-view > .transition-decision-grid', '.command-view > .transition-footer']) {
+    if (!(await page.locator(selector).isVisible())) throw new Error('Central de transição incompleta no mobile: ' + selector);
+  }
+  if (await page.locator('.command-view #v13ManagerInbox, .command-view #managerNowBoard, .command-view #v11DecisionCenter, .command-view #v11AlertRadar, .command-view #v12DecisionHistory, .command-view #v15TransitionSummary, .command-view .plan-control-card, .command-view .focus-board, .command-view .priority-grid').count()) throw new Error('Conteúdo legado ou pós-prova vazou para a Home móvel.');
   if (await page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view [data-post-exam-page]').count()) throw new Error('Detalhamento pós-prova vazou para a Home móvel.');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

@@ -45,20 +45,19 @@ async function scenario(name, viewport, run) {
 }
 
 await scenario('desktop: controles do plano permanecem na Home', { width: 1440, height: 1100 }, async page => {
-  await page.waitForSelector('.command-view .plan-control-card');
+  await page.waitForSelector('.command-view .transition-now-hero');
   const home = page.locator('.command-view');
   const text = fold(await home.innerText());
-  for (const expected of ['plano de transição', 'dados, desempenho, fontes e decisões', 'questões no histórico', 'aproveitamento reconciliado']) {
+  for (const expected of ['plano de transição', 'capital acumulado', 'investimento confirmado', 'próximo ciclo', 'seedf', 'tjdft']) {
     if (!text.includes(expected)) throw new Error('Home sem foco de controle: ' + expected);
   }
   if (await home.locator('[data-v28-transition-console], [data-v28-post-followup], [data-v28-competition-panel], [data-post-exam-page]').count()) {
     throw new Error('A Home voltou a carregar dados detalhados do pós-prova.');
   }
-  const syncLink = page.locator('.sync-command-card [data-v28-sync-workflow]');
-  if (await syncLink.count() !== 1) throw new Error('Controle de sincronização não está disponível na Home.');
-  if (await syncLink.getAttribute('target') !== '_blank') throw new Error('Sincronização não abre em contexto separado.');
+  const refresh = page.locator('.transition-footer [data-refresh]');
+  if (await refresh.count() !== 1 || !(await refresh.isVisible())) throw new Error('Controle de atualização não está disponível na Home.');
   const milestone = fold(await page.locator('#nextMilestone').innerText());
-  if (!milestone.includes('dados e decisões') || !milestone.includes('plano de transição')) throw new Error('Marco global perdeu o foco do plano: ' + milestone);
+  if (!milestone.includes('próximos ciclos') || !milestone.includes('seedf') || !milestone.includes('tjdft')) throw new Error('Marco global perdeu o foco do plano: ' + milestone);
   await page.screenshot({ path: 'artifacts/desktop-home-controles-v29.png', fullPage: true });
 });
 

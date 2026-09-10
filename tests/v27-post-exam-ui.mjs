@@ -48,16 +48,16 @@ async function scenario(name, viewport, run) {
 
 await scenario('desktop: Agora preserva o plano e Pré-prova fica pronta para o próximo edital', { width: 1440, height: 1000 }, async page => {
   const home = page.locator('.command-view');
-  await page.waitForSelector('.command-view .plan-control-card');
+  await page.waitForSelector('.command-view .transition-now-hero');
   if (await home.locator('[data-v28-transition-console], [data-v28-post-followup], [data-v28-competition-panel], [data-post-exam-page]').count()) {
     throw new Error('A tela Agora voltou a receber painéis detalhados de pós-prova.');
   }
   const homeText = fold(await home.innerText());
-  for (const value of ['plano de transição', 'questões no histórico', 'aproveitamento reconciliado', 'dados, desempenho, fontes e decisões']) {
+  for (const value of ['plano de transição', 'capital acumulado', 'próximo ciclo', 'seedf', 'tjdft', 'histórico consolidado']) {
     if (!homeText.includes(value)) throw new Error('Agora sem foco do plano: ' + value);
   }
   const milestone = fold(await page.locator('#nextMilestone').innerText());
-  if (!milestone.includes('dados e decisões') || !milestone.includes('plano de transição')) throw new Error('Controle global da transição foi perdido: ' + milestone);
+  if (!milestone.includes('próximos ciclos') || !milestone.includes('seedf') || !milestone.includes('tjdft')) throw new Error('Controle global da transição foi perdido: ' + milestone);
 
   await openView(page, 'pre-exam');
   await page.waitForSelector('.pre-exam-view .preexam-hero');

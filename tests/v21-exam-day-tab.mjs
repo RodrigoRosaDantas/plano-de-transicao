@@ -62,8 +62,10 @@ await scenario('desktop: pré e pós-prova são páginas próprias', { width: 14
   if (await page.locator('.command-view [data-v28-transition-console], .command-view [data-v28-post-followup], .command-view [data-v28-competition-panel], .command-view #v15TransitionSummary').count()) {
     throw new Error('Conteúdo pós-prova foi injetado de volta no Agora.');
   }
-  const homeText = fold(await page.locator('.command-view').innerText());
-  if (!homeText.includes('plano de transição') || !homeText.includes('dados do plano')) throw new Error('Agora perdeu o foco gerencial.');
+  const home = page.locator('.command-view');
+  const homeText = fold(await home.innerText());
+  if (!homeText.includes('plano de transição') || !homeText.includes('próximo ciclo') || !homeText.includes('seedf') || !homeText.includes('tjdft')) throw new Error('Agora perdeu o foco gerencial.');
+  if (await home.locator('.transition-now-hero, .transition-kpi-grid, .transition-next, .transition-decision-grid, .transition-history, .transition-footer').count() !== 6) throw new Error('Agora não montou a nova central de transição.');
 
   await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open');
