@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-11T11:23:39.422Z",
+    "generatedAt": "2026-09-11T13:18:49.723Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,16 +8,16 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-11T11:23:40.789Z",
+    "workParityEnrichedAt": "2026-09-11T13:18:53.652Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-11T11:23:40.833Z",
+    "postExamNormalizedAt": "2026-09-11T13:18:53.699Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-11T11:23:39.890Z",
-    "postExamScoringUpdatedAt": "2026-09-11T11:23:39.964Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-11T11:23:39.890Z",
-    "postExamCompetitionAuditedAt": "2026-09-11T11:23:39.964Z",
-    "postExamFollowUpUpdatedAt": "2026-09-11T11:23:39.964Z"
+    "postExamNotesSyncedAt": "2026-09-11T13:18:50.194Z",
+    "postExamScoringUpdatedAt": "2026-09-11T13:18:50.265Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-11T13:18:50.194Z",
+    "postExamCompetitionAuditedAt": "2026-09-11T13:18:50.265Z",
+    "postExamFollowUpUpdatedAt": "2026-09-11T13:18:50.265Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -572,6 +572,25 @@
   },
   "financeEntries": [
     {
+      "id": "CST30",
+      "name": "ChatGPT Plus — mensalidade 09/09/2026",
+      "date": "2026-09-09",
+      "cycle": "Compartilhado / vários ciclos",
+      "category": "Plataforma / assinatura",
+      "situation": "Confirmado / pago",
+      "usage": "Utilizado",
+      "nature": "Infraestrutura geral",
+      "recordType": "Despesa direta",
+      "recurring": true,
+      "countsInCycle": true,
+      "allocationPercent": null,
+      "confirmed": 99.9,
+      "estimated": 0,
+      "paid": 99.9,
+      "reimbursed": null,
+      "sourceAvailable": false
+    },
+    {
       "id": "CST29",
       "name": "Alimentação no dia da prova — refeições em casa",
       "date": "2026-09-06",
@@ -1125,11 +1144,11 @@
   ],
   "financeSummary": {
     "totals": {
-      "confirmed": 1445.13,
+      "confirmed": 1545.03,
       "estimated": 90,
-      "paid": 1445.13,
+      "paid": 1545.03,
       "reimbursed": 0,
-      "transactions": 28,
+      "transactions": 29,
       "unconfirmed": 1,
       "pending": 1
     },
@@ -1162,15 +1181,25 @@
         "reimbursed": 0,
         "pending": 0,
         "unconfirmed": 0
+      },
+      {
+        "key": "Compartilhado / vários ciclos",
+        "transactions": 1,
+        "confirmed": 99.9,
+        "estimated": 0,
+        "paid": 99.9,
+        "reimbursed": 0,
+        "pending": 0,
+        "unconfirmed": 0
       }
     ],
     "byCategory": [
       {
         "key": "Plataforma / assinatura",
-        "transactions": 6,
-        "confirmed": 353.8,
+        "transactions": 7,
+        "confirmed": 453.7,
         "estimated": 0,
-        "paid": 353.8,
+        "paid": 453.7,
         "reimbursed": 0,
         "pending": 0,
         "unconfirmed": 0
@@ -1229,10 +1258,10 @@
     "byStatus": [
       {
         "key": "Confirmado / pago",
-        "transactions": 22,
-        "confirmed": 1445.13,
+        "transactions": 23,
+        "confirmed": 1545.03,
         "estimated": 0,
-        "paid": 1445.13,
+        "paid": 1545.03,
         "reimbursed": 0,
         "pending": 0,
         "unconfirmed": 0
@@ -1291,10 +1320,10 @@
       },
       {
         "key": "Utilizado",
-        "transactions": 7,
-        "confirmed": 282.42,
+        "transactions": 8,
+        "confirmed": 382.32,
         "estimated": 0,
-        "paid": 282.42,
+        "paid": 382.32,
         "reimbursed": 0,
         "pending": 1,
         "unconfirmed": 1
@@ -1349,7 +1378,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-11T11:23:39.963Z",
+          "comparedAt": "2026-09-11T13:18:50.265Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3830,7 +3859,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-11T11:23:39.963Z"
+        "lastComparedAt": "2026-09-11T13:18:50.265Z"
       },
       "edas": {
         "examType": "A",
@@ -3843,7 +3872,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-11T11:23:39.963Z",
+          "comparedAt": "2026-09-11T13:18:50.265Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6092,7 +6121,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-11T11:23:39.963Z"
+        "lastComparedAt": "2026-09-11T13:18:50.265Z"
       }
     },
     "competitionReading": {
@@ -6186,7 +6215,7 @@
       "currentStage": "Conferência e recursos",
       "nextAction": "Revisar divergências e protocolar somente recursos fundamentados.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-11T11:23:39.964Z",
+      "lastCalculatedAt": "2026-09-11T13:18:50.265Z",
       "milestones": [
         {
           "id": "exam",
