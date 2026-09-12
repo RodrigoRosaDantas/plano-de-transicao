@@ -189,7 +189,7 @@
   .exam21-between__facts span{min-width:0}
   .exam21-check-grid{grid-template-columns:1fr}
   .exam21-source-main{grid-template-columns:1fr}
-  .mobile-dock [data-view="journey"]{display:none!important}
+  body.exam-day-active .mobile-dock [data-view="journey"]{display:none!important}
 }
 
 @media(max-width:430px){

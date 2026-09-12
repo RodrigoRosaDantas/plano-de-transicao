@@ -96,6 +96,19 @@ await run('desktop: financeiro, concursos, fontes e operações', { width: 1440,
 await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390, height: 844 }, async page => {
   if (!(await page.locator('.mobile-dock').isVisible())) throw new Error('Dock móvel não está visível.');
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação completa desapareceu no celular.');
+  const dockGeometry = await page.locator('#mobileDock').evaluate(el => {
+    const buttons = [...el.querySelectorAll('button')].filter(button => getComputedStyle(button).display !== 'none');
+    const widths = buttons.map(button => button.getBoundingClientRect().width);
+    const heights = buttons.map(button => button.getBoundingClientRect().height);
+    return {
+      count: buttons.length,
+      grid: getComputedStyle(el).gridTemplateColumns,
+      widthSpread: Math.max(...widths) - Math.min(...widths),
+      heightSpread: Math.max(...heights) - Math.min(...heights),
+    };
+  });
+  if (dockGeometry.count !== 5 || dockGeometry.grid.split(' ').length !== 5) throw new Error(`Dock móvel não tem cinco células uniformes: ${JSON.stringify(dockGeometry)}`);
+  if (dockGeometry.widthSpread > 1 || dockGeometry.heightSpread > 1) throw new Error(`Itens do dock têm dimensões diferentes: ${JSON.stringify(dockGeometry)}`);
   const navCount = await page.locator('#mainTabs [data-view]').count();
   if (navCount < 8) throw new Error(`Só ${navCount} áreas disponíveis no celular.`);
   const postExamIcon = await page.locator('#mainTabs [data-view="post-exam"] [data-icon]').getAttribute('data-icon');
@@ -107,6 +120,19 @@ await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390
   if (await page.locator('#mainTabs [data-view="command"]').getAttribute('aria-current') !== 'page' || await page.locator('#mobileDock [data-view="command"]').getAttribute('aria-current') !== 'page') {
     throw new Error('As barras não expõem o item ativo para tecnologia assistiva.');
   }
+  await page.click('#mainTabs [data-view="exams"]');
+  await page.waitForSelector('.exam-matrix');
+  const activeTabVisible = await page.locator('#mainTabs [data-view="exams"]').evaluate(button => {
+    const rail = button.closest('.tab-rail').getBoundingClientRect();
+    const tab = button.getBoundingClientRect();
+    return tab.left >= rail.left - 1 && tab.right <= rail.right + 1;
+  });
+  if (!activeTabVisible) throw new Error('A aba ativa de Concursos ficou fora da área visível do topo.');
+  const examsDockGeometry = await page.locator('#mobileDock').evaluate(el => ({
+    visible: [...el.querySelectorAll('button')].filter(button => getComputedStyle(button).display !== 'none').length,
+    journeyDisplay: getComputedStyle(el.querySelector('[data-view="journey"]')).display,
+  }));
+  if (examsDockGeometry.visible !== 5 || examsDockGeometry.journeyDisplay === 'none') throw new Error(`Dock perdeu uniformidade em Concursos: ${JSON.stringify(examsDockGeometry)}`);
   await page.click('.mobile-dock [data-view="performance"]');
   await page.waitForSelector('.performance-view');
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação desapareceu ao abrir Desempenho.');

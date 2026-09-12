@@ -635,6 +635,21 @@ function operationsView() {
 const viewRenderers = { command: commandView, performance: performanceView, journey: journeyView, "pre-exam": preExamView, "post-exam": postExamView, exams: examsView, finance: financeView, strategy: strategyView, sources: sourcesView, operations: operationsView };
 const resolveHashView = (value) => value === "exam-day" ? "post-exam" : viewRenderers[value] ? value : "command";
 
+function syncMobileNavigation() {
+  if (window.innerWidth > 760) return;
+  const rail = document.querySelector('.tab-rail');
+  const active = document.querySelector('#mainTabs [data-view].active');
+  if (!rail || !active) return;
+
+  const railRect = rail.getBoundingClientRect();
+  const activeRect = active.getBoundingClientRect();
+  const inset = 12;
+  if (activeRect.left < railRect.left + inset || activeRect.right > railRect.right - inset) {
+    const targetLeft = Math.max(0, active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2);
+    rail.scrollTo({ left: targetLeft, behavior: 'auto' });
+  }
+}
+
 function render() {
   if (!state.data) return;
   const content = $("#content");
@@ -644,6 +659,7 @@ function render() {
   content.setAttribute("aria-busy", "false");
   $$('[data-view]').forEach((button) => button.classList.toggle("active", button.dataset.view === state.view));
   $$("#mainTabs [data-view], #mobileDock [data-view]").forEach((button) => button.setAttribute("aria-current", button.dataset.view === state.view ? "page" : "false"));
+  window.requestAnimationFrame(syncMobileNavigation);
   hydrateIcons(content);
   bindViewControls();
   updateLiveTime();
@@ -661,6 +677,7 @@ function navigate(view, options = {}) {
   state.view = view;
   const hash = `#${view}`;
   if (location.hash !== hash) history.pushState(null, "", hash);
+  document.body.classList.remove('exam-day-active');
   closeMoreSheet();
   closeSearch();
   render();

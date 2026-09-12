@@ -28,7 +28,7 @@ has(sw, "'./assets/workspace-v23.css'", 'PWA CSS v23');
 has(sw, "'./assets/workspace-v23-home.css'", 'PWA Home v23');
 has(sw, "'./assets/workspace-v23.js'", 'PWA JS v23');
 has(sw, "'./assets/workspace-v24-hardening.css'", 'PWA hardening v24');
-has(sw, "const CACHE='plano-transicao-v36-pre-edital'", 'cache PWA v36 com radar pré-edital');
+has(sw, "const CACHE='plano-transicao-v37-pre-edital'", 'cache PWA v37 com navegação móvel');
 has(sw, 'caches.match(req,{ignoreSearch:true})', 'fallback offline ignora query de versionamento');
 
 has(css, '@media(min-width:1180px)', 'breakpoint desktop');
