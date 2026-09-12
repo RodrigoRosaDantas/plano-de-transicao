@@ -2,6 +2,7 @@ const icons = {
   dashboard: '<path d="M4 13h6V4H4v9Zm10 7h6v-9h-6v9ZM4 20h6v-3H4v3Zm10-13h6V4h-6v3Z"/>',
   chart: '<path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/>',
   flag: '<path d="M5 21V4m0 1h11l-2 4 2 4H5"/>',
+  trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H5v2a3 3 0 0 0 3 3m8-5h3v2a3 3 0 0 1-3 3M12 13v4m-3 3h6"/>',
   route: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h3a4 4 0 0 0 4-4v-4a4 4 0 0 1 4-4"/>',
   wallet: '<path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a3 3 0 0 1 3-3h12"/><path d="M15 11h7v4h-7a2 2 0 0 1 0-4Z"/>',
   refresh: '<path d="M20 11a8 8 0 1 0-2.34 5.66"/><path d="M20 4v7h-7"/>',
@@ -58,7 +59,7 @@ function managerizeCommand() {
       quick.setAttribute('aria-label', 'Acessos gerenciais rápidos');
       quick.innerHTML = `
         <button type="button" data-view="performance"><span>${icon('chart')}</span><div><small>Desempenho</small><strong>Visão geral + por matéria</strong></div><b>→</b></button>
-        <button type="button" data-view="exams"><span>${icon('flag')}</span><div><small>Concursos</small><strong>Provas, nota e classificação</strong></div><b>→</b></button>
+        <button type="button" data-view="exams"><span>${icon('trophy')}</span><div><small>Concursos</small><strong>Provas, nota e classificação</strong></div><b>→</b></button>
         <button type="button" data-view="journey"><span>${icon('route')}</span><div><small>Jornada</small><strong>Marcos da transição</strong></div><b>→</b></button>
         <button type="button" data-view="finance"><span>${icon('wallet')}</span><div><small>Investimentos</small><strong>Custos e ciclos</strong></div><b>→</b></button>`;
       anchor.before(quick);

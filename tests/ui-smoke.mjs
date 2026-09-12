@@ -98,6 +98,15 @@ await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação completa desapareceu no celular.');
   const navCount = await page.locator('#mainTabs [data-view]').count();
   if (navCount < 8) throw new Error(`Só ${navCount} áreas disponíveis no celular.`);
+  const postExamIcon = await page.locator('#mainTabs [data-view="post-exam"] [data-icon]').getAttribute('data-icon');
+  const contestsIcon = await page.locator('#mainTabs [data-view="exams"] [data-icon]').getAttribute('data-icon');
+  const proofsIcon = await page.locator('#mobileDock [data-view="exams"] [data-icon]').getAttribute('data-icon');
+  if (postExamIcon !== 'flag' || contestsIcon !== 'trophy' || proofsIcon !== 'file-check') {
+    throw new Error(`Semântica de navegação incorreta: pós-prova=${postExamIcon}, concursos=${contestsIcon}, provas=${proofsIcon}`);
+  }
+  if (await page.locator('#mainTabs [data-view="command"]').getAttribute('aria-current') !== 'page' || await page.locator('#mobileDock [data-view="command"]').getAttribute('aria-current') !== 'page') {
+    throw new Error('As barras não expõem o item ativo para tecnologia assistiva.');
+  }
   await page.click('.mobile-dock [data-view="performance"]');
   await page.waitForSelector('.performance-view');
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação desapareceu ao abrir Desempenho.');
@@ -113,6 +122,8 @@ await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390
   if (!(await page.locator('.sheet-sync-card').isVisible())) throw new Error('Estado de atualização não aparece no Mais.');
   if (await page.locator('#moreSheet .sheet-grid button').count() < 8) throw new Error('Menu Mais não reúne todas as áreas.');
   if (await page.locator('#moreSheet [data-view="study"]').count()) throw new Error('Questões ainda aparece no menu Mais.');
+  const moreContestsIcon = await page.locator('#moreSheet .sheet-grid--secondary [data-view="exams"] [data-icon]').getAttribute('data-icon');
+  if (moreContestsIcon !== 'trophy') throw new Error(`Ícone de Concursos no Mais incorreto: ${moreContestsIcon}`);
   await page.locator('#moreSheet .sheet-more-group summary').click();
   await page.click('#moreSheet [data-view="operations"]');
   await page.waitForSelector('.operations-view');
