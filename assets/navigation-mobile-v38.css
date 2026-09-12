@@ -1,0 +1,19 @@
+/* v38 — no mobile, a navegação fica no trilho superior e no botão Mais. */
+@media (max-width: 760px) {
+  body {
+    padding-bottom: 0;
+  }
+
+  .page-wrap {
+    padding-bottom: 32px !important;
+  }
+
+  /* Proteção para instalações antigas que ainda tenham o nó no DOM. */
+  .mobile-dock {
+    display: none !important;
+  }
+
+  .toast {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}

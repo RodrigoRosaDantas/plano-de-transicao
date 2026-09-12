@@ -73,7 +73,7 @@ await scenario('pós-prova mobile: fechamento ativa, persiste e integra operaç�
   if (!stored.completed?.includes(0) || stored.version !== 15) throw new Error(`Estado local inválido: ${JSON.stringify(stored)}`);
   if (!(await page.locator('#transitionGateV15 [data-v15-export]').isVisible())) throw new Error('Exportação do fechamento não está disponível.');
 
-  await page.click('#moreDockBtn');
+  await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open #v15TransitionOps');
   await page.waitForFunction(() => {
     const text = document.querySelector('#moreSheet.open #v15TransitionOps')?.textContent || '';

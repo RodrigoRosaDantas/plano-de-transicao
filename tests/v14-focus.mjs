@@ -57,7 +57,7 @@ await scenario('mobile: mobile preserva controles de dados sem trazer o pós-pro
   const [pageHeight, viewportHeight] = await page.evaluate(() => [document.documentElement.scrollHeight, window.innerHeight]);
   if (pageHeight <= viewportHeight) throw new Error('Teste mobile não percorreu conteúdo suficiente para validar a composição.');
 
-  await page.click('#moreDockBtn');
+  await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open');
   if (!(await page.locator('#v14FocusOps').count())) throw new Error('Operação histórica do modo foco deixou de existir no menu Mais.');
   await page.screenshot({ path: 'artifacts/mobile-focus-v14-post-exam.png', fullPage: true });

@@ -88,13 +88,13 @@ await scenario('acesso direto: #exam-day é compatibilidade para Pós-prova', { 
 
 await scenario('mobile 390px: fases separadas sem overflow', { width: 390, height: 844 }, async page => {
   if (await page.locator('#mobileDock [data-exam-day-tab]').count()) throw new Error('Dock legado ainda anuncia Dia da Prova.');
-  await page.click('#moreDockBtn');
+  await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open');
   await page.click('#moreSheet [data-view="pre-exam"]');
   await page.waitForURL(/#pre-exam$/);
   await page.waitForSelector('.pre-exam-view');
 
-  await page.click('#moreDockBtn');
+  await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open');
   await page.click('#moreSheet [data-view="post-exam"]');
   await page.waitForURL(/#post-exam$/);

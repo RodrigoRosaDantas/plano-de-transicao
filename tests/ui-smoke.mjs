@@ -93,21 +93,28 @@ await run('desktop: financeiro, concursos, fontes e operações', { width: 1440,
   await page.screenshot({ path: 'artifacts/desktop-operations.png', fullPage: true });
 });
 
-await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390, height: 844 }, async page => {
-  if (!(await page.locator('.mobile-dock').isVisible())) throw new Error('Dock móvel não está visível.');
+await run('mobile: trilho superior, Mais rico e sem overflow', { width: 390, height: 844 }, async page => {
+  if (await page.locator('#mobileDock, .mobile-dock, #moreDockBtn').count()) throw new Error('A barra inferior ainda foi renderizada.');
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação completa desapareceu no celular.');
   const navCount = await page.locator('#mainTabs [data-view]').count();
   if (navCount < 8) throw new Error(`Só ${navCount} áreas disponíveis no celular.`);
   const postExamIcon = await page.locator('#mainTabs [data-view="post-exam"] [data-icon]').getAttribute('data-icon');
   const contestsIcon = await page.locator('#mainTabs [data-view="exams"] [data-icon]').getAttribute('data-icon');
-  const proofsIcon = await page.locator('#mobileDock [data-view="exams"] [data-icon]').getAttribute('data-icon');
-  if (postExamIcon !== 'flag' || contestsIcon !== 'trophy' || proofsIcon !== 'file-check') {
-    throw new Error(`Semântica de navegação incorreta: pós-prova=${postExamIcon}, concursos=${contestsIcon}, provas=${proofsIcon}`);
+  if (postExamIcon !== 'flag' || contestsIcon !== 'trophy') {
+    throw new Error(`Semântica de navegação incorreta: pós-prova=${postExamIcon}, concursos=${contestsIcon}`);
   }
-  if (await page.locator('#mainTabs [data-view="command"]').getAttribute('aria-current') !== 'page' || await page.locator('#mobileDock [data-view="command"]').getAttribute('aria-current') !== 'page') {
-    throw new Error('As barras não expõem o item ativo para tecnologia assistiva.');
+  if (await page.locator('#mainTabs [data-view="command"]').getAttribute('aria-current') !== 'page') {
+    throw new Error('O trilho superior não expõe o item ativo para tecnologia assistiva.');
   }
-  await page.click('.mobile-dock [data-view="performance"]');
+  await page.click('#mainTabs [data-view="exams"]');
+  await page.waitForSelector('.exam-matrix');
+  const activeTabVisible = await page.locator('#mainTabs [data-view="exams"]').evaluate(button => {
+    const rail = button.closest('.tab-rail').getBoundingClientRect();
+    const tab = button.getBoundingClientRect();
+    return tab.left >= rail.left - 1 && tab.right <= rail.right + 1;
+  });
+  if (!activeTabVisible) throw new Error('A aba ativa de Concursos ficou fora da área visível do topo.');
+  await page.click('#mainTabs [data-view="performance"]');
   await page.waitForSelector('.performance-view');
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação desapareceu ao abrir Desempenho.');
   if (await page.locator('#mainTabs [data-view]').count() !== navCount) throw new Error('Desempenho reduziu opções no celular.');
@@ -117,7 +124,7 @@ await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390
   const financeOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (financeOverflow > 2) throw new Error(`Investimentos criaram overflow horizontal: ${financeOverflow}px`);
   await page.screenshot({ path: 'artifacts/mobile-finance.png', fullPage: true });
-  await page.click('#moreDockBtn');
+  await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open');
   if (!(await page.locator('.sheet-sync-card').isVisible())) throw new Error('Estado de atualização não aparece no Mais.');
   if (await page.locator('#moreSheet .sheet-grid button').count() < 8) throw new Error('Menu Mais não reúne todas as áreas.');

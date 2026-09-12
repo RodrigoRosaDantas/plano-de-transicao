@@ -59,6 +59,8 @@ jobs:
         run: node tests/v35-command-center-static.mjs
       - name: Contrato semântico dos ícones de navegação
         run: node tests/navigation-icons-static.mjs
+      - name: Auditoria estática da navegação móvel v38
+        run: node tests/mobile-navigation-v38-static.mjs
       - name: Auditoria de resiliência dos snapshots
         run: node tests/data-resilience-static.mjs
 
