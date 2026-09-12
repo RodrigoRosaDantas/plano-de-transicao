@@ -13,7 +13,11 @@ const moreAreas = index.slice(index.indexOf('<div class="sheet-grid sheet-grid--
 
 assert.match(mainTabs, /data-view="post-exam"[^>]*>[\s\S]*?data-icon="flag"/, 'Pós-prova deve manter a bandeira como marco');
 assert.match(mainTabs, /data-view="exams"[^>]*>[\s\S]*?data-icon="trophy"/, 'Concursos deve usar troféu');
+assert.match(mainTabs, /aria-label="Áreas do plano"/, 'Barra superior deve ter nome acessível');
+assert.match(mainTabs, /data-view="command"[^>]*aria-current="page"/, 'Barra superior deve expor o estado ativo');
 assert.match(mobileDock, /data-view="exams"[^>]*>[\s\S]*?data-icon="file-check"/, 'Provas deve usar documento com check');
+assert.match(mobileDock, /aria-label="Atalhos principais"/, 'Barra inferior deve ter nome acessível');
+assert.match(mobileDock, /data-view="command"[^>]*aria-current="page"/, 'Barra inferior deve expor o estado ativo');
 assert.match(moreAreas, /data-view="exams"[^>]*>[\s\S]*?data-icon="trophy"/, 'Concursos no Mais deve usar troféu');
 assert.ok(app.includes("trophy:"), 'work-app deve definir o ícone de troféu');
 assert.ok(app.includes("'file-check':"), 'work-app deve definir o ícone de prova');

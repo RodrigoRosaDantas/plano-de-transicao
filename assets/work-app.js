@@ -643,6 +643,7 @@ function render() {
   content.innerHTML = renderer();
   content.setAttribute("aria-busy", "false");
   $$('[data-view]').forEach((button) => button.classList.toggle("active", button.dataset.view === state.view));
+  $$("#mainTabs [data-view], #mobileDock [data-view]").forEach((button) => button.setAttribute("aria-current", button.dataset.view === state.view ? "page" : "false"));
   hydrateIcons(content);
   bindViewControls();
   updateLiveTime();

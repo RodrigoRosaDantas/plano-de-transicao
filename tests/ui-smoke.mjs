@@ -104,6 +104,9 @@ await run('mobile: navegação completa, Mais rico e sem overflow', { width: 390
   if (postExamIcon !== 'flag' || contestsIcon !== 'trophy' || proofsIcon !== 'file-check') {
     throw new Error(`Semântica de navegação incorreta: pós-prova=${postExamIcon}, concursos=${contestsIcon}, provas=${proofsIcon}`);
   }
+  if (await page.locator('#mainTabs [data-view="command"]').getAttribute('aria-current') !== 'page' || await page.locator('#mobileDock [data-view="command"]').getAttribute('aria-current') !== 'page') {
+    throw new Error('As barras não expõem o item ativo para tecnologia assistiva.');
+  }
   await page.click('.mobile-dock [data-view="performance"]');
   await page.waitForSelector('.performance-view');
   if (!(await page.locator('.main-tabs').isVisible())) throw new Error('Navegação desapareceu ao abrir Desempenho.');
