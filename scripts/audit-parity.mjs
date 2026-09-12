@@ -122,12 +122,12 @@ const cachedAssets = [
   'assets/transition-gate-v15.css', 'assets/transition-gate-v15.js',
   'assets/exam-day-v21.css', 'assets/exam-day-v21-shell.css', 'assets/exam-day-v21.js', 'assets/exam-day-v21-shell.js', 'assets/exam-day-v21-bootstrap.js',
   'assets/exam-day-v22.css', 'assets/exam-day-v22.js',
-  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js', 'assets/post-exam-competition-v28.js', 'assets/transition-pages-v29.css', 'assets/pre-post-v33.css', 'assets/navigation-mobile-v37.css',
+  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js', 'assets/post-exam-competition-v28.js', 'assets/transition-pages-v29.css', 'assets/pre-post-v33.css', 'assets/navigation-mobile-v38.css',
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está consolidado na v37', sw.includes("const CACHE='plano-transicao-v37-pre-edital'"));
-check('Cache busting da interface publicada está em v37', index.includes('__PLANO_UI_RELEASE__ = "v37"') && index.includes('work-app.js?v=37&home=37') && index.includes('navigation-mobile-v37.css?v=37') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36'));
+check('Cache PWA está consolidado na v38', sw.includes("const CACHE='plano-transicao-v38-pre-edital'"));
+check('Cache busting da interface publicada está em v38', index.includes('__PLANO_UI_RELEASE__ = "v38"') && index.includes('work-app.js?v=38&home=37') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36'));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
 check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
@@ -216,7 +216,7 @@ check('Investimento por ciclo continua implementado', app.includes('POR CICLO') 
 check('Confirmado x estimado x não confirmado continua implementado', app.includes('TOTAL CONFIRMADO') && app.includes('estimated'));
 check('Busca global continua implementada', app.includes('buildSearchIndex') && app.includes('commandPalette'));
 
-check('Layout móvel mantém dock e Mais', styles.includes('.mobile-dock') && styles.includes('.more-sheet'));
+check('Layout móvel usa trilho superior e Mais', styles.includes('.main-tabs') && styles.includes('.more-sheet') && !index.includes('id="mobileDock"'));
 check('v9 trata Android e telas estreitas', managerStyles.includes('@media (max-width: 760px)') && managerStyles.includes('.refresh-work-button'));
 check('v10 converte tabela em cards no mobile', intelligenceStyles.includes('.subject-table thead { display: none; }') && intelligenceStyles.includes('.subject-table tr { display: grid'));
 check('v10 previne overflow', intelligenceStyles.includes('overflow-x: auto') && intelligenceStyles.includes('minmax(0, 1fr)'));

@@ -49,7 +49,7 @@ await scenario('mobile: controles de Atenção preservam hierarquia sem overflow
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   if (overflow > 2) throw new Error('Overflow horizontal da v13 no mobile: ' + overflow + 'px');
 
-  await page.click('#moreDockBtn');
+  await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open #v13InboxOps');
   const title = await page.locator('#moreSheet.open #v13InboxOps .sheet-section-label').innerText();
   if (!title.toLocaleLowerCase('pt-BR').includes('caixa de entrada gerencial')) throw new Error('Título das operações v13 incorreto: ' + title);

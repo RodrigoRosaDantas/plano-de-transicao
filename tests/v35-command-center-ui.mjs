@@ -62,7 +62,7 @@ await scenario('pós-prova: cronograma acionável e calendário', { width: 390, 
 });
 
 await scenario('Mais: navegação principal e áreas de apoio', { width: 390, height: 844 }, async (page) => {
-  await page.click('#moreDockBtn');
+  await page.click('#moreTopBtn');
   await page.waitForSelector('#moreSheet.open');
   if (await page.locator('.sheet-nav-group .sheet-grid--primary [data-view]').count() !== 5) throw new Error('Navegação principal não foi organizada.');
   const details = page.locator('.sheet-more-group');

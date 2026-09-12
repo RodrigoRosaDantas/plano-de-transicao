@@ -59,15 +59,15 @@ await scenario('desktop: Pós-prova dedicado continua integrado ao workspace', {
   if (railPos !== 'fixed') throw new Error('Pós-prova perdeu o rail lateral desktop.');
 });
 
-await scenario('mobile 390px: sem overflow e dock preservado', { width: 390, height: 844 }, async page => {
+await scenario('mobile 390px: sem overflow e navegação no trilho superior', { width: 390, height: 844 }, async page => {
   const dims = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
   if (dims.sw - dims.cw > 2) throw new Error(`Overflow horizontal mobile: ${dims.sw}px vs ${dims.cw}px`);
 
   const railPos = await page.locator('.tab-rail').evaluate(el => getComputedStyle(el).position);
   if (railPos === 'fixed') throw new Error('Rail desktop permaneceu fixo no mobile.');
-  if (!(await page.locator('#mobileDock').isVisible())) throw new Error('Dock mobile não está visível.');
+  if (await page.locator('#mobileDock, .mobile-dock').count()) throw new Error('Barra inferior ainda foi renderizada.');
 
-  await page.locator('#mobileDock [data-view="performance"]').click();
+  await page.locator('#mainTabs [data-view="performance"]').click();
   await page.waitForTimeout(200);
   if (await page.locator('.mission-strip').isVisible()) throw new Error('Missão permaneceu visível em página interna no mobile.');
   await page.screenshot({ path: 'artifacts/mobile-workspace-v23.png', fullPage: true });

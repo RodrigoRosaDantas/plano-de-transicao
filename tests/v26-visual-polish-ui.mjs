@@ -66,20 +66,17 @@ await scenario('desktop: Jornada comunica transição sem novo conteúdo', { wid
   await page.screenshot({ path: 'artifacts/desktop-v26-journey.png', fullPage: true });
 });
 
-await scenario('mobile 390px: legibilidade, dock e ausência de overflow', { width: 390, height: 844 }, async page => {
+await scenario('mobile 390px: legibilidade, trilho superior e ausência de overflow', { width: 390, height: 844 }, async page => {
   const dims = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
   if (dims.sw - dims.cw > 2) throw new Error(`Overflow horizontal mobile: ${dims.sw}px vs ${dims.cw}px`);
 
   const missionFont = await page.locator('.mission-copy > p').evaluate(el => parseFloat(getComputedStyle(el).fontSize));
   if (missionFont < 13) throw new Error(`Texto da Home pequeno no mobile: ${missionFont}px`);
 
-  const dock = page.locator('#mobileDock');
-  if (!(await dock.isVisible())) throw new Error('Dock mobile não está visível.');
-  const dockStyle = await dock.evaluate(el => ({ shadow: getComputedStyle(el).boxShadow, backdrop: getComputedStyle(el).backdropFilter }));
-  if (!dockStyle.shadow || dockStyle.shadow === 'none') throw new Error('Dock mobile sem profundidade.');
+  if (await page.locator('#mobileDock, .mobile-dock').count()) throw new Error('Barra inferior ainda foi renderizada.');
 
   // Jornada não é garantida como atalho visível no dock em todos os breakpoints; usa o fluxo real pelo Mais.
-  await page.locator('#moreDockBtn').click();
+  await page.locator('#moreTopBtn').click();
   await page.waitForSelector('#moreSheet.open', { timeout: 5000 });
   await page.locator('#moreSheet [data-view="journey"]').click();
   await page.waitForSelector('.transition-steps', { timeout: 10000 });

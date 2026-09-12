@@ -26,7 +26,6 @@ const ICONS = {
   chart: '<path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/>',
   flag: '<path d="M5 21V4m0 1h11l-2 4 2 4H5"/>',
   trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H5v2a3 3 0 0 0 3 3m8-5h3v2a3 3 0 0 1-3 3M12 13v4m-3 3h6"/>',
-  'file-check': '<path d="M6 3h8l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8.5 15.5l2 2 4.5-5"/>',
   wallet: '<path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a3 3 0 0 1 3-3h12"/><path d="M15 11h7v4h-7a2 2 0 0 1 0-4Z"/>',
   compass: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>',
   database: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
@@ -658,7 +657,7 @@ function render() {
   content.innerHTML = renderer();
   content.setAttribute("aria-busy", "false");
   $$('[data-view]').forEach((button) => button.classList.toggle("active", button.dataset.view === state.view));
-  $$("#mainTabs [data-view], #mobileDock [data-view]").forEach((button) => button.setAttribute("aria-current", button.dataset.view === state.view ? "page" : "false"));
+  $$("#mainTabs [data-view]").forEach((button) => button.setAttribute("aria-current", button.dataset.view === state.view ? "page" : "false"));
   window.requestAnimationFrame(syncMobileNavigation);
   hydrateIcons(content);
   bindViewControls();
@@ -995,7 +994,6 @@ function bindShell() {
   $("#searchInput")?.addEventListener("input", (event) => renderSearch(event.target.value));
   $("#themeBtn")?.addEventListener("click", toggleTheme);
   $("#moreTopBtn")?.addEventListener("click", openMoreSheet);
-  $("#moreDockBtn")?.addEventListener("click", openMoreSheet);
   $("#closeMoreBtn")?.addEventListener("click", closeMoreSheet);
   $("#moreBackdrop")?.addEventListener("click", closeMoreSheet);
   $("#exportBtn")?.addEventListener("click", () => { if (state.data) { exportFile("snapshot-plano-de-transicao.json", JSON.stringify(state.data, null, 2)); toast("Snapshot exportado."); } });
