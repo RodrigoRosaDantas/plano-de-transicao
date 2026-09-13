@@ -122,12 +122,12 @@ const cachedAssets = [
   'assets/transition-gate-v15.css', 'assets/transition-gate-v15.js',
   'assets/exam-day-v21.css', 'assets/exam-day-v21-shell.css', 'assets/exam-day-v21.js', 'assets/exam-day-v21-shell.js', 'assets/exam-day-v21-bootstrap.js',
   'assets/exam-day-v22.css', 'assets/exam-day-v22.js',
-  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js', 'assets/post-exam-competition-v28.js', 'assets/transition-pages-v29.css', 'assets/pre-post-v33.css', 'assets/navigation-mobile-v38.css',
+  'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js', 'assets/post-exam-competition-v28.js', 'assets/transition-pages-v29.css', 'assets/transition-now-v39.css', 'assets/pre-post-v33.css', 'assets/navigation-mobile-v38.css',
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está consolidado na v38', sw.includes("const CACHE='plano-transicao-v38-pre-edital'"));
-check('Cache busting da interface publicada está em v38', index.includes('__PLANO_UI_RELEASE__ = "v38"') && index.includes('work-app.js?v=38&home=37') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36'));
+check('Cache PWA está consolidado na v39', sw.includes("const CACHE='plano-transicao-v39-pre-edital'"));
+check('Cache busting da interface publicada está em v39', index.includes('__PLANO_UI_RELEASE__ = "v39"') && index.includes('work-app.js?v=39&home=37') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('transition-now-v39.css?v=39') && index.includes('pre-post-v33.css?v=36'));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
 check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
