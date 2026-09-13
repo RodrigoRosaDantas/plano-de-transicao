@@ -302,9 +302,36 @@ function commandView() {
   const weakestHistorical = weakest("historical");
   const confirmed = data.financeSummary?.totals?.confirmed;
   const pending = Number(data.financeSummary?.totals?.pending || 0) + Number(data.financeSummary?.totals?.unconfirmed || 0);
-  const nextAction = data.meta.phase === "post-exam"
-    ? "Acompanhar o resultado oficial da SEDES/DF e escolher a próxima preparação com dados."
+  const isPostExam = data.meta.phase === "post-exam";
+  const followUp = data.postExam?.followUp || {};
+  const resourceProtocol = followUp.resourceProtocol || {};
+  const resourceStartAt = new Date(resourceProtocol.start || "").getTime();
+  const resourceEndAt = new Date(resourceProtocol.end || "").getTime();
+  const hasResourceWindow = isPostExam && Number.isFinite(resourceStartAt) && Number.isFinite(resourceEndAt);
+  const resourceWindowState = !hasResourceWindow
+    ? null
+    : Date.now() < resourceStartAt ? "upcoming" : Date.now() <= resourceEndAt ? "active" : "closed";
+  const resourceWindowLabel = resourceWindowState === "active"
+    ? `Prazo ativo até ${dateTimeBR(resourceProtocol.end)} (Brasília)`
+    : resourceWindowState === "upcoming"
+      ? `Abre em ${dateTimeBR(resourceProtocol.start)} (Brasília)`
+      : resourceWindowState === "closed"
+        ? `Prazo encerrado em ${dateTimeBR(resourceProtocol.end)} (Brasília)`
+        : "Prazo definido na publicação oficial";
+  const actionStage = followUp.currentStage || "Próxima decisão";
+  const nextAction = isPostExam
+    ? followUp.nextAction || "Acompanhar o resultado oficial da SEDES/DF e escolher a próxima preparação com dados."
     : "Ativar a trilha do próximo edital quando concurso, banca e data estiverem confirmados.";
+  const actionEyebrow = isPostExam
+    ? resourceWindowState === "active" ? "O QUE FAZER AGORA · PRAZO ATIVO" : "O QUE FAZER AGORA · PÓS-PROVA"
+    : "O QUE FAZER AGORA";
+  const actionDescription = isPostExam
+    ? `${actionStage}. ${resourceWindowLabel}. ${resourceWindowState === "active" ? "Protocole somente questões com fundamento objetivo." : "A estimativa atual continua preliminar até a publicação oficial."}`
+    : "O dado guia o movimento; a ansiedade não ganha um botão próprio.";
+  const actionDeadline = isPostExam ? resourceWindowLabel : "Pré-edital só ativa após confirmar concurso, banca e data.";
+  const actionPrimaryView = isPostExam ? "post-exam" : "strategy";
+  const actionPrimaryLabel = isPostExam ? "Abrir acompanhamento" : "Ver estratégia";
+  const actionPrimaryIcon = isPostExam ? "flag" : "compass";
   return `<div class="view-stack command-view">
     <section class="panel transition-now-hero">
       <div class="transition-now-copy">
@@ -341,9 +368,12 @@ function commandView() {
     </section>
 
     <section class="transition-decision-grid" id="transitionControls" aria-label="Controles da transição">
-      <article class="panel transition-decision primary">
-        <span class="eyebrow">PRÓXIMA AÇÃO</span><h3>${esc(nextAction)}</h3><p>O dado guia o movimento; a ansiedade não ganha um botão próprio.</p>
-        <div class="command-actions"><button class="primary-button" type="button" data-view="strategy">${svgIcon("compass")} Ver estratégia</button><button class="secondary-button" type="button" data-view="journey">${svgIcon("route")} Ver jornada</button></div>
+      <article class="panel transition-decision primary transition-action-card" id="transitionNextAction">
+        <div class="transition-action-top"><span class="eyebrow">${esc(actionEyebrow)}</span><span class="transition-action-status ${resourceWindowState || "neutral"}">${esc(actionStage)}</span></div>
+        <h3>${esc(nextAction)}</h3>
+        <p>${esc(actionDescription)}</p>
+        <div class="transition-action-meta"><span>${esc(actionDeadline)}</span><span>Cargos e resultados continuam separados no acompanhamento pós-prova.</span></div>
+        <div class="command-actions"><button class="primary-button" type="button" data-view="${actionPrimaryView}">${svgIcon(actionPrimaryIcon)} ${actionPrimaryLabel}</button><button class="secondary-button" type="button" data-view="journey">${svgIcon("route")} Ver jornada</button></div>
       </article>
       <article class="panel transition-decision">
         <span class="eyebrow">ESTADO DA FONTE</span><h3>${sourceReady ? "Snapshot reconciliado" : "Snapshot preservado com ressalvas"}</h3><p>${sourceReady ? "Os dados publicados estão sem avisos de sincronização." : "Há ressalvas que precisam ser lidas antes de decidir."}</p>

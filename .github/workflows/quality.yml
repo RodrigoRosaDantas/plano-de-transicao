@@ -57,6 +57,8 @@ jobs:
         run: node tests/v33-pre-edital-static.mjs
       - name: Auditoria estática da central acionável v35
         run: node tests/v35-command-center-static.mjs
+      - name: Auditoria estática da ação atual v39
+        run: node tests/v39-now-action-static.mjs
       - name: Contrato semântico dos ícones de navegação
         run: node tests/navigation-icons-static.mjs
       - name: Auditoria estática da navegação móvel v38
@@ -146,6 +148,12 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/v35-command-center-ui.mjs
+      - name: Testes da ação atual v39
+        id: v39
+        continue-on-error: true
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v39-now-action-ui.mjs
       - name: Compatibilidade da camada v11 com a Home v35
         id: v11
         continue-on-error: true
@@ -193,6 +201,7 @@ jobs:
             "${{ steps.v28.outcome }}" \
             "${{ steps.v33.outcome }}" \
             "${{ steps.v35.outcome }}" \
+            "${{ steps.v39.outcome }}" \
             "${{ steps.v11.outcome }}" \
             "${{ steps.v13.outcome }}" \
             "${{ steps.v14.outcome }}" \
