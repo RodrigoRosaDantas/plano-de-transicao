@@ -9,7 +9,7 @@ const [index, css, app, sw] = await Promise.all([
 ]);
 
 assert.match(index, /navigation-mobile-v38\.css\?v=38/, 'HTML deve carregar o tratamento móvel v38');
-assert.match(index, /__PLANO_UI_RELEASE__ = "v39"/, 'HTML deve declarar o release v38');
+assert.match(index, /__PLANO_UI_RELEASE__ = "v39"/, 'HTML deve declarar o release v39');
 assert.ok(!index.includes('id="mobileDock"') && !index.includes('class="mobile-dock"'), 'A barra inferior deve ter sido removida do HTML');
 assert.match(css, /body\s*\{[\s\S]*?padding-bottom:\s*0;/, 'Mobile não deve reservar espaço para a barra inferior');
 assert.match(css, /\.page-wrap\s*\{[\s\S]*?padding-bottom:\s*32px\s*!important;/, 'Conteúdo não deve terminar com o espaço legado do dock');
