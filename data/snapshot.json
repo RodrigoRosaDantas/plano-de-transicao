@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-13T16:19:02.586Z",
+    "generatedAt": "2026-09-13T20:51:30.154Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,16 +8,16 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-13T16:19:04.074Z",
+    "workParityEnrichedAt": "2026-09-13T20:51:31.568Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-13T16:19:04.132Z",
+    "postExamNormalizedAt": "2026-09-13T20:51:31.623Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-13T16:19:03.087Z",
-    "postExamScoringUpdatedAt": "2026-09-13T16:19:03.178Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-13T16:19:03.087Z",
-    "postExamCompetitionAuditedAt": "2026-09-13T16:19:03.178Z",
-    "postExamFollowUpUpdatedAt": "2026-09-13T16:19:03.178Z"
+    "postExamNotesSyncedAt": "2026-09-13T20:51:30.616Z",
+    "postExamScoringUpdatedAt": "2026-09-13T20:51:30.699Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-13T20:51:30.616Z",
+    "postExamCompetitionAuditedAt": "2026-09-13T20:51:30.699Z",
+    "postExamFollowUpUpdatedAt": "2026-09-13T20:51:30.699Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -1378,7 +1378,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-13T16:19:03.177Z",
+          "comparedAt": "2026-09-13T20:51:30.698Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3859,7 +3859,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-13T16:19:03.177Z"
+        "lastComparedAt": "2026-09-13T20:51:30.698Z"
       },
       "edas": {
         "examType": "A",
@@ -3872,7 +3872,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-13T16:19:03.178Z",
+          "comparedAt": "2026-09-13T20:51:30.698Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6121,7 +6121,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-13T16:19:03.178Z"
+        "lastComparedAt": "2026-09-13T20:51:30.698Z"
       }
     },
     "competitionReading": {
@@ -6215,7 +6215,7 @@
       "currentStage": "Conferência e recursos",
       "nextAction": "Revisar divergências e protocolar somente recursos fundamentados.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-13T16:19:03.178Z",
+      "lastCalculatedAt": "2026-09-13T20:51:30.699Z",
       "milestones": [
         {
           "id": "exam",
