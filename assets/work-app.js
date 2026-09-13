@@ -372,7 +372,7 @@ function commandView() {
         <div class="transition-action-top"><span class="eyebrow">${esc(actionEyebrow)}</span><span class="transition-action-status ${resourceWindowState || "neutral"}">${esc(actionStage)}</span></div>
         <h3>${esc(nextAction)}</h3>
         <p>${esc(actionDescription)}</p>
-        <div class="transition-action-meta"><span>${esc(actionDeadline)}</span><span>TDAS 202 e EDAS 400 permanecem separados.</span></div>
+        <div class="transition-action-meta"><span>${esc(actionDeadline)}</span><span>Cargos e resultados continuam separados no acompanhamento pós-prova.</span></div>
         <div class="command-actions"><button class="primary-button" type="button" data-view="${actionPrimaryView}">${svgIcon(actionPrimaryIcon)} ${actionPrimaryLabel}</button><button class="secondary-button" type="button" data-view="journey">${svgIcon("route")} Ver jornada</button></div>
       </article>
       <article class="panel transition-decision">

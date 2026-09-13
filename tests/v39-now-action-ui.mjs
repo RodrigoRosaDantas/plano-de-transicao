@@ -18,7 +18,7 @@ try {
     'Revisar divergências e protocolar somente recursos fundamentados.',
     '16/09/2026',
     'Brasília',
-    'TDAS 202 e EDAS 400 permanecem separados.',
+    'Cargos e resultados continuam separados no acompanhamento pós-prova.',
   ]) {
     if (!text.includes(value)) throw new Error(`Ação atual sem "${value}".`);
   }
