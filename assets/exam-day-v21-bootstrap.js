@@ -102,10 +102,131 @@
     }
   };
 
+  function ensureResourceHubStyles() {
+    if (document.getElementById('post-exam-resource-hub-v39')) return;
+    const style = document.createElement('style');
+    style.id = 'post-exam-resource-hub-v39';
+    style.textContent = `
+      .postexam-resource-hub {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 24px;
+        align-items: center;
+        margin: 0 0 22px;
+        padding: clamp(20px, 3vw, 30px);
+        border: 1px solid color-mix(in srgb, var(--lime) 38%, var(--border));
+        border-radius: 24px 24px 24px 8px;
+        background: linear-gradient(135deg, color-mix(in srgb, var(--lime) 10%, var(--surface)), color-mix(in srgb, var(--aqua) 5%, var(--surface)));
+        box-shadow: var(--shadow);
+      }
+      .postexam-resource-hub__copy { min-width: 0; }
+      .postexam-resource-hub__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--lime);
+        font-size: .68rem;
+        font-weight: 850;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+      .postexam-resource-hub h3 {
+        margin: 8px 0 8px;
+        font-size: clamp(1.35rem, 2vw, 1.8rem);
+        letter-spacing: -.04em;
+      }
+      .postexam-resource-hub p {
+        max-width: 760px;
+        margin: 0;
+        color: var(--muted);
+        font-size: .76rem;
+        line-height: 1.6;
+      }
+      .postexam-resource-hub__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+      .postexam-resource-hub__meta span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--surface-2) 88%, transparent);
+        color: color-mix(in srgb, var(--paper) 78%, transparent);
+        font-size: .64rem;
+        font-weight: 760;
+      }
+      .postexam-resource-hub__action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 18px;
+        border: 1px solid color-mix(in srgb, var(--lime) 45%, transparent);
+        border-radius: 14px;
+        background: var(--lime);
+        color: var(--ink);
+        font-size: .72rem;
+        font-weight: 850;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: transform .18s ease, filter .18s ease;
+      }
+      .postexam-resource-hub__action:hover { filter: brightness(1.04); transform: translateY(-1px); }
+      .postexam-resource-hub__action:active { transform: translateY(0); }
+      @media (max-width: 760px) {
+        .postexam-resource-hub { grid-template-columns: 1fr; gap: 18px; }
+        .postexam-resource-hub__action { width: 100%; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function removeStandaloneResourceNavigation() {
+    document.querySelectorAll('button[onclick*="recursos-sedes.html"]').forEach((button) => button.remove());
+  }
+
+  function ensurePostExamResourceHub() {
+    const host = document.querySelector('[data-post-exam-page]');
+    if (!host || host.querySelector('[data-postexam-resource-hub]')) return;
+
+    ensureResourceHubStyles();
+
+    const card = document.createElement('section');
+    card.className = 'postexam-resource-hub';
+    card.dataset.postexamResourceHub = 'true';
+    card.setAttribute('aria-label', 'Recursos SEDES/DF');
+    card.innerHTML = `
+      <div class="postexam-resource-hub__copy">
+        <span class="postexam-resource-hub__eyebrow">RECURSOS · SEDES/DF</span>
+        <h3>Protocolos e acompanhamento dos recursos</h3>
+        <p>Centralize aqui os recursos de TDAS 202 e EDAS 400, com questão, fundamento, situação do protocolo e impacto potencial na nota. O acompanhamento passa a fazer parte do Pós-prova, em vez de ocupar uma aba separada na navegação principal.</p>
+        <div class="postexam-resource-hub__meta"><span>TDAS 202 · Tipo B</span><span>EDAS 400 · Tipo A</span><span>protocolados · em análise</span></div>
+      </div>
+      <a class="postexam-resource-hub__action" href="./recursos-sedes.html">Abrir acompanhamento dos recursos →</a>
+    `;
+
+    const followUpPanel = host.querySelector('[data-v28-post-followup]');
+    if (followUpPanel) {
+      followUpPanel.insertAdjacentElement('beforebegin', card);
+      return;
+    }
+
+    const heading = host.querySelector('.view-heading, .postexam-hero, [data-post-exam-hero]');
+    if (heading) heading.insertAdjacentElement('afterend', card);
+    else host.prepend(card);
+  }
+
   function patchPostExamDom() {
     if (!postExamActive() || !window.__PLANO_SEPARATE_POST_EXAM__) return;
     // A Home neutra é renderizada pelo roteador principal. O pós-prova vive em #post-exam.
     document.documentElement.dataset.planPhase = 'post-exam';
+    removeStandaloneResourceNavigation();
+    ensurePostExamResourceHub();
   }
 
   let patchQueued = false;
