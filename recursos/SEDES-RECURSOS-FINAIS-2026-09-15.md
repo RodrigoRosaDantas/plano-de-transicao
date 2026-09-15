@@ -9,16 +9,15 @@
 
 ## Conclusão executiva revisada
 
-Após nova pesquisa, agora confrontando as justificativas preliminares da Quadrix com o próprio edital e com fontes acadêmicas/governamentais de Administração, há **2 recursos que recomendo protocolar**:
+Após pesquisa aprofundada, confrontando as justificativas preliminares da Quadrix com o edital e com fontes acadêmicas/governamentais, há **2 recursos prioritários** e **1 recurso subsidiário**:
 
-1. **TDAS Tipo B — Questão 14** — pedido de **anulação**.
-2. **EDAS Administração Tipo A — Questão 43** — pedido de **anulação**.
-
-A revisão da EDAS Q43 alterou a conclusão anterior. O ponto decisivo é que o Edital nº 1/2026 exige, no subitem 12.2, **uma única resposta correta**, mas a própria justificativa da Quadrix formula como verdadeiras características presentes nas alternativas A, B e C. Fontes públicas de Administração confirmam especificamente a flexibilidade e a descentralização do processo decisório da estrutura matricial, além da dupla subordinação.
+1. **TDAS Tipo B — Questão 14** — pedir **anulação** — prioridade alta.
+2. **EDAS Administração Tipo A — Questão 43** — pedir **anulação** — prioridade alta.
+3. **EDAS Administração Tipo A — Questão 47** — pedir **anulação** — tese subsidiária, tecnicamente defensável, porém com menor probabilidade de provimento.
 
 Não recomendo criar recursos artificiais nas demais divergências apenas porque a resposta do candidato não coincide com o gabarito.
 
-## Recursos recomendados
+## Recursos
 
 ### TDAS — Tipo B — Q14 — ANULAÇÃO
 
@@ -32,9 +31,17 @@ Texto final: `recursos/TDAS-Q14-recurso.md`.
 
 Equivalência oficial: Tipo A Q43 | Tipo B Q23 | Tipo C Q3.
 
-**Tese:** o edital exige uma única resposta correta. Entretanto, a justificativa oficial afirma que (A) a estrutura matricial se caracteriza pela flexibilidade e formação de equipes conforme projetos/necessidades; (B) busca descentralizar a tomada de decisão para dar agilidade aos projetos; e (C), indicada como gabarito, possui dupla subordinação e compartilhamento flexível de recursos. PNAP/eduCAPES, Governo do Paraná e manual governamental de Rondônia corroboram flexibilidade, descentralização decisória e dupla linha de comando como características reais da estrutura matricial. Assim, a alternativa C pode ser correta, mas não é a única tecnicamente correta, violando o subitem 12.2 do edital.
+**Tese:** o edital exige uma única resposta correta. Entretanto, a justificativa oficial afirma que (A) a estrutura matricial se caracteriza pela flexibilidade e formação de equipes conforme projetos/necessidades; (B) busca descentralizar a tomada de decisão para dar agilidade aos projetos; e (C), indicada como gabarito, possui dupla subordinação e compartilhamento flexível de recursos. Fontes públicas de Administração corroboram flexibilidade, descentralização decisória e dupla linha de comando como características reais da estrutura matricial. Assim, a alternativa C pode ser correta, mas não é a única tecnicamente correta.
 
 Texto final: `recursos/EDAS-Q43-recurso.md`.
+
+### EDAS Administração — Tipo A — Q47 — ANULAÇÃO (SUBSIDIÁRIO)
+
+Equivalência oficial: Tipo A Q47 | Tipo B Q27 | Tipo C Q7.
+
+**Tese:** a banca parte do fato de que processos permanecem dias aguardando análise entre unidades e conclui pela existência de “filas, gargalos ou distribuição do trabalho”. A espera comprova fila, mas gargalo é tecnicamente uma restrição de capacidade cuja causa exige investigação de recursos, demanda, sistemas, pessoas, handoffs, regras e dependências. Assim, tempo de espera é sintoma; gargalo e má distribuição são hipóteses causais que não decorrem necessariamente do dado apresentado. O principal obstáculo é que a alternativa E usa formulação ampla e inclui “fila”, que de fato está evidenciada. Por isso o recurso é defensável, mas de menor força.
+
+Texto final: `recursos/EDAS-Q47-recurso.md`.
 
 ## Questões auditadas — TDAS Tipo B
 
@@ -60,9 +67,9 @@ Texto final: `recursos/EDAS-Q43-recurso.md`.
 | Q20 | C x D | Não recorrer. Caracterização de queimadura de segundo grau é tecnicamente compatível com a alternativa D. |
 | Q43 | B x C | **RECORRER — pedir anulação.** A própria justificativa da banca reconhece como verdadeiras A e B, além de C; bibliografia pública confirma flexibilidade e descentralização decisória na estrutura matricial. O edital exige resposta única. |
 | Q46 | E x A | Não recorrer. Ishikawa é a ferramenta destinada à identificação e organização das causas de um problema. |
-| Q47 | D x E | Recurso possível apenas em tese, mas fraco. Espera entre unidades evidencia fila; embora o diagnóstico de gargalo exija análise de capacidade, a alternativa E foi redigida de modo amplo (“filas, gargalos ou distribuição do trabalho”), o que dificulta demonstrar erro objetivo. |
+| Q47 | D x E | **RECURSO SUBSIDIÁRIO.** Há fundamento para questionar a passagem de fila/tempo de espera para diagnóstico de gargalo ou distribuição inadequada do trabalho, mas a formulação ampla da alternativa E reduz a força da tese. |
 | Q51 | B x A | Não recorrer. Omissão de registros para alterar indicadores não é legitimada por autorização hierárquica ou de controle. |
-| Q59 | B x A | Não recorrer. Políticas de carreira e gestão por competências devem alinhar incentivos, desenvolvimento e objetivos institucionais; reconhecer exclusivamente antiguidade pode gerar desalinhamento com estratégia de inovação. |
+| Q59 | B x A | Não recorrer. Fontes da ENAP e do Governo Federal sustentam que carreira centrada apenas em tempo de serviço pode ficar desalinhada de competências, inovação e estratégia. |
 
 ## Fontes oficiais e técnicas principais
 
@@ -72,9 +79,9 @@ Texto final: `recursos/EDAS-Q43-recurso.md`.
 - Comunicado de recursos: https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/bd001ca2-91ab-4291-ac42-aab7f0399170.pdf
 - NOB/SUAS 2012: https://www.mds.gov.br/webarquivos/public/NOBSUAS_2012.pdf
 - MDS — Pisos da Assistência Social: https://www.gov.br/mds/pt-br/acoes-e-programas/suas/gestao-do-suas/financiamento-1/pisos-da-assistencia-social
-- eduCAPES/CAPES — Teorias da Administração II: https://educapes.capes.gov.br/bitstream/capes/401363/1/Teorias_da_ADM_II-3ed-GRAFICA%20atualizado.pdf
-- Governo do Paraná — Teoria das Organizações: https://www.batebyte.pr.gov.br/Pagina/Teoria-das-organizacoes
-- Governo de Rondônia — Manual de Estruturas Organizacionais: https://sepog.ro.gov.br/Conteudo/DownloadDocumento?idMidia=7782
+- Governo de Goiás — Manual de Gerenciamento Proativo de Processos: https://goias.gov.br/seguranca/wp-content/uploads/sites/56/2025/01/Manual-de-Gerenciamento-Proativo-de-Processos-Versao-atualizada-Fev2025.pdf
+- Governo de Goiás — Diretrizes para Gestão por Processos: https://goias.gov.br/administracao/wp-content/uploads/sites/27/files/Transformacao/Ebooks/Ebook-DiretrizesParaGestaoPorProcessos.pdf
+- ENAP — Gestão por competências: https://repositorio.enap.gov.br/bitstream/1/383/1/livro_gestao_competencias.pdf
 
 ## Regra de decisão adotada
 
