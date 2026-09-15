@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "contest": "SEDES/DF 2026",
+    "board": "Instituto Quadrix",
+    "examDate": "2026-09-06",
+    "preliminaryKeyPublishedAt": "2026-09-09",
+    "appealDeadline": "2026-09-16T18:00:00-03:00",
+    "status": "preliminary",
+    "generatedFrom": [
+      "data/snapshot.json",
+      "data/official-keys.json",
+      "Notion — registros históricos das provas reais EDAS 400 e TDAS 202"
+    ],
+    "officialSource": "https://quadrix.org.br/informacoes/3056/",
+    "note": "Lista normalizada das divergências entre as respostas anotadas pelo candidato e o gabarito preliminar. Não substitui o gabarito definitivo nem o cartão-resposta oficial."
+  },
+  "tdas202": {
+    "role": "TDAS — Técnico Administrativo",
+    "examType": "B",
+    "preliminaryScore": 83,
+    "correct": 49,
+    "wrong": 10,
+    "invalid": 1,
+    "wrongQuestionNumbers": [8, 14, 16, 24, 39, 41, 45, 49, 50, 55],
+    "invalidQuestionNumbers": [30],
+    "differences": [
+      {
+        "question": 8,
+        "area": "Conhecimentos Específicos Comuns",
+        "candidateAnswer": "B",
+        "preliminaryKey": "C",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A banca relaciona a precedência da proteção social básica ao caráter preventivo do SUAS: agir antes que riscos se convertam em violações de direitos.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 14,
+        "area": "Conhecimentos Específicos Comuns",
+        "candidateAnswer": "D",
+        "preliminaryKey": "E",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A justificativa separa o Piso Básico Fixo do PAIF/CRAS e o Piso Básico Variável da equipe volante; ambos pertencem à proteção social básica.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 16,
+        "area": "Conhecimentos Específicos Comuns",
+        "candidateAnswer": "E",
+        "preliminaryKey": "B",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A banca apontou a isenção da pessoa em situação de rua nas três refeições dos Restaurantes Comunitários, conforme a regulamentação distrital indicada.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 24,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "C",
+        "preliminaryKey": "B",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A resposta oficial distingue desconcentração, dentro da mesma pessoa jurídica e com hierarquia, de descentralização, para outra pessoa jurídica e com controle finalístico.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 30,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "DUPLA-MARCAÇÃO",
+        "preliminaryKey": "D",
+        "status": "inválida-ou-em-branco",
+        "pointsPossible": 2,
+        "officialBasis": "A banca indicou que a absolvição penal só afasta a responsabilidade administrativa na hipótese legal específica; fora dela, a apuração administrativa prossegue.",
+        "appealAssessment": "A dupla marcação não é corrigida por troca de gabarito. Só avaliar recurso se houver fundamento objetivo para anulação da própria questão."
+      },
+      {
+        "question": 39,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "D",
+        "preliminaryKey": "B",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A justificativa aplica a Lei nº 14.133/2021: a antecipação de fases exige ato motivado com benefícios explicitados e previsão expressa no edital.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 41,
+        "area": "Conhecimentos Gerais",
+        "candidateAnswer": "A",
+        "preliminaryKey": "C",
+        "status": "erro",
+        "pointsPossible": 1,
+        "officialBasis": "A banca considerou correta a função do Cadastro Único de reunir dados sobre vulnerabilidades para subsidiar a formulação e a implementação de políticas públicas.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 45,
+        "area": "Conhecimentos Gerais",
+        "candidateAnswer": "C",
+        "preliminaryKey": "D",
+        "status": "erro",
+        "pointsPossible": 1,
+        "officialBasis": "A justificativa trata o CAS/DF como órgão colegiado deliberativo do SUAS, articulado ao CNAS e sem subordinação administrativa ou competência legislativa própria.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 49,
+        "area": "Conhecimentos Gerais",
+        "candidateAnswer": "B",
+        "preliminaryKey": "E",
+        "status": "erro",
+        "pointsPossible": 1,
+        "officialBasis": "A banca aplicou o art. 1º, § 2º, da LC nº 94/1998: município criado por desmembramento de município integrante passa a compor automaticamente a RIDE.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 50,
+        "area": "Conhecimentos Gerais",
+        "candidateAnswer": "B",
+        "preliminaryKey": "A",
+        "status": "erro",
+        "pointsPossible": 1,
+        "officialBasis": "A alternativa oficial foi fundamentada na LODF, que inclui a criação e a execução de programas de assistência a gestantes carentes entre os mecanismos de proteção.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 55,
+        "area": "Conhecimentos Gerais",
+        "candidateAnswer": "C",
+        "preliminaryKey": "D",
+        "status": "erro",
+        "pointsPossible": 1,
+        "officialBasis": "A justificativa descreve o eixo Educação para Igualdade como articulador de redução das desigualdades, enfrentamento de preconceitos, direitos humanos, prevenção e atuação em rede.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      }
+    ]
+  },
+  "edas400": {
+    "role": "EDAS — Administração",
+    "examType": "A",
+    "preliminaryScore": 88,
+    "correct": 53,
+    "wrong": 7,
+    "invalid": 0,
+    "wrongQuestionNumbers": [9, 20, 43, 46, 47, 51, 59],
+    "invalidQuestionNumbers": [],
+    "differences": [
+      {
+        "question": 9,
+        "area": "Conhecimentos Gerais",
+        "candidateAnswer": "D",
+        "preliminaryKey": "B",
+        "status": "erro",
+        "pointsPossible": 1,
+        "officialBasis": "A banca explicou que a RIDE foi criada por lei complementar federal para articular União, Goiás, Minas Gerais e Distrito Federal; não é ente federativo nem consórcio com personalidade própria.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 20,
+        "area": "Conhecimentos Gerais",
+        "candidateAnswer": "C",
+        "preliminaryKey": "D",
+        "status": "erro",
+        "pointsPossible": 1,
+        "officialBasis": "A alternativa oficial descreve queimadura de segundo grau: atinge epiderme e derme e apresenta dor, vermelhidão e bolhas.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 43,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "B",
+        "preliminaryKey": "C",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A departamentalização matricial foi associada à dupla subordinação e ao compartilhamento flexível de recursos entre projetos.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 46,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "E",
+        "preliminaryKey": "A",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A banca associou a identificação e a organização das possíveis causas de um problema ao diagrama de Ishikawa, também chamado causa e efeito.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 47,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "D",
+        "preliminaryKey": "E",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A justificativa interpreta o atraso como fila, gargalo ou distribuição do trabalho entre unidades, e não como excesso de etapas ou de exigências legais.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 51,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "B",
+        "preliminaryKey": "A",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A banca considerou que registros orçamentários, financeiros e patrimoniais devem refletir as normas aplicáveis; autorização superior não legitima omissão para alterar indicadores.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      },
+      {
+        "question": 59,
+        "area": "Conhecimentos Específicos da Especialidade",
+        "candidateAnswer": "B",
+        "preliminaryKey": "A",
+        "status": "erro",
+        "pointsPossible": 2,
+        "officialBasis": "A política de carreira deve alinhar incentivos e competências aos objetivos institucionais; reconhecer apenas tempo de serviço pode desestimular inovação.",
+        "appealAssessment": "Não priorizar apenas pela divergência; só recorrer com vício objetivo no enunciado, alternativas, edital ou fonte normativa."
+      }
+    ]
+  }
+}
