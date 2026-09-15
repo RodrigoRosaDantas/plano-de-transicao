@@ -1,0 +1,25 @@
+{
+  "updatedAt": "2026-09-15",
+  "tdas": {
+    "examType": "B",
+    "appeals": [
+      {
+        "question": 14,
+        "request": "Anulação",
+        "status": "Em análise",
+        "protocol": "45397",
+        "submittedAt": "2026-09-15T13:43:00-03:00",
+        "points": 2
+      }
+    ]
+  },
+  "edas": {
+    "examType": "A",
+    "appeals": [
+      {"question": 20, "request": "Anulação", "status": "Em análise", "protocol": "45432", "submittedAt": "2026-09-15T14:00:00-03:00", "points": 1},
+      {"question": 43, "request": "Anulação", "status": "Em análise", "protocol": "45399", "submittedAt": "2026-09-15T13:45:00-03:00", "points": 2},
+      {"question": 47, "request": "Anulação", "status": "Em análise", "protocol": "45405", "submittedAt": "2026-09-15T13:46:00-03:00", "points": 2},
+      {"question": 59, "request": "Anulação", "status": "Em análise", "protocol": "45436", "submittedAt": "2026-09-15T14:01:00-03:00", "points": 2}
+    ]
+  }
+}
