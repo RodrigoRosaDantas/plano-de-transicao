@@ -6,13 +6,13 @@
   <meta name="theme-color" content="#0b0f0e" />
   <title>Sala de Recursos — SEDES/DF | Plano de Transição</title>
   <style>
-    :root{color-scheme:dark;--bg:#090d0c;--surface:#101714;--surface2:#151d19;--line:#29332f;--text:#edf3ef;--muted:#9aa49f;--accent:#b9ff59;--cyan:#66d9cf;--amber:#f3b562;--red:#f08b8b}
+    :root{color-scheme:dark;--bg:#090d0c;--surface:#101714;--surface2:#151d19;--line:#29332f;--text:#edf3ef;--muted:#9aa49f;--accent:#b9ff59;--cyan:#66d9cf;--amber:#f3b562;--red:#f08b8b;--green:#8ee6a8}
     *{box-sizing:border-box}html{background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}body{margin:0;background:radial-gradient(circle at 15% -15%,rgba(185,255,89,.08),transparent 35rem),var(--bg);min-height:100vh}
     a{color:inherit}.shell{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:18px 0 56px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0 22px}.brand{display:flex;align-items:center;gap:11px;text-decoration:none}.mark{width:42px;height:42px;border-radius:13px;background:var(--accent);color:#0b0f0e;display:grid;place-items:center;font-size:21px;font-weight:900}.brand small,.eyebrow{display:block;color:var(--muted);font-size:.69rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.brand strong{display:block;margin-top:2px}.back{padding:10px 12px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--muted);font-size:.82rem}.back:hover{color:var(--text);border-color:#4a5c54}
     .hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr);gap:14px}.hero-main,.deadline,.summary,.notice,.exam,.question{border:1px solid var(--line);background:rgba(16,23,20,.94);border-radius:22px}.hero-main{padding:28px}.hero h1{font-size:clamp(2rem,6vw,4.4rem);letter-spacing:-.055em;line-height:.96;margin:.35rem 0 .9rem;max-width:13ch}.hero h1 em{font-style:normal;color:var(--cyan)}.hero p{color:var(--muted);line-height:1.6;margin:0;max-width:70ch}.deadline{padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(145deg,rgba(243,181,98,.08),rgba(16,23,20,.96))}.deadline span{color:var(--amber);font-weight:800;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}.deadline strong{font-size:2rem;line-height:1.05;margin:14px 0 6px}.deadline small{color:var(--muted);line-height:1.45}.countdown{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;color:var(--text);font-weight:800}
-    .notice{margin-top:14px;padding:16px 18px;border-color:rgba(243,181,98,.38);background:rgba(243,181,98,.06);color:var(--muted);line-height:1.55;font-size:.86rem}.notice b{color:var(--text)}
+    .notice{margin-top:14px;padding:16px 18px;border-color:rgba(142,230,168,.32);background:rgba(142,230,168,.055);color:var(--muted);line-height:1.55;font-size:.86rem}.notice b{color:var(--text)}
     .exam-tabs{display:flex;gap:8px;margin:20px 0 12px;position:sticky;top:0;z-index:4;padding:10px 0;background:linear-gradient(var(--bg) 75%,transparent)}.exam-tabs button{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:11px 15px;border-radius:999px;font:inherit;font-size:.84rem;font-weight:800;cursor:pointer}.exam-tabs button.active{background:var(--accent);color:#0b0f0e;border-color:var(--accent)}
-    .exam{padding:22px}.exam-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.exam-head h2{margin:.35rem 0 .35rem;font-size:clamp(1.45rem,3vw,2.2rem)}.exam-head p{margin:0;color:var(--muted);line-height:1.5}.score{min-width:112px;text-align:right}.score strong{font-size:2.35rem;line-height:1}.score small{display:block;color:var(--muted);margin-top:5px}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:18px}.kpi{padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--surface2)}.kpi strong{display:block;font-size:1.3rem}.kpi small{display:block;color:var(--muted);margin-top:2px;font-size:.72rem}.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:20px 0 10px}.filters button{border:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 10px;border-radius:10px;font:inherit;font-size:.75rem;cursor:pointer}.filters button.active{color:var(--text);border-color:#607269;background:var(--surface2)}.question-list{display:grid;gap:10px}.question{padding:16px;border-radius:17px;background:var(--surface2)}.q-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.q-id{display:flex;align-items:center;gap:10px}.q-number{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#202a25;font-weight:900}.q-title strong{display:block}.q-title small{display:block;color:var(--muted);margin-top:3px}.badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:.67rem;font-weight:900;white-space:nowrap}.badge.review{color:#0b0f0e;background:var(--amber)}.badge.low{color:var(--cyan);background:rgba(102,217,207,.1);border:1px solid rgba(102,217,207,.24)}.badge.conditional{color:var(--red);background:rgba(240,139,139,.09);border:1px solid rgba(240,139,139,.26)}.answers{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.pill{padding:7px 9px;border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:.75rem}.pill b{color:var(--text)}.basis,.recommend{margin:9px 0 0;color:var(--muted);font-size:.82rem;line-height:1.55}.basis b,.recommend b{color:var(--text)}.recommend{padding-left:11px;border-left:2px solid var(--amber)}.stem{margin-top:10px;color:#75807a;font-size:.73rem}.stem::before{content:"⚠ ";color:var(--amber)}
+    .exam{padding:22px}.exam-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.exam-head h2{margin:.35rem 0 .35rem;font-size:clamp(1.45rem,3vw,2.2rem)}.exam-head p{margin:0;color:var(--muted);line-height:1.5}.score{min-width:112px;text-align:right}.score strong{font-size:2.35rem;line-height:1}.score small{display:block;color:var(--muted);margin-top:5px}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-top:18px}.kpi{padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--surface2)}.kpi strong{display:block;font-size:1.3rem}.kpi small{display:block;color:var(--muted);margin-top:2px;font-size:.72rem}.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:20px 0 10px}.filters button{border:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 10px;border-radius:10px;font:inherit;font-size:.75rem;cursor:pointer}.filters button.active{color:var(--text);border-color:#607269;background:var(--surface2)}.question-list{display:grid;gap:10px}.question{padding:16px;border-radius:17px;background:var(--surface2)}.q-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.q-id{display:flex;align-items:center;gap:10px}.q-number{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#202a25;font-weight:900}.q-title strong{display:block}.q-title small{display:block;color:var(--muted);margin-top:3px}.badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:.67rem;font-weight:900;white-space:nowrap}.badge.review{color:#0b0f0e;background:var(--amber)}.badge.low{color:var(--cyan);background:rgba(102,217,207,.1);border:1px solid rgba(102,217,207,.24)}.badge.conditional{color:var(--red);background:rgba(240,139,139,.09);border:1px solid rgba(240,139,139,.26)}.badge.submitted{color:#08140d;background:var(--green);border:1px solid rgba(142,230,168,.5)}.answers{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.pill{padding:7px 9px;border:1px solid var(--line);border-radius:10px;color:var(--muted);font-size:.75rem}.pill b{color:var(--text)}.basis,.recommend{margin:9px 0 0;color:var(--muted);font-size:.82rem;line-height:1.55}.basis b,.recommend b{color:var(--text)}.recommend{padding-left:11px;border-left:2px solid var(--amber)}.appeal-log{margin-top:11px;padding:11px 12px;border:1px solid rgba(142,230,168,.28);border-radius:12px;background:rgba(142,230,168,.05);color:var(--muted);font-size:.77rem;line-height:1.5}.appeal-log b{color:var(--green)}.stem{margin-top:10px;color:#75807a;font-size:.73rem}.stem::before{content:"⚠ ";color:var(--amber)}
     .sources{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.sources a{padding:9px 11px;border:1px solid var(--line);border-radius:11px;text-decoration:none;color:var(--cyan);font-size:.76rem}.foot{margin-top:18px;color:var(--muted);font-size:.76rem;line-height:1.55}.hidden{display:none!important}
     @media(max-width:780px){.hero{grid-template-columns:1fr}.hero-main{padding:22px}.deadline{min-height:220px}.exam{padding:17px}.exam-head{display:block}.score{text-align:left;margin-top:15px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.q-top{display:block}.badge{margin-top:10px}.shell{width:min(100% - 18px,1180px)}.top .brand small{display:none}.back{font-size:.75rem}}
   </style>
@@ -26,9 +26,9 @@
 
     <section class="hero">
       <article class="hero-main">
-        <span class="eyebrow">SEDES/DF · GABARITO PRELIMINAR</span>
-        <h1>Erros puxados. <em>Agora é triagem.</em></h1>
-        <p>TDAS Tipo B e EDAS Tipo A, com sua marcação, chave preliminar, peso, justificativa publicada pela banca e ordem de revisão. O foco aqui é separar divergência de resposta de fundamento real de recurso.</p>
+        <span class="eyebrow">SEDES/DF · RECURSOS AO GABARITO</span>
+        <h1>Recursos abertos. <em>Agora é acompanhamento.</em></h1>
+        <p>Controle dos erros do TDAS Tipo B e EDAS Tipo A, com os recursos efetivamente protocolados, número de protocolo, horário, pedido e situação registrada no sistema da Quadrix.</p>
       </article>
       <aside class="deadline">
         <div><span>Prazo oficial</span><strong>16/09<br>às 18h</strong><small>Horário de Brasília · sistema eletrônico da Quadrix · um recurso individualizado por questão.</small></div>
@@ -36,14 +36,14 @@
       </aside>
     </section>
 
-    <div class="notice"><b>Importante:</b> o caderno aplicado, com o enunciado integral e todas as alternativas, ainda não está incorporado nesta base. Por isso, nenhuma questão abaixo é marcada como “recurso certo” apenas porque sua resposta divergiu do gabarito. Onde a justificativa da banca já é forte, a sinalização fica baixa; onde a redação exata pesa mais, fica “revisar primeiro”.</div>
+    <div class="notice"><b>Atualização 15/09:</b> no EDAS Tipo A, os recursos das questões 20, 43, 47 e 59 foram protocolados e aparecem como <b>Em análise</b> no ambiente do candidato. O controle abaixo preserva também as questões nas quais não foi aberto recurso.</div>
 
     <nav class="exam-tabs" aria-label="Escolher prova">
       <button class="active" data-exam="tdas">TDAS · 83/100</button>
       <button data-exam="edas">EDAS · 88/100</button>
     </nav>
 
-    <section id="examMount" aria-live="polite"><p>Carregando triagem…</p></section>
+    <section id="examMount" aria-live="polite"><p>Carregando controle…</p></section>
   </main>
 
   <script>
@@ -57,6 +57,11 @@
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const triageLabel = value => ({'revisar-primeiro':'Revisar primeiro','baixo-sinal':'Baixo sinal','condicional-anulacao':'Só eventual anulação'}[value] || value);
     const triageClass = value => value === 'revisar-primeiro' ? 'review' : value === 'condicional-anulacao' ? 'conditional' : 'low';
+    const formatSubmittedAt = value => {
+      if(!value) return '';
+      const d = new Date(value);
+      return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'}).format(d);
+    };
 
     function updateCountdown(){
       const end = new Date('2026-09-16T18:00:00-03:00').getTime();
@@ -71,10 +76,13 @@
     function render(){
       if(!data) return;
       const exam = data.exams[current];
-      const visible = exam.questions.filter(q => filter === 'all' || q.triage === filter);
+      const isVisible = q => filter === 'all' || (filter === 'submitted' ? q.appeal?.submitted : q.triage === filter);
+      const visible = exam.questions.filter(isVisible);
       const reviewCount = exam.questions.filter(q => q.triage === 'revisar-primeiro').length;
       const lowCount = exam.questions.filter(q => q.triage === 'baixo-sinal').length;
       const conditionalCount = exam.questions.filter(q => q.triage === 'condicional-anulacao').length;
+      const submittedCount = exam.questions.filter(q => q.appeal?.submitted).length;
+      const submittedPoints = exam.questions.filter(q => q.appeal?.submitted).reduce((sum,q) => sum + Number(q.points || 0), 0);
       mount.innerHTML = `
         <article class="exam">
           <div class="exam-head">
@@ -85,10 +93,13 @@
             <div class="kpi"><strong>${esc(exam.correct)}</strong><small>acertos</small></div>
             <div class="kpi"><strong>${esc(exam.wrong)}</strong><small>erros</small></div>
             <div class="kpi"><strong>${esc(exam.invalid)}</strong><small>inválidas</small></div>
+            <div class="kpi"><strong>${esc(submittedCount)}</strong><small>recursos protocolados</small></div>
+            <div class="kpi"><strong>${esc(submittedPoints)}</strong><small>pontos em recursos abertos</small></div>
             <div class="kpi"><strong>${esc(exam.potentialPointsUnderReview)}</strong><small>pontos no universo de revisão</small></div>
           </div>
           <div class="filters">
             <button data-filter="all" class="${filter==='all'?'active':''}">Todas · ${exam.questions.length}</button>
+            ${submittedCount ? `<button data-filter="submitted" class="${filter==='submitted'?'active':''}">Protocolados · ${submittedCount}</button>` : ''}
             <button data-filter="revisar-primeiro" class="${filter==='revisar-primeiro'?'active':''}">Revisar primeiro · ${reviewCount}</button>
             <button data-filter="baixo-sinal" class="${filter==='baixo-sinal'?'active':''}">Baixo sinal · ${lowCount}</button>
             ${conditionalCount ? `<button data-filter="condicional-anulacao" class="${filter==='condicional-anulacao'?'active':''}">Só anulação · ${conditionalCount}</button>` : ''}
@@ -98,12 +109,12 @@
               <article class="question">
                 <div class="q-top">
                   <div class="q-id"><span class="q-number">Q${esc(q.question)}</span><div class="q-title"><strong>${esc(q.topic)}</strong><small>${esc(q.area)} · ${esc(q.points)} ponto(s)</small></div></div>
-                  <span class="badge ${triageClass(q.triage)}">${esc(triageLabel(q.triage))}</span>
+                  ${q.appeal?.submitted ? `<span class="badge submitted">${esc(q.appeal.status)} · #${esc(q.appeal.protocol)}</span>` : `<span class="badge ${triageClass(q.triage)}">${esc(triageLabel(q.triage))}</span>`}
                 </div>
                 <div class="answers"><span class="pill">Sua marcação: <b>${esc(q.candidate)}</b></span><span class="pill">Gabarito: <b>${esc(q.official)}</b></span><span class="pill">Ganho se houver decisão favorável: <b>+${esc(q.points)}</b></span></div>
                 <p class="basis"><b>Justificativa da banca:</b> ${esc(q.officialBasis)}</p>
-                <p class="recommend"><b>Triagem:</b> ${esc(q.recommendation)}</p>
-                <div class="stem">Enunciado integral/alternativas ainda pendentes do caderno aplicado.</div>
+                <p class="recommend"><b>Controle:</b> ${esc(q.recommendation)}</p>
+                ${q.appeal?.submitted ? `<div class="appeal-log"><b>Recurso protocolado</b> · Protocolo #${esc(q.appeal.protocol)} · ${esc(formatSubmittedAt(q.appeal.submittedAt))} · Pedido: ${esc(q.appeal.request)} · Situação: ${esc(q.appeal.status)}</div>` : `<div class="stem">Sem recurso registrado neste controle até a última atualização.</div>`}
               </article>`).join('') || '<p class="foot">Nenhuma questão neste filtro.</p>'}
           </div>
           <div class="sources">
@@ -112,7 +123,7 @@
             <a href="${esc(data.sources.resourceNoticePdf)}" target="_blank" rel="noreferrer">Comunicado de recursos ↗</a>
             <a href="${esc(data.sources.contest)}" target="_blank" rel="noreferrer">Página do concurso ↗</a>
           </div>
-          <p class="foot">A coluna “pontos no universo de revisão” é apenas o máximo matemático associado às divergências listadas; não representa probabilidade de deferimento. Na Q30 do TDAS, o ganho depende de anulação da própria questão, porque houve dupla marcação no cartão.</p>
+          <p class="foot">“Pontos em recursos abertos” soma apenas as questões efetivamente protocoladas. “Pontos no universo de revisão” é o máximo matemático associado às divergências listadas e não representa probabilidade de deferimento.</p>
         </article>`;
       mount.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', () => { filter = btn.dataset.filter; render(); }));
     }
@@ -122,9 +133,9 @@
     }));
 
     fetch(DATA_URL, {cache:'no-store'})
-      .then(r => { if(!r.ok) throw new Error('Falha ao carregar a triagem'); return r.json(); })
+      .then(r => { if(!r.ok) throw new Error('Falha ao carregar o controle'); return r.json(); })
       .then(json => { data = json; render(); })
-      .catch(err => { mount.innerHTML = `<article class="notice"><b>Não foi possível carregar a triagem.</b> ${esc(err.message)}</article>`; });
+      .catch(err => { mount.innerHTML = `<article class="notice"><b>Não foi possível carregar o controle.</b> ${esc(err.message)}</article>`; });
 
     updateCountdown(); setInterval(updateCountdown, 30000);
   </script>
