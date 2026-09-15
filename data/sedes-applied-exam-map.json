@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-09-15",
+  "contest": "SEDES/DF 2026",
+  "tdas": {
+    "candidateExamType": "B",
+    "verifiedAppliedExamMirrorType": "A",
+    "sourceUrl": "https://blog-static.infra.grancursosonline.com.br/wp-content/uploads/2026/09/06184227/concurso-sedes-tecnico-administrativo-prova-tipo-A_.pdf",
+    "mappingNote": "Mapeamento realizado pelo conteúdo das questões entre o caderno Tipo A e as justificativas oficiais da Quadrix, respeitando a equivalência A/B/C indicada nas justificativas.",
+    "wrongQuestionMapping": [
+      {"candidateQuestion":8,"typeAEquivalent":28,"topic":"SUAS — precedência da proteção social básica","triage":"baixo-sinal"},
+      {"candidateQuestion":14,"typeAEquivalent":34,"topic":"SUAS — Piso Básico Fixo / Piso Básico Variável e equipe volante","triage":"candidato-anulacao"},
+      {"candidateQuestion":16,"typeAEquivalent":36,"topic":"Restaurantes Comunitários — pessoa em situação de rua","triage":"baixo-sinal"},
+      {"candidateQuestion":24,"typeAEquivalent":44,"topic":"Direito Administrativo — desconcentração e descentralização","triage":"baixo-sinal"},
+      {"candidateQuestion":30,"typeAEquivalent":50,"topic":"Responsabilidade administrativa e absolvição penal","triage":"somente-eventual-anulacao"},
+      {"candidateQuestion":39,"typeAEquivalent":59,"topic":"Lei 14.133/2021 — antecipação da habilitação","triage":"baixo-sinal"},
+      {"candidateQuestion":41,"typeAEquivalent":1,"topic":"Cadastro Único","triage":"baixo-sinal"},
+      {"candidateQuestion":45,"typeAEquivalent":5,"topic":"CAS/DF — natureza e articulação","triage":"baixo-sinal"},
+      {"candidateQuestion":49,"typeAEquivalent":9,"topic":"RIDE — município criado por desmembramento","triage":"baixo-sinal"},
+      {"candidateQuestion":50,"typeAEquivalent":10,"topic":"LODF — proteção à gestante carente","triage":"baixo-sinal"},
+      {"candidateQuestion":55,"typeAEquivalent":15,"topic":"II PDPM — Educação para Igualdade","triage":"baixo-sinal"}
+    ],
+    "appealCandidates": [
+      {
+        "candidateQuestion": 14,
+        "typeAEquivalent": 34,
+        "typeCEquivalent": 54,
+        "request": "anulação",
+        "potentialGain": 2,
+        "confidence": "plausível-melhor-sinal-entre-as-divergencias",
+        "reason": "O comando exige identificar os repasses 'respectivamente'. A própria justificativa da banca distingue Piso Básico Fixo para o PAIF/CRAS e Piso Básico Variável para a equipe volante, porém o gabarito E apenas enquadra ambos no Bloco de Financiamento da Proteção Social Básica, categoria genérica que não expressa a correspondência específica pedida. O pós-prova do Gran também sinalizou a questão equivalente A34 como passível de recurso; esse sinal externo é apenas corroborativo, não fundamento jurídico do recurso."
+      }
+    ]
+  },
+  "edas": {
+    "candidateExamType": "A",
+    "fullAppliedExamStemStatus": "ainda-nao-incorporado-em-fonte-verificavel-no-repositorio",
+    "wrongQuestions": [9,20,43,46,47,51,59],
+    "reviewFirst": [59],
+    "note": "As sete divergências já estão cruzadas com as justificativas oficiais. Nenhuma apresentou, só pela justificativa, contradição tão forte quanto a TDAS Q14; Q59 permanece para releitura prioritária quando o caderno integral for incorporado."
+  }
+}
