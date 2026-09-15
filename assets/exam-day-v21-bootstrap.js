@@ -74,8 +74,6 @@
     return data;
   }
 
-  // Normaliza o snapshot antes de work-app.js consumi-lo. Isso impede regressão visual
-  // enquanto a fonte editorial ainda estiver com textos de pré-prova.
   const nativeFetch = window.fetch.bind(window);
   window.fetch = async (...args) => {
     const response = await nativeFetch(...args);
@@ -203,11 +201,11 @@
     card.innerHTML = `
       <div class="postexam-resource-hub__copy">
         <span class="postexam-resource-hub__eyebrow">RECURSOS · SEDES/DF</span>
-        <h3>Protocolos e acompanhamento dos recursos</h3>
-        <p>Centralize aqui os recursos de TDAS 202 e EDAS 400, com questão, fundamento, situação do protocolo e impacto potencial na nota. O acompanhamento passa a fazer parte do Pós-prova, em vez de ocupar uma aba separada na navegação principal.</p>
-        <div class="postexam-resource-hub__meta"><span>TDAS 202 · Tipo B</span><span>EDAS 400 · Tipo A</span><span>protocolados · em análise</span></div>
+        <h3>5 recursos protocolados · todos em análise</h3>
+        <p>TDAS Tipo B: Q14. EDAS Tipo A: Q20, Q43, Q47 e Q59. O detalhe completo de cada protocolo, pedido e fundamento fica na Sala de Recursos.</p>
+        <div class="postexam-resource-hub__meta"><span>TDAS · 1 recurso</span><span>EDAS · 4 recursos</span><span>situação · Em análise</span></div>
       </div>
-      <a class="postexam-resource-hub__action" href="./recursos-sedes.html">Abrir acompanhamento dos recursos →</a>
+      <a class="postexam-resource-hub__action" href="./recursos-sedes.html">Ver protocolos e fundamentos →</a>
     `;
 
     const followUpPanel = host.querySelector('[data-v28-post-followup]');
@@ -223,7 +221,6 @@
 
   function patchPostExamDom() {
     if (!postExamActive() || !window.__PLANO_SEPARATE_POST_EXAM__) return;
-    // A Home neutra é renderizada pelo roteador principal. O pós-prova vive em #post-exam.
     document.documentElement.dataset.planPhase = 'post-exam';
     removeStandaloneResourceNavigation();
     ensurePostExamResourceHub();
@@ -256,12 +253,9 @@
 
   const restoreExamDay = () => {
     if (location.hash !== '#exam-day') history.replaceState(null, '', '#exam-day');
-    // A camada v21 já terá registrado o listener quando este timer executar.
     window.dispatchEvent(new HashChangeEvent('hashchange'));
   };
 
-  // Registrado no <head>: executa depois dos listeners DOMContentLoaded dos módulos,
-  // evitando que o roteador-base apague o deep link antes da camada v21 assumir a view.
   window.addEventListener('DOMContentLoaded', () => window.setTimeout(restoreExamDay, 0), { once: true });
   window.addEventListener('load', () => window.setTimeout(restoreExamDay, 0), { once: true });
 })();
