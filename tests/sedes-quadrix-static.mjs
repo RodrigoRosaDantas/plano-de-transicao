@@ -1,7 +1,7 @@
 import {readFileSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
 const assert=(c,m)=>{if(!c){console.error("❌ "+m);process.exitCode=1}else console.log("✅ "+m)};
-const index=read("index.html"),sw=read("sw.js"),collector=read("scripts/sedes-quadrix-monitor.mjs"),wf=read(".github/workflows/sedes-quadrix-monitor.yml"),front=read("assets/post-exam-quadrix-v44.js"),radar=read("radar-oficial.html");
+const index=read("index.html"),sw=read("sw.js"),collector=read("scripts/sedes-quadrix-monitor.mjs"),wf=read(".github/workflows/sedes-quadrix-monitor.yml"),front=read("assets/post-exam-quadrix-v44.js"),radar=read("radar-oficial.html"),resourcesPage=read("recursos-sedes.html");
 assert(collector.includes("quadrix.org.br/informacoes/3056"),"coletor usa a página-mãe oficial da Quadrix");
 assert(collector.includes("ACTIONS_ID_TOKEN_REQUEST_URL")&&collector.includes("plano-de-transicao-sedes-quadrix"),"coletor usa GitHub OIDC");
 assert(collector.includes("inscricoes homologadas")&&collector.includes("personalMatches"),"retrovarredura prioriza inscrições e matches privados");
@@ -26,5 +26,6 @@ assert(sw.includes("v49 brand-icon-refresh"),"service worker muda para recarrega
 assert(front.includes("Linha do tempo pessoal")&&front.includes("O que ainda falta sair")&&front.includes("Documentos em que você apareceu"),"painel privado consolida timeline, pendências e evidências");
 assert(front.includes("qLoadExamSnapshot")&&front.includes("sedes-2026-tdas")&&front.includes("sedes-2026-edas"),"painel privado cruza matches Quadrix com dados auditados das duas provas");
 assert(sw.includes("plano-transicao-v49-brand-icon")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix no cache v49");
+assert(resourcesPage.includes("assets/central-mark.svg")&&resourcesPage.includes("assets/central-icon-192.png")&&resourcesPage.includes("apple-touch-icon"),"Sala de Recursos usa a identidade visual da Central");
 if(process.exitCode)throw new Error("Auditoria estática SEDES/Quadrix falhou");
 console.log("SEDES/Quadrix: contratos estáticos íntegros no host visível.");
