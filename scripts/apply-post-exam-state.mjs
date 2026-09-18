@@ -8,6 +8,8 @@ const snapshot = JSON.parse(await fs.readFile(snapshotPath, 'utf8'));
 // só porque uma fonte editorial ainda não foi atualizada.
 const POST_EXAM_AT = Date.parse('2026-09-06T22:30:00.000Z'); // 19:30 em Brasília
 const now = Date.now();
+const RESOURCE_END_AT = Date.parse('2026-09-16T18:00:00-03:00');
+const resourcesClosed = now > RESOURCE_END_AT;
 
 if (now < POST_EXAM_AT) {
   console.log(JSON.stringify({ ok: true, applied: false, reason: 'pre-exam-cutoff' }));
@@ -37,12 +39,12 @@ snapshot.mission = 'Transformar as provas realizadas em diagnóstico, correção
 snapshot.priorities = (snapshot.priorities || []).map((item) => {
   if (item.id === 'tdas') {
     if (tdasDefinitive?.total != null || tdasDefinitive?.totalScore != null) return { ...item, status: 'Gabarito definitivo incorporado · acompanhar resultado/classificação' };
-    if (tdasPreliminary?.total != null || tdasPreliminary?.totalScore != null) return { ...item, status: `Correção preliminar: ${tdasPreliminary.total ?? tdasPreliminary.totalScore}/100 · recursos e definitivo pendentes` };
+    if (tdasPreliminary?.total != null || tdasPreliminary?.totalScore != null) return { ...item, status: resourcesClosed ? `Correção preliminar: ${tdasPreliminary.total ?? tdasPreliminary.totalScore}/100 · aguardando gabarito definitivo e resultado` : `Correção preliminar: ${tdasPreliminary.total ?? tdasPreliminary.totalScore}/100 · recursos e definitivo pendentes` };
     return { ...item, status: 'Prova realizada · aguardando correção oficial' };
   }
   if (item.id === 'edas') {
     if (edasDefinitive?.total != null || edasDefinitive?.totalScore != null) return { ...item, status: 'Gabarito definitivo incorporado · acompanhar resultado/classificação' };
-    if (edasPreliminary?.total != null || edasPreliminary?.totalScore != null) return { ...item, status: `Correção preliminar: ${edasPreliminary.total ?? edasPreliminary.totalScore}/100 · recursos e definitivo pendentes` };
+    if (edasPreliminary?.total != null || edasPreliminary?.totalScore != null) return { ...item, status: resourcesClosed ? `Correção preliminar: ${edasPreliminary.total ?? edasPreliminary.totalScore}/100 · aguardando gabarito definitivo e resultado` : `Correção preliminar: ${edasPreliminary.total ?? edasPreliminary.totalScore}/100 · recursos e definitivo pendentes` };
     return { ...item, status: 'Prova realizada · aguardando correção oficial' };
   }
   return item;
