@@ -82,7 +82,7 @@ async function extractAnchors(page,selector,limit=8){
 
 async function scanDOU(term){
   sourceHealth.DOU.checked++;
-  const to=new Date(),from=new Date(to.getTime()-4*86400000);
+  const to=new Date(),from=new Date(to.getTime()-14*86400000);
   const fmt=d=>new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",year:"numeric"}).format(d);
   const search="https://www.in.gov.br/consulta/-/buscar/dou?q="+encodeURIComponent(term.query_text)+"&s=todos&exactDate=personalizado&sortType=0&delta=10&publishFrom="+encodeURIComponent(fmt(from))+"&publishTo="+encodeURIComponent(fmt(to));
   let links=[];
@@ -124,65 +124,87 @@ async function findSearchInput(page){
   return null;
 }
 async function scanSINJ(term){
-  const url="https://www.sinj.df.gov.br/sinj/ashx/Datatable/ResultadoDePesquisaDiarioDatatable.ashx"
-    +"?tipo_pesquisa=diario"
-    +"&filetext="+encodeURIComponent(term.query_text)
-    +"&bbusca=sinj_diario"
-    +"&sEcho=1&iDisplayStart=0&iDisplayLength=25"
-    +"&iSortCol_0=5&sSortDir_0=desc";
-
-  const raw=await timeoutFetch(url,15000);
-  let data;
-  try{data=JSON.parse(raw)}catch{throw new Error("SINJ retornou formato inesperado")}
-  const rows=Array.isArray(data?.aaData)?data.aaData:[];
+  const year=new Intl.DateTimeFormat("en",{timeZone:"America/Sao_Paulo",year:"numeric"}).format(new Date());
+  const endpoint="https://www.sinj.df.gov.br/sinj/ashx/Datatable/ResultadoDePesquisaDiarioDatatable.ashx";
+  const pageSize=100;
+  let offset=0;
+  let total=Infinity;
   let localHits=0;
+  let pages=0;
 
-  for(const row of rows){
-    const s=row?._source||{};
-    if(s.nm_tipo_fonte&&String(s.nm_tipo_fonte).toUpperCase()!=="DODF")continue;
-    const published_at=isoFromText(s.dt_assinatura);
-    if(!isRecentDate(published_at,21))continue;
+  while(offset<total&&pages<12){
+    const url=endpoint
+      +"?tipo_pesquisa=diario"
+      +"&filetext="+encodeURIComponent(term.query_text)
+      +"&bbusca=sinj_diario"
+      +"&filtro="+encodeURIComponent("ano_assinatura:"+year)
+      +"&sEcho=1&iDisplayStart="+offset
+      +"&iDisplayLength="+pageSize;
 
-    const highlightParts=row?.highlight?.["arquivos.arquivo_diario.filetext"]||[];
-    const highlight=Array.isArray(highlightParts)?highlightParts.join(" "):String(highlightParts||"");
-    const snippet=String(highlight)
-      .replace(/_pre_tag_highlight_/g,"")
-      .replace(/_post_tag_highlight_/g,"")
-      .replace(/\\n|\\r|\\f/g," ")
-      .replace(/\s+/g," ")
-      .trim();
+    const raw=await timeoutFetch(url,15000);
+    let data;
+    try{data=JSON.parse(raw)}catch{throw new Error("SINJ retornou formato inesperado")}
+    const rows=Array.isArray(data?.aaData)?data.aaData:[];
+    const reported=Number(data?.iTotalDisplayRecords);
+    if(Number.isFinite(reported))total=reported;
+    if(!rows.length)break;
 
-    const files=Array.isArray(s.arquivos)?s.arquivos:[];
-    for(const file of files.slice(0,4)){
-      const id=file?.arquivo_diario?.id_file;
-      if(!id||!/^[0-9a-f-]{36}$/i.test(String(id)))continue;
-      const officialUrl="https://www.sinj.df.gov.br/sinj/TextoArquivoDiario.aspx?id_file="+id;
+    for(const row of rows){
+      const s=row?._source||{};
+      if(s.nm_tipo_fonte&&String(s.nm_tipo_fonte).toUpperCase()!=="DODF")continue;
+      const published_at=isoFromText(s.dt_assinatura);
+      if(!isRecentDate(published_at,35))continue;
 
-      let verifiedText=snippet;
-      if(term.is_private){
-        if(!matchesTerm(verifiedText,term)){
-          try{
-            verifiedText=stripHtml(await timeoutFetch(officialUrl,10000));
-          }catch{continue}
+      const highlightParts=row?.highlight?.["arquivos.arquivo_diario.filetext"]
+        || row?.highlight?.["ar_diario.filetext"]
+        || [];
+      const highlight=Array.isArray(highlightParts)?highlightParts.join(" "):String(highlightParts||"");
+      const snippet=String(highlight)
+        .replace(/_pre_tag_highlight_/g,"")
+        .replace(/_post_tag_highlight_/g,"")
+        .replace(/\\n|\\r|\\f/g," ")
+        .replace(/\s+/g," ")
+        .trim();
+
+      const files=[];
+      if(s?.ar_diario?.id_file)files.push({arquivo_diario:s.ar_diario,ds_arquivo:""});
+      if(Array.isArray(s.arquivos))files.push(...s.arquivos);
+
+      for(const file of files.slice(0,6)){
+        const id=file?.arquivo_diario?.id_file;
+        if(!id||!/^[0-9a-f-]{36}$/i.test(String(id)))continue;
+        const officialUrl="https://www.sinj.df.gov.br/sinj/TextoArquivoDiario.aspx?id_file="+id;
+
+        let verifiedText=snippet;
+        if(term.is_private){
+          if(!matchesTerm(verifiedText,term)){
+            try{
+              verifiedText=stripHtml(await timeoutFetch(officialUrl,10000));
+            }catch{continue}
+          }
+          if(!matchesTerm(verifiedText,term))continue;
         }
-        if(!matchesTerm(verifiedText,term))continue;
-      }
 
-      const section=s.secao_diario?("Seção "+String(s.secao_diario)):null;
-      const edition=[s.nr_diario?("nº "+s.nr_diario):"",s.nm_tipo_edicao||"",s.nm_diferencial_edicao||""].filter(Boolean).join(" · ");
-      occurrences.push({
-        term_id:term.id,
-        source:"DODF",
-        title:["DODF",edition,s.dt_assinatura||""].filter(Boolean).join(" · "),
-        url:officialUrl,
-        published_at,
-        section,
-        agency:term.is_private?null:term.label,
-        snippet:(verifiedText||snippet||"Ocorrência localizada no Diário Oficial do Distrito Federal.").slice(0,1200),
-        classification:classify(verifiedText||snippet)
-      });
-      localHits++;
+        const section=s.secao_diario?("Seção "+String(s.secao_diario)):null;
+        const edition=[s.nr_diario?("nº "+s.nr_diario):"",s.nm_tipo_edicao||"",s.nm_diferencial_edicao||""].filter(Boolean).join(" · ");
+        occurrences.push({
+          term_id:term.id,
+          source:"DODF",
+          title:["DODF",edition,s.dt_assinatura||""].filter(Boolean).join(" · "),
+          url:officialUrl,
+          published_at,
+          section,
+          agency:term.is_private?null:term.label,
+          snippet:(verifiedText||snippet||"Ocorrência localizada no Diário Oficial do Distrito Federal.").slice(0,1200),
+          classification:classify(verifiedText||snippet)
+        });
+        localHits++;
+      }
     }
+
+    offset+=rows.length;
+    pages++;
+    if(rows.length<pageSize)break;
   }
   return localHits;
 }
