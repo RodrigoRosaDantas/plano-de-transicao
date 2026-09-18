@@ -198,7 +198,7 @@ const sourceHealth={
 
 async function scanDOU(term){
   sourceHealth.DOU.checked++;
-  const to=new Date(),from=new Date(to.getTime()-14*86400000);
+  const to=new Date(),lookbackDays=normalize(term.label).includes("geral")?35:14,from=new Date(to.getTime()-lookbackDays*86400000);
   const fmt=d=>new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",year:"numeric"}).format(d);
   const search="https://www.in.gov.br/consulta/-/buscar/dou?q="+encodeURIComponent(term.query_text)+"&s=todos&exactDate=personalizado&sortType=0&delta=10&publishFrom="+encodeURIComponent(fmt(from))+"&publishTo="+encodeURIComponent(fmt(to));
   const html=await resilientFetch(search,15000,2);
@@ -457,7 +457,7 @@ if(probeOfficial){
   }
 }
 
-const runHistory=[6,12,18,21].includes(localHour);
+const runHistory=[6,12,18,21].includes(localHour)||process.env.GITHUB_EVENT_NAME==="push";
 sourceHealth.DODF.historyStatus=runHistory?"ok":"skipped";
 if(runHistory){
   const historyErrorsBefore=sourceHealth.DODF.errors.length;
