@@ -15,10 +15,16 @@ const PERSONAL_SCAN_VERSION=2;
 const normalize=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
 const digits=v=>String(v||"").replace(/\D/g,"");
 const sha=v=>createHash("sha256").update(v).digest("hex");
+const HTML_ENTITIES={
+  nbsp:" ",amp:"&",quot:'"',apos:"'",lt:"<",gt:">",
+  aacute:"á",Aacute:"Á",agrave:"à",Agrave:"À",acirc:"â",Acirc:"Â",atilde:"ã",Atilde:"Ã",
+  eacute:"é",Eacute:"É",ecirc:"ê",Ecirc:"Ê",iacute:"í",Iacute:"Í",
+  oacute:"ó",Oacute:"Ó",ocirc:"ô",Ocirc:"Ô",otilde:"õ",Otilde:"Õ",
+  uacute:"ú",Uacute:"Ú",ccedil:"ç",Ccedil:"Ç",ordm:"º",ordf:"ª"
+};
 const decodeHtml=v=>String(v||"")
-  .replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&quot;/gi,'"')
-  .replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,"<").replace(/&gt;/gi,">")
-  .replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n)));
+  .replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n)))
+  .replace(/&([A-Za-z]+);/g,(m,n)=>HTML_ENTITIES[n]??m);
 const stripHtml=v=>decodeHtml(String(v||"")
   .replace(/<script[\s\S]*?<\/script>/gi," ")
   .replace(/<style[\s\S]*?<\/style>/gi," ")
@@ -240,7 +246,7 @@ for(const pub of page.publications){
 }
 
 const payload={
-  run:{startedAt,event:eventName,runId,status:errors.length?"partial":"ok"},
+  run:{startedAt,event:eventName,runId,status:errors.length?"partial":"ok",transport:new URL(transportUrl).hostname},
   page:{pageHash:page.pageHash,statusText:page.statusText,importantDates:page.importantDates},
   publications:page.publications,
   personalMatches,
