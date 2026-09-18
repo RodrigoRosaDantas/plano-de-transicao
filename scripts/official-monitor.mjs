@@ -1,4 +1,9 @@
 import { chromium } from "playwright";
+import { writeFile, unlink } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync=promisify(execFile);
 
 const EDGE="https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/official-monitor-github";
 const AUD="plano-de-transicao-official-monitor";
@@ -56,6 +61,57 @@ const resilientFetch=async(url,ms=18000,attempts=2)=>{
   throw lastError;
 };
 const uniq=arr=>[...new Map(arr.map(x=>[x.url,x])).values()];
+const htmlDecode=v=>String(v||"")
+  .replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/&#39;/gi,"'")
+  .replace(/&lt;/gi,"<").replace(/&gt;/gi,">");
+const binaryFetch=async(url,ms=25000)=>{
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),ms);
+  try{
+    const r=await fetch(url,{signal:ctrl.signal,redirect:"follow",headers:{
+      "User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+      "Accept":"application/pdf,text/html;q=0.9,*/*;q=0.8","Accept-Language":"pt-BR,pt;q=0.9"
+    }});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    return {bytes:new Uint8Array(await r.arrayBuffer()),contentType:r.headers.get("content-type")||""};
+  }finally{clearTimeout(timer)}
+};
+const findTermContext=(text,term)=>{
+  const compact=String(text||"").replace(/\s+/g," ").trim();
+  const body=normalize(compact),query=normalize(term.query_text);
+  if(!body||!query)return null;
+  const contextAt=(pos,label="")=>{
+    const start=Math.max(0,pos-550),end=Math.min(compact.length,pos+850);
+    return {pos,snippet:compact.slice(start,end),label};
+  };
+  const exact=body.indexOf(query);
+  if(exact>=0)return contextAt(exact,"exact");
+  if(term.is_private)return null;
+  const stop=new Set(["de","da","do","das","dos","e","a","o","para","no","na","em","publico","publica","distrito","federal","estado"]);
+  const toks=[...new Set(query.split(" ").filter(x=>x.length>3&&!stop.has(x)))];
+  if(!toks.length)return null;
+  const anchors=[...toks].sort((a,b)=>b.length-a.length).slice(0,4);
+  for(const anchor of anchors){
+    let pos=body.indexOf(anchor),seen=0;
+    while(pos>=0&&seen<30){
+      const window=body.slice(Math.max(0,pos-900),Math.min(body.length,pos+1300));
+      const matched=toks.filter(x=>window.includes(x));
+      const ratio=matched.length/toks.length;
+      if(ratio>=0.72)return contextAt(pos,"window");
+      pos=body.indexOf(anchor,pos+anchor.length);
+      seen++;
+    }
+  }
+  return null;
+};
+const sectionAt=(text,pos)=>{
+  const before=String(text||"").slice(Math.max(0,pos-160000),Math.max(0,pos)).toUpperCase();
+  const options=[
+    ["Seção I",Math.max(before.lastIndexOf("SEÇÃO I"),before.lastIndexOf("SECAO I"))],
+    ["Seção II",Math.max(before.lastIndexOf("SEÇÃO II"),before.lastIndexOf("SECAO II"))],
+    ["Seção III",Math.max(before.lastIndexOf("SEÇÃO III"),before.lastIndexOf("SECAO III"))]
+  ].sort((a,b)=>b[1]-a[1]);
+  return options[0]?.[1]>=0?options[0][0]:null;
+};
 
 async function oidcToken(){
   const u=process.env.ACTIONS_ID_TOKEN_REQUEST_URL,t=process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
@@ -134,62 +190,44 @@ async function scanDOU(term){
 async function scanDODFToday(dodfTerms){
   const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   const displayDate=new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
-  const epoch=Math.floor(Date.parse(today+"T00:00:00-03:00")/1000);
-  const sections=[
-    ["I","Seção I"],
-    ["II","Seção II"],
-    ["III","Seção III"]
-  ];
-  const directPage=await ctx.newPage();
-  directPage.setDefaultTimeout(15000);
-  let loaded=0,localHits=0;
+  const home="https://dodf.df.gov.br/?dt=1";
+  const html=await resilientFetch(home,18000,2);
+  const hrefMatches=[...html.matchAll(/href=["']([^"']*visualizar-pdf[^"']*)["']/gi)].map(m=>htmlDecode(m[1]));
+  const pdfHref=hrefMatches.find(x=>/INTEGRA\.pdf/i.test(x))||hrefMatches[0];
+  if(!pdfHref)throw new Error("link da edição PDF do dia não localizado");
+  const pdfUrl=new URL(pdfHref,home).href;
+  const tmp="/tmp/dodf-oficial-dia.pdf";
+  let pdfText="";
   try{
-    for(const [code,label] of sections){
-      const url="https://dodf.df.gov.br/dodf/jornal/diario?data="+epoch+"&tpSecao="+code;
-      try{
-        await directPage.goto(url,{waitUntil:"domcontentloaded",timeout:25000});
-        await directPage.waitForTimeout(500);
-        const text=String(await directPage.locator("body").innerText({timeout:12000})).replace(/\s+/g," ").trim();
-        if(text.length<500)continue;
-        loaded++;
-        for(const term of dodfTerms){
-          if(!matchesTerm(text,term))continue;
-          const normalized=normalize(text);
-          const q=normalize(term.query_text);
-          const toks=q.split(" ").filter(x=>x.length>3);
-          let at=normalized.indexOf(q);
-          if(at<0){
-            for(const token of toks){
-              at=normalized.indexOf(token);
-              if(at>=0)break;
-            }
-          }
-          const start=Math.max(0,at>=0?at-320:0);
-          const snippet=text.slice(start,start+1200);
-          occurrences.push({
-            term_id:term.id,
-            source:"DODF",
-            title:["DODF do dia",label,displayDate].join(" · "),
-            url,
-            published_at:today,
-            section:label,
-            agency:term.is_private?null:term.label,
-            snippet,
-            classification:classify(snippet||text)
-          });
-          localHits++;
-        }
-      }catch(e){
-        sourceHealth.DODF.errors.push("DODF do dia · "+label+": "+String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180));
-      }
-    }
+    const {bytes,contentType}=await binaryFetch(pdfUrl,30000);
+    if(bytes.length<10000)throw new Error("PDF do dia retornou conteúdo insuficiente");
+    if(contentType&&!/pdf|octet-stream/i.test(contentType))throw new Error("resposta do DODF não parece PDF");
+    await writeFile(tmp,bytes);
+    const out=await execFileAsync("pdftotext",["-layout",tmp,"-"],{maxBuffer:80*1024*1024,timeout:45000});
+    pdfText=String(out.stdout||"").replace(/\u0000/g," ");
   }finally{
-    await directPage.close().catch(()=>{});
+    await unlink(tmp).catch(()=>{});
   }
-  if(!loaded)throw new Error("edição do dia não retornou seções legíveis");
-  return {hits:localHits,sections:loaded};
+  if(pdfText.replace(/\s+/g," ").trim().length<5000)throw new Error("texto da edição do dia não pôde ser extraído");
+  let localHits=0;
+  for(const term of dodfTerms){
+    const ctxHit=findTermContext(pdfText,term);
+    if(!ctxHit)continue;
+    occurrences.push({
+      term_id:term.id,
+      source:"DODF",
+      title:["DODF do dia",displayDate].join(" · "),
+      url:pdfUrl,
+      published_at:today,
+      section:sectionAt(pdfText,ctxHit.pos),
+      agency:term.is_private?null:term.label,
+      snippet:ctxHit.snippet.slice(0,1200),
+      classification:classify(ctxHit.snippet)
+    });
+    localHits++;
+  }
+  return {hits:localHits,sections:3,method:"pdf-certificado"};
 }
-
 async function findSearchInput(page){
   const selectors=['input[placeholder*="Digite aqui"]','input[placeholder*="Informe o termo"]','input[placeholder*="pesquisar" i]','input[type="search"]','input[type="text"]'];
   for(const sel of selectors){
@@ -210,7 +248,7 @@ async function scanSINJ(term){
   let localHits=0;
   let pages=0;
 
-  while(offset<total&&pages<8){
+  while(offset<total&&pages<3){
     const url=endpoint
       +"?tipo_pesquisa=diario"
       +"&filetext="+encodeURIComponent(term.query_text)
