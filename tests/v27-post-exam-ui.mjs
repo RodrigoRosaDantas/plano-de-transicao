@@ -82,6 +82,13 @@ await scenario('desktop: Pós-prova dedicada concentra auditoria, gráficos e de
     if (!text.includes(value)) throw new Error('Pós-prova dedicada sem: ' + value);
   }
   if (await post.locator('[data-post-exam-page]').count() !== 1) throw new Error('Deve existir um único host de pós-prova.');
+  await page.waitForSelector('.post-exam-view [data-post-exam-page] [data-q44-wrap]', { timeout: 15000 });
+  const sedesMonitor = post.locator('[data-post-exam-page] [data-q44-wrap]');
+  const sedesText = fold(await sedesMonitor.innerText());
+  for (const value of ['pós-prova · sedes/df', 'acompanhamento do concurso', 'banca · quadrix', 'meus dados no concurso']) {
+    if (!sedesText.includes(value)) throw new Error('Monitor SEDES/Quadrix não está visível no Pós-prova: ' + value);
+  }
+  if (await page.locator('.command-view [data-q44-wrap]').count()) throw new Error('Monitor SEDES/Quadrix vazou para a tela Agora.');
   if (await post.locator('[data-v28-transition-console]').count() !== 1) throw new Error('Central adaptativa não está no pós-prova dedicado.');
   if (await post.locator('[data-v28-competition-panel]').count() !== 1) throw new Error('Leitura competitiva não está no pós-prova dedicado.');
   if (await post.locator('[data-v28-post-followup]').count() !== 1) throw new Error('Acompanhamento estruturado não está no pós-prova dedicado.');

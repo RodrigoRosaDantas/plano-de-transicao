@@ -14,7 +14,8 @@ assert(front.includes("PÓS-PROVA · SEDES/DF")&&front.includes("Acompanhamento 
 assert(front.includes("separados do Radar Oficial"),"Pós-Prova explicita a separação do Radar Oficial");
 assert(!radar.includes("Órgão + pós-prova")&&!radar.includes("MONITOR OFICIAL · QUADRIX"),"Radar Oficial não mistura Quadrix nem Pós-Prova SEDES");
 assert(radar.includes("Monitor institucional")&&radar.includes("Cronograma da banca, inscrições, gabaritos e resultados da Quadrix ficam no Pós-Prova"),"Radar Oficial mantém apenas o escopo DOU/DODF da SEDES");
-assert(front.includes("qRenderSection")&&front.includes('if(!document.querySelector("[data-q44-wrap]"))qEnsure()'),"MutationObserver não recria o painel em loop");
+assert(front.includes("qRenderSection")&&front.includes('document.querySelector(".post-exam-view [data-post-exam-page]")'),"monitor monta no host dedicado e visível do Pós-Prova");
+assert(front.includes("root.prepend(section)")&&front.includes("stale.remove()"),"monitor corrige host legado e reposiciona o painel se necessário");
 assert(front.includes("evidence_labels")&&front.includes("const grouped=new Map()"),"evidências pessoais duplicadas são agrupadas por publicação e cargo");
 assert(index.includes("post-exam-quadrix-v44.js")&&index.includes("post-exam-quadrix-v44.css"),"módulo v44 está carregado no site");
 assert(sw.includes("plano-transicao-v44-sedes-quadrix")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix v44");

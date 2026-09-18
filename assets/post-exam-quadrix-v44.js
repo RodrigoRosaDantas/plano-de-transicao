@@ -137,17 +137,28 @@ function qRenderSection(section){
   localStorage.setItem(SEDES_QUADRIX.seenKey,new Date().toISOString());
   qLoadPrivate(section);
 }
+function qPostExamHost(){
+  return document.querySelector(".post-exam-view [data-post-exam-page]")
+    || document.querySelector("[data-post-exam-v27]");
+}
 function qEnsure(){
-  const root=document.querySelector("[data-post-exam-v27]");if(!root)return;
+  const root=qPostExamHost();if(!root)return;
   let section=root.querySelector("[data-q44-wrap]");
+  const stale=document.querySelector("[data-q44-wrap]");
+  if(stale&&!root.contains(stale)){stale.remove();section=null}
   if(section)return;
   section=document.createElement("div");section.dataset.q44Wrap="1";section.className="q44-wrap";
-  const notes=root.querySelector("#v27Notes")||root.querySelector(".v27-notes");
-  if(notes)notes.before(section);else root.append(section);
+  if(root.matches("[data-post-exam-page]")){
+    root.prepend(section);
+  }else{
+    const notes=root.querySelector("#v27Notes")||root.querySelector(".v27-notes");
+    if(notes)notes.before(section);else root.append(section);
+  }
   qRenderSection(section);
 }
 new MutationObserver(()=>{
-  if(!document.querySelector("[data-q44-wrap]"))qEnsure();
+  const root=qPostExamHost(),section=document.querySelector("[data-q44-wrap]");
+  if(root&&(!section||!root.contains(section)))qEnsure();
 }).observe(document.documentElement,{childList:true,subtree:true});
 qLoadPublic();
 setInterval(qLoadPublic,5*60*1000);
