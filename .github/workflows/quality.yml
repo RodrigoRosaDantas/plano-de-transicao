@@ -1,4 +1,5 @@
 name: Qualidade e paridade gerencial
+# Radar Web privado v43: valida cache, privacidade e regressões estáticas.
 
 on:
   workflow_dispatch:
