@@ -87,7 +87,18 @@ function qRenderUnlock(box){
   });
 }
 function qRenderPrivate(box,d){
-  const hits=Array.isArray(d.sedesHits)?d.sedesHits:[];
+  const rawHits=Array.isArray(d.sedesHits)?d.sedesHits:[];
+  const grouped=new Map();
+  for(const h of rawHits){
+    const key=(h.cargo_code||"na")+"|"+(h.publication?.url||h.id);
+    if(!grouped.has(key))grouped.set(key,{...h,evidence_labels:[]});
+    const g=grouped.get(key);
+    const label=h.matched_identifier?.label||"identificador protegido";
+    if(label&&!g.evidence_labels.includes(label))g.evidence_labels.push(label);
+    if(!g.registration_masked&&h.registration_masked)g.registration_masked=h.registration_masked;
+    g.confidence=Math.max(Number(g.confidence||0),Number(h.confidence||0));
+  }
+  const hits=[...grouped.values()];
   const ids=Array.isArray(d.identifiers)?d.identifiers:[];
   const regs=ids.filter(x=>String(x.label||"").startsWith("Inscrição SEDES"));
   const card=code=>{
@@ -99,7 +110,7 @@ function qRenderPrivate(box,d){
   };
   box.innerHTML=`<div class="q44-personal-grid">${card("202")}${card("400")}</div>
     <div class="q44-personal-events"><div class="q44-subhead"><strong>Achados nas publicações</strong><small>${hits.length?hits.length+" ocorrência(s) privada(s)":"nenhum match até agora"}</small></div>
-    ${hits.length?hits.slice(0,10).map(h=>`<article><div><span>${h.cargo_code?"Cargo "+qEsc(h.cargo_code):"SEDES/DF"}</span><strong>${qEsc(h.publication?.title||"Publicação Quadrix")}</strong><small>${qDate(h.publication?.published_at)} · via ${qEsc(h.matched_identifier?.label||"identificador protegido")}${h.registration_masked&&h.cargo_code&&Number(h.confidence||0)>=98?" · inscrição "+qEsc(h.registration_masked):""}</small></div>
+    ${hits.length?hits.slice(0,10).map(h=>`<article><div><span>${h.cargo_code?"Cargo "+qEsc(h.cargo_code):"SEDES/DF"}</span><strong>${qEsc(h.publication?.title||"Publicação Quadrix")}</strong><small>${qDate(h.publication?.published_at)} · via ${qEsc((h.evidence_labels||[]).join(" + ")||h.matched_identifier?.label||"identificador protegido")}${h.registration_masked&&h.cargo_code&&Number(h.confidence||0)>=98?" · inscrição "+qEsc(h.registration_masked):""}</small></div>
       <a href="${qEsc(h.publication?.url||SEDES_QUADRIX.publicUrl)}" target="_blank" rel="noreferrer">Fonte ↗</a></article>`).join(""):'<div class="q44-empty">O monitor já está procurando seu nome, CPF e inscrições nos documentos relevantes.</div>'}</div>
     <div class="q44-private-foot"><span>Sessão temporária ativa.</span><button type="button" data-q44-lock>Bloquear</button></div>`;
   box.querySelector("[data-q44-lock]")?.addEventListener("click",async()=>{
