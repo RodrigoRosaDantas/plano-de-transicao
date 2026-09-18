@@ -27,6 +27,9 @@ assert(collector.includes('term.category==="sedes"') && collector.includes('loca
 assert(collector.includes("caseOnly"), "TJDFT rejeita referência meramente judicial como falso positivo");
 assert(front.includes("/rest/v1/official_monitor_public_state"), "frontend lê somente o estado público sanitizado");
 assert(html.includes("MEU RASTRO NA INTERNET") && html.includes("webRadarUnlockForm"), "Radar Oficial possui área pessoal de pesquisa na web");
+assert(html.includes("Gerenciar código") && html.includes("Identificadores de pesquisa"), "área privada gerencia acesso e identificadores");
+assert(personalWeb.includes("add_identifier") && personalWeb.includes("rotate_code") && personalWeb.includes("set_identifier_scope"), "cliente suporta cadastro, escopo e rotação de acesso");
+assert(personalWeb.includes("webRadarOfficialResults"), "cliente renderiza ocorrências pessoais do DOU/DODF somente na área privada");
 assert(html.includes('data-web-filter="new"') && personalWeb.includes('webRadarFilter==="new"'), "Radar Web destaca resultados novos da última rodada");
 assert(personalWeb.includes('DuckDuckGo') && personalWeb.includes('web-radar-new'), "Radar Web mostra provedor e marca visualmente novos resultados");
 assert(personalWeb.includes("personal-web-search") && personalWeb.includes("sessionStorage"), "Radar Web usa backend protegido e sessão temporária");
@@ -41,7 +44,7 @@ assert(workflow.includes('cron: "15 9-21 * * *"') && workflow.includes('cron: "1
 assert(collector.includes("relevantPublicContext(text,term)") && collector.includes("relevantPublicContext(pdfText,term)"), "coletor aplica contexto estrito para reduzir falsos positivos");
 assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "ausência de ocorrência hoje não degrada a saúde da fonte");
 assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css") && sw.includes("./assets/personal-web-search.js"), "Radar Oficial e Radar Web estão incluídos no PWA");
-assert(sw.includes("plano-transicao-v42-personal-web-radar"), "cache v42 do Radar Web está ativo");
+assert(sw.includes("plano-transicao-v43-private-identifiers"), "cache v43 do Radar Web está ativo");
 
 if (process.exitCode) {
   throw new Error("Auditoria estática do Radar Oficial falhou.");
