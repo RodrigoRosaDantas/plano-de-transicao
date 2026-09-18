@@ -9,6 +9,8 @@ assert(!collector.includes("CPF principal")&&!collector.includes("Nome atual"),"
 assert(wf.includes("id-token: write")&&wf.includes("sedes-quadrix-monitor.mjs"),"workflow possui OIDC e executa coletor dedicado");
 assert(front.includes("sedes_quadrix_public_state")&&front.includes("plano.webRadar.session.v2"),"Pós-Prova combina estado público e sessão privada existente");
 assert(front.includes("sedesHits")&&front.includes("Inscrição SEDES"),"painel privado renderiza matches e inscrições");
+assert(front.includes("qRenderSection")&&front.includes('if(!document.querySelector("[data-q44-wrap]"))qEnsure()'),"MutationObserver não recria o painel em loop");
+assert(front.includes("evidence_labels")&&front.includes("const grouped=new Map()"),"evidências pessoais duplicadas são agrupadas por publicação e cargo");
 assert(index.includes("post-exam-quadrix-v44.js")&&index.includes("post-exam-quadrix-v44.css"),"módulo v44 está carregado no site");
 assert(sw.includes("plano-transicao-v44-sedes-quadrix")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix v44");
 if(process.exitCode)throw new Error("Auditoria estática SEDES/Quadrix falhou");
