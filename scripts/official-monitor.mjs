@@ -15,7 +15,9 @@ const classify=text=>{
   if(/convoca(c|ç)[aã]o|convocar|convocad/.test(n))return"Convocação";
   if(/resultado|classifica(c|ç)[aã]o/.test(n))return"Resultado";
   if(/posse|empossad/.test(n))return"Posse";
-  if(/lota(c|ç)[aã]o|lotar|exerc[ií]cio/.test(n))return"Lotação";
+  if(/exonera(c|ç)[aã]o|exonerar|exonerad/.test(n))return"Exoneração";
+  if(/designa(c|ç)[aã]o|designar|designad/.test(n))return"Designação";
+  if(/lota(c|ç)[aã]o|lotar|lotad/.test(n))return"Lotação";
   if(/retifica(c|ç)[aã]o/.test(n))return"Retificação";
   if(/comiss[aã]o.*concurso|banca.*concurso/.test(n))return"Pré-edital";
   if(/edital|concurso p[uú]blico|certame/.test(n))return"Concurso";
@@ -154,7 +156,15 @@ const relevantPublicContext=(text,term)=>{
       : category==="sedes"
         ? (n.includes("secretaria de estado de desenvolvimento social do distrito federal")||/\bsedes\b/.test(n))
         : category==="tjdft"
-          ? (n.includes("tribunal de justica do distrito federal e dos territorios")||/\btjdft\b/.test(n))
+          ? (()=>{
+              const full=n.includes("tribunal de justica do distrito federal e dos territorios");
+              const acronym=/\btjdft\b/.test(n);
+              const caseOnly=!full&&(
+                /(processo|autos|decisao judicial|acao judicial|mandado|sentenca|acordao)[^.!?]{0,140}\btjdft\b/.test(n)
+                || /\btjdft\b\s*(?:n|no|numero|nº|n°)?\s*\d/.test(n)
+              );
+              return full||(acronym&&!caseOnly);
+            })()
           : true;
   return agencyOk?hit:null;
 };
