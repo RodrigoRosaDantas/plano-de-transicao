@@ -133,7 +133,20 @@ function renderSources(sources) {
 }
 
 function renderHits() {
-  const hits = (dashboard?.hits || []).filter(h => activeFilter==="all" || h.category===activeFilter);
+  const filtered = (dashboard?.hits || []).filter(h => activeFilter==="all" || h.category===activeFilter);
+  const grouped = new Map();
+  for (const h of filtered) {
+    const contextKey = cleanSnippet(h.snippet).toLowerCase().slice(0,220);
+    const key = [h.source,h.url,h.published_at||"",contextKey].join("|");
+    if (!grouped.has(key)) {
+      grouped.set(key,{...h,radars:[h.radar].filter(Boolean),classifications:[h.classification].filter(Boolean)});
+      continue;
+    }
+    const item=grouped.get(key);
+    if (h.radar && !item.radars.includes(h.radar)) item.radars.push(h.radar);
+    if (h.classification && !item.classifications.includes(h.classification)) item.classifications.push(h.classification);
+  }
+  const hits=[...grouped.values()];
   $("#hitsList").innerHTML = hits.length ? hits.map(h=>{
     const snippet = cleanSnippet(h.snippet);
     const timingTags = [
@@ -141,6 +154,8 @@ function renderHits() {
       isFoundToday(h) ? '<span class="radar-tag found">detectado hoje</span>' : "",
       isLateFindToday(h) ? '<span class="radar-tag late">publicação anterior · achada hoje</span>' : ""
     ].join("");
+    const radarTags=(h.radars||[h.radar]).filter(Boolean).map(r=>'<span class="radar-tag">'+esc(r)+'</span>').join("");
+    const classTags=(h.classifications||[h.classification]).filter(Boolean).map(v=>'<span class="radar-tag">'+esc(v)+'</span>').join("");
     return `<article class="radar-hit">
       <div class="radar-hit-meta">
         <span class="radar-hit-source">${esc(h.source)}</span>
@@ -148,10 +163,10 @@ function renderHits() {
         <span>Detectado: ${fmtDateTime(h.first_seen_at)}</span>
         <span>${esc(h.section || "")}</span>
       </div>
-      <div class="radar-hit-main"><h3>${esc(h.title)}</h3><p>${esc(snippet || "Ocorrência registrada pelo monitor oficial.")}</p><div class="radar-hit-tags"><span class="radar-tag">${esc(h.radar)}</span><span class="radar-tag">${esc(h.classification)}</span>${timingTags}</div><small>${esc(h.agency || "Órgão não identificado automaticamente")}</small></div>
+      <div class="radar-hit-main"><h3>${esc(h.title)}</h3><p>${esc(snippet || "Ocorrência registrada pelo monitor oficial.")}</p><div class="radar-hit-tags">${radarTags}${classTags}${timingTags}</div><small>${esc(h.agency || "Órgão não identificado automaticamente")}</small></div>
       <a class="radar-hit-link" href="${esc(h.url)}" target="_blank" rel="noreferrer">Abrir oficial ↗</a>
     </article>`;
-  }).join("") : '<div class="radar-empty">Nenhuma ocorrência pública nesse filtro. Isso é um bom tipo de silêncio.</div>';
+  }).join("") : '<div class="radar-empty">Nenhuma ocorrência pública nesse filtro. O radar continua monitorando qualquer menção aos órgãos e os atos de concurso.</div>';
 }
 $("#refreshRadar")?.addEventListener("click",loadDashboard);
 $$("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
