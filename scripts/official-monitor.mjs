@@ -355,7 +355,7 @@ try{
 }
 
 const localHour=Number(new Intl.DateTimeFormat("en-GB",{timeZone:"America/Sao_Paulo",hour:"2-digit",hourCycle:"h23"}).format(new Date()));
-const runHistory=[6,12,18,21].includes(localHour)||!dodfTodayOk;
+const runHistory=[6,12,18,21].includes(localHour);
 sourceHealth.DODF.historyStatus=runHistory?"ok":"skipped";
 if(runHistory){
   const historyErrorsBefore=sourceHealth.DODF.errors.length;
