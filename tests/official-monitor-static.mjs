@@ -13,6 +13,7 @@ const assert = (condition, message) => {
 const html = read("radar-oficial.html");
 const front = read("assets/official-monitor.js");
 const personalWeb = read("assets/personal-web-search.js");
+const monitorCss = read("assets/official-monitor.css");
 const collector = read("scripts/official-monitor.mjs");
 const workflow = read(".github/workflows/official-monitor.yml");
 const sw = read("sw.js");
@@ -30,6 +31,8 @@ assert(html.includes("MEU RASTRO NA INTERNET") && html.includes("webRadarUnlockF
 assert(html.includes("Gerenciar código") && html.includes("Identificadores de pesquisa"), "área privada gerencia acesso e identificadores");
 assert(personalWeb.includes("add_identifier") && personalWeb.includes("rotate_code") && personalWeb.includes("set_identifier_scope"), "cliente suporta cadastro, escopo e rotação de acesso");
 assert(personalWeb.includes("webRadarOfficialResults"), "cliente renderiza ocorrências pessoais do DOU/DODF somente na área privada");
+assert(monitorCss.includes(".web-radar-private[hidden]") && monitorCss.includes("display:none!important"), "área privada fica realmente oculta antes do desbloqueio");
+assert(personalWeb.includes("webRadarData={counts:{},results:[],lastRun:null,identifiers:[],officialHits:[]}"), "bloqueio limpa o estado privado em memória");
 assert(html.includes('data-web-filter="new"') && personalWeb.includes('webRadarFilter==="new"'), "Radar Web destaca resultados novos da última rodada");
 assert(personalWeb.includes('DuckDuckGo') && personalWeb.includes('web-radar-new'), "Radar Web mostra provedor e marca visualmente novos resultados");
 assert(personalWeb.includes("personal-web-search") && personalWeb.includes("sessionStorage"), "Radar Web usa backend protegido e sessão temporária");
