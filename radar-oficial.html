@@ -102,6 +102,62 @@
       </article>
     </section>
 
+    <section class="radar-panel web-radar-panel" id="webRadarPanel">
+      <header class="radar-panel-head radar-panel-head--wrap">
+        <div>
+          <span class="radar-eyebrow">MEU RASTRO NA INTERNET</span>
+          <h2>Pesquisa pessoal na web</h2>
+          <p>Busca manual pelo termo pessoal protegido, com histórico e revisão de homônimos. Os resultados não ficam disponíveis na página pública sem o código de acesso.</p>
+        </div>
+        <span class="radar-chip" id="webRadarStatusChip">bloqueado</span>
+      </header>
+
+      <div id="webRadarLocked" class="web-radar-lock">
+        <div>
+          <strong>🔐 Área pessoal protegida</strong>
+          <p>Digite o código do Radar Web para acessar seus resultados privados. O código fica somente nesta sessão do navegador.</p>
+          <small>A pesquisa envia o termo protegido a um índice externo de busca e valida a ocorrência pelo nome exato antes de gravá-la.</small>
+        </div>
+        <form id="webRadarUnlockForm" class="web-radar-unlock-form">
+          <label for="webRadarCode">Código de acesso</label>
+          <div>
+            <input id="webRadarCode" type="password" inputmode="text" autocomplete="off" placeholder="XXXX-XXXX-XXXX" maxlength="20">
+            <button class="radar-button" type="submit">Desbloquear</button>
+          </div>
+          <span id="webRadarUnlockError" class="web-radar-error" aria-live="polite"></span>
+        </form>
+      </div>
+
+      <div id="webRadarPrivate" class="web-radar-private" hidden>
+        <div class="web-radar-toolbar">
+          <div class="web-radar-kpis">
+            <div><small>Encontrados</small><strong id="webRadarTotal">0</strong></div>
+            <div><small>A revisar</small><strong id="webRadarCandidates">0</strong></div>
+            <div><small>Confirmados</small><strong id="webRadarConfirmed">0</strong></div>
+            <div><small>Homônimos</small><strong id="webRadarHomonyms">0</strong></div>
+          </div>
+          <div class="web-radar-actions">
+            <button id="webRadarSearchBtn" class="radar-button" type="button">⌕ Pesquisar agora</button>
+            <button id="webRadarLockBtn" class="radar-button radar-button--ghost" type="button">Bloquear</button>
+          </div>
+        </div>
+        <div class="web-radar-meta">
+          <span id="webRadarLastRun">Nenhuma pesquisa carregada.</span>
+          <span id="webRadarSearchFeedback"></span>
+        </div>
+        <div class="radar-filters web-radar-filters" role="group" aria-label="Filtrar resultados pessoais">
+          <button type="button" class="active" data-web-filter="all">Todos</button>
+          <button type="button" data-web-filter="candidate">A revisar</button>
+          <button type="button" data-web-filter="confirmed">É meu</button>
+          <button type="button" data-web-filter="possible_homonym">Homônimo</button>
+          <button type="button" data-web-filter="not_mine">Não sou eu</button>
+        </div>
+        <div id="webRadarResults" class="web-radar-results">
+          <div class="radar-empty">Desbloqueie a área para carregar os resultados.</div>
+        </div>
+      </div>
+    </section>
+
     <section class="radar-panel">
       <header class="radar-panel-head radar-panel-head--wrap">
         <div><span class="radar-eyebrow">OCORRÊNCIAS</span><h2>Publicações encontradas</h2><p>Para SEDES/DF, entram tanto atos de concurso quanto qualquer outra publicação oficial relacionada ao órgão. SEEDF e TJDFT seguem filtrados para concurso/pré-edital. Quando a mesma publicação cair em mais de um radar, ela é agrupada em um único cartão.</p></div>
@@ -130,5 +186,6 @@
   </main>
 
   <script type="module" src="assets/official-monitor.js?v=5"></script>
+  <script type="module" src="assets/personal-web-search.js?v=1"></script>
 </body>
 </html>
