@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 const execFileAsync=promisify(execFile);
 const EDGE="https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/sedes-quadrix-monitor-github";
 const AUD="plano-de-transicao-sedes-quadrix";
+const TRANSPORT_URL="https://ps-adm-861.selecao.net.br/informacoes/3056/"; // espelho técnico da mesma página Quadrix; URL canônica permanece quadrix.org.br
 const startedAt=new Date().toISOString();
 const eventName=process.env.GITHUB_EVENT_NAME||"unknown";
 const runId=process.env.GITHUB_RUN_ID||null;
@@ -173,13 +174,20 @@ const cfgRes=await fetch(EDGE+"/config",{headers:{Authorization:"Bearer "+token}
 if(!cfgRes.ok)throw new Error("Config HTTP "+cfgRes.status+" "+await cfgRes.text());
 const cfg=await cfgRes.json();
 const contestUrl=cfg.contestUrl;
+const transportUrl=cfg.transportUrl||TRANSPORT_URL;
 const identifiers=Array.isArray(cfg.identifiers)?cfg.identifiers:[];
 const known=new Map((cfg.knownPublications||[]).map(p=>[p.url,p]));
 const bootstrap=known.size===0;
 const errors=[];
 
-const html=await fetchText(contestUrl);
-const page=parsePage(html,contestUrl);
+let html;
+try{
+  html=await fetchText(transportUrl);
+}catch(primaryError){
+  console.warn("Transporte administrativo indisponível; tentando URL canônica:",String(primaryError?.message||primaryError));
+  html=await fetchText(contestUrl);
+}
+const page=parsePage(html,transportUrl);
 const personalMatches=[];
 
 for(const pub of page.publications){
