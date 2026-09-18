@@ -515,7 +515,7 @@ const clean=[...new Map(occurrences.map(o=>[`${o.term_id}|${o.source}|${o.url}`,
 const status=Object.values(sourceHealth).every(s=>s.status==="ok")?"ok":"partial";
 const ingest=await fetch(EDGE+"/ingest",{
   method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
-  body:JSON.stringify({startedAt,finishedAt:new Date().toISOString(),status,sourceHealth,occurrences:clean})
+  body:JSON.stringify({startedAt,finishedAt:new Date().toISOString(),status,sourceHealth,termsChecked:terms.length,occurrences:clean})
 });
 if(!ingest.ok)throw new Error("Ingest HTTP "+ingest.status+" "+await ingest.text());
 const result=await ingest.json();
