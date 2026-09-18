@@ -32,7 +32,7 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 
 ## Radar Oficial
 
-O módulo `radar-oficial.html` lê somente a tabela sanitizada `official_monitor_public_state` no Supabase. Os termos pessoais e os textos das ocorrências privadas permanecem protegidos por RLS; o GitHub Pages recebe apenas métricas agregadas do radar pessoal e ocorrências dos radares públicos de SEDES/DF, SEEDF e TJDFT. A coleta principal roda em GitHub Actions quatro vezes ao dia com navegador real e autenticação OIDC validada pelo Supabase — sem service key ou termo pessoal no repositório. A ingestão usa fingerprint por termo/fonte/URL para impedir duplicação. Existe ainda um coletor Edge de contingência e um fallback oficial via SINJ/DF.
+O módulo `radar-oficial.html` lê somente a tabela sanitizada `official_monitor_public_state` no Supabase. Os termos pessoais e os textos das ocorrências privadas permanecem protegidos por RLS; o GitHub Pages recebe apenas métricas agregadas do radar pessoal e ocorrências dos radares públicos de SEDES/DF, SEEDF e TJDFT. A coleta principal roda em GitHub Actions quatro vezes ao dia com autenticação OIDC validada pelo Supabase — sem service key ou termo pessoal no repositório. O DOU é consultado na Imprensa Nacional e o DODF usa o endpoint oficial de pesquisa de Diários do SINJ/DF, com paginação do ano corrente e filtro local da janela recente. Os radares públicos usam termos específicos de concurso, comissão e banca; o radar pessoal permanece uma busca privada independente. A ingestão usa fingerprint por termo/fonte/URL para impedir duplicação. Existe ainda um coletor Edge de contingência.
 
 ## Regra de governança
 
