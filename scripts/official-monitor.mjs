@@ -140,11 +140,14 @@ const relevantPublicContext=(text,term)=>{
   const label=normalize(term.label);
   const category=normalize(term.category);
   const hasConcurso=/\b(concurso|certame)\b/.test(n);
-  if(label.includes("banca")&&!(hasConcurso&&/\bbanca\b/.test(n)))return null;
-  if(label.includes("comissao")&&!(hasConcurso&&/\bcomissao\b/.test(n)))return null;
-  if(label.includes("resultado")&&!(hasConcurso&&/\bresultado\b/.test(n)))return null;
-  if(label.includes("homologacao")&&!(hasConcurso&&/\bhomologacao\b/.test(n)))return null;
-  if(label.includes("concurso")&&!hasConcurso)return null;
+  const isGeneral=label.includes("geral");
+  if(!isGeneral){
+    if(label.includes("banca")&&!(hasConcurso&&/\bbanca\b/.test(n)))return null;
+    if(label.includes("comissao")&&!(hasConcurso&&/\bcomissao\b/.test(n)))return null;
+    if(label.includes("resultado")&&!(hasConcurso&&/\bresultado\b/.test(n)))return null;
+    if(label.includes("homologacao")&&!(hasConcurso&&/\bhomologacao\b/.test(n)))return null;
+    if(label.includes("concurso")&&!hasConcurso)return null;
+  }
   const agencyOk=
     category==="seedf"
       ? (n.includes("secretaria de estado de educacao do distrito federal")||/\bseedf\b/.test(n))
