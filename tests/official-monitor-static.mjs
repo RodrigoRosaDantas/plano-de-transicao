@@ -23,12 +23,14 @@ assert(html.includes("06:15–18:15") && html.includes("21:15"), "cadência exib
 assert(html.includes("Publicadas hoje") && html.includes("Detectadas hoje") && html.includes("Recuperadas hoje"), "painel distingue data oficial, detecção e recuperação histórica");
 assert(html.includes("revarredura histórica ou indexação posterior da fonte") && !html.includes("Mostra quando a fonte indexa um ato com atraso"), "texto não atribui indevidamente toda recuperação a atraso da fonte");
 assert(html.includes("🔐 Meu radar") && html.includes("Identificadores privados"), "resumo pessoal cobre nome, documento, e-mail ou outros identificadores protegidos");
+assert(html.includes("ocorrências pessoais protegidas fora do painel público"), "card público explicita que a atividade pessoal permanece privada");
 assert(html.includes("SEDES/DF") && html.includes("Monitor institucional") && html.includes("OU e DODF"), "interface mantém a SEDES no Radar Oficial somente como monitor institucional DOU/DODF");
 assert(html.includes("Cronograma da banca, inscrições, gabaritos e resultados da Quadrix ficam no Pós-Prova"), "Radar Oficial direciona o acompanhamento do concurso SEDES para o Pós-Prova");
 assert(!html.includes("Órgão + pós-prova") && !html.includes("MONITOR OFICIAL · QUADRIX"), "Radar Oficial não incorpora o módulo Pós-Prova SEDES/Quadrix");
 assert(!html.includes('SEEDF</span><strong>Órgão + pré-edital') && !html.includes('TJDFT</span><strong>Órgão + pré-edital'), "SEEDF e TJDFT permanecem somente em monitoramento específico");
 assert(front.includes("const grouped = new Map()"), "interface agrupa ocorrências coincidentes");
-assert(front.includes("Identificadores privados ativos; nenhum detalhe é exposto no site."), "estado pessoal vazio não presume que o radar privado seja apenas nome");
+assert(front.includes("Contagens, datas e ocorrências ficam somente na área privada."), "resumo público não expõe atividade do radar pessoal");
+assert(!front.includes("personal.hits30d") && !front.includes("personal.lastHitAt"), "frontend público não lê contagem nem horário de ocorrência pessoal");
 assert(collector.includes('const isGeneral=label.includes("geral")'), "coletor diferencia radar geral de radar de concurso");
 assert(collector.includes('term.category==="sedes"') && collector.includes('localHour===21'), "histórico profundo diário prioriza SEDES e deixa SEEDF/TJDFT para janela noturna");
 assert(collector.includes("caseOnly"), "TJDFT rejeita referência meramente judicial como falso positivo");
