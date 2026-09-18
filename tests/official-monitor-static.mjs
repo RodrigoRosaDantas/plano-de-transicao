@@ -18,7 +18,8 @@ const sw = read("sw.js");
 
 assert(html.includes("Radar Oficial"), "página dedicada do Radar Oficial existe");
 assert(html.includes("06:15–18:15") && html.includes("21:15"), "cadência exibida coincide com o workflow");
-assert(html.includes("todas as menções"), "interface explicita monitoramento amplo dos órgãos");
+assert(html.includes("SEDES/DF") && html.includes("todas as menções"), "interface explicita monitoramento amplo da SEDES/DF");
+assert(!html.includes('SEEDF</span><strong>Órgão + pré-edital') && !html.includes('TJDFT</span><strong>Órgão + pré-edital'), "SEEDF e TJDFT permanecem somente em monitoramento específico");
 assert(front.includes("const grouped = new Map()"), "interface agrupa ocorrências coincidentes");
 assert(collector.includes('const isGeneral=label.includes("geral")'), "coletor diferencia radar geral de radar de concurso");
 assert(front.includes("/rest/v1/official_monitor_public_state"), "frontend lê somente o estado público sanitizado");
