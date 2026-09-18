@@ -129,6 +129,10 @@ function renderWebRadar(){
     const ctx=String(r.context||"").replace(/\s+/g," ").trim();
     const reviewed=r.review_status!=="candidate";
     const fresh=isNew(r);
+    const matched=Array.isArray(r.matched_identifiers)&&r.matched_identifiers.length
+      ? r.matched_identifiers
+      : (r.matched_identifier?[r.matched_identifier]:[]);
+    const matchedLabel=matched.map(x=>`${x.label||identifierKindLabel(x.kind)} · ${x.masked_value||"protegido"}`).join(" + ");
     return `<article class="web-radar-result${fresh?" is-new":""}" data-web-result="${wEsc(r.id)}">
       <div class="web-radar-result-top">
         <div>
@@ -137,13 +141,13 @@ function renderWebRadar(){
         </div>
         <a class="radar-hit-link" href="${wEsc(r.url)}" target="_blank" rel="noreferrer">Abrir resultado ↗</a>
       </div>
-      <p>${wEsc(ctx||"Nome localizado no índice; abra a fonte para conferir o contexto completo.")}</p>
+      <p>${wEsc(ctx||"Identificador localizado no índice; abra a fonte para conferir o contexto completo.")}</p>
       <div class="web-radar-result-meta">
         ${fresh?'<span class="radar-tag web-radar-new">novo</span>':""}
-        ${r.matched_identifier?'<span class="radar-tag">via '+wEsc(r.matched_identifier.label||identifierKindLabel(r.matched_identifier.kind))+' · '+wEsc(r.matched_identifier.masked_value||"protegido")+'</span>':""}
+        ${matched.length?'<span class="radar-tag">via '+wEsc(matchedLabel)+'</span>':""}
         <span class="radar-tag">${wEsc(kindLabel(r.kind))}</span>
         <span class="radar-tag">${wEsc(statusLabel(r.review_status))}</span>
-        <span class="radar-tag" title="Mede apenas a força da correspondência textual do nome; não confirma identidade.">força da correspondência ${strength}%</span>
+        <span class="radar-tag" title="Mede apenas a força da correspondência textual do identificador; não confirma identidade.">força da correspondência ${strength}%</span>
         <span class="radar-tag">detectado ${wFmtDateTime(r.first_seen_at)}</span>
         ${r.published_at?'<span class="radar-tag">data do índice '+wEsc(wFmtDate(r.published_at))+'</span>':""}
       </div>
@@ -196,7 +200,7 @@ w$("#webRadarLockBtn")?.addEventListener("click",async()=>{
 w$("#webRadarSearchBtn")?.addEventListener("click",async()=>{
   const btn=w$("#webRadarSearchBtn"),feedback=w$("#webRadarSearchFeedback");
   btn.disabled=true;btn.textContent="Pesquisando…";
-  if(feedback)feedback.textContent="Consultando a web e validando a correspondência exata do nome nas fontes.";
+  if(feedback)feedback.textContent="Consultando a web e validando a correspondência exata dos identificadores nas fontes.";
   try{
     const data=await webRadarApi("search");
     webRadarData=data;renderWebRadar();
