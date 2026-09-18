@@ -66,7 +66,17 @@ async function fetchText(url,ms=25000){
       "Accept-Language":"pt-BR,pt;q=0.9"
     }});
     if(!r.ok)throw new Error("HTTP "+r.status+" em "+new URL(url).hostname);
-    return await r.text();
+    const bytes=new Uint8Array(await r.arrayBuffer());
+    const contentType=String(r.headers.get("content-type")||"").toLowerCase();
+    const declared=(contentType.match(/charset=([^;\s]+)/)?.[1]||"").replace(/["']/g,"");
+    const preferred=/iso-8859-1|latin1|windows-1252|cp1252/.test(declared)?"windows-1252":"utf-8";
+    let text=new TextDecoder(preferred,{fatal:false}).decode(bytes);
+    if(preferred==="utf-8"&&text.includes("\uFFFD")){
+      const latin=new TextDecoder("windows-1252",{fatal:false}).decode(bytes);
+      const badUtf=(text.match(/\uFFFD/g)||[]).length,badLatin=(latin.match(/\uFFFD/g)||[]).length;
+      if(badLatin<badUtf)text=latin;
+    }
+    return text;
   }finally{clearTimeout(timer)}
 }
 async function fetchBytes(url,ms=60000){
