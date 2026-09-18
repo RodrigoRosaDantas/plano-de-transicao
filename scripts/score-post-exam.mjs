@@ -457,11 +457,13 @@ function buildPostExamFollowUp() {
   const hasDefinitive = values.some((item) => item.status === 'definitive');
   const hasRanking = (snapshot.exams || []).some((item) => item.id?.startsWith('sedes-2026-') && item.ranking && item.ranking !== '—');
   const protocol = keys.source?.resourceProtocol || null;
+  const resourceEndMs = protocol?.end ? Date.parse(protocol.end) : NaN;
+  const resourcesClosed = Number.isFinite(resourceEndMs) && Date.now() > resourceEndMs;
   const milestones = [
     { id: 'exam', label: 'Provas realizadas', date: snapshot.meta?.postExamDate || '2026-09-06', status: 'done', detail: 'EDAS pela manhã · TDAS à tarde' },
     { id: 'preliminary-key', label: 'Gabarito preliminar', date: keys.source?.publishedAt || null, status: hasPreliminary ? 'done' : 'pending', detail: hasPreliminary ? 'Tipos A e B incorporados' : 'Aguardar publicação oficial' },
-    { id: 'resources', label: 'Recursos', start: protocol?.start || null, end: protocol?.end || null, status: hasDefinitive ? 'done' : hasPreliminary ? 'current' : 'pending', detail: hasDefinitive ? 'Janela encerrada ou resultado definitivo disponível' : hasPreliminary ? 'Conferir divergências com fundamento objetivo' : 'Depois do gabarito preliminar' },
-    { id: 'objective-result', label: 'Resultado objetivo preliminar', date: COMPETITION.milestones.objectivePreliminaryResult, status: hasRanking ? 'done' : hasDefinitive ? 'current' : 'upcoming', detail: hasRanking ? 'Classificação registrada' : 'Publicação oficial ainda pendente' },
+    { id: 'resources', label: 'Recursos', start: protocol?.start || null, end: protocol?.end || null, status: hasDefinitive || resourcesClosed ? 'done' : hasPreliminary ? 'current' : 'pending', detail: hasDefinitive ? 'Janela encerrada ou resultado definitivo disponível' : resourcesClosed ? 'Prazo encerrado; manter o registro dos recursos já protocolados' : hasPreliminary ? 'Conferir divergências com fundamento objetivo' : 'Depois do gabarito preliminar' },
+    { id: 'objective-result', label: 'Resultado objetivo preliminar', date: COMPETITION.milestones.objectivePreliminaryResult, status: hasRanking ? 'done' : hasDefinitive || resourcesClosed ? 'current' : 'upcoming', detail: hasRanking ? 'Classificação registrada' : 'Publicação oficial ainda pendente' },
     { id: 'objective-definitive', label: 'Resultado definitivo e lista da discursiva', date: COMPETITION.milestones.objectiveDefinitiveAndDiscursiveCorrectionList, status: hasRanking ? 'done' : 'upcoming', detail: 'Acompanhar lista de correção discursiva' },
     { id: 'discursive-preliminary', label: 'Resultado preliminar da discursiva', date: COMPETITION.milestones.discursivePreliminaryResult, status: 'upcoming', detail: 'Somente após a correção da discursiva' },
     { id: 'discursive-definitive', label: 'Resultado definitivo da discursiva', date: COMPETITION.milestones.discursiveDefinitiveResult, status: 'upcoming', detail: 'Fechamento do ciclo oficial' }
@@ -473,8 +475,8 @@ function buildPostExamFollowUp() {
     status: 'active',
     title: 'Acompanhamento pós-prova',
     description: 'Painel permanente da SEDES/DF: correção, recursos, resultado e decisão seguinte, sem misturar os cargos.',
-    currentStage: hasRanking ? 'Resultado e próximos passos' : hasDefinitive ? 'Classificação em acompanhamento' : hasPreliminary ? 'Conferência e recursos' : 'Aguardando gabarito e correção',
-    nextAction: hasRanking ? 'Registrar classificação, discursiva e decisão de carreira.' : hasDefinitive ? 'Acompanhar classificação e correção da discursiva.' : hasPreliminary ? 'Revisar divergências e protocolar somente recursos fundamentados.' : 'Aguardar fonte oficial de correção.',
+    currentStage: hasRanking ? 'Resultado e próximos passos' : hasDefinitive ? 'Classificação em acompanhamento' : resourcesClosed && hasPreliminary ? 'Aguardando resultado objetivo preliminar' : hasPreliminary ? 'Conferência e recursos' : 'Aguardando gabarito e correção',
+    nextAction: hasRanking ? 'Registrar classificação, discursiva e decisão de carreira.' : hasDefinitive ? 'Acompanhar classificação e correção da discursiva.' : resourcesClosed && hasPreliminary ? 'Acompanhar gabarito definitivo e resultado objetivo preliminar; atualizar notas e classificação quando a banca publicar.' : hasPreliminary ? 'Revisar divergências e protocolar somente recursos fundamentados.' : 'Aguardar fonte oficial de correção.',
     snapshotDate: snapshot.meta?.postExamDate || null,
     lastCalculatedAt: new Date().toISOString(),
     milestones,
