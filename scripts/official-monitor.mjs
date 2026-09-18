@@ -75,6 +75,16 @@ const binaryFetch=async(url,ms=25000)=>{
     return {bytes:new Uint8Array(await r.arrayBuffer()),contentType:r.headers.get("content-type")||""};
   }finally{clearTimeout(timer)}
 };
+const edgeProxyFetch=async(target,mode="text",ms=30000)=>{
+  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),ms);
+  try{
+    const u=EDGE+"/dodf-proxy?url="+encodeURIComponent(target);
+    const r=await fetch(u,{signal:ctrl.signal,headers:{Authorization:"Bearer "+token}});
+    if(!r.ok)throw new Error("proxy HTTP "+r.status+" "+(await r.text()).slice(0,160));
+    if(mode==="binary")return {bytes:new Uint8Array(await r.arrayBuffer()),contentType:r.headers.get("content-type")||""};
+    return await r.text();
+  }finally{clearTimeout(timer)}
+};
 const curlText=async(url,seconds=25)=>{
   const {stdout}=await execFileAsync("curl",[
     "-L","--fail","--silent","--show-error",
@@ -212,12 +222,15 @@ async function scanDODFToday(dodfTerms){
   const displayDate=new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
   const home="https://dodf.df.gov.br/?dt=1";
   let html="";
-  try{html=await resilientFetch(home,15000,2)}
+  try{html=await resilientFetch(home,12000,1)}
   catch(fetchError){
-    try{html=await curlText(home,20)}
-    catch(curlError){
-      const code=fetchError?.cause?.code||fetchError?.code||"fetch";
-      throw new Error("homepage DODF indisponível ("+code+"): "+String(curlError?.message||curlError).slice(0,140));
+    try{html=await edgeProxyFetch(home,"text",25000)}
+    catch(proxyError){
+      try{html=await curlText(home,12)}
+      catch(curlError){
+        const code=fetchError?.cause?.code||fetchError?.code||"fetch";
+        throw new Error("homepage DODF indisponível ("+code+"): proxy="+String(proxyError?.message||proxyError).slice(0,90)+"; curl="+String(curlError?.message||curlError).slice(0,90));
+      }
     }
   }
   const hrefMatches=[...html.matchAll(/href=["']([^"']*visualizar-pdf[^"']*)["']/gi)].map(m=>htmlDecode(m[1]));
@@ -229,18 +242,26 @@ async function scanDODFToday(dodfTerms){
   try{
     let downloaded=false;
     try{
-      const {bytes,contentType}=await binaryFetch(pdfUrl,25000);
+      const {bytes,contentType}=await binaryFetch(pdfUrl,18000);
       if(bytes.length<10000)throw new Error("PDF do dia retornou conteúdo insuficiente");
       if(contentType&&!/pdf|octet-stream/i.test(contentType))throw new Error("resposta do DODF não parece PDF");
       await writeFile(tmp,bytes);
       downloaded=true;
     }catch(fetchError){
       try{
-        await curlFile(pdfUrl,tmp,35);
+        const {bytes,contentType}=await edgeProxyFetch(pdfUrl,"binary",35000);
+        if(bytes.length<10000)throw new Error("proxy retornou PDF insuficiente");
+        if(contentType&&!/pdf|octet-stream/i.test(contentType))throw new Error("proxy não retornou PDF");
+        await writeFile(tmp,bytes);
         downloaded=true;
-      }catch(curlError){
-        const code=fetchError?.cause?.code||fetchError?.code||"fetch";
-        throw new Error("PDF certificado indisponível ("+code+"): "+String(curlError?.message||curlError).slice(0,140));
+      }catch(proxyError){
+        try{
+          await curlFile(pdfUrl,tmp,20);
+          downloaded=true;
+        }catch(curlError){
+          const code=fetchError?.cause?.code||fetchError?.code||"fetch";
+          throw new Error("PDF certificado indisponível ("+code+"): proxy="+String(proxyError?.message||proxyError).slice(0,90)+"; curl="+String(curlError?.message||curlError).slice(0,90));
+        }
       }
     }
     if(!downloaded)throw new Error("PDF certificado não foi baixado");
