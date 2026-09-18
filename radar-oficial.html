@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
   <link rel="stylesheet" href="assets/work-app.css?v=36">
-  <link rel="stylesheet" href="assets/official-monitor.css?v=1">
+  <link rel="stylesheet" href="assets/official-monitor.css?v=2">
 </head>
 <body class="official-monitor-page">
   <a class="skip-link" href="#radarContent">Pular para o conteúdo</a>
@@ -35,8 +35,8 @@
       </div>
       <aside class="radar-next-scan">
         <span>Rotina automática</span>
-        <strong>4× por dia</strong>
-        <small>06:15 · 11:15 · 16:15 · 21:15 (Brasília)</small>
+        <strong>A cada hora</strong>
+        <small>06:15–18:15 · conferência final 21:15 (Brasília)</small>
       </aside>
     </section>
 
@@ -48,15 +48,27 @@
         <small id="personalLast">Termo privado: não exibido no site.</small>
       </article>
       <article class="radar-card">
-        <div class="radar-card-head"><span>📡 Hoje</span><b>DOU + DODF</b></div>
-        <strong id="todayCount">—</strong>
-        <p>ocorrências públicas do plano hoje</p>
-        <small>Concursos, órgãos e atos relacionados.</small>
+        <div class="radar-card-head"><span>📰 Publicadas hoje</span><b>data oficial</b></div>
+        <strong id="publishedTodayCount">—</strong>
+        <p>atos cuja edição oficial é de hoje</p>
+        <small>Usa a data de publicação registrada no DOU/DODF.</small>
       </article>
       <article class="radar-card">
-        <div class="radar-card-head"><span>🗓 7 dias</span><b>Radar</b></div>
+        <div class="radar-card-head"><span>📡 Detectadas hoje</span><b>radar</b></div>
+        <strong id="foundTodayCount">—</strong>
+        <p>ocorrências que o radar encontrou hoje</p>
+        <small>Pode incluir publicação de hoje ou indexação tardia.</small>
+      </article>
+      <article class="radar-card radar-card--late">
+        <div class="radar-card-head"><span>⏱ Resgatadas hoje</span><b>atraso</b></div>
+        <strong id="lateFoundTodayCount">—</strong>
+        <p>publicações anteriores encontradas hoje</p>
+        <small>Mostra quando a fonte indexa um ato com atraso.</small>
+      </article>
+      <article class="radar-card">
+        <div class="radar-card-head"><span>🗓 7 dias</span><b>publicação</b></div>
         <strong id="weekCount">—</strong>
-        <p>ocorrências recentes</p>
+        <p>publicações oficiais recentes</p>
         <small>Sem duplicar a mesma publicação.</small>
       </article>
       <article class="radar-card">
@@ -117,6 +129,6 @@
     <p class="radar-footnote">O radar é um mecanismo de detecção e triagem. A versão certificada do diário oficial continua sendo a fonte jurídica definitiva da publicação.</p>
   </main>
 
-  <script type="module" src="assets/official-monitor.js?v=1"></script>
+  <script type="module" src="assets/official-monitor.js?v=2"></script>
 </body>
 </html>
