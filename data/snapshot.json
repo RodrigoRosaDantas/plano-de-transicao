@@ -17,7 +17,7 @@
     "postExamScoringUpdatedAt": "2026-09-18T20:29:13.339Z",
     "postExamCandidateResponsesSyncedAt": "2026-09-18T20:29:13.281Z",
     "postExamCompetitionAuditedAt": "2026-09-18T20:29:13.339Z",
-    "postExamFollowUpUpdatedAt": "2026-09-18T20:29:13.339Z"
+    "postExamFollowUpUpdatedAt": "2026-09-18T20:30:53.617Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -25,14 +25,14 @@
       "id": "tdas",
       "title": "TDAS — Cargo 202",
       "subtitle": "Técnico Administrativo",
-      "status": "Correção preliminar: 83/100 · recursos e definitivo pendentes",
+      "status": "Correção preliminar: 83/100 · aguardando gabarito definitivo e resultado",
       "tone": "primary"
     },
     {
       "id": "edas",
       "title": "EDAS — Cargo 400",
       "subtitle": "Administração",
-      "status": "Correção preliminar: 88/100 · recursos e definitivo pendentes",
+      "status": "Correção preliminar: 88/100 · aguardando gabarito definitivo e resultado",
       "tone": "secondary"
     }
   ],
@@ -479,11 +479,11 @@
     {
       "date": "06/09/2026",
       "title": "SEDES/DF",
-      "detail": "EDAS e TDAS realizadas em 06/09/2026. Gabarito preliminar incorporado; o ciclo está em auditoria de questões, recursos e acompanhamento do resultado objetivo."
+      "detail": "EDAS e TDAS realizadas em 06/09/2026. Gabarito preliminar incorporado; a janela de recursos encerrou e o ciclo aguarda o resultado objetivo."
     }
   ],
   "strategy": {
-    "current": "As provas SEDES/DF foram concluídas e a correção preliminar está registrada. A SEDES segue em recursos, gabarito definitivo e classificação, enquanto SEEDF e TJDFT avançam como projetos separados da nova preparação.",
+    "current": "As provas SEDES/DF foram concluídas e a correção preliminar está registrada. A janela de recursos foi encerrada; agora a SEDES segue em gabarito definitivo, resultado e classificação, enquanto SEEDF e TJDFT avançam como projetos separados da nova preparação.",
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
@@ -1379,10 +1379,10 @@
     "resultState": "Gabarito preliminar incorporado · resultado objetivo oficial pendente",
     "scoreState": "Estimativas preliminares · TDAS 83/100 · EDAS 88/100",
     "nextActions": [
-      "Auditar as divergências candidato × banca e separar somente questões com fundamento real para recurso.",
-      "Acompanhar respostas aos recursos e gabarito definitivo sem tratar a estimativa atual como resultado oficial.",
+      "Acompanhar o gabarito definitivo e o resultado objetivo preliminar sem tratar a estimativa atual como resultado oficial.",
+      "Conferir se recursos protocolados produziram alteração de chave, anulação ou efeito na nota.",
       "Manter a leitura competitiva como preliminar: taxa nominal de avanço não é probabilidade pessoal.",
-      "Atualizar posição provável apenas quando houver distribuição oficial de notas, nota de corte ou classificação objetiva.",
+      "Atualizar posição somente quando houver distribuição oficial de notas, nota de corte ou classificação objetiva.",
       "Registrar a lista de candidatos com discursiva corrigida quando publicada e então recalibrar o cenário."
     ],
     "scoring": {
