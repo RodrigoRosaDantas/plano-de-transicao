@@ -85,8 +85,15 @@ function renderSources(sources) {
     const s = sources[key] || {status:"pending"};
     const st = s.status || "pending";
     if(st!=="ok") allOk=false;
+    const dodfToday = s.todayStatus==="ok"
+      ? `SINJ do dia indexado${s.officialSiteStatus==="ok"?" · DODF certificado acessível":""}`
+      : s.todayStatus==="waiting-index"
+        ? `Aguardando indexação de hoje no SINJ${s.latestIndexedDate?` · mais recente: ${fmtDate(s.latestIndexedDate)}`:""}`
+        : s.todayStatus==="empty"
+          ? "SINJ consultado · nenhuma edição localizada para os radares"
+          : `Consulta do dia parcial${s.latestIndexedDate?` · SINJ até ${fmtDate(s.latestIndexedDate)}`:""}`;
     const detail = key==="DODF" && s.todayStatus
-      ? `DODF de hoje: ${s.todayStatus==="ok"?"online":s.todayStatus} · ${s.todaySections||0} seção(ões) · histórico SINJ: ${s.historyStatus||"pendente"}${s.historyErrorCount?` · ${s.historyErrorCount} falha(s) histórica(s)`:""}`
+      ? `${dodfToday} · histórico: ${s.historyStatus||"pendente"}${s.historyErrorCount?` · ${s.historyErrorCount} falha(s)`:""}`
       : st==="ok"
         ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)`
         : st==="partial"
