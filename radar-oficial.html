@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
   <link rel="stylesheet" href="assets/work-app.css?v=36">
-  <link rel="stylesheet" href="assets/official-monitor.css?v=4">
+  <link rel="stylesheet" href="assets/official-monitor.css?v=5">
 </head>
 <body class="official-monitor-page">
   <a class="skip-link" href="#radarContent">Pular para o conteúdo</a>
@@ -145,6 +145,77 @@
           <span id="webRadarLastRun">Nenhuma pesquisa carregada.</span>
           <span id="webRadarSearchFeedback"></span>
         </div>
+
+        <div class="web-radar-admin-grid">
+          <section class="web-radar-admin-card">
+            <div class="web-radar-admin-head">
+              <div><small>DADOS PROTEGIDOS</small><strong>Identificadores de pesquisa</strong></div>
+              <span>Vault 🔐</span>
+            </div>
+            <p>Os valores reais ficam criptografados. Nesta lista você vê apenas a versão mascarada; os valores completos só são usados no backend durante a pesquisa.</p>
+            <div id="webRadarIdentifiers" class="web-radar-identifiers"></div>
+            <form id="webRadarIdentifierForm" class="web-radar-identifier-form">
+              <div>
+                <label for="webRadarIdentifierKind">Tipo</label>
+                <select id="webRadarIdentifierKind">
+                  <option value="name">Nome</option>
+                  <option value="alias">Variação do nome</option>
+                  <option value="cpf">CPF</option>
+                  <option value="rg">RG</option>
+                  <option value="cnpj">CNPJ</option>
+                  <option value="email">E-mail</option>
+                  <option value="phone">Telefone</option>
+                  <option value="other">Outro</option>
+                </select>
+              </div>
+              <div>
+                <label for="webRadarIdentifierLabel">Apelido</label>
+                <input id="webRadarIdentifierLabel" maxlength="80" placeholder="Ex.: CPF principal">
+              </div>
+              <div class="web-radar-identifier-value">
+                <label for="webRadarIdentifierValue">Valor</label>
+                <input id="webRadarIdentifierValue" autocomplete="off" maxlength="220" placeholder="Digite o dado a pesquisar">
+              </div>
+              <label class="web-radar-check"><input id="webRadarIdentifierWeb" type="checkbox" checked> Pesquisar na Web</label>
+              <label class="web-radar-check"><input id="webRadarIdentifierOfficial" type="checkbox"> Pesquisar no DOU/DODF</label>
+              <button class="radar-button" type="submit">+ Adicionar protegido</button>
+              <span id="webRadarIdentifierFeedback" class="web-radar-error" aria-live="polite"></span>
+            </form>
+          </section>
+
+          <section class="web-radar-admin-card">
+            <div class="web-radar-admin-head">
+              <div><small>ACESSO</small><strong>Gerenciar código</strong></div>
+              <span>Sessão privada</span>
+            </div>
+            <p>Você pode gerar um novo código aleatório ou definir um código próprio. O código atual nunca é recuperado do banco porque só o hash fica armazenado.</p>
+            <div class="web-radar-code-manager">
+              <label for="webRadarNewCode">Novo código personalizado (opcional)</label>
+              <input id="webRadarNewCode" autocomplete="off" maxlength="24" placeholder="Deixe vazio para gerar automaticamente">
+              <button id="webRadarRotateCodeBtn" class="radar-button" type="button">↻ Trocar / gerar código</button>
+              <div id="webRadarNewCodeResult" class="web-radar-code-result" hidden>
+                <small>NOVO CÓDIGO — copie agora</small>
+                <strong id="webRadarGeneratedCode"></strong>
+                <button id="webRadarCopyCodeBtn" type="button">Copiar código</button>
+              </div>
+              <span id="webRadarCodeFeedback" class="web-radar-error" aria-live="polite"></span>
+            </div>
+          </section>
+        </div>
+
+        <div class="web-radar-private-section">
+          <div class="web-radar-section-head">
+            <div><small>DOU + DODF</small><strong>Ocorrências pessoais protegidas</strong></div>
+            <span id="webRadarOfficialCount">0 ocorrência(s)</span>
+          </div>
+          <p>Resultados encontrados por nome ou documentos cadastrados para pesquisa oficial. O conteúdo detalhado só aparece depois do desbloqueio.</p>
+          <div id="webRadarOfficialResults" class="web-radar-results"></div>
+        </div>
+
+        <div class="web-radar-private-section">
+          <div class="web-radar-section-head">
+            <div><small>INTERNET</small><strong>Resultados da pesquisa pessoal</strong></div>
+          </div>
         <div class="radar-filters web-radar-filters" role="group" aria-label="Filtrar resultados pessoais">
           <button type="button" class="active" data-web-filter="all">Todos</button>
           <button type="button" data-web-filter="new">Novos</button>
@@ -155,6 +226,7 @@
         </div>
         <div id="webRadarResults" class="web-radar-results">
           <div class="radar-empty">Desbloqueie a área para carregar os resultados.</div>
+        </div>
         </div>
       </div>
     </section>
@@ -187,6 +259,6 @@
   </main>
 
   <script type="module" src="assets/official-monitor.js?v=5"></script>
-  <script type="module" src="assets/personal-web-search.js?v=3"></script>
+  <script type="module" src="assets/personal-web-search.js?v=4"></script>
 </body>
 </html>
