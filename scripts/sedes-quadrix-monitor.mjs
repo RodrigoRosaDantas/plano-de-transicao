@@ -139,12 +139,9 @@ function detectRegistration(context,ident){
   const preferred=candidates.find(v=>v.length>=6&&v.length<=10);
   return preferred||null;
 }
-function findPersonalMatches(text,identifiers,url){
+// multi-match v2: um mesmo documento pode gerar ocorrências distintas por cargo/inscrição.\nfunction findPersonalMatches(text,identifiers,url){
   const lines=String(text||"").split(/\r?\n/);
   const hits=[];
-  for(let i=0;i<lines.length;i++){
-    if(!lineMatches(lines[i],identifiers[0]||{})){}
-  }
   for(const ident of identifiers){
     for(let i=0;i<lines.length;i++){
       if(!lineMatches(lines[i],ident))continue;
