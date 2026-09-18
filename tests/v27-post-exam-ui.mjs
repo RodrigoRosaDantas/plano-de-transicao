@@ -28,12 +28,13 @@ async function openPost(page) {
   await page.waitForSelector('.post-exam-view [data-v28-question-audit]', { timeout: 15000 });
 }
 
-async function scenario(name, viewport, run) {
+async function scenario(name, viewport, run, setup = null) {
   const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   try {
+    if (setup) await setup(page);
     await boot(page);
     await run(page);
     if (errors.length) throw new Error('Erros JavaScript: ' + errors.join(' | '));
@@ -100,6 +101,72 @@ await scenario('desktop: Pós-prova dedicada concentra auditoria, gráficos e de
   await page.screenshot({ path: 'artifacts/desktop-pos-prova-v29.png', fullPage: true });
 });
 
+
+await scenario('desktop: painel privado SEDES cruza inscrições, notas e régua do edital', { width: 1440, height: 1200 }, async page => {
+  await openPost(page);
+  await page.waitForSelector('[data-q44-role="202"]', { timeout: 15000 });
+  await page.waitForSelector('[data-q44-role="400"]', { timeout: 15000 });
+  const privateText = fold(await page.locator('[data-q44-private-body]').innerText());
+  for (const value of [
+    'minha situação agora',
+    'nota preliminar',
+    'mínimos objetivos',
+    'inscrições homologadas ac',
+    'correções de discursiva ac',
+    'vagas / cr ac',
+    'prazo de recursos encerrado',
+    'resultado objetivo preliminar',
+    'não é probabilidade pessoal'
+  ]) {
+    if (!privateText.includes(value)) throw new Error('Painel privado sem: ' + value);
+  }
+  if (!privateText.includes('83/100') || !privateText.includes('88/100')) {
+    throw new Error('Notas preliminares dos dois cargos não foram carregadas.');
+  }
+  await page.screenshot({ path: 'artifacts/desktop-pos-prova-privado-sedes.png', fullPage: true });
+}, async page => {
+  await page.addInitScript(() => sessionStorage.setItem('plano.webRadar.session.v2', 'test-session'));
+  await page.route('**/functions/v1/personal-web-search', async route => {
+    let body = {};
+    try { body = JSON.parse(route.request().postData() || '{}'); } catch {}
+    if (body.action === 'sedes_status') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ok: true,
+          identifiers: [
+            { id: 'r202', kind: 'other', label: 'Inscrição SEDES 202', masked_value: '*****0001', search_sedes: true, active: true },
+            { id: 'r400', kind: 'other', label: 'Inscrição SEDES 400', masked_value: '*****0002', search_sedes: true, active: true }
+          ],
+          sedesHits: [
+            {
+              id: 'h202',
+              cargo_code: '202',
+              match_type: 'name',
+              registration_masked: '•••••0001',
+              confidence: 100,
+              publication: { title: 'Resultado definitivo (inscrições homologadas) 05/08/2026', url: 'https://example.test/202', published_at: '2026-08-05', kind: 'inscricoes' },
+              matched_identifier: { label: 'Nome atual', kind: 'name', masked_value: 'Ro••••' }
+            },
+            {
+              id: 'h400',
+              cargo_code: '400',
+              match_type: 'name',
+              registration_masked: '•••••0002',
+              confidence: 100,
+              publication: { title: 'Resultado definitivo (inscrições homologadas) 05/08/2026', url: 'https://example.test/400', published_at: '2026-08-05', kind: 'inscricoes' },
+              matched_identifier: { label: 'Nome atual', kind: 'name', masked_value: 'Ro••••' }
+            }
+          ]
+        })
+      });
+      return;
+    }
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) });
+  });
+});
+
 await scenario('mobile 390px: fases separadas e dados densos sem overflow', { width: 390, height: 844 }, async page => {
   await openPost(page);
   const post = page.locator('.post-exam-view');
@@ -119,4 +186,4 @@ if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   process.exit(1);
 }
-console.log('\n3/3 cenários de fases separadas aprovados.');
+console.log('\n4/4 cenários de fases separadas aprovados.');
