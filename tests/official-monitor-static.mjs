@@ -55,6 +55,7 @@ assert(!front.includes("official_monitor_terms") && !front.includes("official_mo
 assert(!front.includes("get_official_monitor_dashboard"), "frontend não usa RPC SECURITY DEFINER legada");
 assert(!html.includes("Rodrigo Rosa Dantas") && !front.includes("Rodrigo Rosa Dantas") && !collector.includes("Rodrigo Rosa Dantas"), "nome pessoal não está hardcoded no repositório público");
 assert(workflow.includes("id-token: write"), "workflow usa OIDC do GitHub");
+assert(collector.includes("termsChecked:terms.length"), "coletor envia a quantidade realmente varrida para o histórico");
 assert(workflow.includes('cron: "15 9-21 * * *"') && workflow.includes('cron: "15 0 * * *"'), "agendamento automático está configurado");
 assert(collector.includes("relevantPublicContext(text,term)") && collector.includes("relevantPublicContext(pdfText,term)"), "coletor aplica contexto estrito para reduzir falsos positivos");
 assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "ausência de ocorrência hoje não degrada a saúde da fonte");
