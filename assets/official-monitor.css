@@ -27,3 +27,6 @@
 .radar-chip.ok{color:var(--rm-lime);border-color:rgba(185,243,106,.22);background:rgba(185,243,106,.05)}
 @media(max-width:900px){.web-radar-lock{grid-template-columns:1fr}.web-radar-toolbar{align-items:stretch;flex-direction:column}.web-radar-kpis{grid-template-columns:repeat(2,1fr)}.web-radar-actions{justify-content:flex-start}}
 @media(max-width:640px){.web-radar-unlock-form>div{grid-template-columns:1fr}.web-radar-kpis{grid-template-columns:repeat(2,1fr)}.web-radar-result-top{flex-direction:column}.web-radar-result-top .radar-hit-link{align-self:flex-start}.web-radar-actions .radar-button{flex:1}.web-radar-meta{display:grid}}
+
+.web-radar-result.is-new{border-color:rgba(185,243,106,.24);box-shadow:inset 3px 0 0 rgba(185,243,106,.55)}
+.web-radar-new{color:var(--rm-lime)!important;border-color:rgba(185,243,106,.24)!important;background:rgba(185,243,106,.06)!important}
