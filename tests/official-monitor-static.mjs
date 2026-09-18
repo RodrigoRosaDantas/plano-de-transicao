@@ -34,6 +34,7 @@ assert(!front.includes("personal.hits30d") && !front.includes("personal.lastHitA
 assert(collector.includes('const isGeneral=label.includes("geral")'), "coletor diferencia radar geral de radar de concurso");
 assert(collector.includes('term.category==="sedes"') && collector.includes('localHour===21'), "histórico profundo diário prioriza SEDES e deixa SEEDF/TJDFT para janela noturna");
 assert(collector.includes("caseOnly"), "TJDFT rejeita referência meramente judicial como falso positivo");
+assert(collector.includes('label.includes("edital")')&&collector.includes('label.includes("retificacao")')&&collector.includes('label.includes("provimento")')&&collector.includes('label.includes("convocacao")')&&collector.includes('label.includes("nomeacao")'), "coletor exige palavras-chave específicas para radares de alto sinal");
 assert(front.includes("/rest/v1/official_monitor_public_state"), "frontend lê somente o estado público sanitizado");
 assert(html.includes("MEU RASTRO NA INTERNET") && html.includes("webRadarUnlockForm"), "Radar Oficial possui área pessoal de pesquisa na web");
 assert(html.includes("Gerenciar código") && html.includes("Identificadores de pesquisa"), "área privada gerencia acesso e identificadores");
