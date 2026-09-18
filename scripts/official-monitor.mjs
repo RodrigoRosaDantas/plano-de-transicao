@@ -217,19 +217,24 @@ async function scanDODF(term){
   sourceHealth.DODF.hits+=n;
 }
 
-for(const term of terms){
+const recordSourceError=(source,term,e)=>{
+  const h=sourceHealth[source];
+  h.status="partial";
   const label=term.is_private?"termo privado":term.label;
-  for(const source of term.target_sources||[]){
-    try{
-      if(source==="DOU")await scanDOU(term);
-      if(source==="DODF")await scanDODF(term);
-    }catch(e){
-      const h=sourceHealth[source];
-      h.status="partial";
-      const detail=term.is_private?"consulta privada indisponível nesta execução":String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,220);
-      h.errors.push(label+": "+detail);
-    }
-  }
+  const detail=term.is_private
+    ?"consulta privada indisponível nesta execução"
+    :String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,220);
+  h.errors.push(label+": "+detail);
+};
+
+const dodfTerms=terms.filter(t=>(t.target_sources||[]).includes("DODF"));
+await Promise.allSettled(dodfTerms.map(async term=>{
+  try{await scanDODF(term)}catch(e){recordSourceError("DODF",term,e)}
+}));
+
+const douTerms=terms.filter(t=>(t.target_sources||[]).includes("DOU"));
+for(const term of douTerms){
+  try{await scanDOU(term)}catch(e){recordSourceError("DOU",term,e)}
 }
 
 await browser.close();
