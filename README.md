@@ -36,7 +36,7 @@ O módulo `radar-oficial.html` lê somente a tabela sanitizada `official_monitor
 
 ### Radar Web pessoal
 
-O Radar Oficial também possui uma área privada de pesquisa na internet. O termo pessoal permanece no Supabase e não é publicado no GitHub. Os resultados ficam em tabelas privadas com RLS e só são entregues pela Edge Function `personal-web-search`. O código de acesso é usado apenas no desbloqueio; depois disso o navegador recebe uma sessão opaca temporária, com rate limit contra tentativas repetidas. A primeira fase usa pesquisa manual, histórico, deduplicação e revisão explícita de identidade (`A revisar`, `É meu`, `Possível homônimo`, `Não sou eu`).
+O Radar Oficial também possui uma área privada de pesquisa na internet. O termo pessoal permanece no Supabase e não é publicado no GitHub. Os resultados ficam em tabelas privadas com RLS e só são entregues pela Edge Function `personal-web-search`. O código de acesso é usado apenas no desbloqueio; depois disso o navegador recebe uma sessão opaca temporária, com rate limit contra tentativas repetidas. A primeira fase usa pesquisa manual, histórico, deduplicação e revisão explícita de identidade (`A revisar`, `É meu`, `Possível homônimo`, `Não sou eu`). O provedor principal é o DuckDuckGo HTML, consultado por uma função SQL privada; o front recebe apenas resultados sanitizados após autenticação.
 
 ## Regra de governança
 
