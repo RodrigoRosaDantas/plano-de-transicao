@@ -52,3 +52,5 @@
 .web-radar-private-section{display:grid;gap:10px}
 @media(max-width:980px){.web-radar-admin-grid{grid-template-columns:1fr}.web-radar-identifier-form{grid-template-columns:1fr 1fr}.web-radar-identifier-value{grid-column:1/-1}}
 @media(max-width:640px){.web-radar-identifier{align-items:flex-start;flex-direction:column}.web-radar-identifier-scopes{justify-content:flex-start}.web-radar-identifier-form{grid-template-columns:1fr}.web-radar-identifier-value{grid-column:auto}.web-radar-identifier-form>.web-radar-error{grid-column:auto}}
+
+.web-radar-private[hidden],.web-radar-lock[hidden]{display:none!important}
