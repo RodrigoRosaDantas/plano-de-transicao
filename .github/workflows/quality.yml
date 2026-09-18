@@ -63,6 +63,12 @@ jobs:
         run: node tests/mobile-navigation-v38-static.mjs
       - name: Auditoria de resiliência dos snapshots
         run: node tests/data-resilience-static.mjs
+      - name: Sintaxe do Radar Oficial
+        run: |
+          node --check scripts/official-monitor.mjs
+          node --check assets/official-monitor.js
+      - name: Auditoria estática do Radar Oficial
+        run: node tests/official-monitor-static.mjs
 
   ui:
     runs-on: ubuntu-latest
