@@ -1,0 +1,40 @@
+name: Radar Oficial DOU e DODF
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 0,9,14,19 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/official-monitor.yml"
+      - "scripts/official-monitor.mjs"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: official-monitor
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar navegador do coletor
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Varrer DOU e DODF
+        run: node scripts/official-monitor.mjs
