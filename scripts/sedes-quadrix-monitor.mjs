@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 const execFileAsync=promisify(execFile);
 const EDGE="https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/sedes-quadrix-monitor-github";
 const AUD="plano-de-transicao-sedes-quadrix";
+const OFFICIAL_URL="https://quadrix.org.br/informacoes/3056/";
 const TRANSPORT_URL="https://ps-adm-861.selecao.net.br/informacoes/3056/"; // espelho técnico da mesma página Quadrix; URL canônica permanece quadrix.org.br
 const startedAt=new Date().toISOString();
 const eventName=process.env.GITHUB_EVENT_NAME||"unknown";
@@ -203,7 +204,7 @@ const token=await oidcToken();
 const cfgRes=await fetch(EDGE+"/config",{headers:{Authorization:"Bearer "+token}});
 if(!cfgRes.ok)throw new Error("Config HTTP "+cfgRes.status+" "+await cfgRes.text());
 const cfg=await cfgRes.json();
-const contestUrl=cfg.contestUrl;
+const contestUrl=cfg.contestUrl||OFFICIAL_URL;
 const transportUrl=cfg.transportUrl||TRANSPORT_URL;
 const identifiers=Array.isArray(cfg.identifiers)?cfg.identifiers:[];
 const known=new Map((cfg.knownPublications||[]).map(p=>[p.url,p]));
