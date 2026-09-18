@@ -17,8 +17,12 @@ assert(radar.includes("Monitor institucional")&&radar.includes("Cronograma da ba
 assert(front.includes("qRenderSection")&&front.includes('document.querySelector(".post-exam-view [data-post-exam-page]")'),"monitor monta no host dedicado e visível do Pós-Prova");
 assert(front.includes("root.prepend(section)")&&front.includes("stale.remove()"),"monitor corrige host legado e reposiciona o painel se necessário");
 assert(front.includes("evidence_labels")&&front.includes("const grouped=new Map()"),"evidências pessoais duplicadas são agrupadas por publicação e cargo");
-assert(index.includes("post-exam-quadrix-v44.js?v=47")&&index.includes("post-exam-quadrix-v44.css?v=47"),"módulo privado SEDES usa cache busting v47");
+assert(index.includes("post-exam-quadrix-v44.js?v=48")&&index.includes("post-exam-quadrix-v44.css?v=48"),"módulo privado SEDES usa cache busting v48");
 assert(front.includes("MINHA SITUAÇÃO AGORA")&&front.includes("Nota preliminar")&&front.includes("Resultado oficial")&&front.includes("Classificação"),"painel privado mostra situação pessoal completa por cargo");
+assert(front.includes("Mínimos objetivos")&&front.includes("Inscrições homologadas AC")&&front.includes("Correções de discursiva AC")&&front.includes("não é probabilidade pessoal"),"painel privado incorpora régua competitiva sem converter taxa em chance pessoal");
+assert(front.includes('pattern="[0-9]{11}"')&&front.includes('inputmode="numeric"'),"desbloqueio do Pós-Prova está alinhado ao código privado numérico de 11 dígitos");
+assert(front.includes("followUp:data?.postExam?.followUp")&&front.includes("competition:data?.postExam?.competitionReading"),"painel privado consome estágio e leitura competitiva auditados");
+assert(sw.includes("v48 private-panel-refresh"),"service worker muda para recarregar o painel privado em instalações PWA");
 assert(front.includes("Linha do tempo pessoal")&&front.includes("O que ainda falta sair")&&front.includes("Documentos em que você apareceu"),"painel privado consolida timeline, pendências e evidências");
 assert(front.includes("qLoadExamSnapshot")&&front.includes("sedes-2026-tdas")&&front.includes("sedes-2026-edas"),"painel privado cruza matches Quadrix com dados auditados das duas provas");
 assert(sw.includes("plano-transicao-v45-post-exam-host")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix no cache v45");
