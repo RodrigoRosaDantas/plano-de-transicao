@@ -73,11 +73,11 @@ async function scanDOU(term){
   const search="https://www.in.gov.br/consulta/-/buscar/dou?q="+encodeURIComponent(term.query_text)+"&s=todos&exactDate=personalizado&sortType=0&delta=10&publishFrom="+encodeURIComponent(fmt(from))+"&publishTo="+encodeURIComponent(fmt(to));
   let links=[];
   try{
-    const html=await timeoutFetch(search,18000);
+    const html=await timeoutFetch(search,10000);
     links=[...new Set([...html.matchAll(/href=["']([^"']*\/web\/dou\/-\/[^"'?#]+[^"']*)["']/gi)].map(m=>m[1].startsWith("http")?m[1]:"https://www.in.gov.br"+m[1]))].slice(0,6).map(url=>({url,title:"",context:""}));
   }catch(e){
-    await page.goto(search,{waitUntil:"domcontentloaded",timeout:35000});
-    await page.waitForTimeout(2500);
+    await page.goto(search,{waitUntil:"domcontentloaded",timeout:20000});
+    await page.waitForTimeout(1200);
     links=await extractAnchors(page,'a[href*="/web/dou/-/"]',6);
   }
   for(const item of uniq(links)){
@@ -111,13 +111,13 @@ async function findSearchInput(page){
 }
 async function scanDODF(term){
   sourceHealth.DODF.checked++;
-  await page.goto("https://dodf.df.gov.br/?dt=1",{waitUntil:"domcontentloaded",timeout:45000});
-  await page.waitForTimeout(1800);
+  await page.goto("https://dodf.df.gov.br/?dt=1",{waitUntil:"domcontentloaded",timeout:18000});
+  await page.waitForTimeout(1000);
   const input=await findSearchInput(page);
   if(!input)throw new Error("campo de busca não localizado");
   await input.fill(term.query_text);
   await input.press("Enter").catch(()=>{});
-  await page.waitForTimeout(4500);
+  await page.waitForTimeout(2500);
   let links=await extractAnchors(page,'a[href*="/dodf/materia/visualizar"]',10);
   if(!links.length){
     const buttons=page.getByRole("button",{name:/pesquisar|buscar/i});
@@ -125,10 +125,16 @@ async function scanDODF(term){
     for(let i=0;i<n;i++){
       if(await buttons.nth(i).isVisible().catch(()=>false)){
         await buttons.nth(i).click().catch(()=>{});
-        await page.waitForTimeout(3500);
+        await page.waitForTimeout(2000);
         links=await extractAnchors(page,'a[href*="/dodf/materia/visualizar"]',10);
         if(links.length)break;
       }
+    }
+  }
+  if(!links.length){
+    const body=await page.locator("body").innerText().catch(()=>"");
+    if(!/(nenhum|nenhuma|0\\s+resultado|não foram encontrados|nao foram encontrados)/i.test(body)){
+      throw new Error("busca concluída sem links verificáveis");
     }
   }
   for(const item of uniq(links)){
@@ -152,7 +158,7 @@ for(const term of terms){
       const h=sourceHealth[source];h.status="partial";h.errors.push(label+": "+String(e?.message||e).slice(0,220));
       if(source==="DODF"){
         try{
-          await page.goto("https://www.sinj.df.gov.br/sinj/ResultadoDePesquisa?filetext="+encodeURIComponent(term.query_text),{waitUntil:"domcontentloaded",timeout:30000});
+          await page.goto("https://www.sinj.df.gov.br/sinj/ResultadoDePesquisa?filetext="+encodeURIComponent(term.query_text),{waitUntil:"domcontentloaded",timeout:15000});
           h.fallback="SINJ/DF acessível";
         }catch{}
       }
