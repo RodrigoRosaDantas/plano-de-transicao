@@ -18,3 +18,7 @@
 .q44-pending-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.q44-pending-grid article{display:flex;gap:9px;align-items:flex-start;padding:10px;border-radius:12px;background:rgba(255,255,255,.025)}.q44-pending-grid article>span{font-size:1rem}.q44-pending-grid article>div{display:grid;gap:2px}.q44-pending-grid small{color:var(--muted,#9ba9a3)}
 .q44-private-meta{display:flex;justify-content:space-between;gap:12px;margin-top:12px;color:var(--muted,#9ba9a3);font-size:.72rem}
 @media(max-width:900px){.q44-private-summary,.q44-role-grid{grid-template-columns:1fr}.q44-private-summary-kpis{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.q44-private-summary-kpis,.q44-role-primary,.q44-pending-grid{grid-template-columns:1fr}.q44-role-card header,.q44-role-card footer,.q44-private-meta{display:grid}.q44-role-status{width:max-content}.q44-role-facts>div{display:grid;gap:3px}.q44-role-facts dd{text-align:left}.q44-personal-timeline article{grid-template-columns:88px 12px 1fr}}
+
+.q44-role-section-label{margin:12px 0 3px;padding-top:2px;font-size:.7rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--muted,#9ba9a3)}
+.q44-role-facts--competition{margin-top:2px}.q44-role-caveat{margin:8px 0 0;color:var(--muted,#9ba9a3);font-size:.72rem;line-height:1.4}
+.q44-private-summary p strong{color:inherit}
