@@ -3,7 +3,10 @@ name: Radar Oficial DOU e DODF
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 0,9,14,19 * * *"
+    # GitHub Actions usa UTC. 09h–21h UTC = 06h–18h em Brasília.
+    # Varredura horária durante manhã/tarde + fechamento noturno às 21h15 BRT.
+    - cron: "15 9-21 * * *"
+    - cron: "15 0 * * *"
   push:
     branches: [main]
     paths:
