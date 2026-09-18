@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-18T11:17:37.066Z",
+    "generatedAt": "2026-09-18T11:19:33.789Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,16 +8,16 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-18T11:17:38.546Z",
+    "workParityEnrichedAt": "2026-09-18T11:19:35.168Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-18T11:17:38.600Z",
+    "postExamNormalizedAt": "2026-09-18T11:19:35.214Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-18T11:17:37.556Z",
-    "postExamScoringUpdatedAt": "2026-09-18T11:17:37.649Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-18T11:17:37.556Z",
-    "postExamCompetitionAuditedAt": "2026-09-18T11:17:37.649Z",
-    "postExamFollowUpUpdatedAt": "2026-09-18T11:17:37.649Z"
+    "postExamNotesSyncedAt": "2026-09-18T11:19:34.229Z",
+    "postExamScoringUpdatedAt": "2026-09-18T11:19:34.301Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-18T11:19:34.229Z",
+    "postExamCompetitionAuditedAt": "2026-09-18T11:19:34.301Z",
+    "postExamFollowUpUpdatedAt": "2026-09-18T11:19:34.301Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -695,7 +695,7 @@
       "usage": "Não se aplica",
       "nature": "Infraestrutura geral",
       "recordType": "Despesa direta",
-      "recurring": false,
+      "recurring": true,
       "countsInCycle": false,
       "allocationPercent": null,
       "confirmed": 0,
@@ -714,12 +714,31 @@
       "usage": "Utilizado",
       "nature": "Infraestrutura geral",
       "recordType": "Despesa direta",
-      "recurring": false,
+      "recurring": true,
       "countsInCycle": true,
       "allocationPercent": null,
       "confirmed": 99.9,
       "estimated": 0,
       "paid": 99.9,
+      "reimbursed": null,
+      "sourceAvailable": false
+    },
+    {
+      "id": "CST31",
+      "name": "ChatGPT Plus — 20/07/2026 — cobrança anulada",
+      "date": "2026-07-20",
+      "cycle": "SEDES/DF 2026",
+      "category": "Plataforma / assinatura",
+      "situation": "Anulada",
+      "usage": "Não se aplica",
+      "nature": "Infraestrutura geral",
+      "recordType": "Despesa direta",
+      "recurring": true,
+      "countsInCycle": false,
+      "allocationPercent": null,
+      "confirmed": 0,
+      "estimated": 0,
+      "paid": null,
       "reimbursed": null,
       "sourceAvailable": false
     },
@@ -733,7 +752,7 @@
       "usage": "Utilizado",
       "nature": "Infraestrutura geral",
       "recordType": "Despesa direta",
-      "recurring": false,
+      "recurring": true,
       "countsInCycle": true,
       "allocationPercent": null,
       "confirmed": 99.9,
@@ -1278,7 +1297,7 @@
       },
       {
         "key": "Anulada",
-        "transactions": 1,
+        "transactions": 2,
         "confirmed": 0,
         "estimated": 0,
         "paid": 0,
@@ -1340,7 +1359,7 @@
       },
       {
         "key": "Não se aplica",
-        "transactions": 2,
+        "transactions": 3,
         "confirmed": 0,
         "estimated": 0,
         "paid": 0,
@@ -1378,7 +1397,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-18T11:17:37.648Z",
+          "comparedAt": "2026-09-18T11:19:34.301Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3859,7 +3878,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-18T11:17:37.648Z"
+        "lastComparedAt": "2026-09-18T11:19:34.301Z"
       },
       "edas": {
         "examType": "A",
@@ -3872,7 +3891,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-18T11:17:37.648Z",
+          "comparedAt": "2026-09-18T11:19:34.301Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6121,7 +6140,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-18T11:17:37.648Z"
+        "lastComparedAt": "2026-09-18T11:19:34.301Z"
       }
     },
     "competitionReading": {
@@ -6215,7 +6234,7 @@
       "currentStage": "Conferência e recursos",
       "nextAction": "Revisar divergências e protocolar somente recursos fundamentados.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-18T11:17:37.649Z",
+      "lastCalculatedAt": "2026-09-18T11:19:34.301Z",
       "milestones": [
         {
           "id": "exam",
