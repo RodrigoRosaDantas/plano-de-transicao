@@ -155,7 +155,7 @@ function calendarFileName(title) {
 }
 
 function exportCalendarEvent(button) {
-  const title = button.dataset.calendarTitle || "Lembrete do Plano de Transição";
+  const title = button.dataset.calendarTitle || "Lembrete da Central de Transição";
   const start = button.dataset.calendarStart || "";
   const end = button.dataset.calendarEnd || (!String(start).includes("T") ? addCalendarDay(start) : start);
   const allDay = !String(start).includes("T");
@@ -173,7 +173,7 @@ function exportCalendarEvent(button) {
     startLine,
     endLine,
     `SUMMARY:${calendarEscape(title)}`,
-    `DESCRIPTION:${calendarEscape(button.dataset.calendarDescription || "Acompanhar o cronograma publicado no Plano de Transição.")}`,
+    `DESCRIPTION:${calendarEscape(button.dataset.calendarDescription || "Acompanhar o cronograma publicado na Central de Transição.")}`,
   ];
   if (button.dataset.calendarUrl) lines.push(`URL:${calendarEscape(button.dataset.calendarUrl)}`);
   lines.push("END:VEVENT", "END:VCALENDAR");
@@ -308,7 +308,7 @@ function commandView() {
   return `<div class="view-stack command-view">
     <section class="panel transition-now-hero">
       <div class="transition-now-copy">
-        <span class="eyebrow">AGORA · PLANO DE TRANSIÇÃO</span>
+        <span class="eyebrow">AGORA · CENTRAL DE TRANSIÇÃO</span>
         <h2>O concurso terminou. O plano continua.</h2>
         <p>Este painel não é mais uma sala de prova. É a central para preservar o histórico, acompanhar o que ainda está pendente e decidir o próximo movimento entre SEEDF e TJDFT.</p>
       </div>
@@ -665,7 +665,7 @@ function render() {
   bindViewControls();
   updateLiveTime();
   updateMoreSheet();
-  document.title = `${VIEW_NAMES[state.view]} · Plano de Transição`;
+  document.title = `${VIEW_NAMES[state.view]} · Central de Transição`;
 }
 
 function navigate(view, options = {}) {
@@ -917,7 +917,7 @@ function registerPwa() {
   window.addEventListener("appinstalled", () => {
     state.deferredPrompt = null;
     $$('[data-install]').forEach((button) => button.classList.add("hidden"));
-    toast("Plano de Transição instalado.");
+    toast("Central de Transição instalada.");
   });
 }
 

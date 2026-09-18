@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Plano de Transição",
-  "short_name": "Transição",
+  "name": "Central de Transição",
+  "short_name": "Central",
   "start_url": "./#command",
   "scope": "./",
   "display": "standalone",
@@ -11,7 +11,7 @@
   ],
   "background_color": "#0b0f0e",
   "theme_color": "#0b0f0e",
-  "description": "Central gerencial de jornada, concursos, desempenho, investimentos, decisões e estratégia de carreira.",
+  "description": "Sistema gerencial de concursos, carreira, desempenho, decisões, investimentos e jornada.",
   "lang": "pt-BR",
   "categories": [
     "productivity",

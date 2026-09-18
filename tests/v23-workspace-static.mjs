@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
-const [index, css, homeCss, hardeningCss, js, shellCss, shellJs, sw] = await Promise.all([
+const [index, css, homeCss, hardeningCss, js, shellCss, shellJs, sw, manifest] = await Promise.all([
   fs.readFile('index.html','utf8'),
   fs.readFile('assets/workspace-v23.css','utf8'),
   fs.readFile('assets/workspace-v23-home.css','utf8'),
@@ -9,12 +9,18 @@ const [index, css, homeCss, hardeningCss, js, shellCss, shellJs, sw] = await Pro
   fs.readFile('assets/workspace-v23.js','utf8'),
   fs.readFile('assets/exam-day-v21-shell.css','utf8'),
   fs.readFile('assets/exam-day-v21-shell.js','utf8'),
-  fs.readFile('sw.js','utf8')
+  fs.readFile('sw.js','utf8'),
+  fs.readFile('manifest.webmanifest','utf8')
 ]);
 
 const has = (text, value, label) => assert.ok(text.includes(value), `${label}: ausente ${value}`);
 
 has(index, 'assets/workspace-v23.css?v=23', 'loader CSS v23 direto no index');
+has(index, '<strong>Central de Transição</strong>', 'marca principal da Central');
+has(index, '<small>Plano de Transição</small>', 'Plano permanece como estratégia dentro da Central');
+has(index, '<title>Central de Transição</title>', 'título principal rebatizado');
+has(manifest, '"name": "Central de Transição"', 'PWA usa a nova marca');
+has(manifest, '"short_name": "Central"', 'PWA usa nome curto da Central');
 has(index, 'assets/workspace-v23-home.css?v=23', 'loader Home v23 direto no index');
 has(index, 'assets/workspace-v24-hardening.css?v=24', 'loader hardening v24 direto no index');
 has(index, 'assets/workspace-v23.js?v=31', 'loader JS v23 direto no index');

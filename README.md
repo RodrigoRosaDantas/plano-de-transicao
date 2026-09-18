@@ -1,6 +1,8 @@
-# 🧭 Plano de Transição — GitHub Pages
+# 🧭 Central de Transição — GitHub Pages
 
-Versão independente do painel **Plano de Transição**, preparada para GitHub Pages.
+Versão independente da **Central de Transição**, preparada para GitHub Pages.
+
+**Arquitetura de marca:** a **Central de Transição** é o produto/sistema gerencial; o **Plano de Transição** é a estratégia acompanhada dentro da Central. Os identificadores técnicos históricos (`plano-de-transicao`) permanecem estáveis para preservar URLs, integrações, caches e compatibilidade.
 
 ## O que já está implementado
 
