@@ -30,6 +30,9 @@ const kindLabel=(v)=>({
   site_publico:"Site público",
   outro:"Outro"
 }[v]||"Outro");
+const identifierKindLabel=(v)=>({
+  name:"Nome",alias:"Variação do nome",cpf:"CPF",rg:"RG",cnpj:"CNPJ",email:"E-mail",phone:"Telefone",other:"Outro"
+}[v]||"Identificador");
 
 function clearWebRadarSession(){
   webRadarSession="";
@@ -57,6 +60,45 @@ function setLocked(locked){
   if(a)a.hidden=!locked;
   if(b)b.hidden=locked;
   if(chip){chip.textContent=locked?"bloqueado":"privado · ativo";chip.classList.toggle("ok",!locked);}
+}
+function renderIdentifiers(){
+  const root=w$("#webRadarIdentifiers");
+  if(!root)return;
+  const ids=webRadarData.identifiers||[];
+  root.innerHTML=ids.length?ids.map(i=>`<article class="web-radar-identifier" data-identifier="${wEsc(i.id)}">
+    <div>
+      <span>${wEsc(identifierKindLabel(i.kind))}</span>
+      <strong>${wEsc(i.label||identifierKindLabel(i.kind))}</strong>
+      <code>${wEsc(i.masked_value||"••••")}</code>
+    </div>
+    <div class="web-radar-identifier-scopes">
+      <label><input type="checkbox" data-id-scope="web" ${i.search_web?"checked":""}> Web</label>
+      <label><input type="checkbox" data-id-scope="official" ${i.search_official?"checked":""}> DOU/DODF</label>
+      <button type="button" data-id-delete title="Remover identificador">Remover</button>
+    </div>
+  </article>`).join(""):'<div class="radar-empty">Nenhum identificador cadastrado.</div>';
+}
+function renderOfficialHits(){
+  const root=w$("#webRadarOfficialResults"),count=w$("#webRadarOfficialCount");
+  if(!root)return;
+  const hits=webRadarData.officialHits||[];
+  if(count)count.textContent=`${hits.length} ocorrência(s)`;
+  root.innerHTML=hits.length?hits.map(h=>`<article class="web-radar-result">
+    <div class="web-radar-result-top">
+      <div>
+        <span class="web-radar-domain">${wEsc(h.source)} · ${wEsc(h.matched_identifier?.label||"Identificador privado")}</span>
+        <h3>${wEsc(h.title||"Publicação oficial")}</h3>
+      </div>
+      <a class="radar-hit-link" href="${wEsc(h.url)}" target="_blank" rel="noreferrer">Abrir oficial ↗</a>
+    </div>
+    <p>${wEsc(String(h.snippet||"").replace(/\s+/g," ").trim()||"Ocorrência encontrada em fonte oficial.")}</p>
+    <div class="web-radar-result-meta">
+      <span class="radar-tag">${wEsc(h.classification||"Administrativo")}</span>
+      <span class="radar-tag">${wEsc(identifierKindLabel(h.matched_identifier?.kind))}</span>
+      <span class="radar-tag">${wEsc(h.matched_identifier?.masked_value||"protegido")}</span>
+      ${h.published_at?'<span class="radar-tag">publicado '+wEsc(wFmtDate(h.published_at))+'</span>':""}
+    </div>
+  </article>`).join(""):'<div class="radar-empty">Nenhuma ocorrência pessoal encontrada no DOU/DODF até agora.</div>';
 }
 function renderWebRadar(){
   const counts=webRadarData.counts||{};
@@ -95,6 +137,7 @@ function renderWebRadar(){
       <p>${wEsc(ctx||"Nome localizado no índice; abra a fonte para conferir o contexto completo.")}</p>
       <div class="web-radar-result-meta">
         ${fresh?'<span class="radar-tag web-radar-new">novo</span>':""}
+        ${r.matched_identifier?'<span class="radar-tag">via '+wEsc(r.matched_identifier.label||identifierKindLabel(r.matched_identifier.kind))+' · '+wEsc(r.matched_identifier.masked_value||"protegido")+'</span>':""}
         <span class="radar-tag">${wEsc(kindLabel(r.kind))}</span>
         <span class="radar-tag">${wEsc(statusLabel(r.review_status))}</span>
         <span class="radar-tag" title="Mede apenas a força da correspondência textual do nome; não confirma identidade.">força da correspondência ${strength}%</span>
@@ -109,6 +152,8 @@ function renderWebRadar(){
       </div>
     </article>`;
   }).join(""):'<div class="radar-empty">Nenhum resultado nesse filtro.</div>';
+  renderIdentifiers();
+  renderOfficialHits();
 }
 async function unlockWebRadar(code){
   const normalized=String(code||"").trim().toUpperCase();
@@ -180,6 +225,73 @@ w$("#webRadarResults")?.addEventListener("click",async(e)=>{
     button.disabled=false;
   }
 });
+w$("#webRadarIdentifierForm")?.addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const feedback=w$("#webRadarIdentifierFeedback");
+  if(feedback)feedback.textContent="";
+  const payload={
+    kind:w$("#webRadarIdentifierKind")?.value||"other",
+    label:w$("#webRadarIdentifierLabel")?.value||"",
+    value:w$("#webRadarIdentifierValue")?.value||"",
+    searchWeb:Boolean(w$("#webRadarIdentifierWeb")?.checked),
+    searchOfficial:Boolean(w$("#webRadarIdentifierOfficial")?.checked)
+  };
+  try{
+    webRadarData=await webRadarApi("add_identifier",payload);
+    if(w$("#webRadarIdentifierValue"))w$("#webRadarIdentifierValue").value="";
+    if(w$("#webRadarIdentifierLabel"))w$("#webRadarIdentifierLabel").value="";
+    renderWebRadar();
+    if(feedback)feedback.textContent="Identificador protegido adicionado.";
+  }catch(error){
+    if(feedback)feedback.textContent=error.message||"Não foi possível adicionar.";
+  }
+});
+w$("#webRadarIdentifiers")?.addEventListener("change",async(e)=>{
+  const input=e.target.closest("[data-id-scope]");
+  if(!input)return;
+  const card=input.closest("[data-identifier]"),id=card?.dataset.identifier;
+  if(!id)return;
+  const web=Boolean(card.querySelector('[data-id-scope="web"]')?.checked);
+  const official=Boolean(card.querySelector('[data-id-scope="official"]')?.checked);
+  try{
+    webRadarData=await webRadarApi("set_identifier_scope",{id,searchWeb:web,searchOfficial:official,active:true});
+    renderWebRadar();
+  }catch(error){
+    const feedback=w$("#webRadarIdentifierFeedback");if(feedback)feedback.textContent=error.message||"Não foi possível atualizar.";
+  }
+});
+w$("#webRadarIdentifiers")?.addEventListener("click",async(e)=>{
+  const btn=e.target.closest("[data-id-delete]");
+  if(!btn)return;
+  const card=btn.closest("[data-identifier]"),id=card?.dataset.identifier;
+  if(!id||!confirm("Remover este identificador protegido e o segredo criptografado correspondente?"))return;
+  try{
+    webRadarData=await webRadarApi("delete_identifier",{id});
+    renderWebRadar();
+  }catch(error){
+    const feedback=w$("#webRadarIdentifierFeedback");if(feedback)feedback.textContent=error.message||"Não foi possível remover.";
+  }
+});
+w$("#webRadarRotateCodeBtn")?.addEventListener("click",async()=>{
+  const feedback=w$("#webRadarCodeFeedback"),result=w$("#webRadarNewCodeResult"),out=w$("#webRadarGeneratedCode");
+  if(feedback)feedback.textContent="";
+  try{
+    const data=await webRadarApi("rotate_code",{newCode:w$("#webRadarNewCode")?.value||""});
+    if(out)out.textContent=data.newCode||"";
+    if(result)result.hidden=false;
+    if(w$("#webRadarNewCode"))w$("#webRadarNewCode").value="";
+    if(feedback)feedback.textContent="Código alterado. A sessão atual continua ativa.";
+  }catch(error){
+    if(feedback)feedback.textContent=error.message||"Não foi possível trocar o código.";
+  }
+});
+w$("#webRadarCopyCodeBtn")?.addEventListener("click",async()=>{
+  const code=w$("#webRadarGeneratedCode")?.textContent||"";
+  if(!code)return;
+  try{await navigator.clipboard.writeText(code);w$("#webRadarCodeFeedback").textContent="Código copiado.";}
+  catch{w$("#webRadarCodeFeedback").textContent="Copie o código manualmente.";}
+});
+
 setLocked(true);
 if(webRadarSession){
   refreshWebRadar().then(()=>setLocked(false)).catch(()=>{
