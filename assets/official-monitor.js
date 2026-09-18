@@ -88,7 +88,7 @@ function renderSources(sources) {
 
     const historyLabel =
       s.historyStatus==="skipped" ? "histórico não reconsultado nesta rodada" :
-      s.historyStatus==="ok" ? "histórico conferido" :
+      s.historyStatus==="ok" ? `histórico conferido${Number.isFinite(Number(s.historyChecked))?` · ${Number(s.historyChecked)} termo(s) aprofundado(s)`:""}` :
       s.historyStatus==="partial" ? "histórico conferido parcialmente" :
       "histórico pendente";
 
@@ -166,7 +166,7 @@ function renderHits() {
       <div class="radar-hit-main"><h3>${esc(h.title)}</h3><p>${esc(snippet || "Ocorrência registrada pelo monitor oficial.")}</p><div class="radar-hit-tags">${radarTags}${classTags}${timingTags}</div><small>${esc(h.agency || "Órgão não identificado automaticamente")}</small></div>
       <a class="radar-hit-link" href="${esc(h.url)}" target="_blank" rel="noreferrer">Abrir oficial ↗</a>
     </article>`;
-  }).join("") : '<div class="radar-empty">Nenhuma ocorrência pública nesse filtro. O radar continua monitorando qualquer menção aos órgãos e os atos de concurso.</div>';
+  }).join("") : '<div class="radar-empty">Nenhuma ocorrência pública nesse filtro. O radar continua monitorando qualquer menção à SEDES/DF e os atos de concurso/pré-edital de SEEDF e TJDFT.</div>';
 }
 $("#refreshRadar")?.addEventListener("click",loadDashboard);
 $$("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
