@@ -8,6 +8,8 @@ const SEDES_QUADRIX={
 };
 let sedesQuadrixState=null;
 let sedesExamSnapshot=null;
+const qInt=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("pt-BR"):"—";
+const qPct=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+"%":"—";
 const qEsc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const qDate=v=>{
   if(!v)return"—"; const d=new Date(String(v).length===10?v+"T12:00:00-03:00":v);
@@ -72,7 +74,7 @@ function qPublicMarkup(){
 function qPrivateShell(){
   return `<section class="q44-private panel" data-q44-private>
     <div class="q44-head"><div><span class="eyebrow">MEUS DADOS NO CONCURSO · PRIVADO</span><h3>Inscrições e ocorrências nos cargos 202 e 400.</h3>
-      <p>Seus dados pessoais ficam somente neste módulo do Pós-Prova, após desbloqueio, e não entram no Radar Oficial nem no estado público do site.</p></div><span class="q44-lock">🔐</span></div>
+      <p>Identificadores pessoais, inscrições e ocorrências nominais só aparecem após desbloqueio. Notas e estatísticas de prova vêm do snapshot auditado que já alimenta o Pós-Prova geral.</p></div><span class="q44-lock">🔐</span></div>
     <div data-q44-private-body><div class="q44-private-loading">Verificando sessão privada…</div></div>
   </section>`;
 }
@@ -87,9 +89,11 @@ async function qLoadExamSnapshot(){
       exams:{
         "202":exams.find(x=>x?.id==="sedes-2026-tdas")||null,
         "400":exams.find(x=>x?.id==="sedes-2026-edas")||null
-      }
+      },
+      followUp:data?.postExam?.followUp||null,
+      competition:data?.postExam?.competitionReading||null
     };
-  }catch{sedesExamSnapshot={generatedAt:null,exams:{"202":null,"400":null}}}
+  }catch{sedesExamSnapshot={generatedAt:null,exams:{"202":null,"400":null},followUp:null,competition:null}}
   return sedesExamSnapshot;
 }
 async function qLoadPrivate(root){
@@ -106,7 +110,7 @@ async function qLoadPrivate(root){
   }catch{sessionStorage.removeItem(SEDES_QUADRIX.sessionKey);qRenderUnlock(box)}
 }
 function qRenderUnlock(box){
-  box.innerHTML=`<form class="q44-unlock" data-q44-unlock><label><span>Código privado do Plano</span><input type="password" autocomplete="current-password" minlength="10" maxlength="24" placeholder="••••-••••-••••"></label>
+  box.innerHTML=`<form class="q44-unlock" data-q44-unlock><label><span>Código privado do Plano</span><input type="password" inputmode="numeric" autocomplete="current-password" pattern="[0-9]{11}" minlength="11" maxlength="11" placeholder="•••••••••••"></label>
     <button class="primary-button" type="submit">Desbloquear meus dados</button><small>Usa a mesma credencial privada já configurada no Plano de Transição; o código não é salvo no navegador.</small></form>`;
   box.querySelector("[data-q44-unlock]")?.addEventListener("submit",async e=>{
     e.preventDefault();const input=e.currentTarget.querySelector("input"),code=input.value.trim();if(!code)return;
@@ -135,12 +139,21 @@ function qRenderPrivate(box,d,examData=sedesExamSnapshot){
   const hits=[...grouped.values()];
   const ids=Array.isArray(d.identifiers)?d.identifiers:[];
   const regs=ids.filter(x=>String(x.label||"").startsWith("Inscrição SEDES"));
-  const next=qNextDate(sedesQuadrixState?.importantDates||[]);
   const exams=examData?.exams||{};
+  const followUp=examData?.followUp||null;
+  const competition=examData?.competition||null;
   const pubList=Array.isArray(sedesQuadrixState?.publications)?sedesQuadrixState.publications:[];
   const prelimKey=pubList.find(p=>/gabarito preliminar/i.test(p.title||""));
-  const defEnrollment=hits.filter(h=>/resultado definitivo.*inscri/i.test(h.publication?.title||""));
-  const prelimEnrollment=hits.filter(h=>/resultado preliminar.*inscri/i.test(h.publication?.title||""));
+  const roleKey=code=>code==="202"?"tdas":"edas";
+  const roleLabel=code=>code==="202"?"TDAS · Técnico Administrativo":"EDAS · Administração";
+  const regFor=code=>regs.find(x=>String(x.label||"").includes(code))||null;
+  const relatedFor=code=>hits.filter(x=>String(x.cargo_code||"")===code)
+    .sort((a,b)=>String(b.publication?.published_at||"").localeCompare(String(a.publication?.published_at||"")));
+  const identifiedRegs=["202","400"].filter(code=>regFor(code)).length;
+  const loadedExams=["202","400"].filter(code=>exams[code]).length;
+  const preliminaryLoaded=["202","400"].filter(code=>exams[code]?.scoreTracking?.preliminary).length;
+  const currentStage=followUp?.currentStage||"Aguardando atualização da etapa";
+  const nextAction=followUp?.nextAction||"Acompanhar as próximas publicações da banca.";
 
   const scoreLine=exam=>{
     const p=exam?.scoreTracking?.preliminary;
@@ -148,67 +161,91 @@ function qRenderPrivate(box,d,examData=sedesExamSnapshot){
     return `${Number(p.correct||0)} acertos · ${Number(p.wrong||0)} erros${Number(p.invalid||0)?" · "+Number(p.invalid)+" inválida":""}`;
   };
   const statusFor=exam=>exam?.scoreTracking?.definitive?"Resultado definitivo incorporado":"Resultado oficial pendente";
-  const roleLabel=code=>code==="202"?"TDAS · Técnico Administrativo":"EDAS · Administração";
+
   const roleCard=code=>{
     const exam=exams[code]||null;
     const p=exam?.scoreTracking?.preliminary||null;
-    const reg=regs.find(x=>String(x.label||"").includes(code));
-    const related=hits.filter(x=>String(x.cargo_code||"")===code);
+    const reg=regFor(code);
+    const related=relatedFor(code);
     const definitive=related.find(h=>/resultado definitivo.*inscri/i.test(h.publication?.title||""));
+    const comp=competition?.exams?.[roleKey(code)]||null;
+    const listed=Number(comp?.listedPositionsAC||0);
+    const vacancies=Number(comp?.immediateVacanciesAC||0);
+    const reserve=Number(comp?.reservePositionsAC||0);
+    const minimumText=comp?.objectiveMinimumsMet===true?"atendidos na estimativa":comp?.objectiveMinimumsMet===false?"não atendidos na estimativa":"aguardando cálculo";
     return `<article class="q44-role-card" data-q44-role="${code}">
       <header><div><span>CARGO ${code}</span><h4>${roleLabel(code)}</h4></div><b class="q44-role-status">${statusFor(exam)}</b></header>
       <div class="q44-role-primary">
-        <div><small>Inscrição</small><strong>${reg?qEsc(reg.masked_value):"não identificada"}</strong><em>${definitive?"homologada definitivamente em "+qDate(definitive.publication?.published_at):"aguardando confirmação definitiva"}</em></div>
+        <div><small>Inscrição</small><strong>${reg?qEsc(reg.masked_value):"não identificada"}</strong><em>${definitive?"homologada definitivamente em "+qDate(definitive.publication?.published_at):"confirmação definitiva não localizada"}</em></div>
         <div><small>Nota preliminar</small><strong>${p?Number(p.total)+"/100":"—"}</strong><em>${p?qEsc(p.status||"estimativa preliminar"):"sem estimativa"}</em></div>
       </div>
+      <div class="q44-role-section-label">Minha prova</div>
       <dl class="q44-role-facts">
-        <div><dt>Prova</dt><dd>${exam?qDate(exam.date)+" · "+qEsc(exam.session||"—")+" · Tipo "+qEsc(exam.examType||p?.examType||"—"):"—"}</dd></div>
+        <div><dt>Aplicação</dt><dd>${exam?qDate(exam.date)+" · "+qEsc(exam.session||"—")+" · Tipo "+qEsc(exam.examType||p?.examType||"—"):"—"}</dd></div>
         <div><dt>Questões</dt><dd>${p?scoreLine(exam):"—"}</dd></div>
         <div><dt>Conhecimentos Gerais</dt><dd>${p?Number(p.general||0)+"/20 pontos":"—"}</dd></div>
         <div><dt>Conhecimentos Específicos</dt><dd>${p?Number(p.specific||0)+"/80 pontos":"—"}</dd></div>
+        <div><dt>Mínimos objetivos</dt><dd>${qEsc(minimumText)}</dd></div>
         <div><dt>Resultado oficial</dt><dd>${exam?.scoreTracking?.definitive?"incorporado":"aguardando publicação"}</dd></div>
         <div><dt>Classificação</dt><dd>${exam?.ranking&&exam.ranking!=="—"?qEsc(exam.ranking):"aguardando resultado oficial"}</dd></div>
       </dl>
+      <div class="q44-role-section-label">Régua do edital · ampla concorrência</div>
+      <dl class="q44-role-facts q44-role-facts--competition">
+        <div><dt>Inscrições homologadas AC</dt><dd>${qInt(comp?.registrationsAC)}</dd></div>
+        <div><dt>Correções de discursiva AC</dt><dd>${qInt(comp?.correctionSlotsAC)} · ${qPct(comp?.nominalCorrectionRateAC)} nominal</dd></div>
+        <div><dt>Vagas / CR AC</dt><dd>${comp?`${qInt(vacancies)} imediatas + ${qInt(reserve)} CR = ${qInt(listed)} posições`:"—"}</dd></div>
+      </dl>
+      <p class="q44-role-caveat">A taxa nominal acima descreve o edital; não é probabilidade pessoal nem nota de corte.</p>
       <footer><span>${related.length} publicação(ões) pessoal(is) vinculada(s)</span><span>última evidência: ${related[0]?qDate(related[0].publication?.published_at):"—"}</span></footer>
     </article>`;
   };
 
-  const timeline=[
-    ...prelimEnrollment.slice(0,1).map(h=>({date:h.publication?.published_at,title:"Inscrição preliminar localizada",detail:"Seu registro apareceu na relação preliminar de inscrições homologadas."})),
-    ...defEnrollment.slice(0,1).map(h=>({date:h.publication?.published_at,title:"Inscrição homologada definitivamente",detail:"As duas inscrições foram confirmadas pelo monitor privado."})),
-    {date:"2026-09-06",title:"Provas realizadas",detail:"EDAS 400 pela manhã e TDAS 202 à tarde."},
-    ...(prelimKey?[{date:prelimKey.publishedAt,title:"Gabarito preliminar publicado",detail:"As respostas anotadas foram cruzadas e geraram as estimativas atuais."}]:[]),
-    ...(next?[{date:next.date,title:"Próximo marco oficial",detail:next.label,future:true}]:[])
-  ].filter(x=>x.date).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  const timeline=[];
+  for(const code of ["202","400"]){
+    const related=relatedFor(code);
+    const prelim=related.find(h=>/resultado preliminar.*inscri/i.test(h.publication?.title||""));
+    const definitive=related.find(h=>/resultado definitivo.*inscri/i.test(h.publication?.title||""));
+    if(prelim)timeline.push({date:prelim.publication?.published_at,title:`Cargo ${code} · inscrição preliminar localizada`,detail:roleLabel(code)});
+    if(definitive)timeline.push({date:definitive.publication?.published_at,title:`Cargo ${code} · inscrição homologada definitivamente`,detail:roleLabel(code)});
+  }
+  timeline.push({date:"2026-09-06",title:"Provas realizadas",detail:"EDAS 400 pela manhã e TDAS 202 à tarde."});
+  if(prelimKey)timeline.push({date:prelimKey.publishedAt,title:"Gabarito preliminar publicado",detail:"As respostas anotadas foram cruzadas e geraram as estimativas atuais."});
+  const resourceMilestone=(followUp?.milestones||[]).find(x=>x.id==="resources");
+  if(resourceMilestone?.status==="done"&&resourceMilestone?.end){
+    timeline.push({date:String(resourceMilestone.end).slice(0,10),title:"Prazo de recursos encerrado",detail:"Acompanhamento passa para gabarito definitivo e resultado objetivo."});
+  }
+  const nextOfficial=(followUp?.milestones||[]).find(x=>["current","upcoming"].includes(x.status)&&x.id!=="resources");
+  if(nextOfficial?.date)timeline.push({date:nextOfficial.date,title:"Próximo marco oficial",detail:nextOfficial.label,future:true});
+  timeline.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
 
+  const milestoneIds=["objective-result","objective-definitive","discursive-preliminary","discursive-definitive"];
+  const officialPending=(followUp?.milestones||[]).filter(x=>milestoneIds.includes(x.id)&&x.status!=="done");
   const missing=[
-    {label:"Gabarito definitivo",state:"aguardando"},
-    {label:"Resultado oficial da prova objetiva",state:next?("próximo marco · "+qDate(next.date)):"aguardando"},
-    {label:"Classificação por cargo",state:"aguardando resultado oficial"},
-    {label:"Situação da discursiva / próxima etapa",state:"aguardando publicação da banca"}
+    {label:"Gabarito definitivo",state:"aguardando publicação / efeito dos recursos"},
+    ...officialPending.map(x=>({label:x.label,state:x.date?qDate(x.date):"aguardando cronograma"}))
   ];
 
   const uniqueDocs=[...new Map(hits.map(h=>[(h.cargo_code||"na")+"|"+(h.publication?.url||h.id),h])).values()]
     .sort((a,b)=>String(b.publication?.published_at||"").localeCompare(String(a.publication?.published_at||"")));
 
   box.innerHTML=`<section class="q44-private-summary">
-      <div><span class="eyebrow">MINHA SITUAÇÃO AGORA</span><h4>2 inscrições localizadas · 2 provas realizadas · resultado oficial pendente</h4>
-      <p>O painel combina seus registros privados encontrados pela Quadrix com a correção pós-prova já auditada no Plano.</p></div>
+      <div><span class="eyebrow">MINHA SITUAÇÃO AGORA</span><h4>${identifiedRegs}/2 inscrições identificadas · ${loadedExams}/2 provas carregadas</h4>
+      <p><strong>Etapa atual:</strong> ${qEsc(currentStage)}. ${qEsc(nextAction)}</p></div>
       <div class="q44-private-summary-kpis">
-        <span><b>2/2</b><small>inscrições identificadas</small></span>
-        <span><b>${Object.values(exams).filter(Boolean).length}/2</b><small>provas carregadas</small></span>
-        <span><b>${Object.values(exams).filter(x=>x?.scoreTracking?.preliminary).length}/2</b><small>correções preliminares</small></span>
+        <span><b>${identifiedRegs}/2</b><small>inscrições identificadas</small></span>
+        <span><b>${loadedExams}/2</b><small>provas carregadas</small></span>
+        <span><b>${preliminaryLoaded}/2</b><small>correções preliminares</small></span>
       </div>
     </section>
     <div class="q44-role-grid">${roleCard("202")}${roleCard("400")}</div>
 
     <section class="q44-private-block">
-      <div class="q44-subhead"><strong>Linha do tempo pessoal</strong><small>do deferimento ao próximo resultado</small></div>
+      <div class="q44-subhead"><strong>Linha do tempo pessoal</strong><small>inscrições, prova e próximos marcos</small></div>
       <div class="q44-personal-timeline">${timeline.map(x=>`<article class="${x.future?"future":""}"><time>${qDate(x.date)}</time><div><strong>${qEsc(x.title)}</strong><small>${qEsc(x.detail)}</small></div></article>`).join("")}</div>
     </section>
 
     <section class="q44-private-block">
-      <div class="q44-subhead"><strong>O que ainda falta sair</strong><small>campos que o monitor vai preencher automaticamente</small></div>
+      <div class="q44-subhead"><strong>O que ainda falta sair</strong><small>preenchimento automático conforme a Quadrix publicar</small></div>
       <div class="q44-pending-grid">${missing.map(x=>`<article><span>○</span><div><strong>${qEsc(x.label)}</strong><small>${qEsc(x.state)}</small></div></article>`).join("")}</div>
     </section>
 
@@ -219,7 +256,7 @@ function qRenderPrivate(box,d,examData=sedesExamSnapshot){
         <a href="${qEsc(h.publication?.url||SEDES_QUADRIX.publicUrl)}" target="_blank" rel="noreferrer">Fonte ↗</a></article>`).join(""):'<div class="q44-empty">Nenhuma ocorrência pessoal consolidada até agora.</div>'}</div>
     </section>
 
-    <div class="q44-private-meta"><span>Dados pessoais: Vault + Quadrix</span><span>Correção pós-prova: snapshot ${qDateTime(examData?.generatedAt)}</span></div>
+    <div class="q44-private-meta"><span>Identificadores e inscrições: Vault + Quadrix</span><span>Notas e estatísticas: snapshot do Pós-Prova · ${qDateTime(examData?.generatedAt)}</span></div>
     <div class="q44-private-foot"><span>Sessão temporária ativa.</span><button type="button" data-q44-lock>Bloquear</button></div>`;
   box.querySelector("[data-q44-lock]")?.addEventListener("click",async()=>{
     const token=sessionStorage.getItem(SEDES_QUADRIX.sessionKey)||"";sessionStorage.removeItem(SEDES_QUADRIX.sessionKey);
