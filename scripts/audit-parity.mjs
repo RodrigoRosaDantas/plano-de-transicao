@@ -157,7 +157,7 @@ check('Painel mantém fonte e snapshot identificados', followUp.includes('snapsh
 
 check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
 check('Botão Recarregar snapshot é textual e visível', index.includes('id="refreshBtn"') && index.includes('data-refresh') && index.includes('Recarregar snapshot'));
-check('Mais é central gerencial de navegação e operações', index.includes('CENTRAL GERENCIAL') && index.includes('Navegação e operações'));
+check('Mais usa a marca Central de Transição na navegação e operações', index.includes('CENTRAL DE TRANSIÇÃO') && index.includes('Navegação e operações'));
 check('Site não oferece estudo nem acesso operacional', !index.includes('../sedes-df-questoes/') && !manager.includes('PLATFORM_URL') && !index.includes('data-view="study"'));
 check('Assets operacionais antigos não são publicados', !legacyStudyAssetsPublished);
 check('Espelho bruto do Notion não é publicado', !rawNotionMirrorPublished);
