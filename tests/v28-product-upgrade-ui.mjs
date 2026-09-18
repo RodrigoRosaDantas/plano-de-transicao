@@ -49,7 +49,7 @@ await scenario('desktop: controles do plano permanecem na Home', { width: 1440, 
   const home = page.locator('.command-view');
   const text = fold(await home.innerText());
   if (text.includes('tdas') || text.includes('edas')) throw new Error('TDAS/EDAS ainda aparecem no resumo do Agora.');
-  for (const expected of ['plano de transição', 'capital acumulado', 'investimento confirmado', 'próximo ciclo', 'seedf', 'tjdft']) {
+  for (const expected of ['central de transição', 'capital acumulado', 'investimento confirmado', 'próximo ciclo', 'seedf', 'tjdft']) {
     if (!text.includes(expected)) throw new Error('Home sem foco de controle: ' + expected);
   }
   if (await home.locator('[data-v28-transition-console], [data-v28-post-followup], [data-v28-competition-panel], [data-post-exam-page]').count()) {

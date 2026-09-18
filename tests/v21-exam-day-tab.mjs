@@ -64,7 +64,7 @@ await scenario('desktop: pré e pós-prova são páginas próprias', { width: 14
   }
   const home = page.locator('.command-view');
   const homeText = fold(await home.innerText());
-  if (!homeText.includes('plano de transição') || !homeText.includes('próximo ciclo') || !homeText.includes('seedf') || !homeText.includes('tjdft')) throw new Error('Agora perdeu o foco gerencial.');
+  if (!homeText.includes('central de transição') || !homeText.includes('próximo ciclo') || !homeText.includes('seedf') || !homeText.includes('tjdft')) throw new Error('Agora perdeu o foco gerencial.');
   if (await home.locator('.transition-now-hero, .transition-kpi-grid, .transition-next, .transition-decision-grid, .transition-history, .transition-footer').count() !== 6) throw new Error('Agora não montou a nova central de transição.');
 
   await page.click('#moreTopBtn');
