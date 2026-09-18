@@ -86,7 +86,7 @@ await run('desktop: financeiro, concursos, fontes e operações', { width: 1440,
   await page.click('[data-view="sources"]');
   await page.waitForSelector('.audit-check');
   const score = await page.locator('.audit-score strong').innerText();
-  if (!score.includes('10/10')) throw new Error(`Auditoria visual não fechou: ${score}`);
+  if (!score.includes('11/11')) throw new Error(`Auditoria visual não fechou: ${score}`);
   await page.click('[data-view="operations"]');
   await page.waitForSelector('.operations-view');
   if (await page.locator('.system-card').count() !== 4) throw new Error('Central de operações incompleta.');
