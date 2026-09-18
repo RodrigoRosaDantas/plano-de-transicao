@@ -21,6 +21,20 @@ const isoFromText=text=>{
   const m=String(text||"").match(/\b(\d{2})[\/.-](\d{2})[\/.-](\d{4})\b/);
   return m?`${m[3]}-${m[2]}-${m[1]}`:null;
 };
+const stripHtml=v=>String(v||"").replace(/<script[\\s\\S]*?<\\/script>/gi," ").replace(/<style[\\s\\S]*?<\\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/&#39;/gi,"'").replace(/\\s+/g," ").trim();
+const matchesTerm=(text,term)=>{
+  const body=normalize(text),query=normalize(term.query_text);
+  if(term.is_private)return body.includes(query);
+  if(body.includes(query))return true;
+  const stop=new Set(["de","da","do","das","dos","e","a","o","para","no","na","em","publico","publica","distrito","federal"]);
+  const toks=query.split(" ").filter(x=>x.length>2&&!stop.has(x));
+  return toks.length>0&&toks.filter(x=>body.includes(x)).length/toks.length>=0.6;
+};
+const isRecentDate=(iso,days=21)=>{
+  if(!iso)return true;
+  const t=Date.parse(iso+"T12:00:00-03:00");
+  return Number.isFinite(t)&&(Date.now()-t)<=days*86400000&&(t-Date.now())<2*86400000;
+};
 const timeoutFetch=async(url,ms=15000)=>{
   const c=new AbortController(),timer=setTimeout(()=>c.abort(),ms);
   try{
@@ -84,7 +98,7 @@ async function scanDOU(term){
     let text=item.context||"",title=item.title||term.label,section=null,agency=null,published_at=isoFromText(text);
     try{
       const html=await timeoutFetch(item.url,12000);
-      const stripped=html.replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/\s+/g," ").trim();
+      const stripped=stripHtml(html);
       text=stripped;
       const tm=html.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i)||html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
       if(tm)title=tm[1].replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim().replace(/\s+-\s+DOU.*$/i,"");
@@ -92,7 +106,7 @@ async function scanDOU(term){
       section=text.match(/Se[cç][aã]o:\s*([^|]{1,80})/i)?.[1]?.trim()||null;
       agency=text.match(/[ÓO]rg[aã]o:\s*([^|]{2,220})/i)?.[1]?.trim()||null;
     }catch{}
-    const q=normalize(term.query_text),nt=normalize(text);if(term.is_private&&!nt.includes(q))continue;
+    if(!matchesTerm(text,term))continue;
     occurrences.push({term_id:term.id,source:"DOU",title,url:item.url,published_at,section,agency,snippet:text.slice(0,900),classification:classify(text)});
   }
   sourceHealth.DOU.hits+=occurrences.filter(o=>o.term_id===term.id&&o.source==="DOU").length;
@@ -109,43 +123,122 @@ async function findSearchInput(page){
   }
   return null;
 }
+let dodfDirectAvailable=true;
+
+async function scanSINJ(term){
+  const search="https://www.sinj.df.gov.br/sinj/ResultadoDePesquisa?filetext="+encodeURIComponent(term.query_text);
+  const bodies=[];
+  const pending=[];
+  const onResponse=res=>{
+    try{
+      const u=res.url();
+      const ct=(res.headers()["content-type"]||"").toLowerCase();
+      if(u.includes("sinj.df.gov.br")&&(ct.includes("json")||ct.includes("text/html"))){
+        pending.push(res.text().then(t=>{if(t&&t.length<2500000)bodies.push(t)}).catch(()=>{}));
+      }
+    }catch{}
+  };
+  page.on("response",onResponse);
+  let bodyText="",html="";
+  try{
+    await page.goto(search,{waitUntil:"domcontentloaded",timeout:15000});
+    await page.waitForTimeout(3200);
+    html=await page.content().catch(()=>"");
+    bodyText=await page.locator("body").innerText().catch(()=>"");
+  }finally{
+    page.off("response",onResponse);
+    await Promise.allSettled(pending);
+  }
+
+  const blob=[html,...bodies].join("\n");
+  const ids=new Set();
+  for(const m of blob.matchAll(/(?:TextoArquivoDiario|BaixarArquivoDiario)\.aspx\?id_file=([0-9a-f-]{36})/gi))ids.add(m[1]);
+  for(const m of blob.matchAll(/(?:id_file|idArquivo|id_arquivo|IdArquivo)[^0-9a-f]{0,40}([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/gi))ids.add(m[1]);
+
+  const anchors=await page.locator('a[href*="TextoArquivoDiario"],a[href*="BaixarArquivoDiario"]').evaluateAll(els=>els.slice(0,12).map(a=>a.href)).catch(()=>[]);
+  for(const href of anchors){
+    const m=String(href).match(/id_file=([0-9a-f-]{36})/i);if(m)ids.add(m[1]);
+  }
+
+  if(!ids.size){
+    if(/nenhum|nenhuma|0\s+resultado|0\s+registro|não foram encontrados|nao foram encontrados|nenhum registro/i.test(bodyText))return 0;
+    throw new Error("SINJ respondeu, mas não expôs resultados verificáveis");
+  }
+
+  let localHits=0;
+  for(const id of [...ids].slice(0,8)){
+    const url="https://www.sinj.df.gov.br/sinj/TextoArquivoDiario.aspx?id_file="+id;
+    try{
+      const detailHtml=await timeoutFetch(url,10000);
+      const text=stripHtml(detailHtml);
+      if(!matchesTerm(text,term))continue;
+      const title=stripHtml(detailHtml.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||"Publicação no DODF");
+      const published_at=isoFromText(title)||isoFromText(text.slice(0,1800));
+      if(!isRecentDate(published_at,21))continue;
+      const nq=normalize(term.query_text);
+      const first=nq.split(" ").find(x=>x.length>3)||nq;
+      const pos=normalize(text).indexOf(first);
+      const snippet=text.slice(Math.max(0,pos>0?pos-320:0),Math.max(0,pos>0?pos-320:0)+1300);
+      const section=snippet.match(/SE[ÇC][AÃ]O\s+(I{1,3})/i)?.[0]||null;
+      occurrences.push({
+        term_id:term.id,source:"DODF",title:title||term.label,url,published_at,section,
+        agency:term.is_private?null:term.label,snippet,classification:classify(snippet||text)
+      });
+      localHits++;
+    }catch{}
+  }
+  return localHits;
+}
+
 async function scanDODF(term){
   sourceHealth.DODF.checked++;
-  await page.goto("https://dodf.df.gov.br/?dt=1",{waitUntil:"domcontentloaded",timeout:18000});
-  await page.waitForTimeout(1000);
-  const input=await findSearchInput(page);
-  if(!input)throw new Error("campo de busca não localizado");
-  await input.fill(term.query_text);
-  await input.press("Enter").catch(()=>{});
-  await page.waitForTimeout(2500);
-  let links=await extractAnchors(page,'a[href*="/dodf/materia/visualizar"]',10);
-  if(!links.length){
-    const buttons=page.getByRole("button",{name:/pesquisar|buscar/i});
-    const n=await buttons.count();
-    for(let i=0;i<n;i++){
-      if(await buttons.nth(i).isVisible().catch(()=>false)){
-        await buttons.nth(i).click().catch(()=>{});
-        await page.waitForTimeout(2000);
-        links=await extractAnchors(page,'a[href*="/dodf/materia/visualizar"]',10);
-        if(links.length)break;
+  if(!dodfDirectAvailable){
+    const n=await scanSINJ(term);
+    sourceHealth.DODF.hits+=n;
+    return;
+  }
+  try{
+    await page.goto("https://dodf.df.gov.br/?dt=1",{waitUntil:"domcontentloaded",timeout:18000});
+    await page.waitForTimeout(1000);
+    const input=await findSearchInput(page);
+    if(!input)throw new Error("campo de busca não localizado");
+    await input.fill(term.query_text);
+    await input.press("Enter").catch(()=>{});
+    await page.waitForTimeout(2500);
+    let links=await extractAnchors(page,'a[href*="/dodf/materia/visualizar"]',10);
+    if(!links.length){
+      const buttons=page.getByRole("button",{name:/pesquisar|buscar/i});
+      const n=await buttons.count();
+      for(let i=0;i<n;i++){
+        if(await buttons.nth(i).isVisible().catch(()=>false)){
+          await buttons.nth(i).click().catch(()=>{});
+          await page.waitForTimeout(2000);
+          links=await extractAnchors(page,'a[href*="/dodf/materia/visualizar"]',10);
+          if(links.length)break;
+        }
       }
     }
-  }
-  if(!links.length){
-    const body=await page.locator("body").innerText().catch(()=>"");
-    if(!/(nenhum|nenhuma|0\\s+resultado|não foram encontrados|nao foram encontrados)/i.test(body)){
-      throw new Error("busca concluída sem links verificáveis");
+    if(!links.length){
+      const body=await page.locator("body").innerText().catch(()=>"");
+      if(!/(nenhum|nenhuma|0\s+resultado|não foram encontrados|nao foram encontrados)/i.test(body))throw new Error("busca direta sem links verificáveis");
     }
+    for(const item of uniq(links)){
+      const context=item.context||item.title||"";
+      if(!matchesTerm(context,term))continue;
+      occurrences.push({
+        term_id:term.id,source:"DODF",title:item.title||term.label,url:item.url,
+        published_at:isoFromText(context),section:(context.match(/Se[cç][aã]o\s+(I{1,3})/i)?.[0]||null),
+        agency:term.is_private?null:term.label,snippet:context.slice(0,1000),classification:classify(context)
+      });
+    }
+    sourceHealth.DODF.hits+=occurrences.filter(o=>o.term_id===term.id&&o.source==="DODF").length;
+  }catch(directError){
+    dodfDirectAvailable=false;
+    sourceHealth.DODF.collector="github-actions-sinj";
+    sourceHealth.DODF.fallback="SINJ/DF ativo";
+    const n=await scanSINJ(term);
+    sourceHealth.DODF.hits+=n;
   }
-  for(const item of uniq(links)){
-    const context=item.context||item.title||"";
-    occurrences.push({
-      term_id:term.id,source:"DODF",title:item.title||term.label,url:item.url,
-      published_at:isoFromText(context),section:(context.match(/Se[cç][aã]o\s+(I{1,3})/i)?.[0]||null),
-      agency:null,snippet:context.slice(0,1000),classification:classify(context)
-    });
-  }
-  sourceHealth.DODF.hits+=occurrences.filter(o=>o.term_id===term.id&&o.source==="DODF").length;
 }
 
 for(const term of terms){
@@ -155,13 +248,10 @@ for(const term of terms){
       if(source==="DOU")await scanDOU(term);
       if(source==="DODF")await scanDODF(term);
     }catch(e){
-      const h=sourceHealth[source];h.status="partial";h.errors.push(label+": "+String(e?.message||e).slice(0,220));
-      if(source==="DODF"){
-        try{
-          await page.goto("https://www.sinj.df.gov.br/sinj/ResultadoDePesquisa?filetext="+encodeURIComponent(term.query_text),{waitUntil:"domcontentloaded",timeout:15000});
-          h.fallback="SINJ/DF acessível";
-        }catch{}
-      }
+      const h=sourceHealth[source];
+      h.status="partial";
+      const detail=term.is_private?"consulta privada indisponível nesta execução":String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,220);
+      h.errors.push(label+": "+detail);
     }
   }
 }
