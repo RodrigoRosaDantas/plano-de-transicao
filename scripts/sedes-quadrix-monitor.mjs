@@ -10,6 +10,7 @@ const TRANSPORT_URL="https://ps-adm-861.selecao.net.br/informacoes/3056/"; // es
 const startedAt=new Date().toISOString();
 const eventName=process.env.GITHUB_EVENT_NAME||"unknown";
 const runId=process.env.GITHUB_RUN_ID||null;
+const PERSONAL_SCAN_VERSION=2;
 
 const normalize=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
 const digits=v=>String(v||"").replace(/\D/g,"");
@@ -123,32 +124,47 @@ function lineMatches(line,ident){
   return normalize(line).includes(normalize(value));
 }
 function detectCargo(context){
-  const n=normalize(context);
-  if(/\b202\b/.test(context)||n.includes("tdas-tecnico administrativo")||n.includes("tecnico administrativo"))return"202";
-  if(/\b400\b/.test(context)||n.includes("edas-administracao")||n.includes("administracao"))return"400";
+  const raw=String(context||""),n=normalize(raw);
+  if(n.includes("tecnico administrativo")||n.includes("tdas")||/cargo\s*[:\-]?\s*202\b/i.test(raw))return"202";
+  if(n.includes("administrador")||n.includes("edas - administracao")||n.includes("edas administracao")||/cargo\s*[:\-]?\s*400\b/i.test(raw))return"400";
   return null;
 }
-function detectRegistration(context,ident){
-  const explicit=context.match(/inscri(?:ç|c)[aã]o\s*[:ºn\-]*\s*(\d{5,12})/i);
-  if(explicit)return explicit[1];
+function detectCargoAround(lines,index){
+  const local=detectCargo(lines[index]);
+  if(local)return local;
+  for(let j=index-1;j>=0;j--){
+    const cargo=detectCargo(lines[j]);
+    if(cargo)return cargo;
+  }
+  for(let j=index+1;j<Math.min(lines.length,index+30);j++){
+    const cargo=detectCargo(lines[j]);
+    if(cargo)return cargo;
+  }
+  return null;
+}
+function detectRegistration(context,ident,excludedDigits=new Set()){
+  const explicit=String(context||"").match(/inscri(?:ç|c)[aã]o\s*[:ºn\-]*\s*(\d{5,12})/i);
+  if(explicit&&!excludedDigits.has(explicit[1]))return explicit[1];
   const own=digits(ident.value||"");
-  const candidates=[...String(context).matchAll(/(?<!\d)(\d{5,12})(?!\d)/g)]
+  const candidates=[...String(context||"").matchAll(/(?<!\d)(\d{5,12})(?!\d)/g)]
     .map(m=>m[1])
-    .filter(v=>v!==own&&v!=="202"&&v!=="400")
+    .filter(v=>v!==own&&!excludedDigits.has(v)&&v!=="202"&&v!=="400")
     .filter(v=>!/^20\d{6}$/.test(v));
-  const preferred=candidates.find(v=>v.length>=6&&v.length<=10);
-  return preferred||null;
+  return candidates.find(v=>v.length>=6&&v.length<=10)||null;
 }
 // multi-match v2: um mesmo documento pode gerar ocorrências distintas por cargo/inscrição.
 function findPersonalMatches(text,identifiers,url){
   const lines=String(text||"").split(/\r?\n/);
   const hits=[];
+  const excludedDigits=new Set(
+    identifiers.map(x=>digits(x.value||"")).filter(v=>v.length>=5)
+  );
   for(const ident of identifiers){
     for(let i=0;i<lines.length;i++){
       if(!lineMatches(lines[i],ident))continue;
       const context=lines.slice(Math.max(0,i-4),Math.min(lines.length,i+5)).join(" ").replace(/\s+/g," ").trim().slice(0,1500);
-      const cargoCode=detectCargo(context);
-      const registration=detectRegistration(context,ident);
+      const cargoCode=detectCargo(context)||detectCargoAround(lines,i);
+      const registration=detectRegistration(lines[i],ident,excludedDigits)||detectRegistration(context,ident,excludedDigits);
       const kind=String(ident.kind||"other");
       const confidence=kind==="alias"?92:100;
       hits.push({
@@ -192,8 +208,9 @@ for(const pub of page.publications){
   const prev=known.get(pub.url);
   pub.contentHash=prev?.content_hash||null;
   pub.personalScanned=Boolean(prev?.raw?.personalScanned);
-  const shouldScan=identifiers.length>0&&(
-    bootstrap ? priorityForPersonal(pub.title) : (!prev || (!pub.personalScanned&&priorityForPersonal(pub.title)))
+  pub.personalScanVersion=Number(prev?.raw?.personalScanVersion||0);
+  const shouldScan=identifiers.length>0&&priorityForPersonal(pub.title)&&(
+    bootstrap||!prev||pub.personalScanVersion<PERSONAL_SCAN_VERSION
   );
   if(!shouldScan)continue;
   try{
@@ -205,6 +222,7 @@ for(const pub of page.publications){
     if(text.trim()){
       personalMatches.push(...findPersonalMatches(text,identifiers,pub.url));
       pub.personalScanned=true;
+      pub.personalScanVersion=PERSONAL_SCAN_VERSION;
     }
   }catch(e){
     errors.push({host:new URL(pub.url).hostname,kind:pub.kind,error:String(e?.message||e).slice(0,180)});
