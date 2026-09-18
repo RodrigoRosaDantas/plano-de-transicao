@@ -65,16 +65,26 @@ function renderWebRadar(){
   w$("#webRadarConfirmed").textContent=counts.confirmed??0;
   w$("#webRadarHomonyms").textContent=counts.possible_homonym??0;
   const run=webRadarData.lastRun;
+  const provider=run?.provider==="duckduckgo-html"?"DuckDuckGo":run?.provider||"";
   w$("#webRadarLastRun").textContent=run
-    ? `Última pesquisa: ${wFmtDateTime(run.finished_at||run.started_at)} · ${run.verified_matches||0} correspondência(s) validada(s) · ${run.new_results||0} nova(s)`
+    ? `Última pesquisa: ${wFmtDateTime(run.finished_at||run.started_at)} · ${run.verified_matches||0} correspondência(s) validada(s) · ${run.new_results||0} nova(s)${provider?` · ${provider}`:""}`
     : "Nenhuma pesquisa anterior registrada.";
 
-  const rows=(webRadarData.results||[]).filter(r=>webRadarFilter==="all"||r.review_status===webRadarFilter);
+  const runStart=run?.started_at?new Date(run.started_at).getTime():0;
+  const isNew=(r)=>runStart>0&&new Date(r.first_seen_at||0).getTime()>=runStart;
+  const rows=(webRadarData.results||[]).filter(r=>
+    webRadarFilter==="all"
+      ? true
+      : webRadarFilter==="new"
+        ? isNew(r)
+        : r.review_status===webRadarFilter
+  );
   w$("#webRadarResults").innerHTML=rows.length?rows.map(r=>{
     const strength=Math.max(0,Math.min(100,Number(r.confidence||0)));
     const ctx=String(r.context||"").replace(/\s+/g," ").trim();
     const reviewed=r.review_status!=="candidate";
-    return `<article class="web-radar-result" data-web-result="${wEsc(r.id)}">
+    const fresh=isNew(r);
+    return `<article class="web-radar-result${fresh?" is-new":""}" data-web-result="${wEsc(r.id)}">
       <div class="web-radar-result-top">
         <div>
           <span class="web-radar-domain">${wEsc(r.domain)}</span>
@@ -84,6 +94,7 @@ function renderWebRadar(){
       </div>
       <p>${wEsc(ctx||"Nome localizado no índice; abra a fonte para conferir o contexto completo.")}</p>
       <div class="web-radar-result-meta">
+        ${fresh?'<span class="radar-tag web-radar-new">novo</span>':""}
         <span class="radar-tag">${wEsc(kindLabel(r.kind))}</span>
         <span class="radar-tag">${wEsc(statusLabel(r.review_status))}</span>
         <span class="radar-tag" title="Mede apenas a força da correspondência textual do nome; não confirma identidade.">força da correspondência ${strength}%</span>
