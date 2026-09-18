@@ -1,4 +1,3 @@
-import { chromium } from "playwright";
 import { writeFile, unlink, stat } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -177,11 +176,6 @@ const cfgRes=await fetch(EDGE+"/config",{headers:{Authorization:"Bearer "+token}
 if(!cfgRes.ok)throw new Error("Config HTTP "+cfgRes.status+" "+await cfgRes.text());
 const {terms}=await cfgRes.json();
 
-const browser=await chromium.launch({headless:true,args:["--disable-dev-shm-usage","--no-sandbox"]});
-const ctx=await browser.newContext({locale:"pt-BR",timezoneId:"America/Sao_Paulo",userAgent:"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36"});
-const page=await ctx.newPage();
-page.setDefaultTimeout(12000);
-
 const occurrences=[];
 const sourceHealth={
   DOU:{status:"ok",checked:0,hits:0,errors:[],collector:"github-actions"},
@@ -197,31 +191,16 @@ const sourceHealth={
   }
 };
 
-async function extractAnchors(page,selector,limit=8){
-  return await page.locator(selector).evaluateAll((els,limit)=>els.slice(0,limit).map(a=>{
-    let p=a,context="";
-    for(let i=0;i<5&&p;i++,p=p.parentElement){
-      const txt=(p.innerText||"").replace(/\s+/g," ").trim();
-      if(txt.length>40&&txt.length<2200){context=txt;}
-    }
-    return {url:a.href,title:(a.innerText||a.textContent||"").replace(/\s+/g," ").trim(),context};
-  }),limit);
-}
-
 async function scanDOU(term){
   sourceHealth.DOU.checked++;
   const to=new Date(),from=new Date(to.getTime()-14*86400000);
   const fmt=d=>new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",year:"numeric"}).format(d);
   const search="https://www.in.gov.br/consulta/-/buscar/dou?q="+encodeURIComponent(term.query_text)+"&s=todos&exactDate=personalizado&sortType=0&delta=10&publishFrom="+encodeURIComponent(fmt(from))+"&publishTo="+encodeURIComponent(fmt(to));
-  let links=[];
-  try{
-    const html=await timeoutFetch(search,10000);
-    links=[...new Set([...html.matchAll(/href=["']([^"']*\/web\/dou\/-\/[^"'?#]+[^"']*)["']/gi)].map(m=>m[1].startsWith("http")?m[1]:"https://www.in.gov.br"+m[1]))].slice(0,6).map(url=>({url,title:"",context:""}));
-  }catch(e){
-    await page.goto(search,{waitUntil:"domcontentloaded",timeout:20000});
-    await page.waitForTimeout(1200);
-    links=await extractAnchors(page,'a[href*="/web/dou/-/"]',6);
-  }
+  const html=await resilientFetch(search,15000,2);
+  const links=[...new Set([...html.matchAll(/href=["']([^"']*\/web\/dou\/-\/[^"'?#]+[^"']*)["']/gi)]
+    .map(m=>m[1].startsWith("http")?m[1]:"https://www.in.gov.br"+m[1]))]
+    .slice(0,6)
+    .map(url=>({url,title:"",context:""}));
   for(const item of uniq(links)){
     let text=item.context||"",title=item.title||term.label,section=null,agency=null,published_at=isoFromText(text);
     try{
@@ -312,17 +291,6 @@ async function scanDODFToday(dodfTerms){
     localHits++;
   }
   return {hits:localHits,sections:3,method:"pdf-certificado"};
-}
-async function findSearchInput(page){
-  const selectors=['input[placeholder*="Digite aqui"]','input[placeholder*="Informe o termo"]','input[placeholder*="pesquisar" i]','input[type="search"]','input[type="text"]'];
-  for(const sel of selectors){
-    const loc=page.locator(sel);
-    for(let i=0;i<Math.min(await loc.count(),8);i++){
-      const x=loc.nth(i);
-      if(await x.isVisible().catch(()=>false))return x;
-    }
-  }
-  return null;
 }
 async function scanSINJ(term,{todayOnly=false,maxPages=3,pageSize=25}={}){
   const now=new Date();
@@ -508,7 +476,6 @@ for(const term of douTerms){
   try{await scanDOU(term)}catch(e){recordSourceError("DOU",term,e)}
 }
 
-await browser.close();
 const clean=[...new Map(occurrences.map(o=>[`${o.term_id}|${o.source}|${o.url}`,o])).values()].slice(0,200);
 const status=Object.values(sourceHealth).every(s=>s.status==="ok")?"ok":"partial";
 const ingest=await fetch(EDGE+"/ingest",{
