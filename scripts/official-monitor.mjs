@@ -6,6 +6,7 @@ const execFileAsync=promisify(execFile);
 
 const EDGE="https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/official-monitor-github";
 // Identificadores pessoais adicionais são injetados apenas pelo endpoint OIDC privado; nunca ficam neste repositório.
+// Vault-only identifiers v13 validation: consultas pessoais permanecem fora do GitHub.
 const AUD="plano-de-transicao-official-monitor";
 const startedAt=new Date().toISOString();
 
