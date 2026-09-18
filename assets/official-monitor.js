@@ -90,7 +90,7 @@ function renderSources(sources) {
     if(waitingIndex) waitingOfficialUpdate=true;
 
     const historyLabel =
-      s.historyStatus==="skipped" ? "histórico já preservado; não reconsultado nesta rodada" :
+      s.historyStatus==="skipped" ? "histórico não reconsultado nesta rodada" :
       s.historyStatus==="ok" ? "histórico conferido" :
       s.historyStatus==="partial" ? "histórico conferido parcialmente" :
       "histórico pendente";
