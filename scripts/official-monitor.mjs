@@ -126,7 +126,7 @@ async function findSearchInput(page){
 async function scanSINJ(term){
   const year=new Intl.DateTimeFormat("en",{timeZone:"America/Sao_Paulo",year:"numeric"}).format(new Date());
   const endpoint="https://www.sinj.df.gov.br/sinj/ashx/Datatable/ResultadoDePesquisaDiarioDatatable.ashx";
-  const pageSize=100;
+  const pageSize=100; // pagina o ano inteiro para não depender da ordem por relevância do SINJ
   let offset=0;
   let total=Infinity;
   let localHits=0;
