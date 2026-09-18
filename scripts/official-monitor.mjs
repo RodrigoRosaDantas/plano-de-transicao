@@ -21,7 +21,7 @@ const isoFromText=text=>{
   const m=String(text||"").match(/\b(\d{2})[\/.-](\d{2})[\/.-](\d{4})\b/);
   return m?`${m[3]}-${m[2]}-${m[1]}`:null;
 };
-const stripHtml=v=>String(v||"").replace(/<script[\\s\\S]*?<\\/script>/gi," ").replace(/<style[\\s\\S]*?<\\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/&#39;/gi,"'").replace(/\\s+/g," ").trim();
+const stripHtml=v=>String(v||"").replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/&nbsp;/gi," ").replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/&#39;/gi,"'").replace(/\s+/g," ").trim();
 const matchesTerm=(text,term)=>{
   const body=normalize(text),query=normalize(term.query_text);
   if(term.is_private)return body.includes(query);
