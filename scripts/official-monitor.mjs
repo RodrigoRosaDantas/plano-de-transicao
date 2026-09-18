@@ -150,6 +150,11 @@ const relevantPublicContext=(text,term)=>{
     if(label.includes("comissao")&&!(hasConcurso&&/\bcomissao\b/.test(n)))return null;
     if(label.includes("resultado")&&!(hasConcurso&&/\bresultado\b/.test(n)))return null;
     if(label.includes("homologacao")&&!(hasConcurso&&/\bhomologacao\b/.test(n)))return null;
+    if(label.includes("edital")&&!/\bedital\b/.test(n))return null;
+    if(label.includes("retificacao")&&!/retific/.test(n))return null;
+    if(label.includes("provimento")&&!/\bprovimento\b/.test(n))return null;
+    if(label.includes("convocacao")&&!/convoc/.test(n))return null;
+    if(label.includes("nomeacao")&&!/nomea/.test(n))return null;
     if(label.includes("concurso")&&!hasConcurso)return null;
   }
   const agencyOk=
