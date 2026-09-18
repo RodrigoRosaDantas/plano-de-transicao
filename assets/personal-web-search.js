@@ -57,9 +57,12 @@ async function webRadarApi(action,payload={}){
 }
 function setLocked(locked){
   const a=w$("#webRadarLocked"),b=w$("#webRadarPrivate"),chip=w$("#webRadarStatusChip");
-  if(a)a.hidden=!locked;
-  if(b)b.hidden=locked;
+  if(a){a.hidden=!locked;a.style.display=locked?"":"none";}
+  if(b){b.hidden=locked;b.style.display=locked?"none":"";}
   if(chip){chip.textContent=locked?"bloqueado":"privado · ativo";chip.classList.toggle("ok",!locked);}
+  if(locked){
+    webRadarData={counts:{},results:[],lastRun:null,identifiers:[],officialHits:[]};
+  }
 }
 function renderIdentifiers(){
   const root=w$("#webRadarIdentifiers");
