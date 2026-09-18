@@ -28,6 +28,7 @@ Versão independente da **Central de Transição**, preparada para GitHub Pages.
 - Tema claro/escuro.
 - Layout responsivo para Android, iPhone, iPad e desktop.
 - PWA instalável + service worker + uso offline.
+- Identidade visual própria da **Central de Transição**, com símbolo “C + bússola” aplicado ao favicon, cabeçalho, Radar Oficial, Sala de Recursos e ícones PWA 192/512.
 - Busca global por matéria, concurso, marco e investimento.
 - Cache local, exportação do snapshot em JSON e cartão social próprio.
 - Sincronização segura do Notion via `NOTION_TOKEN` em GitHub Actions.

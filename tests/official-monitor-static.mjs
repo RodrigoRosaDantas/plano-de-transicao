@@ -52,7 +52,8 @@ assert(workflow.includes('cron: "15 9-21 * * *"') && workflow.includes('cron: "1
 assert(collector.includes("relevantPublicContext(text,term)") && collector.includes("relevantPublicContext(pdfText,term)"), "coletor aplica contexto estrito para reduzir falsos positivos");
 assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "ausência de ocorrência hoje não degrada a saúde da fonte");
 assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css") && sw.includes("./assets/personal-web-search.js"), "Radar Oficial e Radar Web estão incluídos no PWA");
-assert(sw.includes("plano-transicao-v45-post-exam-host"), "cache v45 do Radar + Pós-Prova SEDES está ativo");
+assert(sw.includes("plano-transicao-v49-brand-icon"), "cache v49 da Central está ativo e força recache da identidade visual");
+assert(html.includes("assets/central-mark.svg"), "Radar Oficial usa a identidade visual da Central");
 
 if (process.exitCode) {
   throw new Error("Auditoria estática do Radar Oficial falhou.");

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">Central de Transição</title>
+<desc id="desc">Símbolo C com bússola apontando para o próximo movimento.</desc>
+<rect width="512" height="512" rx="112" fill="#0b0f0e"/>
+<circle cx="256" cy="256" r="164" fill="#111716" stroke="#1f2b27" stroke-width="2"/>
+<path d="M365 137 A158 158 0 1 0 369 370" fill="none" stroke="#f4f4ed" stroke-width="64" stroke-linecap="round"/>
+<path d="M248 264 L397 112 L285 244 Z" fill="#c7f36b"/>
+<path d="M248 264 L115 397 L229 283 Z" fill="#66d9d1"/>
+<path d="M248 264 L397 112 L286 258 Z" fill="#8edb36" opacity=".72"/>
+<path d="M248 264 L115 397 L241 283 Z" fill="#2bbcb4" opacity=".72"/>
+<circle cx="256" cy="256" r="31" fill="#0b0f0e" stroke="#f4f4ed" stroke-width="13"/>
+<circle cx="256" cy="256" r="9" fill="#66d9d1"/>
+</svg>

@@ -21,6 +21,11 @@ has(index, '<small>Plano de Transição</small>', 'Plano permanece como estraté
 has(index, '<title>Central de Transição</title>', 'título principal rebatizado');
 has(manifest, '"name": "Central de Transição"', 'PWA usa a nova marca');
 has(manifest, '"short_name": "Central"', 'PWA usa nome curto da Central');
+has(index, 'assets/central-mark.svg', 'favicon e marca visual da Central');
+has(index, 'assets/central-icon-192.png', 'Apple/PWA usa ícone da Central');
+has(manifest, '"src": "assets/central-icon-192.png"', 'manifest aponta para ícone 192 da Central');
+has(manifest, '"src": "assets/central-icon-512.png"', 'manifest aponta para ícone 512 da Central');
+has(manifest, '"purpose": "any maskable"', 'ícones PWA suportam máscara segura');
 has(index, 'assets/workspace-v23-home.css?v=23', 'loader Home v23 direto no index');
 has(index, 'assets/workspace-v24-hardening.css?v=24', 'loader hardening v24 direto no index');
 has(index, 'assets/workspace-v23.js?v=31', 'loader JS v23 direto no index');
@@ -34,7 +39,10 @@ has(sw, "'./assets/workspace-v23.css'", 'PWA CSS v23');
 has(sw, "'./assets/workspace-v23-home.css'", 'PWA Home v23');
 has(sw, "'./assets/workspace-v23.js'", 'PWA JS v23');
 has(sw, "'./assets/workspace-v24-hardening.css'", 'PWA hardening v24');
-has(sw, "const CACHE='plano-transicao-v45-post-exam-host'", 'cache PWA v45 preserva navegação móvel v38');
+has(sw, "const CACHE='plano-transicao-v49-brand-icon'", 'cache PWA v49 força atualização da nova identidade');
+has(sw, "'./assets/central-mark.svg'", 'PWA cacheia marca vetorial');
+has(sw, "'./assets/central-icon-192.png'", 'PWA cacheia ícone 192');
+has(sw, "'./assets/central-icon-512.png'", 'PWA cacheia ícone 512');
 has(sw, 'caches.match(req,{ignoreSearch:true})', 'fallback offline ignora query de versionamento');
 
 has(css, '@media(min-width:1180px)', 'breakpoint desktop');
