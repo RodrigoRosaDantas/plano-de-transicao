@@ -27,6 +27,8 @@ assert(collector.includes('term.category==="sedes"') && collector.includes('loca
 assert(collector.includes("caseOnly"), "TJDFT rejeita referência meramente judicial como falso positivo");
 assert(front.includes("/rest/v1/official_monitor_public_state"), "frontend lê somente o estado público sanitizado");
 assert(html.includes("MEU RASTRO NA INTERNET") && html.includes("webRadarUnlockForm"), "Radar Oficial possui área pessoal de pesquisa na web");
+assert(html.includes('data-web-filter="new"') && personalWeb.includes('webRadarFilter==="new"'), "Radar Web destaca resultados novos da última rodada");
+assert(personalWeb.includes('DuckDuckGo') && personalWeb.includes('web-radar-new'), "Radar Web mostra provedor e marca visualmente novos resultados");
 assert(personalWeb.includes("personal-web-search") && personalWeb.includes("sessionStorage"), "Radar Web usa backend protegido e sessão temporária");
 assert(personalWeb.includes("plano.webRadar.session.v2") && !personalWeb.includes("plano.webRadar.access.v1"), "Radar Web não persiste mais o código de acesso");
 assert(personalWeb.includes("força da correspondência") && !personalWeb.includes("confiança técnica"), "interface não confunde correspondência textual com identidade");
