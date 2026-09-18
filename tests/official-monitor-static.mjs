@@ -22,6 +22,8 @@ assert(html.includes("SEDES/DF") && html.includes("todas as menções"), "interf
 assert(!html.includes('SEEDF</span><strong>Órgão + pré-edital') && !html.includes('TJDFT</span><strong>Órgão + pré-edital'), "SEEDF e TJDFT permanecem somente em monitoramento específico");
 assert(front.includes("const grouped = new Map()"), "interface agrupa ocorrências coincidentes");
 assert(collector.includes('const isGeneral=label.includes("geral")'), "coletor diferencia radar geral de radar de concurso");
+assert(collector.includes('term.category==="sedes"') && collector.includes('localHour===21'), "histórico profundo diário prioriza SEDES e deixa SEEDF/TJDFT para janela noturna");
+assert(collector.includes("caseOnly"), "TJDFT rejeita referência meramente judicial como falso positivo");
 assert(front.includes("/rest/v1/official_monitor_public_state"), "frontend lê somente o estado público sanitizado");
 assert(!front.includes("official_monitor_terms") && !front.includes("official_monitor_occurrences"), "frontend não consulta tabelas privadas");
 assert(!front.includes("get_official_monitor_dashboard"), "frontend não usa RPC SECURITY DEFINER legada");
