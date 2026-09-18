@@ -67,6 +67,7 @@ jobs:
         run: |
           node --check scripts/official-monitor.mjs
           node --check assets/official-monitor.js
+          node --check assets/personal-web-search.js
       - name: Auditoria estática do Radar Oficial
         run: node tests/official-monitor-static.mjs
 
