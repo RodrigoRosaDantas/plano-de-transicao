@@ -34,10 +34,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Instalar navegador do coletor
+      - name: Instalar navegador e leitor PDF do coletor
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
+          command -v pdftotext >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y poppler-utils)
 
       - name: Varrer DOU e DODF
         run: node scripts/official-monitor.mjs
