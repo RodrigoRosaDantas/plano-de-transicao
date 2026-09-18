@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-18T20:02:11.285Z",
+    "generatedAt": "2026-09-18T20:29:12.819Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,16 +8,16 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-18T20:02:12.823Z",
+    "workParityEnrichedAt": "2026-09-18T20:29:14.229Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-18T20:02:12.879Z",
+    "postExamNormalizedAt": "2026-09-18T20:29:14.269Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-18T20:02:11.753Z",
-    "postExamScoringUpdatedAt": "2026-09-18T20:02:11.832Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-18T20:02:11.754Z",
-    "postExamCompetitionAuditedAt": "2026-09-18T20:02:11.832Z",
-    "postExamFollowUpUpdatedAt": "2026-09-18T20:02:11.832Z"
+    "postExamNotesSyncedAt": "2026-09-18T20:29:13.281Z",
+    "postExamScoringUpdatedAt": "2026-09-18T20:29:13.339Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-18T20:29:13.281Z",
+    "postExamCompetitionAuditedAt": "2026-09-18T20:29:13.339Z",
+    "postExamFollowUpUpdatedAt": "2026-09-18T20:29:13.339Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -1397,7 +1397,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-18T20:02:11.831Z",
+          "comparedAt": "2026-09-18T20:29:13.338Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3878,7 +3878,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-18T20:02:11.831Z"
+        "lastComparedAt": "2026-09-18T20:29:13.338Z"
       },
       "edas": {
         "examType": "A",
@@ -3891,7 +3891,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-18T20:02:11.832Z",
+          "comparedAt": "2026-09-18T20:29:13.339Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6140,7 +6140,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-18T20:02:11.832Z"
+        "lastComparedAt": "2026-09-18T20:29:13.339Z"
       }
     },
     "competitionReading": {
@@ -6231,10 +6231,10 @@
       "status": "active",
       "title": "Acompanhamento pós-prova",
       "description": "Painel permanente da SEDES/DF: correção, recursos, resultado e decisão seguinte, sem misturar os cargos.",
-      "currentStage": "Conferência e recursos",
-      "nextAction": "Revisar divergências e protocolar somente recursos fundamentados.",
+      "currentStage": "Aguardando resultado objetivo preliminar",
+      "nextAction": "Acompanhar gabarito definitivo e resultado objetivo preliminar; atualizar notas e classificação quando a banca publicar.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-18T20:02:11.832Z",
+      "lastCalculatedAt": "2026-09-18T20:29:13.339Z",
       "milestones": [
         {
           "id": "exam",
@@ -6255,14 +6255,14 @@
           "label": "Recursos",
           "start": "2026-09-10T10:00:00-03:00",
           "end": "2026-09-16T18:00:00-03:00",
-          "status": "current",
-          "detail": "Conferir divergências com fundamento objetivo"
+          "status": "done",
+          "detail": "Prazo encerrado; manter o registro dos recursos já protocolados"
         },
         {
           "id": "objective-result",
           "label": "Resultado objetivo preliminar",
           "date": "2026-10-13",
-          "status": "upcoming",
+          "status": "current",
           "detail": "Publicação oficial ainda pendente"
         },
         {
