@@ -60,6 +60,8 @@ assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "
 assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css") && sw.includes("./assets/personal-web-search.js"), "Radar Oficial e Radar Web estão incluídos no PWA");
 assert(sw.includes("plano-transicao-v49-brand-icon"), "cache v49 da Central está ativo e força recache da identidade visual");
 assert(html.includes("assets/central-mark.svg"), "Radar Oficial usa a identidade visual da Central");
+assert(html.includes('assets/central-icon-192.png') && html.includes('apple-touch-icon'), "Radar Oficial usa os favicons da Central");
+assert(html.includes("identificadores pessoais protegidos") && !html.includes("para o seu nome"), "texto do Radar representa nome, documento, e-mail e outros identificadores sem restringir o escopo ao nome");
 
 if (process.exitCode) {
   throw new Error("Auditoria estática do Radar Oficial falhou.");
