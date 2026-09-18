@@ -8,6 +8,7 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 - Home adaptativa por fase: no pós-prova, a SEDES/DF passa a ser tratada como processo em acompanhamento e a próxima transição aparece separadamente.
 - Fluxo longitudinal pós-prova: prova → gabarito → correção → recursos → resultado.
 - Central pré-edital para TJDFT e SEEDF, com cargos no radar, notícias identificadas por tipo de fonte, links oficiais e alertas de ativação.
+- **Radar Oficial DOU + DODF** com varredura automática, deduplicação de ocorrências, classificação de atos e monitoramento privado do nome do usuário; a interface pública recebe apenas agregados do radar pessoal.
 - Pós-prova SEDES/DF com visão separada de TDAS 202 e EDAS 400, janela de recursos, cronograma de publicações e fontes da banca.
 - Trilhas estratégicas seguintes destacadas sem misturar bases: SEEDF e TJDFT.
 - Plano focado em decisão e acompanhamento; a execução de questões permanece fora deste site.
@@ -28,6 +29,10 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 - Busca global por matéria, concurso, marco e investimento.
 - Cache local, exportação do snapshot em JSON e cartão social próprio.
 - Sincronização segura do Notion via `NOTION_TOKEN` em GitHub Actions.
+
+## Radar Oficial
+
+O módulo `radar-oficial.html` consulta uma RPC sanitizada no Supabase. Os termos pessoais e os textos das ocorrências privadas permanecem protegidos no banco; o GitHub Pages recebe somente métricas agregadas do radar pessoal e ocorrências associadas aos radares públicos de SEDES/DF, SEEDF e TJDFT. A coleta é executada por uma Edge Function agendada quatro vezes ao dia e usa fingerprint por termo/fonte/URL para impedir duplicação.
 
 ## Regra de governança
 
