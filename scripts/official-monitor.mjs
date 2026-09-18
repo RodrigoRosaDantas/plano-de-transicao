@@ -43,6 +43,18 @@ const timeoutFetch=async(url,ms=15000)=>{
     return await r.text();
   }finally{clearTimeout(timer)}
 };
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const resilientFetch=async(url,ms=18000,attempts=2)=>{
+  let lastError;
+  for(let attempt=1;attempt<=attempts;attempt++){
+    try{return await timeoutFetch(url,ms)}
+    catch(e){
+      lastError=e;
+      if(attempt<attempts)await sleep(650*attempt);
+    }
+  }
+  throw lastError;
+};
 const uniq=arr=>[...new Map(arr.map(x=>[x.url,x])).values()];
 
 async function oidcToken(){
@@ -141,7 +153,7 @@ async function scanSINJ(term){
       +"&sEcho=1&iDisplayStart="+offset
       +"&iDisplayLength="+pageSize;
 
-    const raw=await timeoutFetch(url,15000);
+    const raw=await resilientFetch(url,18000,2);
     let data;
     try{data=JSON.parse(raw)}catch{throw new Error("SINJ retornou formato inesperado")}
     const rows=Array.isArray(data?.aaData)?data.aaData:[];
@@ -228,9 +240,14 @@ const recordSourceError=(source,term,e)=>{
 };
 
 const dodfTerms=terms.filter(t=>(t.target_sources||[]).includes("DODF"));
-await Promise.allSettled(dodfTerms.map(async term=>{
-  try{await scanDODF(term)}catch(e){recordSourceError("DODF",term,e)}
-}));
+const dodfBatchSize=2;
+for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
+  const batch=dodfTerms.slice(i,i+dodfBatchSize);
+  await Promise.allSettled(batch.map(async term=>{
+    try{await scanDODF(term)}catch(e){recordSourceError("DODF",term,e)}
+  }));
+  if(i+dodfBatchSize<dodfTerms.length)await sleep(350);
+}
 
 const douTerms=terms.filter(t=>(t.target_sources||[]).includes("DOU"));
 for(const term of douTerms){
