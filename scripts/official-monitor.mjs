@@ -467,12 +467,21 @@ if(probeOfficial){
   }
 }
 
-const runHistory=[6,12,18,21].includes(localHour)||process.env.GITHUB_EVENT_NAME==="push";
+const isPushRun=process.env.GITHUB_EVENT_NAME==="push";
+const runHistory=[6,12,18,21].includes(localHour)||isPushRun;
+const historyTerms=runHistory
+  ? dodfTerms.filter(term=>
+      term.is_private
+      || term.category==="sedes"
+      || (!isPushRun&&localHour===21&&(term.category==="seedf"||term.category==="tjdft"))
+    )
+  : [];
 sourceHealth.DODF.historyStatus=runHistory?"ok":"skipped";
+sourceHealth.DODF.historyChecked=historyTerms.length;
 if(runHistory){
   const historyErrorsBefore=sourceHealth.DODF.errors.length;
-  for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
-    const batch=dodfTerms.slice(i,i+dodfBatchSize);
+  for(let i=0;i<historyTerms.length;i+=dodfBatchSize){
+    const batch=historyTerms.slice(i,i+dodfBatchSize);
     await Promise.allSettled(batch.map(async term=>{
       try{await scanDODFHistory(term)}
       catch(e){
@@ -482,7 +491,7 @@ if(runHistory){
           :String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180)));
       }
     }));
-    if(i+dodfBatchSize<dodfTerms.length)await sleep(250);
+    if(i+dodfBatchSize<historyTerms.length)await sleep(250);
   }
   sourceHealth.DODF.historyErrorCount=Math.max(0,sourceHealth.DODF.errors.length-historyErrorsBefore);
   if(sourceHealth.DODF.historyErrorCount){
