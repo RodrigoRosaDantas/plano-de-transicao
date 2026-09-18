@@ -161,7 +161,7 @@ for(const term of terms){
 }
 
 await browser.close();
-const clean=uniq(occurrences).slice(0,200);
+const clean=[...new Map(occurrences.map(o=>[`${o.term_id}|${o.source}|${o.url}`,o])).values()].slice(0,200);
 const status=Object.values(sourceHealth).every(s=>s.status==="ok")?"ok":"partial";
 const ingest=await fetch(EDGE+"/ingest",{
   method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
