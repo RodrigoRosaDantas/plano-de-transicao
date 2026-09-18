@@ -187,9 +187,11 @@ const sourceHealth={
   DOU:{status:"ok",checked:0,hits:0,errors:[],collector:"github-actions"},
   DODF:{
     status:"ok",checked:0,hits:0,errors:[],
-    collector:"DODF do dia + SINJ/DF",
-    fallback:"SINJ/DF",
+    collector:"SINJ/DF + DODF certificado",
+    fallback:"DODF certificado",
     todayStatus:"pending",
+    latestIndexedDate:null,
+    officialSiteStatus:"skipped",
     historyStatus:"pending",
     historyErrorCount:0
   }
@@ -322,16 +324,14 @@ async function findSearchInput(page){
   }
   return null;
 }
-async function scanSINJ(term){
-  const year=new Intl.DateTimeFormat("en",{timeZone:"America/Sao_Paulo",year:"numeric"}).format(new Date());
+async function scanSINJ(term,{todayOnly=false,maxPages=3,pageSize=25}={}){
+  const now=new Date();
+  const year=new Intl.DateTimeFormat("en",{timeZone:"America/Sao_Paulo",year:"numeric"}).format(now);
+  const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(now);
   const endpoint="https://www.sinj.df.gov.br/sinj/ashx/Datatable/ResultadoDePesquisaDiarioDatatable.ashx";
-  const pageSize=25; // lotes menores evitam timeout do SINJ; a paginação cobre todo o conjunto
-  let offset=0;
-  let total=Infinity;
-  let localHits=0;
-  let pages=0;
+  let offset=0,total=Infinity,localHits=0,pages=0,rowsSeen=0,latestDate=null;
 
-  while(offset<total&&pages<3){
+  while(offset<total&&pages<maxPages){
     const url=endpoint
       +"?tipo_pesquisa=diario"
       +"&filetext="+encodeURIComponent(term.query_text)
@@ -347,12 +347,16 @@ async function scanSINJ(term){
     const reported=Number(data?.iTotalDisplayRecords);
     if(Number.isFinite(reported))total=reported;
     if(!rows.length)break;
+    rowsSeen+=rows.length;
 
     for(const row of rows){
       const s=row?._source||{};
       if(s.nm_tipo_fonte&&String(s.nm_tipo_fonte).toUpperCase()!=="DODF")continue;
       const published_at=isoFromText(s.dt_assinatura);
-      if(!isRecentDate(published_at,35))continue;
+      if(published_at&&(!latestDate||published_at>latestDate))latestDate=published_at;
+      if(todayOnly){
+        if(published_at!==today)continue;
+      }else if(!isRecentDate(published_at,35))continue;
 
       const highlightPartsRaw=row?.highlight?.["arquivos.arquivo_diario.filetext"]
         || row?.highlight?.["ar_diario.filetext"]
@@ -391,7 +395,6 @@ async function scanSINJ(term){
         }
         if(!contextHit)continue;
         const verifiedText=contextHit.snippet||highlight;
-
         const section=s.secao_diario?("Seção "+String(s.secao_diario)):null;
         const edition=[s.nr_diario?("nº "+s.nr_diario):"",s.nm_tipo_edicao||"",s.nm_diferencial_edicao||""].filter(Boolean).join(" · ");
         occurrences.push({
@@ -402,8 +405,8 @@ async function scanSINJ(term){
           published_at,
           section,
           agency:term.is_private?null:term.label,
-          snippet:(verifiedText||snippet||"Ocorrência localizada no Diário Oficial do Distrito Federal.").slice(0,1200),
-          classification:classify(verifiedText||snippet)
+          snippet:(verifiedText||"Ocorrência localizada no Diário Oficial do Distrito Federal.").slice(0,1200),
+          classification:classify(verifiedText)
         });
         localHits++;
       }
@@ -412,13 +415,14 @@ async function scanSINJ(term){
     offset+=rows.length;
     pages++;
     if(rows.length<pageSize)break;
+    if(todayOnly&&latestDate&&latestDate<today)break;
   }
-  return localHits;
+  return {hits:localHits,latestDate,rowsSeen};
 }
-
 async function scanDODFHistory(term){
-  const n=await scanSINJ(term);
-  sourceHealth.DODF.hits+=n;
+  const result=await scanSINJ(term,{todayOnly:false,maxPages:3,pageSize:25});
+  sourceHealth.DODF.hits+=result.hits;
+  return result;
 }
 
 const recordSourceError=(source,term,e)=>{
@@ -433,42 +437,72 @@ const recordSourceError=(source,term,e)=>{
 
 const dodfTerms=terms.filter(t=>(t.target_sources||[]).includes("DODF"));
 sourceHealth.DODF.checked=dodfTerms.length;
-let dodfTodayOk=false;
-try{
-  const direct=await scanDODFToday(dodfTerms);
-  sourceHealth.DODF.hits+=direct.hits;
-  sourceHealth.DODF.todayStatus="ok";
-  sourceHealth.DODF.todaySections=direct.sections;
-  dodfTodayOk=true;
-}catch(e){
-  sourceHealth.DODF.todayStatus="partial";
-  sourceHealth.DODF.errors.push("DODF do dia: "+String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180));
+const localHour=Number(new Intl.DateTimeFormat("en-GB",{timeZone:"America/Sao_Paulo",hour:"2-digit",hourCycle:"h23"}).format(new Date()));
+const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+
+let latestIndexedDate=null;
+let todayQueryErrors=0;
+const dodfBatchSize=2;
+for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
+  const batch=dodfTerms.slice(i,i+dodfBatchSize);
+  const results=await Promise.all(batch.map(async term=>{
+    try{return {term,result:await scanSINJ(term,{todayOnly:true,maxPages:1,pageSize:25})}}
+    catch(e){
+      todayQueryErrors++;
+      const label=term.is_private?"termo privado":term.label;
+      sourceHealth.DODF.errors.push(label+" · SINJ hoje: "+String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180));
+      return {term,result:null};
+    }
+  }));
+  for(const item of results){
+    if(!item.result)continue;
+    sourceHealth.DODF.hits+=item.result.hits;
+    if(item.result.latestDate&&(!latestIndexedDate||item.result.latestDate>latestIndexedDate))latestIndexedDate=item.result.latestDate;
+  }
+  if(i+dodfBatchSize<dodfTerms.length)await sleep(200);
+}
+sourceHealth.DODF.latestIndexedDate=latestIndexedDate;
+sourceHealth.DODF.todayStatus=
+  latestIndexedDate===todayKey?"ok":
+  latestIndexedDate?"waiting-index":
+  todayQueryErrors?"partial":"empty";
+sourceHealth.DODF.status=(todayQueryErrors||latestIndexedDate!==todayKey)?"partial":"ok";
+
+const probeOfficial=[6,18,21].includes(localHour);
+if(probeOfficial){
+  try{
+    const direct=await scanDODFToday(dodfTerms);
+    sourceHealth.DODF.hits+=direct.hits;
+    sourceHealth.DODF.todayStatus="ok";
+    sourceHealth.DODF.officialSiteStatus="ok";
+    sourceHealth.DODF.todaySections=direct.sections;
+    if(!todayQueryErrors)sourceHealth.DODF.status="ok";
+  }catch(e){
+    sourceHealth.DODF.officialSiteStatus="unreachable";
+    sourceHealth.DODF.errors.push("DODF certificado: "+String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180));
+  }
 }
 
-const localHour=Number(new Intl.DateTimeFormat("en-GB",{timeZone:"America/Sao_Paulo",hour:"2-digit",hourCycle:"h23"}).format(new Date()));
 const runHistory=[6,12,18,21].includes(localHour);
 sourceHealth.DODF.historyStatus=runHistory?"ok":"skipped";
 if(runHistory){
   const historyErrorsBefore=sourceHealth.DODF.errors.length;
-  const dodfBatchSize=2;
   for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
     const batch=dodfTerms.slice(i,i+dodfBatchSize);
     await Promise.allSettled(batch.map(async term=>{
       try{await scanDODFHistory(term)}
       catch(e){
         const label=term.is_private?"termo privado":term.label;
-        sourceHealth.DODF.errors.push(label+": "+(term.is_private
+        sourceHealth.DODF.errors.push(label+" · histórico SINJ: "+(term.is_private
           ?"consulta histórica privada indisponível nesta execução"
           :String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180)));
       }
     }));
-    if(i+dodfBatchSize<dodfTerms.length)await sleep(350);
+    if(i+dodfBatchSize<dodfTerms.length)await sleep(250);
   }
   sourceHealth.DODF.historyErrorCount=Math.max(0,sourceHealth.DODF.errors.length-historyErrorsBefore);
   if(sourceHealth.DODF.historyErrorCount)sourceHealth.DODF.historyStatus="partial";
 }
-sourceHealth.DODF.status=dodfTodayOk?"ok":"partial";
-
 const douTerms=terms.filter(t=>(t.target_sources||[]).includes("DOU"));
 for(const term of douTerms){
   try{await scanDOU(term)}catch(e){recordSourceError("DOU",term,e)}
