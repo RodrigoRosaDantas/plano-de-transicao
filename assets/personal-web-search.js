@@ -1,6 +1,6 @@
 const WEB_RADAR_ENDPOINT="https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/personal-web-search";
-const WEB_RADAR_SESSION_KEY="plano.webRadar.access.v1";
-let webRadarCode=sessionStorage.getItem(WEB_RADAR_SESSION_KEY)||"";
+const WEB_RADAR_SESSION_KEY="plano.webRadar.session.v2";
+let webRadarSession=sessionStorage.getItem(WEB_RADAR_SESSION_KEY)||"";
 let webRadarData={counts:{},results:[],lastRun:null};
 let webRadarFilter="all";
 
@@ -31,15 +31,25 @@ const kindLabel=(v)=>({
   outro:"Outro"
 }[v]||"Outro");
 
+function clearWebRadarSession(){
+  webRadarSession="";
+  sessionStorage.removeItem(WEB_RADAR_SESSION_KEY);
+}
 async function webRadarApi(action,payload={}){
+  const body=action==="unlock"
+    ? {action,code:String(payload.code||"")}
+    : {action,session:webRadarSession,...payload};
   const res=await fetch(WEB_RADAR_ENDPOINT,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({action,code:webRadarCode,...payload}),
+    body:JSON.stringify(body),
     cache:"no-store"
   });
   const data=await res.json().catch(()=>({ok:false,error:"Resposta inválida do servidor."}));
-  if(!res.ok||!data.ok)throw Object.assign(new Error(data.error||("HTTP "+res.status)),{status:res.status,data});
+  if(!res.ok||!data.ok){
+    if(res.status===401&&action!=="unlock")clearWebRadarSession();
+    throw Object.assign(new Error(data.error||("HTTP "+res.status)),{status:res.status,data});
+  }
   return data;
 }
 function setLocked(locked){
@@ -61,7 +71,7 @@ function renderWebRadar(){
 
   const rows=(webRadarData.results||[]).filter(r=>webRadarFilter==="all"||r.review_status===webRadarFilter);
   w$("#webRadarResults").innerHTML=rows.length?rows.map(r=>{
-    const conf=Number(r.confidence||0);
+    const strength=Math.max(0,Math.min(100,Number(r.confidence||0)));
     const ctx=String(r.context||"").replace(/\s+/g," ").trim();
     const reviewed=r.review_status!=="candidate";
     return `<article class="web-radar-result" data-web-result="${wEsc(r.id)}">
@@ -72,11 +82,11 @@ function renderWebRadar(){
         </div>
         <a class="radar-hit-link" href="${wEsc(r.url)}" target="_blank" rel="noreferrer">Abrir resultado ↗</a>
       </div>
-      <p>${wEsc(ctx||"Nome exato localizado no índice; abra a fonte para conferir o contexto completo.")}</p>
+      <p>${wEsc(ctx||"Nome localizado no índice; abra a fonte para conferir o contexto completo.")}</p>
       <div class="web-radar-result-meta">
         <span class="radar-tag">${wEsc(kindLabel(r.kind))}</span>
         <span class="radar-tag">${wEsc(statusLabel(r.review_status))}</span>
-        <span class="radar-tag">confiança técnica ${conf}%</span>
+        <span class="radar-tag" title="Mede apenas a força da correspondência textual do nome; não confirma identidade.">força da correspondência ${strength}%</span>
         <span class="radar-tag">detectado ${wFmtDateTime(r.first_seen_at)}</span>
         ${r.published_at?'<span class="radar-tag">data do índice '+wEsc(wFmtDate(r.published_at))+'</span>':""}
       </div>
@@ -90,10 +100,13 @@ function renderWebRadar(){
   }).join(""):'<div class="radar-empty">Nenhum resultado nesse filtro.</div>';
 }
 async function unlockWebRadar(code){
-  webRadarCode=String(code||"").trim().toUpperCase();
-  if(!webRadarCode)throw new Error("Digite o código de acesso.");
-  const data=await webRadarApi("status");
-  sessionStorage.setItem(WEB_RADAR_SESSION_KEY,webRadarCode);
+  const normalized=String(code||"").trim().toUpperCase();
+  if(!normalized)throw new Error("Digite o código de acesso.");
+  const data=await webRadarApi("unlock",{code:normalized});
+  webRadarSession=String(data.session||"");
+  if(!webRadarSession)throw new Error("Sessão privada não foi criada.");
+  sessionStorage.setItem(WEB_RADAR_SESSION_KEY,webRadarSession);
+  delete data.session;
   webRadarData=data;
   setLocked(false);
   renderWebRadar();
@@ -110,23 +123,27 @@ w$("#webRadarUnlockForm")?.addEventListener("submit",async(e)=>{
     await unlockWebRadar(w$("#webRadarCode")?.value);
     if(w$("#webRadarCode"))w$("#webRadarCode").value="";
   }catch(error){
-    webRadarCode="";
-    sessionStorage.removeItem(WEB_RADAR_SESSION_KEY);
+    clearWebRadarSession();
     setLocked(true);
     if(err)err.textContent=error.message||"Não foi possível desbloquear.";
   }
 });
-w$("#webRadarLockBtn")?.addEventListener("click",()=>{
-  webRadarCode="";sessionStorage.removeItem(WEB_RADAR_SESSION_KEY);webRadarData={counts:{},results:[],lastRun:null};setLocked(true);
+w$("#webRadarLockBtn")?.addEventListener("click",async()=>{
+  try{if(webRadarSession)await webRadarApi("lock");}catch{}
+  clearWebRadarSession();
+  webRadarData={counts:{},results:[],lastRun:null};
+  setLocked(true);
 });
 w$("#webRadarSearchBtn")?.addEventListener("click",async()=>{
   const btn=w$("#webRadarSearchBtn"),feedback=w$("#webRadarSearchFeedback");
-  btn.disabled=true;btn.textContent="Pesquisando…";if(feedback)feedback.textContent="Consultando a web e validando o nome exato nas fontes.";
+  btn.disabled=true;btn.textContent="Pesquisando…";
+  if(feedback)feedback.textContent="Consultando a web e validando a correspondência exata do nome nas fontes.";
   try{
     const data=await webRadarApi("search");
     webRadarData=data;renderWebRadar();
     if(feedback)feedback.textContent=`Pesquisa concluída: ${data.search?.verified||0} correspondência(s), ${data.search?.newResults||0} nova(s).`;
   }catch(error){
+    if(error.status===401)setLocked(true);
     if(feedback)feedback.textContent=error.message||"Falha na pesquisa.";
   }finally{btn.disabled=false;btn.textContent="⌕ Pesquisar agora";}
 });
@@ -146,13 +163,16 @@ w$("#webRadarResults")?.addEventListener("click",async(e)=>{
     webRadarData=await webRadarApi("review",{id,status});
     renderWebRadar();
   }catch(error){
-    const feedback=w$("#webRadarSearchFeedback");if(feedback)feedback.textContent=error.message||"Não foi possível revisar.";
+    if(error.status===401)setLocked(true);
+    const feedback=w$("#webRadarSearchFeedback");
+    if(feedback)feedback.textContent=error.message||"Não foi possível revisar.";
     button.disabled=false;
   }
 });
 setLocked(true);
-if(webRadarCode){
-  unlockWebRadar(webRadarCode).catch(()=>{
-    webRadarCode="";sessionStorage.removeItem(WEB_RADAR_SESSION_KEY);setLocked(true);
+if(webRadarSession){
+  refreshWebRadar().then(()=>setLocked(false)).catch(()=>{
+    clearWebRadarSession();
+    setLocked(true);
   });
 }
