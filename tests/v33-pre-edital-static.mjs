@@ -52,9 +52,9 @@ for (const value of [
 
 assert.ok(index.includes('pre-post-v33.css?v=36'));
 assert.ok(index.includes('aria-label="Pré-prova / Pré-edital"'));
-assert.ok(index.includes('__PLANO_UI_RELEASE__ = "v40"'));
+assert.ok(index.includes('__PLANO_UI_RELEASE__ = "v44"'));
 assert.ok(index.includes('work-app.js?v=38&home=37'));
-assert.ok(sw.includes("const CACHE='plano-transicao-v43-private-identifiers'"));
+assert.ok(sw.includes("const CACHE='plano-transicao-v44-sedes-quadrix'"));
 assert.ok(sw.includes("'./assets/pre-post-v33.css'"));
 
 console.log('PASS  v33: radar pré-edital de TJDFT/SEEDF e comando pós-prova SEDES/DF estruturados.');
