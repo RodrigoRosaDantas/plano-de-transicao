@@ -32,13 +32,16 @@ jobs:
       - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
-      - name: Instalar navegador e leitor PDF do coletor
+      - name: Preparar leitor PDF quando necessário
         run: |
-          npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
-          command -v pdftotext >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y poppler-utils)
+          hour="$(TZ=America/Sao_Paulo date +%H)"
+          if [[ "$hour" == "06" || "$hour" == "18" || "$hour" == "21" ]]; then
+            command -v pdftotext >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y poppler-utils)
+          else
+            echo "Varredura horária leve: PDF certificado não é sondado neste horário."
+          fi
 
       - name: Varrer DOU e DODF
         run: node scripts/official-monitor.mjs
