@@ -79,7 +79,7 @@ expect('console adaptativo foi movido para o host pós-prova', source.includes('
 expect('leitura competitiva não injeta na Home', competition.includes('function mountDedicated') && !competition.includes("querySelector('.command-view')"));
 expect('fechamento local saiu da Home', transitionGate.includes("$('#postExamControlSlot')") && !transitionGate.includes("const root = $('.command-view')"));
 expect('shell conhece as novas fases', workspace.includes("'pre-exam'") && workspace.includes("'post-exam'"));
-expect('cache v44 inclui estilos das fases, Radar Oficial e tratamento móvel', serviceWorker.includes("plano-transicao-v44-sedes-quadrix") && serviceWorker.includes("'./assets/transition-pages-v29.css'") && serviceWorker.includes("'./assets/pre-post-v33.css'") && serviceWorker.includes("'./assets/navigation-mobile-v38.css'"));
+expect('cache v45 inclui estilos das fases, Radar Oficial e tratamento móvel', serviceWorker.includes("plano-transicao-v45-post-exam-host") && serviceWorker.includes("'./assets/transition-pages-v29.css'") && serviceWorker.includes("'./assets/pre-post-v33.css'") && serviceWorker.includes("'./assets/navigation-mobile-v38.css'"));
 expect('estilos das fases existem', pageStyles.includes('.preexam-hero') && pageStyles.includes('.post-exam-view'));
 
 
