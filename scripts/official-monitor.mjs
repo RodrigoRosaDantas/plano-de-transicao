@@ -142,6 +142,8 @@ const relevantPublicContext=(text,term)=>{
   const hasConcurso=/\b(concurso|certame)\b/.test(n);
   if(label.includes("banca")&&!(hasConcurso&&/\bbanca\b/.test(n)))return null;
   if(label.includes("comissao")&&!(hasConcurso&&/\bcomissao\b/.test(n)))return null;
+  if(label.includes("resultado")&&!(hasConcurso&&/\bresultado\b/.test(n)))return null;
+  if(label.includes("homologacao")&&!(hasConcurso&&/\bhomologacao\b/.test(n)))return null;
   if(label.includes("concurso")&&!hasConcurso)return null;
   const agencyOk=
     category==="seedf"
@@ -184,7 +186,7 @@ const sourceHealth={
     collector:"SINJ/DF + DODF certificado",
     fallback:"DODF certificado",
     todayStatus:"pending",
-    latestIndexedDate:null,
+    latestMatchedDate:null,
     officialSiteStatus:"skipped",
     historyStatus:"pending",
     historyErrorCount:0
@@ -409,7 +411,7 @@ sourceHealth.DODF.checked=dodfTerms.length;
 const localHour=Number(new Intl.DateTimeFormat("en-GB",{timeZone:"America/Sao_Paulo",hour:"2-digit",hourCycle:"h23"}).format(new Date()));
 const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 
-let latestIndexedDate=null;
+let latestMatchedDate=null;
 let todayQueryErrors=0;
 let todayHits=0;
 const dodfBatchSize=2;
@@ -428,11 +430,11 @@ for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
     if(!item.result)continue;
     sourceHealth.DODF.hits+=item.result.hits;
     todayHits+=item.result.hits;
-    if(item.result.latestDate&&(!latestIndexedDate||item.result.latestDate>latestIndexedDate))latestIndexedDate=item.result.latestDate;
+    if(item.result.latestDate&&(!latestMatchedDate||item.result.latestDate>latestMatchedDate))latestMatchedDate=item.result.latestDate;
   }
   if(i+dodfBatchSize<dodfTerms.length)await sleep(200);
 }
-sourceHealth.DODF.latestIndexedDate=latestIndexedDate;
+sourceHealth.DODF.latestMatchedDate=latestMatchedDate;
 sourceHealth.DODF.todayHits=todayHits;
 sourceHealth.DODF.todayStatus=todayQueryErrors?"partial":"checked";
 sourceHealth.DODF.status=todayQueryErrors?"partial":"ok";
