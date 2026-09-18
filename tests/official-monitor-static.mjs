@@ -38,6 +38,8 @@ assert(personalWeb.includes('DuckDuckGo') && personalWeb.includes('web-radar-new
 assert(personalWeb.includes("personal-web-search") && personalWeb.includes("sessionStorage"), "Radar Web usa backend protegido e sessão temporária");
 assert(personalWeb.includes("plano.webRadar.session.v2") && !personalWeb.includes("plano.webRadar.access.v1"), "Radar Web não persiste mais o código de acesso");
 assert(personalWeb.includes("força da correspondência") && !personalWeb.includes("confiança técnica"), "interface não confunde correspondência textual com identidade");
+assert(personalWeb.includes("matched_identifiers") && personalWeb.includes("matchedLabel"), "resultado único pode exibir múltiplos identificadores mascarados");
+assert(personalWeb.includes("correspondência textual do identificador") && !personalWeb.includes("correspondência textual do nome"), "texto da interface é válido para nome, documento e e-mail");
 assert(!personalWeb.includes("MNS2-CZFH-K7VN") && !html.includes("MNS2-CZFH-K7VN"), "código pessoal não está hardcoded no repositório público");
 assert(!front.includes("official_monitor_terms") && !front.includes("official_monitor_occurrences"), "frontend não consulta tabelas privadas");
 assert(!front.includes("get_official_monitor_dashboard"), "frontend não usa RPC SECURITY DEFINER legada");
