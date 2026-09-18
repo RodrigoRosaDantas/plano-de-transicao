@@ -12,6 +12,7 @@ const assert = (condition, message) => {
 
 const html = read("radar-oficial.html");
 const front = read("assets/official-monitor.js");
+const personalWeb = read("assets/personal-web-search.js");
 const collector = read("scripts/official-monitor.mjs");
 const workflow = read(".github/workflows/official-monitor.yml");
 const sw = read("sw.js");
@@ -25,6 +26,9 @@ assert(collector.includes('const isGeneral=label.includes("geral")'), "coletor d
 assert(collector.includes('term.category==="sedes"') && collector.includes('localHour===21'), "histórico profundo diário prioriza SEDES e deixa SEEDF/TJDFT para janela noturna");
 assert(collector.includes("caseOnly"), "TJDFT rejeita referência meramente judicial como falso positivo");
 assert(front.includes("/rest/v1/official_monitor_public_state"), "frontend lê somente o estado público sanitizado");
+assert(html.includes("MEU RASTRO NA INTERNET") && html.includes("webRadarUnlockForm"), "Radar Oficial possui área pessoal de pesquisa na web");
+assert(personalWeb.includes("personal-web-search") && personalWeb.includes("sessionStorage"), "Radar Web usa backend protegido e código apenas na sessão");
+assert(!personalWeb.includes("MNS2-CZFH-K7VN") && !html.includes("MNS2-CZFH-K7VN"), "código pessoal não está hardcoded no repositório público");
 assert(!front.includes("official_monitor_terms") && !front.includes("official_monitor_occurrences"), "frontend não consulta tabelas privadas");
 assert(!front.includes("get_official_monitor_dashboard"), "frontend não usa RPC SECURITY DEFINER legada");
 assert(!html.includes("Rodrigo Rosa Dantas") && !front.includes("Rodrigo Rosa Dantas") && !collector.includes("Rodrigo Rosa Dantas"), "nome pessoal não está hardcoded no repositório público");
@@ -32,7 +36,7 @@ assert(workflow.includes("id-token: write"), "workflow usa OIDC do GitHub");
 assert(workflow.includes('cron: "15 9-21 * * *"') && workflow.includes('cron: "15 0 * * *"'), "agendamento automático está configurado");
 assert(collector.includes("relevantPublicContext(text,term)") && collector.includes("relevantPublicContext(pdfText,term)"), "coletor aplica contexto estrito para reduzir falsos positivos");
 assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "ausência de ocorrência hoje não degrada a saúde da fonte");
-assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css"), "Radar Oficial está incluído no PWA");
+assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css") && sw.includes("./assets/personal-web-search.js"), "Radar Oficial e Radar Web estão incluídos no PWA");
 
 if (process.exitCode) {
   throw new Error("Auditoria estática do Radar Oficial falhou.");
