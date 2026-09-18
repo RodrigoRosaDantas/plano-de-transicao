@@ -81,27 +81,44 @@ function render() {
 function renderSources(sources) {
   const names = [["DOU","Diário Oficial da União"],["DODF","Diário Oficial do Distrito Federal"]];
   let allOk = true;
+  let waitingOfficialUpdate = false;
   $("#sourceHealth").innerHTML = names.map(([key,label])=>{
     const s = sources[key] || {status:"pending"};
     const st = s.status || "pending";
-    if(st!=="ok") allOk=false;
+    const waitingIndex = key==="DODF" && s.todayStatus==="waiting-index";
+    if(st!=="ok" && !waitingIndex) allOk=false;
+    if(waitingIndex) waitingOfficialUpdate=true;
+
+    const historyLabel =
+      s.historyStatus==="skipped" ? "histórico já preservado; não reconsultado nesta rodada" :
+      s.historyStatus==="ok" ? "histórico conferido" :
+      s.historyStatus==="partial" ? "histórico conferido parcialmente" :
+      "histórico pendente";
+
     const dodfToday = s.todayStatus==="ok"
-      ? `SINJ do dia indexado${s.officialSiteStatus==="ok"?" · DODF certificado acessível":""}`
-      : s.todayStatus==="waiting-index"
-        ? `Aguardando indexação de hoje no SINJ${s.latestIndexedDate?` · mais recente: ${fmtDate(s.latestIndexedDate)}`:""}`
+      ? `edição de hoje já indexada no SINJ${s.officialSiteStatus==="ok"?" · DODF certificado acessível":""}`
+      : waitingIndex
+        ? `edição de hoje ainda não indexada no SINJ${s.latestIndexedDate?` · última disponível: ${fmtDate(s.latestIndexedDate)}`:""}`
         : s.todayStatus==="empty"
           ? "SINJ consultado · nenhuma edição localizada para os radares"
-          : `Consulta do dia parcial${s.latestIndexedDate?` · SINJ até ${fmtDate(s.latestIndexedDate)}`:""}`;
+          : `consulta do dia incompleta${s.latestIndexedDate?` · SINJ disponível até ${fmtDate(s.latestIndexedDate)}`:""}`;
+
     const detail = key==="DODF" && s.todayStatus
-      ? `${dodfToday} · histórico: ${s.historyStatus||"pendente"}${s.historyErrorCount?` · ${s.historyErrorCount} falha(s)`:""}`
+      ? `${dodfToday} · ${historyLabel}${s.historyErrorCount?` · ${s.historyErrorCount} falha(s)`:""}`
       : st==="ok"
         ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)`
         : st==="partial"
           ? `${s.checked||0} radares checados · ${s.errorCount||0} consulta(s) com falha nesta varredura`
           : "Aguardando diagnóstico da fonte.";
-    return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":"DF"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(st)}">${st==="ok"?"online":st==="partial"?"parcial":st}</span></div>`;
+
+    const visualStatus = waitingIndex ? "waiting" : st;
+    const statusLabel = waitingIndex ? "aguardando edição" : st==="ok" ? "online" : st==="partial" ? "parcial" : st;
+    return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":"DF"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(visualStatus)}">${esc(statusLabel)}</span></div>`;
   }).join("");
-  $("#sourceOverall").textContent = allOk ? "fontes online" : "atenção";
+
+  $("#sourceOverall").textContent = waitingOfficialUpdate
+    ? "DF aguardando publicação/indexação"
+    : allOk ? "fontes online" : "verificar fonte";
 }
 
 function renderHits() {
