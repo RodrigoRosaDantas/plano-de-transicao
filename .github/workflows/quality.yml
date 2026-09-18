@@ -69,9 +69,13 @@ jobs:
         run: |
           node --check scripts/official-monitor.mjs
           node --check assets/official-monitor.js
-          node --check assets/personal-web-search.js\n          node --check scripts/sedes-quadrix-monitor.mjs\n          node --check assets/post-exam-quadrix-v44.js
+          node --check assets/personal-web-search.js
+          node --check scripts/sedes-quadrix-monitor.mjs
+          node --check assets/post-exam-quadrix-v44.js
       - name: Auditoria estática do Radar Oficial + Web privado
         run: node tests/official-monitor-static.mjs
+      - name: Auditoria estática do Pós-Prova SEDES/Quadrix v44
+        run: node tests/sedes-quadrix-static.mjs
 
   ui:
     runs-on: ubuntu-latest
