@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-import { writeFile, unlink } from "node:fs/promises";
+import { writeFile, unlink, stat } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -74,6 +74,26 @@ const binaryFetch=async(url,ms=25000)=>{
     if(!r.ok)throw new Error("HTTP "+r.status);
     return {bytes:new Uint8Array(await r.arrayBuffer()),contentType:r.headers.get("content-type")||""};
   }finally{clearTimeout(timer)}
+};
+const curlText=async(url,seconds=25)=>{
+  const {stdout}=await execFileAsync("curl",[
+    "-L","--fail","--silent","--show-error",
+    "--retry","2","--retry-delay","1","--connect-timeout","8","--max-time",String(seconds),
+    "-A","Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+    url
+  ],{maxBuffer:20*1024*1024,timeout:(seconds+8)*1000});
+  return String(stdout||"");
+};
+const curlFile=async(url,path,seconds=40)=>{
+  await execFileAsync("curl",[
+    "-L","--fail","--silent","--show-error",
+    "--retry","2","--retry-delay","1","--connect-timeout","8","--max-time",String(seconds),
+    "-A","Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140 Safari/537.36",
+    "-o",path,url
+  ],{maxBuffer:2*1024*1024,timeout:(seconds+8)*1000});
+  const info=await stat(path);
+  if(info.size<10000)throw new Error("arquivo DODF retornou conteúdo insuficiente");
+  return info.size;
 };
 const findTermContext=(text,term)=>{
   const compact=String(text||"").replace(/\s+/g," ").trim();
@@ -191,7 +211,15 @@ async function scanDODFToday(dodfTerms){
   const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   const displayDate=new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
   const home="https://dodf.df.gov.br/?dt=1";
-  const html=await resilientFetch(home,18000,2);
+  let html="";
+  try{html=await resilientFetch(home,15000,2)}
+  catch(fetchError){
+    try{html=await curlText(home,20)}
+    catch(curlError){
+      const code=fetchError?.cause?.code||fetchError?.code||"fetch";
+      throw new Error("homepage DODF indisponível ("+code+"): "+String(curlError?.message||curlError).slice(0,140));
+    }
+  }
   const hrefMatches=[...html.matchAll(/href=["']([^"']*visualizar-pdf[^"']*)["']/gi)].map(m=>htmlDecode(m[1]));
   const pdfHref=hrefMatches.find(x=>/INTEGRA\.pdf/i.test(x))||hrefMatches[0];
   if(!pdfHref)throw new Error("link da edição PDF do dia não localizado");
@@ -199,10 +227,23 @@ async function scanDODFToday(dodfTerms){
   const tmp="/tmp/dodf-oficial-dia.pdf";
   let pdfText="";
   try{
-    const {bytes,contentType}=await binaryFetch(pdfUrl,30000);
-    if(bytes.length<10000)throw new Error("PDF do dia retornou conteúdo insuficiente");
-    if(contentType&&!/pdf|octet-stream/i.test(contentType))throw new Error("resposta do DODF não parece PDF");
-    await writeFile(tmp,bytes);
+    let downloaded=false;
+    try{
+      const {bytes,contentType}=await binaryFetch(pdfUrl,25000);
+      if(bytes.length<10000)throw new Error("PDF do dia retornou conteúdo insuficiente");
+      if(contentType&&!/pdf|octet-stream/i.test(contentType))throw new Error("resposta do DODF não parece PDF");
+      await writeFile(tmp,bytes);
+      downloaded=true;
+    }catch(fetchError){
+      try{
+        await curlFile(pdfUrl,tmp,35);
+        downloaded=true;
+      }catch(curlError){
+        const code=fetchError?.cause?.code||fetchError?.code||"fetch";
+        throw new Error("PDF certificado indisponível ("+code+"): "+String(curlError?.message||curlError).slice(0,140));
+      }
+    }
+    if(!downloaded)throw new Error("PDF certificado não foi baixado");
     const out=await execFileAsync("pdftotext",["-layout",tmp,"-"],{maxBuffer:80*1024*1024,timeout:45000});
     pdfText=String(out.stdout||"").replace(/\u0000/g," ");
   }finally{
