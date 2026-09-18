@@ -20,7 +20,9 @@ const sw = read("sw.js");
 
 assert(html.includes("Radar Oficial"), "página dedicada do Radar Oficial existe");
 assert(html.includes("06:15–18:15") && html.includes("21:15"), "cadência exibida coincide com o workflow");
-assert(html.includes("SEDES/DF") && html.includes("todas as menções"), "interface explicita monitoramento amplo da SEDES/DF");
+assert(html.includes("SEDES/DF") && html.includes("Monitor institucional") && html.includes("OU e DODF"), "interface mantém a SEDES no Radar Oficial somente como monitor institucional DOU/DODF");
+assert(html.includes("Cronograma da banca, inscrições, gabaritos e resultados da Quadrix ficam no Pós-Prova"), "Radar Oficial direciona o acompanhamento do concurso SEDES para o Pós-Prova");
+assert(!html.includes("Órgão + pós-prova") && !html.includes("MONITOR OFICIAL · QUADRIX"), "Radar Oficial não incorpora o módulo Pós-Prova SEDES/Quadrix");
 assert(!html.includes('SEEDF</span><strong>Órgão + pré-edital') && !html.includes('TJDFT</span><strong>Órgão + pré-edital'), "SEEDF e TJDFT permanecem somente em monitoramento específico");
 assert(front.includes("const grouped = new Map()"), "interface agrupa ocorrências coincidentes");
 assert(collector.includes('const isGeneral=label.includes("geral")'), "coletor diferencia radar geral de radar de concurso");
