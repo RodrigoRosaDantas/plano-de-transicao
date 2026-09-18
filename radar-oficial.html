@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f0e">
+  <meta name="description" content="Radar Oficial do Plano de Transição — monitoramento de DOU e DODF para nome, concursos e órgãos de interesse.">
+  <title>Radar Oficial · Plano de Transição</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="assets/work-app.css?v=36">
+  <link rel="stylesheet" href="assets/official-monitor.css?v=1">
+</head>
+<body class="official-monitor-page">
+  <a class="skip-link" href="#radarContent">Pular para o conteúdo</a>
+  <header class="radar-topbar">
+    <a class="radar-brand" href="./" aria-label="Voltar ao Plano de Transição">
+      <span class="radar-brand-mark">⌁</span>
+      <span><small>Plano de Transição</small><strong>Radar Oficial</strong></span>
+    </a>
+    <div class="radar-actions">
+      <span class="radar-live"><i></i><b id="globalStatus">Carregando</b></span>
+      <button id="refreshRadar" class="radar-button" type="button">↻ Atualizar painel</button>
+      <a class="radar-button radar-button--ghost" href="./">← Agora</a>
+    </div>
+  </header>
+
+  <main id="radarContent" class="radar-shell" aria-live="polite">
+    <section class="radar-hero">
+      <div>
+        <span class="radar-eyebrow">DOU + DODF · MONITORAMENTO AUTOMÁTICO</span>
+        <h1>O Diário Oficial entra no radar antes de virar surpresa.</h1>
+        <p>Varredura automática de publicações oficiais para o seu nome, SEDES/DF, SEEDF e TJDFT. Termos pessoais ficam protegidos no banco e não são enviados ao navegador.</p>
+      </div>
+      <aside class="radar-next-scan">
+        <span>Rotina automática</span>
+        <strong>4× por dia</strong>
+        <small>06:15 · 11:15 · 16:15 · 21:15 (Brasília)</small>
+      </aside>
+    </section>
+
+    <section class="radar-summary-grid" aria-label="Resumo do radar">
+      <article class="radar-card radar-card--personal">
+        <div class="radar-card-head"><span>🔐 Meu nome</span><b id="personalState">—</b></div>
+        <strong id="personalHits">—</strong>
+        <p>ocorrências pessoais detectadas nos últimos 30 dias</p>
+        <small id="personalLast">Termo privado: não exibido no site.</small>
+      </article>
+      <article class="radar-card">
+        <div class="radar-card-head"><span>📡 Hoje</span><b>DOU + DODF</b></div>
+        <strong id="todayCount">—</strong>
+        <p>ocorrências públicas do plano hoje</p>
+        <small>Concursos, órgãos e atos relacionados.</small>
+      </article>
+      <article class="radar-card">
+        <div class="radar-card-head"><span>🗓 7 dias</span><b>Radar</b></div>
+        <strong id="weekCount">—</strong>
+        <p>ocorrências recentes</p>
+        <small>Sem duplicar a mesma publicação.</small>
+      </article>
+      <article class="radar-card">
+        <div class="radar-card-head"><span>🧾 Última varredura</span><b id="runStatus">—</b></div>
+        <strong id="lastRunTime">—</strong>
+        <p id="runMeta">Aguardando leitura do banco.</p>
+        <small id="generatedAt">—</small>
+      </article>
+    </section>
+
+    <section class="radar-grid-2">
+      <article class="radar-panel">
+        <header class="radar-panel-head">
+          <div><span class="radar-eyebrow">FONTES</span><h2>Saúde dos monitores</h2></div>
+          <span class="radar-chip" id="sourceOverall">checando</span>
+        </header>
+        <div id="sourceHealth" class="radar-source-list">
+          <div class="radar-skeleton"></div><div class="radar-skeleton"></div>
+        </div>
+      </article>
+
+      <article class="radar-panel">
+        <header class="radar-panel-head">
+          <div><span class="radar-eyebrow">MEUS CONCURSOS</span><h2>Radares ativos</h2></div>
+        </header>
+        <div class="radar-contests">
+          <div class="radar-contest"><span>SEDES/DF</span><strong>Pós-prova</strong><small>resultado · convocação · nomeação</small></div>
+          <div class="radar-contest"><span>SEEDF</span><strong>Pré-edital</strong><small>comissão · banca · edital · retificação</small></div>
+          <div class="radar-contest"><span>TJDFT</span><strong>Pré-edital</strong><small>concurso · provimento · nomeação</small></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="radar-panel">
+      <header class="radar-panel-head radar-panel-head--wrap">
+        <div><span class="radar-eyebrow">OCORRÊNCIAS</span><h2>Publicações encontradas</h2><p>Somente radares públicos são mostrados aqui. O radar pessoal mantém detalhes fora desta página pública.</p></div>
+        <div class="radar-filters" role="group" aria-label="Filtrar ocorrências">
+          <button type="button" class="active" data-filter="all">Todas</button>
+          <button type="button" data-filter="sedes">SEDES</button>
+          <button type="button" data-filter="seedf">SEEDF</button>
+          <button type="button" data-filter="tjdft">TJDFT</button>
+        </div>
+      </header>
+      <div id="hitsList" class="radar-hit-list"><div class="radar-empty">Carregando ocorrências…</div></div>
+    </section>
+
+    <section class="radar-panel radar-sources-panel">
+      <header class="radar-panel-head">
+        <div><span class="radar-eyebrow">CONSULTA DIRETA</span><h2>Fontes oficiais</h2></div>
+      </header>
+      <div class="radar-source-links">
+        <a href="https://www.in.gov.br/consulta/-/buscar/dou" target="_blank" rel="noreferrer"><b>Diário Oficial da União</b><small>Imprensa Nacional · pesquisa oficial ↗</small></a>
+        <a href="https://dodf.df.gov.br/?dt=1" target="_blank" rel="noreferrer"><b>Diário Oficial do Distrito Federal</b><small>Sistema oficial de busca do DODF ↗</small></a>
+        <a href="https://www.sinj.df.gov.br/sinj/" target="_blank" rel="noreferrer"><b>SINJ/DF</b><small>Pesquisa normativa e edições do DODF ↗</small></a>
+      </div>
+    </section>
+
+    <p class="radar-footnote">O radar é um mecanismo de detecção e triagem. A versão certificada do diário oficial continua sendo a fonte jurídica definitiva da publicação.</p>
+  </main>
+
+  <script type="module" src="assets/official-monitor.js?v=1"></script>
+</body>
+</html>
