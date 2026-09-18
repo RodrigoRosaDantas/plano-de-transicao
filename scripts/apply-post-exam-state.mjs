@@ -70,7 +70,7 @@ snapshot.timeline = (snapshot.timeline || []).map((item) => {
   return {
     ...item,
     detail: hasPreliminary
-      ? 'EDAS e TDAS realizadas em 06/09/2026. Gabarito preliminar incorporado; o ciclo está em auditoria de questões, recursos e acompanhamento do resultado objetivo.'
+      ? (resourcesClosed ? 'EDAS e TDAS realizadas em 06/09/2026. Gabarito preliminar incorporado; a janela de recursos encerrou e o ciclo aguarda o resultado objetivo.' : 'EDAS e TDAS realizadas em 06/09/2026. Gabarito preliminar incorporado; o ciclo está em auditoria de questões, recursos e acompanhamento do resultado objetivo.')
       : 'EDAS e TDAS realizadas em 06/09/2026. O ciclo entrou em correção, auditoria de questões, recursos e acompanhamento de resultado.'
   };
 });
@@ -78,7 +78,7 @@ snapshot.timeline = (snapshot.timeline || []).map((item) => {
 snapshot.strategy = {
   ...(snapshot.strategy || {}),
   current: hasPreliminary
-    ? 'As provas SEDES/DF foram concluídas e a correção preliminar está registrada. A SEDES segue em recursos, gabarito definitivo e classificação, enquanto SEEDF e TJDFT avançam como projetos separados da nova preparação.'
+    ? (resourcesClosed ? 'As provas SEDES/DF foram concluídas e a correção preliminar está registrada. A janela de recursos foi encerrada; agora a SEDES segue em gabarito definitivo, resultado e classificação, enquanto SEEDF e TJDFT avançam como projetos separados da nova preparação.' : 'As provas SEDES/DF foram concluídas e a correção preliminar está registrada. A SEDES segue em recursos, gabarito definitivo e classificação, enquanto SEEDF e TJDFT avançam como projetos separados da nova preparação.')
     : 'As provas SEDES/DF foram concluídas em 06/09/2026. A prioridade agora é registrar a prova, corrigir pelo gabarito oficial, identificar recursos e acompanhar o resultado.'
 };
 
@@ -101,13 +101,21 @@ snapshot.postExam = {
       : 'Aguardando gabarito e resultado oficiais',
   scoreState,
   nextActions: hasPreliminary
-    ? [
-        'Auditar as divergências candidato × banca e separar somente questões com fundamento real para recurso.',
-        'Acompanhar respostas aos recursos e gabarito definitivo sem tratar a estimativa atual como resultado oficial.',
-        'Manter a leitura competitiva como preliminar: taxa nominal de avanço não é probabilidade pessoal.',
-        'Atualizar posição provável apenas quando houver distribuição oficial de notas, nota de corte ou classificação objetiva.',
-        'Registrar a lista de candidatos com discursiva corrigida quando publicada e então recalibrar o cenário.'
-      ]
+    ? (resourcesClosed
+      ? [
+          'Acompanhar o gabarito definitivo e o resultado objetivo preliminar sem tratar a estimativa atual como resultado oficial.',
+          'Conferir se recursos protocolados produziram alteração de chave, anulação ou efeito na nota.',
+          'Manter a leitura competitiva como preliminar: taxa nominal de avanço não é probabilidade pessoal.',
+          'Atualizar posição somente quando houver distribuição oficial de notas, nota de corte ou classificação objetiva.',
+          'Registrar a lista de candidatos com discursiva corrigida quando publicada e então recalibrar o cenário.'
+        ]
+      : [
+          'Auditar as divergências candidato × banca e separar somente questões com fundamento real para recurso.',
+          'Acompanhar respostas aos recursos e gabarito definitivo sem tratar a estimativa atual como resultado oficial.',
+          'Manter a leitura competitiva como preliminar: taxa nominal de avanço não é probabilidade pessoal.',
+          'Atualizar posição provável apenas quando houver distribuição oficial de notas, nota de corte ou classificação objetiva.',
+          'Registrar a lista de candidatos com discursiva corrigida quando publicada e então recalibrar o cenário.'
+        ])
     : [
         'Registrar impressões e memória das duas provas enquanto ainda estão frescas.',
         'Corrigir apenas contra gabarito oficial ou versão auditada.',
