@@ -36,7 +36,11 @@ O módulo `radar-oficial.html` lê somente a tabela sanitizada `official_monitor
 
 ### Radar Web pessoal
 
-O Radar Oficial também possui uma área privada de pesquisa na internet. O termo pessoal permanece no Supabase e não é publicado no GitHub. Os resultados ficam em tabelas privadas com RLS e só são entregues pela Edge Function `personal-web-search`. O código de acesso é usado apenas no desbloqueio; depois disso o navegador recebe uma sessão opaca temporária, com rate limit contra tentativas repetidas. A primeira fase usa pesquisa manual, histórico, deduplicação e revisão explícita de identidade (`A revisar`, `É meu`, `Possível homônimo`, `Não sou eu`). O provedor principal é o DuckDuckGo HTML, consultado por uma função SQL privada; o front recebe apenas resultados sanitizados após autenticação.
+O Radar Oficial também possui uma área privada de pesquisa na internet. O código de acesso é usado apenas no desbloqueio; depois disso o navegador recebe uma sessão opaca temporária, com rate limit contra tentativas repetidas. A área bloqueada não renderiza os resultados privados.
+
+Nome, variações e identificadores opcionais (CPF, RG, CNPJ, e-mail, telefone ou outro termo) são administrados somente depois do desbloqueio. O valor real de cada identificador fica criptografado no **Supabase Vault**; as tabelas operacionais guardam apenas tipo, apelido, escopos e versão mascarada. Cada identificador pode ser ativado separadamente para **Pesquisa na Web** e/ou **DOU/DODF**. Os resultados oficiais pessoais são gravados em uma tabela privada distinta e nunca entram na lista pública de ocorrências.
+
+Os resultados web ficam em tabelas privadas com RLS e só são entregues pela Edge Function `personal-web-search`. A pesquisa mantém histórico, deduplicação e revisão explícita de identidade (`A revisar`, `É meu`, `Possível homônimo`, `Não sou eu`). O provedor principal é o DuckDuckGo HTML, consultado por uma função SQL privada; o front recebe somente dados privados após uma sessão válida. O painel também permite gerar/trocar o código de acesso sem recuperar o código anterior, pois apenas o hash é armazenado.
 
 ## Regra de governança
 
