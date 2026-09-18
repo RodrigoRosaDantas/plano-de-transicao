@@ -29,6 +29,8 @@ async function qLoadPublic(){
     const rows=await r.json(); sedesQuadrixState=rows?.[0]?.payload||null;
   }catch{sedesQuadrixState=null}
   qEnsure();
+  const section=document.querySelector("[data-q44-wrap]");
+  if(section)qRenderSection(section);
 }
 function qPublicMarkup(){
   const d=sedesQuadrixState||{},run=d.lastRun||{},next=qNextDate(d.importantDates);
@@ -97,7 +99,7 @@ function qRenderPrivate(box,d){
   };
   box.innerHTML=`<div class="q44-personal-grid">${card("202")}${card("400")}</div>
     <div class="q44-personal-events"><div class="q44-subhead"><strong>Achados nas publicações</strong><small>${hits.length?hits.length+" ocorrência(s) privada(s)":"nenhum match até agora"}</small></div>
-    ${hits.length?hits.slice(0,10).map(h=>`<article><div><span>${h.cargo_code?"Cargo "+qEsc(h.cargo_code):"SEDES/DF"}</span><strong>${qEsc(h.publication?.title||"Publicação Quadrix")}</strong><small>${qDate(h.publication?.published_at)} · via ${qEsc(h.matched_identifier?.label||"identificador protegido")}${h.registration_masked?" · inscrição "+qEsc(h.registration_masked):""}</small></div>
+    ${hits.length?hits.slice(0,10).map(h=>`<article><div><span>${h.cargo_code?"Cargo "+qEsc(h.cargo_code):"SEDES/DF"}</span><strong>${qEsc(h.publication?.title||"Publicação Quadrix")}</strong><small>${qDate(h.publication?.published_at)} · via ${qEsc(h.matched_identifier?.label||"identificador protegido")}${h.registration_masked&&h.cargo_code&&Number(h.confidence||0)>=98?" · inscrição "+qEsc(h.registration_masked):""}</small></div>
       <a href="${qEsc(h.publication?.url||SEDES_QUADRIX.publicUrl)}" target="_blank" rel="noreferrer">Fonte ↗</a></article>`).join(""):'<div class="q44-empty">O monitor já está procurando seu nome, CPF e inscrições nos documentos relevantes.</div>'}</div>
     <div class="q44-private-foot"><span>Sessão temporária ativa.</span><button type="button" data-q44-lock>Bloquear</button></div>`;
   box.querySelector("[data-q44-lock]")?.addEventListener("click",async()=>{
@@ -106,19 +108,23 @@ function qRenderPrivate(box,d){
     qRenderUnlock(box);
   });
 }
-function qEnsure(){
-  const root=document.querySelector("[data-post-exam-v27]");if(!root)return;
-  let section=root.querySelector("[data-q44-wrap]");
-  if(!section){
-    section=document.createElement("div");section.dataset.q44Wrap="1";section.className="q44-wrap";
-    const notes=root.querySelector("#v27Notes")||root.querySelector(".v27-notes");
-    if(notes)notes.before(section);else root.append(section);
-  }
+function qRenderSection(section){
   section.innerHTML=qPublicMarkup()+qPrivateShell();
   section.querySelector("[data-q44-refresh]")?.addEventListener("click",qLoadPublic);
   localStorage.setItem(SEDES_QUADRIX.seenKey,new Date().toISOString());
   qLoadPrivate(section);
 }
-new MutationObserver(()=>qEnsure()).observe(document.documentElement,{childList:true,subtree:true});
+function qEnsure(){
+  const root=document.querySelector("[data-post-exam-v27]");if(!root)return;
+  let section=root.querySelector("[data-q44-wrap]");
+  if(section)return;
+  section=document.createElement("div");section.dataset.q44Wrap="1";section.className="q44-wrap";
+  const notes=root.querySelector("#v27Notes")||root.querySelector(".v27-notes");
+  if(notes)notes.before(section);else root.append(section);
+  qRenderSection(section);
+}
+new MutationObserver(()=>{
+  if(!document.querySelector("[data-q44-wrap]"))qEnsure();
+}).observe(document.documentElement,{childList:true,subtree:true});
 qLoadPublic();
 setInterval(qLoadPublic,5*60*1000);
