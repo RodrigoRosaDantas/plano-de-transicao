@@ -81,3 +81,8 @@ URL pública:
 - commits automáticos de dados não criam loop de sincronização.
 
 A Home e os textos narrativos são camadas de apresentação. Em divergências quantitativas, prevalece a cadeia de fonte operacional definida no Plano de Transição.
+
+
+## Privacidade de commits
+
+As operações web do GitHub devem usar o endereço privado `@users.noreply.github.com`, preservando o e-mail pessoal do autor. A configuração de privacidade da conta não altera os Secrets, integrações, GitHub Actions, Supabase ou GitHub Pages do projeto.
