@@ -5,6 +5,7 @@ import { promisify } from "node:util";
 const execFileAsync=promisify(execFile);
 
 const EDGE="https://fqqkkyusnzhuuizahkww.supabase.co/functions/v1/official-monitor-github";
+// Identificadores pessoais adicionais são injetados apenas pelo endpoint OIDC privado; nunca ficam neste repositório.
 const AUD="plano-de-transicao-official-monitor";
 const startedAt=new Date().toISOString();
 
