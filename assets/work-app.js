@@ -545,7 +545,7 @@ function financeView() {
   const total = entries.reduce((sum, item) => sum + Number(item.confirmed || 0), 0);
   const estimated = entries.reduce((sum, item) => sum + Number(item.estimated || 0), 0);
   const paid = entries.reduce((sum, item) => sum + Number(item.paid || 0), 0);
-  const annulled = entries.filter((item) => item.situation === "Anulada").length;
+  const annulled = state.data.financeEntries.filter((item) => item.situation === "Anulada").length;
   const cycles = [...new Set(state.data.financeEntries.map((entry) => entry.cycle))];
   const categories = [...new Set(state.data.financeEntries.map((entry) => entry.category))].sort((a, b) => a.localeCompare(b, "pt-BR"));
   const situations = [...new Set(state.data.financeEntries.map((entry) => entry.situation))];
