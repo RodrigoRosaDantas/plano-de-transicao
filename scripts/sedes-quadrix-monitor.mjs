@@ -139,7 +139,8 @@ function detectRegistration(context,ident){
   const preferred=candidates.find(v=>v.length>=6&&v.length<=10);
   return preferred||null;
 }
-// multi-match v2: um mesmo documento pode gerar ocorrências distintas por cargo/inscrição.\nfunction findPersonalMatches(text,identifiers,url){
+// multi-match v2: um mesmo documento pode gerar ocorrências distintas por cargo/inscrição.
+function findPersonalMatches(text,identifiers,url){
   const lines=String(text||"").split(/\r?\n/);
   const hits=[];
   for(const ident of identifiers){
