@@ -126,13 +126,13 @@ async function findSearchInput(page){
 async function scanSINJ(term){
   const year=new Intl.DateTimeFormat("en",{timeZone:"America/Sao_Paulo",year:"numeric"}).format(new Date());
   const endpoint="https://www.sinj.df.gov.br/sinj/ashx/Datatable/ResultadoDePesquisaDiarioDatatable.ashx";
-  const pageSize=100; // pagina o ano inteiro para não depender da ordem por relevância do SINJ
+  const pageSize=25; // lotes menores evitam timeout do SINJ; a paginação cobre todo o conjunto
   let offset=0;
   let total=Infinity;
   let localHits=0;
   let pages=0;
 
-  while(offset<total&&pages<12){
+  while(offset<total&&pages<24){
     const url=endpoint
       +"?tipo_pesquisa=diario"
       +"&filetext="+encodeURIComponent(term.query_text)
