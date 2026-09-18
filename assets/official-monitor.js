@@ -113,8 +113,9 @@ function renderSources(sources) {
         s.officialSiteStatus==="skipped" ? "PDF certificado não sondado neste horário" :
         "";
 
-      const lastMatch=s.latestIndexedDate
-        ? `última data retornada para os termos: ${fmtDate(s.latestIndexedDate)}`
+      const lastMatchedDate=s.latestMatchedDate || s.latestIndexedDate;
+      const lastMatch=lastMatchedDate
+        ? `última data retornada para os termos: ${fmtDate(lastMatchedDate)}`
         : "";
       detail=[todayLabel,officialLabel,lastMatch,historyLabel].filter(Boolean).join(" · ");
     }else{
