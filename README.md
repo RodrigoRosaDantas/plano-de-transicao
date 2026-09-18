@@ -34,6 +34,10 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 
 O módulo `radar-oficial.html` lê somente a tabela sanitizada `official_monitor_public_state` no Supabase. Os termos pessoais e os textos das ocorrências privadas permanecem protegidos por RLS; o GitHub Pages recebe apenas métricas agregadas do radar pessoal e ocorrências dos radares públicos de SEDES/DF, SEEDF e TJDFT. A coleta principal roda em GitHub Actions de hora em hora entre 06:15 e 18:15, com conferência adicional às 21:15 (horário de Brasília), usando autenticação OIDC validada pelo Supabase — sem service key ou termo pessoal no repositório. O DOU é consultado na Imprensa Nacional e o DODF usa o endpoint oficial de pesquisa de Diários do SINJ/DF, com paginação do ano corrente e filtro local da janela recente. A SEDES/DF possui também um radar geral para qualquer menção oficial ao órgão, além dos termos específicos de concurso, resultado e homologação. SEEDF e TJDFT permanecem, neste primeiro momento, apenas nos radares específicos de concurso/pré-edital. O radar pessoal permanece uma busca privada independente. A ingestão usa fingerprint por termo/fonte/URL para impedir duplicação. O coletor Edge legado foi aposentado; a única cadeia ativa de coleta é GitHub Actions → OIDC → Edge Function restrita ao workflow oficial → Supabase.
 
+### Radar Web pessoal
+
+O Radar Oficial também possui uma área privada de pesquisa na internet. O termo pessoal permanece no Supabase e não é publicado no GitHub. Os resultados ficam em tabelas privadas com RLS e só são entregues pela Edge Function `personal-web-search` após validação do código de acesso. A primeira fase usa pesquisa manual, histórico, deduplicação e revisão explícita de identidade (`A revisar`, `É meu`, `Possível homônimo`, `Não sou eu`).
+
 ## Regra de governança
 
 **Banco operacional → reconciliação/normalização → Registro Histórico → painel/resumo.**
