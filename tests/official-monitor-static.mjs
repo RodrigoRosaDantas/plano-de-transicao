@@ -33,6 +33,7 @@ assert(html.includes("MEU RASTRO NA INTERNET") && html.includes("webRadarUnlockF
 assert(html.includes("Gerenciar código") && html.includes("Identificadores de pesquisa"), "área privada gerencia acesso e identificadores");
 assert(personalWeb.includes("add_identifier") && personalWeb.includes("rotate_code") && personalWeb.includes("set_identifier_scope"), "cliente suporta cadastro, escopo e rotação de acesso");
 assert(personalWeb.includes("webRadarOfficialResults"), "cliente renderiza ocorrências pessoais do DOU/DODF somente na área privada");
+assert(!personalWeb.includes("sedesHits"), "Radar Oficial não consome ocorrências privadas do Pós-Prova SEDES");
 assert(monitorCss.includes(".web-radar-private[hidden]") && monitorCss.includes("display:none!important"), "área privada fica realmente oculta antes do desbloqueio");
 assert(personalWeb.includes("webRadarData={counts:{},results:[],lastRun:null,identifiers:[],officialHits:[]}"), "bloqueio limpa o estado privado em memória");
 assert(html.includes('data-web-filter="new"') && personalWeb.includes('webRadarFilter==="new"'), "Radar Web destaca resultados novos da última rodada");

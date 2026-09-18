@@ -80,7 +80,7 @@ async function qLoadPrivate(root){
   const token=sessionStorage.getItem(SEDES_QUADRIX.sessionKey)||"";
   if(!token){qRenderUnlock(box);return}
   try{
-    const r=await fetch(SEDES_QUADRIX.privateEdge,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"status",session:token})});
+    const r=await fetch(SEDES_QUADRIX.privateEdge,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"sedes_status",session:token})});
     if(!r.ok)throw new Error("locked");
     const d=await r.json(); qRenderPrivate(box,d);
   }catch{sessionStorage.removeItem(SEDES_QUADRIX.sessionKey);qRenderUnlock(box)}
@@ -92,7 +92,7 @@ function qRenderUnlock(box){
     e.preventDefault();const input=e.currentTarget.querySelector("input"),code=input.value.trim();if(!code)return;
     const btn=e.currentTarget.querySelector("button");btn.disabled=true;btn.textContent="Desbloqueando…";
     try{
-      const r=await fetch(SEDES_QUADRIX.privateEdge,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"unlock",code})});
+      const r=await fetch(SEDES_QUADRIX.privateEdge,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"unlock",code,scope:"sedes"})});
       const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"Código inválido");
       sessionStorage.setItem(SEDES_QUADRIX.sessionKey,d.session);input.value="";qRenderPrivate(box,d);
     }catch(err){btn.disabled=false;btn.textContent="Tentar novamente";const old=e.currentTarget.querySelector(".q44-error");if(old)old.remove();e.currentTarget.insertAdjacentHTML("beforeend",`<strong class="q44-error">${qEsc(err.message||"Não foi possível desbloquear.")}</strong>`)}

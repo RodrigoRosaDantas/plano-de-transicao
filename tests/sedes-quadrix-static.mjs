@@ -8,6 +8,7 @@ assert(collector.includes("inscricoes homologadas")&&collector.includes("persona
 assert(!collector.includes("CPF principal")&&!collector.includes("Nome atual"),"identificadores pessoais não estão hardcoded no coletor");
 assert(wf.includes("id-token: write")&&wf.includes("sedes-quadrix-monitor.mjs"),"workflow possui OIDC e executa coletor dedicado");
 assert(front.includes("sedes_quadrix_public_state")&&front.includes("plano.webRadar.session.v2"),"Pós-Prova combina estado público e sessão privada existente");
+assert(front.includes('action:"sedes_status"')&&front.includes('scope:"sedes"'),"Pós-Prova solicita somente o escopo privado SEDES");
 assert(front.includes("sedesHits")&&front.includes("Inscrição SEDES"),"painel privado renderiza matches e inscrições");
 assert(front.includes("PÓS-PROVA · SEDES/DF")&&front.includes("Acompanhamento do concurso"),"SEDES/Quadrix possui área própria dentro do Pós-Prova");
 assert(front.includes("separados do Radar Oficial"),"Pós-Prova explicita a separação do Radar Oficial");
