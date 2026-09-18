@@ -85,11 +85,13 @@ function renderSources(sources) {
     const s = sources[key] || {status:"pending"};
     const st = s.status || "pending";
     if(st!=="ok") allOk=false;
-    const detail = st==="ok"
-      ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)`
-      : st==="partial"
-        ? `${s.checked||0} radares checados · ${s.errorCount||0} consulta(s) com falha nesta varredura`
-        : "Aguardando diagnóstico da fonte.";
+    const detail = key==="DODF" && s.todayStatus
+      ? `DODF de hoje: ${s.todayStatus==="ok"?"online":s.todayStatus} · ${s.todaySections||0} seção(ões) · histórico SINJ: ${s.historyStatus||"pendente"}${s.historyErrorCount?` · ${s.historyErrorCount} falha(s) histórica(s)`:""}`
+      : st==="ok"
+        ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)`
+        : st==="partial"
+          ? `${s.checked||0} radares checados · ${s.errorCount||0} consulta(s) com falha nesta varredura`
+          : "Aguardando diagnóstico da fonte.";
     return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":"DF"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(st)}">${st==="ok"?"online":st==="partial"?"parcial":st}</span></div>`;
   }).join("");
   $("#sourceOverall").textContent = allOk ? "fontes online" : "atenção";
