@@ -24,17 +24,16 @@ async function loadDashboard() {
   $(".radar-live").className = "radar-live";
   $("#refreshRadar").disabled = true;
   try {
-    const res = await fetch(SUPABASE_URL+"/rest/v1/rpc/get_official_monitor_dashboard",{
-      method:"POST",
+    const res = await fetch(SUPABASE_URL+"/rest/v1/official_monitor_public_state?id=eq.1&select=payload",{
       headers:{
         apikey:SUPABASE_KEY,
-        Authorization:"Bearer "+SUPABASE_KEY,
-        "Content-Type":"application/json"
+        Authorization:"Bearer "+SUPABASE_KEY
       },
-      body:"{}"
+      cache:"no-store"
     });
     if(!res.ok) throw new Error("HTTP "+res.status);
-    dashboard = await res.json();
+    const rows = await res.json();
+    dashboard = rows?.[0]?.payload || {};
     render();
   } catch (e) {
     $("#globalStatus").textContent = "Falha na leitura";
