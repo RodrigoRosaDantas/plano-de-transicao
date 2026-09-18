@@ -32,7 +32,7 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 
 ## Radar Oficial
 
-O módulo `radar-oficial.html` consulta uma RPC sanitizada no Supabase. Os termos pessoais e os textos das ocorrências privadas permanecem protegidos no banco; o GitHub Pages recebe somente métricas agregadas do radar pessoal e ocorrências associadas aos radares públicos de SEDES/DF, SEEDF e TJDFT. A coleta é executada por uma Edge Function agendada quatro vezes ao dia e usa fingerprint por termo/fonte/URL para impedir duplicação.
+O módulo `radar-oficial.html` lê somente a tabela sanitizada `official_monitor_public_state` no Supabase. Os termos pessoais e os textos das ocorrências privadas permanecem protegidos por RLS; o GitHub Pages recebe apenas métricas agregadas do radar pessoal e ocorrências dos radares públicos de SEDES/DF, SEEDF e TJDFT. A coleta principal roda em GitHub Actions quatro vezes ao dia com navegador real e autenticação OIDC validada pelo Supabase — sem service key ou termo pessoal no repositório. A ingestão usa fingerprint por termo/fonte/URL para impedir duplicação. Existe ainda um coletor Edge de contingência e um fallback oficial via SINJ/DF.
 
 ## Regra de governança
 
