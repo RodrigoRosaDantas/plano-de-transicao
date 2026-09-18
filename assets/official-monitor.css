@@ -30,3 +30,25 @@
 
 .web-radar-result.is-new{border-color:rgba(185,243,106,.24);box-shadow:inset 3px 0 0 rgba(185,243,106,.55)}
 .web-radar-new{color:var(--rm-lime)!important;border-color:rgba(185,243,106,.24)!important;background:rgba(185,243,106,.06)!important}
+
+.web-radar-admin-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:12px}
+.web-radar-admin-card,.web-radar-private-section{border:1px solid var(--rm-line);border-radius:16px;background:var(--rm-panel2);padding:15px}
+.web-radar-admin-head,.web-radar-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.web-radar-admin-head small,.web-radar-section-head small{display:block;color:var(--rm-aqua);font-size:10px;font-weight:900;letter-spacing:.09em}
+.web-radar-admin-head strong,.web-radar-section-head strong{display:block;margin-top:3px;font-size:15px}
+.web-radar-admin-head>span,.web-radar-section-head>span{font-size:10px;color:var(--rm-muted);border:1px solid var(--rm-line);border-radius:999px;padding:5px 8px}
+.web-radar-admin-card>p,.web-radar-private-section>p{margin:9px 0 13px;color:var(--rm-muted);font-size:11px;line-height:1.55}
+.web-radar-identifiers{display:grid;gap:7px;margin-bottom:12px}
+.web-radar-identifier{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--rm-line);border-radius:12px;padding:10px;background:rgba(255,255,255,.015)}
+.web-radar-identifier>div:first-child{display:grid;gap:2px;min-width:0}.web-radar-identifier span{font-size:9px;color:var(--rm-aqua);font-weight:900;text-transform:uppercase;letter-spacing:.07em}
+.web-radar-identifier strong{font-size:12px}.web-radar-identifier code{font:600 11px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--rm-muted);word-break:break-all}
+.web-radar-identifier-scopes{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.web-radar-identifier-scopes label,.web-radar-check{display:flex!important;align-items:center;gap:5px;color:var(--rm-muted);font-size:10px!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important}
+.web-radar-identifier-scopes button{border:1px solid rgba(255,117,117,.2);background:transparent;color:#dca2a2;border-radius:999px;padding:5px 8px;font-size:9px;cursor:pointer}
+.web-radar-identifier-form{display:grid;grid-template-columns:140px minmax(150px,.7fr) minmax(210px,1.3fr);gap:8px;align-items:end}.web-radar-identifier-form>div{display:grid;gap:5px}.web-radar-identifier-form label,.web-radar-code-manager label{font-size:9px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--rm-muted)}
+.web-radar-identifier-form input,.web-radar-identifier-form select,.web-radar-code-manager input{border:1px solid var(--rm-line);border-radius:10px;background:#0c1210;color:var(--rm-text);padding:9px 10px;font:inherit;outline:none}.web-radar-identifier-form input:focus,.web-radar-identifier-form select:focus,.web-radar-code-manager input:focus{border-color:rgba(116,231,210,.42)}
+.web-radar-identifier-form .web-radar-check{align-self:center}.web-radar-identifier-form>.radar-button{align-self:end}
+.web-radar-identifier-form>.web-radar-error{grid-column:1/-1}
+.web-radar-code-manager{display:grid;gap:8px}.web-radar-code-result{display:grid;gap:5px;border:1px solid rgba(185,243,106,.22);border-radius:12px;padding:11px;background:rgba(185,243,106,.045)}.web-radar-code-result small{color:var(--rm-lime);font-size:9px;font-weight:900;letter-spacing:.07em}.web-radar-code-result strong{font:800 18px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.web-radar-code-result button{justify-self:start;border:1px solid var(--rm-line);background:transparent;color:var(--rm-text);border-radius:999px;padding:6px 9px;font-size:10px;cursor:pointer}
+.web-radar-private-section{display:grid;gap:10px}
+@media(max-width:980px){.web-radar-admin-grid{grid-template-columns:1fr}.web-radar-identifier-form{grid-template-columns:1fr 1fr}.web-radar-identifier-value{grid-column:1/-1}}
+@media(max-width:640px){.web-radar-identifier{align-items:flex-start;flex-direction:column}.web-radar-identifier-scopes{justify-content:flex-start}.web-radar-identifier-form{grid-template-columns:1fr}.web-radar-identifier-value{grid-column:auto}.web-radar-identifier-form>.web-radar-error{grid-column:auto}}
