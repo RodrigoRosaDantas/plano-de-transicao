@@ -18,7 +18,7 @@ assert.match(app, /function syncMobileNavigation\(\)/, 'App deve sincronizar a a
 assert.match(app, /requestAnimationFrame\(syncMobileNavigation\)/, 'Trilho deve revelar a rota ativa após renderização');
 assert.match(app, /#moreTopBtn.*openMoreSheet/, 'Botão Mais do topo deve abrir as áreas secundárias');
 assert.ok(!app.includes('moreDockBtn'), 'App não deve manter o acionador da barra removida');
-assert.match(sw, /plano-transicao-v40-official-radar/, 'Service worker deve usar o cache vigente do Radar Oficial');
+assert.match(sw, /plano-transicao-v41-official-radar/, 'Service worker deve usar o cache vigente do Radar Oficial');
 assert.match(sw, /'\.\/assets\/navigation-mobile-v38\.css'/, 'Service worker deve cachear o tratamento móvel v38');
 assert.ok(!sw.includes('navigation-mobile-v37.css'), 'Service worker não deve cachear o tratamento removido');
 
