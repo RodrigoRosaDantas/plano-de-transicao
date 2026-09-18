@@ -133,6 +133,27 @@ const findTermContext=(text,term)=>{
   }
   return null;
 };
+const relevantPublicContext=(text,term)=>{
+  const hit=findTermContext(text,term);
+  if(!hit)return null;
+  if(term.is_private)return hit;
+  const n=normalize(hit.snippet);
+  const label=normalize(term.label);
+  const category=normalize(term.category);
+  const hasConcurso=/\b(concurso|certame)\b/.test(n);
+  if(label.includes("banca")&&!(hasConcurso&&/\bbanca\b/.test(n)))return null;
+  if(label.includes("comissao")&&!(hasConcurso&&/\bcomissao\b/.test(n)))return null;
+  if(label.includes("concurso")&&!hasConcurso)return null;
+  const agencyOk=
+    category==="seedf"
+      ? (n.includes("secretaria de estado de educacao do distrito federal")||/\bseedf\b/.test(n))
+      : category==="sedes"
+        ? (n.includes("secretaria de estado de desenvolvimento social do distrito federal")||/\bsedes\b/.test(n))
+        : category==="tjdft"
+          ? (n.includes("tribunal de justica do distrito federal e dos territorios")||/\btjdft\b/.test(n))
+          : true;
+  return agencyOk?hit:null;
+};
 const sectionAt=(text,pos)=>{
   const before=String(text||"").slice(Math.max(0,pos-160000),Math.max(0,pos)).toUpperCase();
   const options=[
@@ -333,16 +354,18 @@ async function scanSINJ(term){
       const published_at=isoFromText(s.dt_assinatura);
       if(!isRecentDate(published_at,35))continue;
 
-      const highlightParts=row?.highlight?.["arquivos.arquivo_diario.filetext"]
+      const highlightPartsRaw=row?.highlight?.["arquivos.arquivo_diario.filetext"]
         || row?.highlight?.["ar_diario.filetext"]
         || [];
-      const highlight=Array.isArray(highlightParts)?highlightParts.join(" "):String(highlightParts||"");
-      const snippet=String(highlight)
-        .replace(/_pre_tag_highlight_/g,"")
-        .replace(/_post_tag_highlight_/g,"")
-        .replace(/\\n|\\r|\\f/g," ")
-        .replace(/\s+/g," ")
-        .trim();
+      const highlightParts=(Array.isArray(highlightPartsRaw)?highlightPartsRaw:[highlightPartsRaw])
+        .map(part=>String(part||"")
+          .replace(/_pre_tag_highlight_/g,"")
+          .replace(/_post_tag_highlight_/g,"")
+          .replace(/\\n|\\r|\\f/g," ")
+          .replace(/\s+/g," ")
+          .trim())
+        .filter(Boolean);
+      const highlight=highlightParts.join(" ");
 
       const files=[];
       if(s?.ar_diario?.id_file)files.push({arquivo_diario:s.ar_diario,ds_arquivo:""});
@@ -353,15 +376,21 @@ async function scanSINJ(term){
         if(!id||!/^[0-9a-f-]{36}$/i.test(String(id)))continue;
         const officialUrl="https://www.sinj.df.gov.br/sinj/TextoArquivoDiario.aspx?id_file="+id;
 
-        let verifiedText=snippet;
-        if(term.is_private){
-          if(!matchesTerm(verifiedText,term)){
-            try{
-              verifiedText=stripHtml(await timeoutFetch(officialUrl,10000));
-            }catch{continue}
-          }
-          if(!matchesTerm(verifiedText,term))continue;
+        let contextHit=null;
+        for(const fragment of highlightParts){
+          contextHit=term.is_private
+            ? (matchesTerm(fragment,term)?{snippet:fragment}:null)
+            : relevantPublicContext(fragment,term);
+          if(contextHit)break;
         }
+        if(!contextHit&&term.is_private){
+          try{
+            const officialText=stripHtml(await timeoutFetch(officialUrl,10000));
+            if(matchesTerm(officialText,term))contextHit=findTermContext(officialText,term)||{snippet:officialText.slice(0,1200)};
+          }catch{}
+        }
+        if(!contextHit)continue;
+        const verifiedText=contextHit.snippet||highlight;
 
         const section=s.secao_diario?("Seção "+String(s.secao_diario)):null;
         const edition=[s.nr_diario?("nº "+s.nr_diario):"",s.nm_tipo_edicao||"",s.nm_diferencial_edicao||""].filter(Boolean).join(" · ");
