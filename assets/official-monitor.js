@@ -67,7 +67,7 @@ function render() {
   const personal = d.personalRadar || {};
   $("#personalState").textContent = personal.configured ? "protegido · ativo" : "não configurado";
   $("#personalHits").textContent = personal.hits30d ?? 0;
-  $("#personalLast").textContent = personal.lastHitAt ? "Última detecção privada: "+fmtDateTime(personal.lastHitAt) : "Termo privado ativo; nenhum detalhe é exposto no site.";
+  $("#personalLast").textContent = personal.lastHitAt ? "Última detecção privada: "+fmtDateTime(personal.lastHitAt) : "Identificadores privados ativos; nenhum detalhe é exposto no site.";
   const publicHits = d.hits || [];
   $("#publishedTodayCount").textContent = d.counts?.publishedToday ?? d.counts?.today ?? publicHits.filter(isPublishedToday).length;
   $("#foundTodayCount").textContent = d.counts?.foundToday ?? publicHits.filter(isFoundToday).length;
