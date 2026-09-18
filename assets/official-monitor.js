@@ -17,7 +17,16 @@ const fmtDate = (v) => {
 };
 const esc = (v) => String(v??"").replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const cleanSnippet = (v) => String(v||"").replace(/\s+/g," ").trim().slice(0,420);
-const isNew = (v) => v && (Date.now()-new Date(v).getTime()) < 86400000;
+const dayFmt = new Intl.DateTimeFormat("en-CA",{year:"numeric",month:"2-digit",day:"2-digit",timeZone:"America/Sao_Paulo"});
+const todayKey = () => dayFmt.format(new Date());
+const localDay = (v) => {
+  if (!v) return null;
+  const d = new Date(String(v).length===10 ? v+"T12:00:00-03:00" : v);
+  return Number.isNaN(d.getTime()) ? null : dayFmt.format(d);
+};
+const isPublishedToday = (h) => Boolean(h?.published_at) && String(h.published_at) === todayKey();
+const isFoundToday = (h) => localDay(h?.first_seen_at) === todayKey();
+const isLateFindToday = (h) => isFoundToday(h) && Boolean(h?.published_at) && String(h.published_at) < todayKey();
 
 async function loadDashboard() {
   $("#globalStatus").textContent = "Atualizando";
@@ -59,7 +68,10 @@ function render() {
   $("#personalState").textContent = personal.configured ? "protegido · ativo" : "não configurado";
   $("#personalHits").textContent = personal.hits30d ?? 0;
   $("#personalLast").textContent = personal.lastHitAt ? "Última detecção privada: "+fmtDateTime(personal.lastHitAt) : "Termo privado ativo; nenhum detalhe é exposto no site.";
-  $("#todayCount").textContent = d.counts?.today ?? 0;
+  const publicHits = d.hits || [];
+  $("#publishedTodayCount").textContent = d.counts?.publishedToday ?? d.counts?.today ?? publicHits.filter(isPublishedToday).length;
+  $("#foundTodayCount").textContent = d.counts?.foundToday ?? publicHits.filter(isFoundToday).length;
+  $("#lateFoundTodayCount").textContent = d.counts?.lateFoundToday ?? publicHits.filter(isLateFindToday).length;
   $("#weekCount").textContent = d.counts?.last7d ?? 0;
 
   renderSources(d.sourceHealth || {});
@@ -73,7 +85,11 @@ function renderSources(sources) {
     const s = sources[key] || {status:"pending"};
     const st = s.status || "pending";
     if(st!=="ok") allOk=false;
-    const detail = st==="ok" ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)` : (s.errors?.[0] || "Aguardando diagnóstico da fonte.");
+    const detail = st==="ok"
+      ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)`
+      : st==="partial"
+        ? `${s.checked||0} radares checados · ${s.errorCount||0} consulta(s) com falha nesta varredura`
+        : "Aguardando diagnóstico da fonte.";
     return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":"DF"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(st)}">${st==="ok"?"online":st==="partial"?"parcial":st}</span></div>`;
   }).join("");
   $("#sourceOverall").textContent = allOk ? "fontes online" : "atenção";
@@ -83,14 +99,23 @@ function renderHits() {
   const hits = (dashboard?.hits || []).filter(h => activeFilter==="all" || h.category===activeFilter);
   $("#hitsList").innerHTML = hits.length ? hits.map(h=>{
     const snippet = cleanSnippet(h.snippet);
+    const timingTags = [
+      isPublishedToday(h) ? '<span class="radar-tag published">publicado hoje</span>' : "",
+      isFoundToday(h) ? '<span class="radar-tag found">detectado hoje</span>' : "",
+      isLateFindToday(h) ? '<span class="radar-tag late">publicação anterior · achada hoje</span>' : ""
+    ].join("");
     return `<article class="radar-hit">
-      <div class="radar-hit-meta"><span class="radar-hit-source">${esc(h.source)}</span><span>${fmtDate(h.published_at || h.first_seen_at)}</span><span>${esc(h.section || "")}</span></div>
-      <div class="radar-hit-main"><h3>${esc(h.title)}</h3><p>${esc(snippet || "Ocorrência registrada pelo monitor oficial.")}</p><div class="radar-hit-tags"><span class="radar-tag">${esc(h.radar)}</span><span class="radar-tag">${esc(h.classification)}</span>${isNew(h.first_seen_at)?'<span class="radar-tag new">novo</span>':""}</div><small>${esc(h.agency || "Órgão não identificado automaticamente")}</small></div>
+      <div class="radar-hit-meta">
+        <span class="radar-hit-source">${esc(h.source)}</span>
+        <span>Publicado: ${fmtDate(h.published_at)}</span>
+        <span>Detectado: ${fmtDateTime(h.first_seen_at)}</span>
+        <span>${esc(h.section || "")}</span>
+      </div>
+      <div class="radar-hit-main"><h3>${esc(h.title)}</h3><p>${esc(snippet || "Ocorrência registrada pelo monitor oficial.")}</p><div class="radar-hit-tags"><span class="radar-tag">${esc(h.radar)}</span><span class="radar-tag">${esc(h.classification)}</span>${timingTags}</div><small>${esc(h.agency || "Órgão não identificado automaticamente")}</small></div>
       <a class="radar-hit-link" href="${esc(h.url)}" target="_blank" rel="noreferrer">Abrir oficial ↗</a>
     </article>`;
   }).join("") : '<div class="radar-empty">Nenhuma ocorrência pública nesse filtro. Isso é um bom tipo de silêncio.</div>';
 }
-
 $("#refreshRadar")?.addEventListener("click",loadDashboard);
 $$("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
   activeFilter=btn.dataset.filter;
