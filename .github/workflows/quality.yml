@@ -1,5 +1,5 @@
 name: Qualidade e paridade gerencial
-# Radar Web privado v43: valida cache, privacidade e regressões estáticas.
+# Radar Web privado + Pós-Prova SEDES/Quadrix v44: valida privacidade, monitoramento e regressões.
 
 on:
   workflow_dispatch:
@@ -69,7 +69,7 @@ jobs:
         run: |
           node --check scripts/official-monitor.mjs
           node --check assets/official-monitor.js
-          node --check assets/personal-web-search.js
+          node --check assets/personal-web-search.js\n          node --check scripts/sedes-quadrix-monitor.mjs\n          node --check assets/post-exam-quadrix-v44.js
       - name: Auditoria estática do Radar Oficial + Web privado
         run: node tests/official-monitor-static.mjs
 

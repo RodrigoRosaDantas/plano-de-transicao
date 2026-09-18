@@ -1,0 +1,15 @@
+import {readFileSync} from "node:fs";
+const read=p=>readFileSync(p,"utf8");
+const assert=(c,m)=>{if(!c){console.error("❌ "+m);process.exitCode=1}else console.log("✅ "+m)};
+const index=read("index.html"),sw=read("sw.js"),collector=read("scripts/sedes-quadrix-monitor.mjs"),wf=read(".github/workflows/sedes-quadrix-monitor.yml"),front=read("assets/post-exam-quadrix-v44.js");
+assert(collector.includes("quadrix.org.br/informacoes/3056"),"coletor usa a página-mãe oficial da Quadrix");
+assert(collector.includes("ACTIONS_ID_TOKEN_REQUEST_URL")&&collector.includes("plano-de-transicao-sedes-quadrix"),"coletor usa GitHub OIDC");
+assert(collector.includes("inscricoes homologadas")&&collector.includes("personalMatches"),"retrovarredura prioriza inscrições e matches privados");
+assert(!collector.includes("CPF principal")&&!collector.includes("Nome atual"),"identificadores pessoais não estão hardcoded no coletor");
+assert(wf.includes("id-token: write")&&wf.includes("sedes-quadrix-monitor.mjs"),"workflow possui OIDC e executa coletor dedicado");
+assert(front.includes("sedes_quadrix_public_state")&&front.includes("plano.webRadar.session.v2"),"Pós-Prova combina estado público e sessão privada existente");
+assert(front.includes("sedesHits")&&front.includes("Inscrição SEDES"),"painel privado renderiza matches e inscrições");
+assert(index.includes("post-exam-quadrix-v44.js")&&index.includes("post-exam-quadrix-v44.css"),"módulo v44 está carregado no site");
+assert(sw.includes("plano-transicao-v44-sedes-quadrix")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix v44");
+if(process.exitCode)throw new Error("Auditoria estática SEDES/Quadrix falhou");
+console.log("SEDES/Quadrix v44: contratos estáticos íntegros.");

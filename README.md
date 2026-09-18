@@ -9,7 +9,7 @@ Versão independente do painel **Plano de Transição**, preparada para GitHub P
 - Fluxo longitudinal pós-prova: prova → gabarito → correção → recursos → resultado.
 - Central pré-edital para TJDFT e SEEDF, com cargos no radar, notícias identificadas por tipo de fonte, links oficiais e alertas de ativação.
 - **Radar Oficial DOU + DODF** com varredura automática, deduplicação de ocorrências, classificação de atos e monitoramento privado por identificadores protegidos; a interface pública recebe apenas agregados do radar pessoal.
-- Pós-prova SEDES/DF com visão separada de TDAS 202 e EDAS 400, janela de recursos, cronograma de publicações e fontes da banca.
+- Pós-prova SEDES/DF com visão separada de TDAS 202 e EDAS 400, janela de recursos, cronograma e **monitor automático da página oficial da Quadrix**, incluindo novas publicações e matches pessoais protegidos.
 - Trilhas estratégicas seguintes destacadas sem misturar bases: SEEDF e TJDFT.
 - Plano focado em decisão e acompanhamento; a execução de questões permanece fora deste site.
 - Central de operações com estado do snapshot, sincronização segura e PWA.
@@ -42,7 +42,7 @@ Nome, variações e identificadores opcionais (CPF, RG, CNPJ, e-mail, telefone o
 
 Os resultados web ficam em tabelas privadas com RLS e só são entregues pela Edge Function `personal-web-search`. Uma URL é deduplicada uma única vez, mas pode manter vínculos privados com vários identificadores que encontraram o mesmo resultado. A pesquisa mantém histórico e revisão explícita de identidade (`A revisar`, `É meu`, `Possível homônimo`, `Não sou eu`). O provedor principal é o DuckDuckGo HTML, consultado por uma função SQL privada; o front recebe somente dados privados após uma sessão válida. O painel também permite gerar/trocar o código de acesso sem recuperar o código anterior, pois apenas o hash é armazenado.
 
-## Regra de governança
+### Monitor Pós-Prova SEDES/Quadrix\n\nA página oficial `https://quadrix.org.br/informacoes/3056/` é a fonte-mãe do concurso. Um workflow dedicado usa GitHub OIDC para consultar a página, detectar alterações de situação/cronograma/publicações e, em documentos relevantes, procurar os identificadores privados obtidos do Supabase Vault. O repositório nunca contém nome, CPF ou inscrição em claro. O estado público fica em `sedes_quadrix_public_state`; ocorrências pessoais ficam em tabela privada e só aparecem no Pós-Prova após a mesma sessão temporária usada pelo Radar pessoal. Inscrições descobertas com correspondência forte podem ser incorporadas ao Vault no escopo exclusivo SEDES.\n\n## Regra de governança
 
 **Banco operacional → reconciliação/normalização → Registro Histórico → painel/resumo.**
 

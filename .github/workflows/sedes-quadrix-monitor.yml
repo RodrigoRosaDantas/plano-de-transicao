@@ -1,0 +1,42 @@
+name: Monitor Pós-Prova SEDES Quadrix
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 09:35–21:35 UTC = 06:35–18:35 em Brasília, a cada 2 horas.
+    - cron: "35 9-21/2 * * *"
+    # Fechamento noturno às 21:35 BRT.
+    - cron: "35 0 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sedes-quadrix-monitor.yml"
+      - "scripts/sedes-quadrix-monitor.mjs"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: sedes-quadrix-monitor
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Preparar leitor de PDF
+        run: |
+          command -v pdftotext >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y poppler-utils)
+
+      - name: Monitorar página e publicações da Quadrix
+        run: node scripts/sedes-quadrix-monitor.mjs
