@@ -213,8 +213,9 @@ async function scanDOU(term){
       section=text.match(/Se[cç][aã]o:\s*([^|]{1,80})/i)?.[1]?.trim()||null;
       agency=text.match(/[ÓO]rg[aã]o:\s*([^|]{2,220})/i)?.[1]?.trim()||null;
     }catch{}
-    if(!matchesTerm(text,term))continue;
-    occurrences.push({term_id:term.id,source:"DOU",title,url:item.url,published_at,section,agency,snippet:text.slice(0,900),classification:classify(text)});
+    const contextHit=term.is_private?findTermContext(text,term):relevantPublicContext(text,term);
+    if(!contextHit)continue;
+    occurrences.push({term_id:term.id,source:"DOU",title,url:item.url,published_at,section,agency,snippet:contextHit.snippet.slice(0,900),classification:classify(contextHit.snippet)});
   }
   sourceHealth.DOU.hits+=occurrences.filter(o=>o.term_id===term.id&&o.source==="DOU").length;
 }
@@ -275,7 +276,7 @@ async function scanDODFToday(dodfTerms){
   if(pdfText.replace(/\s+/g," ").trim().length<5000)throw new Error("texto da edição do dia não pôde ser extraído");
   let localHits=0;
   for(const term of dodfTerms){
-    const ctxHit=findTermContext(pdfText,term);
+    const ctxHit=term.is_private?findTermContext(pdfText,term):relevantPublicContext(pdfText,term);
     if(!ctxHit)continue;
     occurrences.push({
       term_id:term.id,
@@ -410,6 +411,7 @@ const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",yea
 
 let latestIndexedDate=null;
 let todayQueryErrors=0;
+let todayHits=0;
 const dodfBatchSize=2;
 for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
   const batch=dodfTerms.slice(i,i+dodfBatchSize);
@@ -425,25 +427,24 @@ for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
   for(const item of results){
     if(!item.result)continue;
     sourceHealth.DODF.hits+=item.result.hits;
+    todayHits+=item.result.hits;
     if(item.result.latestDate&&(!latestIndexedDate||item.result.latestDate>latestIndexedDate))latestIndexedDate=item.result.latestDate;
   }
   if(i+dodfBatchSize<dodfTerms.length)await sleep(200);
 }
 sourceHealth.DODF.latestIndexedDate=latestIndexedDate;
-sourceHealth.DODF.todayStatus=
-  latestIndexedDate===todayKey?"ok":
-  latestIndexedDate?"waiting-index":
-  todayQueryErrors?"partial":"empty";
-sourceHealth.DODF.status=(todayQueryErrors||latestIndexedDate!==todayKey)?"partial":"ok";
+sourceHealth.DODF.todayHits=todayHits;
+sourceHealth.DODF.todayStatus=todayQueryErrors?"partial":"checked";
+sourceHealth.DODF.status=todayQueryErrors?"partial":"ok";
 
 const probeOfficial=[6,18,21].includes(localHour);
 if(probeOfficial){
   try{
     const direct=await scanDODFToday(dodfTerms);
     sourceHealth.DODF.hits+=direct.hits;
-    sourceHealth.DODF.todayStatus="ok";
     sourceHealth.DODF.officialSiteStatus="ok";
     sourceHealth.DODF.todaySections=direct.sections;
+    sourceHealth.DODF.todayHits+=direct.hits;
     if(!todayQueryErrors)sourceHealth.DODF.status="ok";
   }catch(e){
     sourceHealth.DODF.officialSiteStatus="unreachable";
@@ -469,7 +470,10 @@ if(runHistory){
     if(i+dodfBatchSize<dodfTerms.length)await sleep(250);
   }
   sourceHealth.DODF.historyErrorCount=Math.max(0,sourceHealth.DODF.errors.length-historyErrorsBefore);
-  if(sourceHealth.DODF.historyErrorCount)sourceHealth.DODF.historyStatus="partial";
+  if(sourceHealth.DODF.historyErrorCount){
+    sourceHealth.DODF.historyStatus="partial";
+    sourceHealth.DODF.status="partial";
+  }
 }
 const douTerms=terms.filter(t=>(t.target_sources||[]).includes("DOU"));
 for(const term of douTerms){
