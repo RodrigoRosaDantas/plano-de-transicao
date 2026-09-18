@@ -1,7 +1,7 @@
 import {readFileSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
 const assert=(c,m)=>{if(!c){console.error("❌ "+m);process.exitCode=1}else console.log("✅ "+m)};
-const index=read("index.html"),sw=read("sw.js"),collector=read("scripts/sedes-quadrix-monitor.mjs"),wf=read(".github/workflows/sedes-quadrix-monitor.yml"),front=read("assets/post-exam-quadrix-v44.js");
+const index=read("index.html"),sw=read("sw.js"),collector=read("scripts/sedes-quadrix-monitor.mjs"),wf=read(".github/workflows/sedes-quadrix-monitor.yml"),front=read("assets/post-exam-quadrix-v44.js"),radar=read("radar-oficial.html");
 assert(collector.includes("quadrix.org.br/informacoes/3056"),"coletor usa a página-mãe oficial da Quadrix");
 assert(collector.includes("ACTIONS_ID_TOKEN_REQUEST_URL")&&collector.includes("plano-de-transicao-sedes-quadrix"),"coletor usa GitHub OIDC");
 assert(collector.includes("inscricoes homologadas")&&collector.includes("personalMatches"),"retrovarredura prioriza inscrições e matches privados");
@@ -9,6 +9,10 @@ assert(!collector.includes("CPF principal")&&!collector.includes("Nome atual"),"
 assert(wf.includes("id-token: write")&&wf.includes("sedes-quadrix-monitor.mjs"),"workflow possui OIDC e executa coletor dedicado");
 assert(front.includes("sedes_quadrix_public_state")&&front.includes("plano.webRadar.session.v2"),"Pós-Prova combina estado público e sessão privada existente");
 assert(front.includes("sedesHits")&&front.includes("Inscrição SEDES"),"painel privado renderiza matches e inscrições");
+assert(front.includes("PÓS-PROVA · SEDES/DF")&&front.includes("Acompanhamento do concurso"),"SEDES/Quadrix possui área própria dentro do Pós-Prova");
+assert(front.includes("separados do Radar Oficial"),"Pós-Prova explicita a separação do Radar Oficial");
+assert(!radar.includes("Órgão + pós-prova")&&!radar.includes("MONITOR OFICIAL · QUADRIX"),"Radar Oficial não mistura Quadrix nem Pós-Prova SEDES");
+assert(radar.includes("Monitor institucional")&&radar.includes("Cronograma da banca, inscrições, gabaritos e resultados da Quadrix ficam no Pós-Prova"),"Radar Oficial mantém apenas o escopo DOU/DODF da SEDES");
 assert(front.includes("qRenderSection")&&front.includes('if(!document.querySelector("[data-q44-wrap]"))qEnsure()'),"MutationObserver não recria o painel em loop");
 assert(front.includes("evidence_labels")&&front.includes("const grouped=new Map()"),"evidências pessoais duplicadas são agrupadas por publicação e cargo");
 assert(index.includes("post-exam-quadrix-v44.js")&&index.includes("post-exam-quadrix-v44.css"),"módulo v44 está carregado no site");

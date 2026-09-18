@@ -32,6 +32,18 @@ async function qLoadPublic(){
   const section=document.querySelector("[data-q44-wrap]");
   if(section)qRenderSection(section);
 }
+function qSectionIntro(){
+  return `<header class="q44-section-intro">
+    <div>
+      <span class="eyebrow">PÓS-PROVA · SEDES/DF</span>
+      <h2>Acompanhamento do concurso</h2>
+      <p>Quadrix, cronograma, publicações da banca e sua situação nos cargos 202 e 400 ficam reunidos aqui, separados do Radar Oficial.</p>
+    </div>
+    <div class="q44-section-badges" aria-label="Escopo do pós-prova SEDES">
+      <span>Quadrix</span><span>Cargo 202</span><span>Cargo 400</span>
+    </div>
+  </header>`;
+}
 function qPublicMarkup(){
   const d=sedesQuadrixState||{},run=d.lastRun||{},next=qNextDate(d.importantDates);
   const pubs=d.publications||[],previous=localStorage.getItem(SEDES_QUADRIX.seenKey);
@@ -39,8 +51,8 @@ function qPublicMarkup(){
   const latest=pubs.slice(0,7);
   return `<section class="q44-panel panel" data-q44-public>
     <div class="q44-head">
-      <div><span class="eyebrow">MONITOR OFICIAL · QUADRIX</span><h3>Concurso SEDES/DF acompanhado pela fonte-mãe.</h3>
-      <p>Página do concurso, cronograma e todas as novas publicações são verificadas automaticamente.</p></div>
+      <div><span class="eyebrow">BANCA · QUADRIX</span><h3>Cronograma e publicações do concurso.</h3>
+      <p>A página do concurso é acompanhada automaticamente para detectar novos comunicados, resultados, retificações e mudanças de cronograma.</p></div>
       <span class="q44-status ${d.status==="ok"?"ok":d.status==="partial"?"partial":""}">${qEsc(d.contest?.status||"Aguardando")}</span>
     </div>
     <div class="q44-metrics">
@@ -48,7 +60,7 @@ function qPublicMarkup(){
       <article><small>Publicações monitoradas</small><strong>${Number(d.counts?.publications||0)}</strong><span>${newCount?newCount+" nova(s) desde a última visita":"sem novidade local"}</span></article>
       <article><small>Última varredura</small><strong>${qEsc(run.status||"pendente")}</strong><span>${qDateTime(run.finishedAt||run.startedAt)}</span></article>
     </div>
-    <div class="q44-actions"><a class="primary-button" href="${SEDES_QUADRIX.publicUrl}" target="_blank" rel="noreferrer">Abrir página oficial ↗</a>
+    <div class="q44-actions"><a class="primary-button" href="${SEDES_QUADRIX.publicUrl}" target="_blank" rel="noreferrer">Abrir página do concurso ↗</a>
       <button type="button" class="secondary-button" data-q44-refresh>Recarregar monitor</button></div>
     <div class="q44-publications">
       <div class="q44-subhead"><strong>Últimas publicações</strong><small>Quadrix · concurso 3056</small></div>
@@ -58,8 +70,8 @@ function qPublicMarkup(){
 }
 function qPrivateShell(){
   return `<section class="q44-private panel" data-q44-private>
-    <div class="q44-head"><div><span class="eyebrow">MINHA SITUAÇÃO SEDES · PRIVADO</span><h3>Inscrições, ocorrências e resultados pessoais.</h3>
-      <p>Os dados só aparecem após desbloqueio e não entram no estado público do site.</p></div><span class="q44-lock">🔐</span></div>
+    <div class="q44-head"><div><span class="eyebrow">MEUS DADOS NO CONCURSO · PRIVADO</span><h3>Inscrições e ocorrências nos cargos 202 e 400.</h3>
+      <p>Seus dados pessoais ficam somente neste módulo do Pós-Prova, após desbloqueio, e não entram no Radar Oficial nem no estado público do site.</p></div><span class="q44-lock">🔐</span></div>
     <div data-q44-private-body><div class="q44-private-loading">Verificando sessão privada…</div></div>
   </section>`;
 }
@@ -74,8 +86,8 @@ async function qLoadPrivate(root){
   }catch{sessionStorage.removeItem(SEDES_QUADRIX.sessionKey);qRenderUnlock(box)}
 }
 function qRenderUnlock(box){
-  box.innerHTML=`<form class="q44-unlock" data-q44-unlock><label><span>Código privado do Radar</span><input type="password" autocomplete="current-password" minlength="10" maxlength="24" placeholder="••••-••••-••••"></label>
-    <button class="primary-button" type="submit">Desbloquear meus dados</button><small>Usa a mesma proteção do Radar Oficial; o código não é salvo no navegador.</small></form>`;
+  box.innerHTML=`<form class="q44-unlock" data-q44-unlock><label><span>Código privado do Plano</span><input type="password" autocomplete="current-password" minlength="10" maxlength="24" placeholder="••••-••••-••••"></label>
+    <button class="primary-button" type="submit">Desbloquear meus dados</button><small>Usa a mesma credencial privada já configurada no Plano de Transição; o código não é salvo no navegador.</small></form>`;
   box.querySelector("[data-q44-unlock]")?.addEventListener("submit",async e=>{
     e.preventDefault();const input=e.currentTarget.querySelector("input"),code=input.value.trim();if(!code)return;
     const btn=e.currentTarget.querySelector("button");btn.disabled=true;btn.textContent="Desbloqueando…";
@@ -120,7 +132,7 @@ function qRenderPrivate(box,d){
   });
 }
 function qRenderSection(section){
-  section.innerHTML=qPublicMarkup()+qPrivateShell();
+  section.innerHTML=qSectionIntro()+qPublicMarkup()+qPrivateShell();
   section.querySelector("[data-q44-refresh]")?.addEventListener("click",qLoadPublic);
   localStorage.setItem(SEDES_QUADRIX.seenKey,new Date().toISOString());
   qLoadPrivate(section);
