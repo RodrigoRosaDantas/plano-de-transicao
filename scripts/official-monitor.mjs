@@ -78,7 +78,14 @@ page.setDefaultTimeout(12000);
 const occurrences=[];
 const sourceHealth={
   DOU:{status:"ok",checked:0,hits:0,errors:[],collector:"github-actions"},
-  DODF:{status:"ok",checked:0,hits:0,errors:[],collector:"github-actions-browser",fallback:"SINJ/DF"}
+  DODF:{
+    status:"ok",checked:0,hits:0,errors:[],
+    collector:"DODF do dia + SINJ/DF",
+    fallback:"SINJ/DF",
+    todayStatus:"pending",
+    historyStatus:"pending",
+    historyErrorCount:0
+  }
 };
 
 async function extractAnchors(page,selector,limit=8){
@@ -124,6 +131,65 @@ async function scanDOU(term){
   sourceHealth.DOU.hits+=occurrences.filter(o=>o.term_id===term.id&&o.source==="DOU").length;
 }
 
+async function scanDODFToday(dodfTerms){
+  const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  const displayDate=new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
+  const epoch=Math.floor(Date.parse(today+"T00:00:00-03:00")/1000);
+  const sections=[
+    ["I","Seção I"],
+    ["II","Seção II"],
+    ["III","Seção III"]
+  ];
+  const directPage=await ctx.newPage();
+  directPage.setDefaultTimeout(15000);
+  let loaded=0,localHits=0;
+  try{
+    for(const [code,label] of sections){
+      const url="https://dodf.df.gov.br/dodf/jornal/diario?data="+epoch+"&tpSecao="+code;
+      try{
+        await directPage.goto(url,{waitUntil:"domcontentloaded",timeout:25000});
+        await directPage.waitForTimeout(500);
+        const text=String(await directPage.locator("body").innerText({timeout:12000})).replace(/\s+/g," ").trim();
+        if(text.length<500)continue;
+        loaded++;
+        for(const term of dodfTerms){
+          if(!matchesTerm(text,term))continue;
+          const normalized=normalize(text);
+          const q=normalize(term.query_text);
+          const toks=q.split(" ").filter(x=>x.length>3);
+          let at=normalized.indexOf(q);
+          if(at<0){
+            for(const token of toks){
+              at=normalized.indexOf(token);
+              if(at>=0)break;
+            }
+          }
+          const start=Math.max(0,at>=0?at-320:0);
+          const snippet=text.slice(start,start+1200);
+          occurrences.push({
+            term_id:term.id,
+            source:"DODF",
+            title:["DODF do dia",label,displayDate].join(" · "),
+            url,
+            published_at:today,
+            section:label,
+            agency:term.is_private?null:term.label,
+            snippet,
+            classification:classify(snippet||text)
+          });
+          localHits++;
+        }
+      }catch(e){
+        sourceHealth.DODF.errors.push("DODF do dia · "+label+": "+String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180));
+      }
+    }
+  }finally{
+    await directPage.close().catch(()=>{});
+  }
+  if(!loaded)throw new Error("edição do dia não retornou seções legíveis");
+  return {hits:localHits,sections:loaded};
+}
+
 async function findSearchInput(page){
   const selectors=['input[placeholder*="Digite aqui"]','input[placeholder*="Informe o termo"]','input[placeholder*="pesquisar" i]','input[type="search"]','input[type="text"]'];
   for(const sel of selectors){
@@ -144,7 +210,7 @@ async function scanSINJ(term){
   let localHits=0;
   let pages=0;
 
-  while(offset<total&&pages<24){
+  while(offset<total&&pages<8){
     const url=endpoint
       +"?tipo_pesquisa=diario"
       +"&filetext="+encodeURIComponent(term.query_text)
@@ -221,10 +287,7 @@ async function scanSINJ(term){
   return localHits;
 }
 
-async function scanDODF(term){
-  sourceHealth.DODF.checked++;
-  sourceHealth.DODF.collector="github-actions-sinj";
-  sourceHealth.DODF.fallback="SINJ/DF oficial";
+async function scanDODFHistory(term){
   const n=await scanSINJ(term);
   sourceHealth.DODF.hits+=n;
 }
@@ -240,14 +303,42 @@ const recordSourceError=(source,term,e)=>{
 };
 
 const dodfTerms=terms.filter(t=>(t.target_sources||[]).includes("DODF"));
-const dodfBatchSize=2;
-for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
-  const batch=dodfTerms.slice(i,i+dodfBatchSize);
-  await Promise.allSettled(batch.map(async term=>{
-    try{await scanDODF(term)}catch(e){recordSourceError("DODF",term,e)}
-  }));
-  if(i+dodfBatchSize<dodfTerms.length)await sleep(350);
+sourceHealth.DODF.checked=dodfTerms.length;
+let dodfTodayOk=false;
+try{
+  const direct=await scanDODFToday(dodfTerms);
+  sourceHealth.DODF.hits+=direct.hits;
+  sourceHealth.DODF.todayStatus="ok";
+  sourceHealth.DODF.todaySections=direct.sections;
+  dodfTodayOk=true;
+}catch(e){
+  sourceHealth.DODF.todayStatus="partial";
+  sourceHealth.DODF.errors.push("DODF do dia: "+String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180));
 }
+
+const localHour=Number(new Intl.DateTimeFormat("en-GB",{timeZone:"America/Sao_Paulo",hour:"2-digit",hourCycle:"h23"}).format(new Date()));
+const runHistory=[6,12,18,21].includes(localHour)||!dodfTodayOk;
+sourceHealth.DODF.historyStatus=runHistory?"ok":"skipped";
+if(runHistory){
+  const historyErrorsBefore=sourceHealth.DODF.errors.length;
+  const dodfBatchSize=2;
+  for(let i=0;i<dodfTerms.length;i+=dodfBatchSize){
+    const batch=dodfTerms.slice(i,i+dodfBatchSize);
+    await Promise.allSettled(batch.map(async term=>{
+      try{await scanDODFHistory(term)}
+      catch(e){
+        const label=term.is_private?"termo privado":term.label;
+        sourceHealth.DODF.errors.push(label+": "+(term.is_private
+          ?"consulta histórica privada indisponível nesta execução"
+          :String(e?.message||e).replace(/https?:\/\/\S+/g,"[url omitida]").slice(0,180)));
+      }
+    }));
+    if(i+dodfBatchSize<dodfTerms.length)await sleep(350);
+  }
+  sourceHealth.DODF.historyErrorCount=Math.max(0,sourceHealth.DODF.errors.length-historyErrorsBefore);
+  if(sourceHealth.DODF.historyErrorCount)sourceHealth.DODF.historyStatus="partial";
+}
+sourceHealth.DODF.status=dodfTodayOk?"ok":"partial";
 
 const douTerms=terms.filter(t=>(t.target_sources||[]).includes("DOU"));
 for(const term of douTerms){
