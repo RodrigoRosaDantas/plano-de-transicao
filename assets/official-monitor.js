@@ -81,13 +81,10 @@ function render() {
 function renderSources(sources) {
   const names = [["DOU","Diário Oficial da União"],["DODF","Diário Oficial do Distrito Federal"]];
   let allOk = true;
-  let waitingOfficialUpdate = false;
   $("#sourceHealth").innerHTML = names.map(([key,label])=>{
     const s = sources[key] || {status:"pending"};
     const st = s.status || "pending";
-    const waitingIndex = key==="DODF" && s.todayStatus==="waiting-index";
-    if(st!=="ok" && !waitingIndex) allOk=false;
-    if(waitingIndex) waitingOfficialUpdate=true;
+    if(st!=="ok") allOk=false;
 
     const historyLabel =
       s.historyStatus==="skipped" ? "histórico não reconsultado nesta rodada" :
@@ -95,30 +92,43 @@ function renderSources(sources) {
       s.historyStatus==="partial" ? "histórico conferido parcialmente" :
       "histórico pendente";
 
-    const dodfToday = s.todayStatus==="ok"
-      ? `edição de hoje já indexada no SINJ${s.officialSiteStatus==="ok"?" · DODF certificado acessível":""}`
-      : waitingIndex
-        ? `edição de hoje ainda não indexada no SINJ${s.latestIndexedDate?` · última disponível: ${fmtDate(s.latestIndexedDate)}`:""}`
-        : s.todayStatus==="empty"
-          ? "SINJ consultado · nenhuma edição localizada para os radares"
-          : `consulta do dia incompleta${s.latestIndexedDate?` · SINJ disponível até ${fmtDate(s.latestIndexedDate)}`:""}`;
+    let detail;
+    if(key==="DODF"){
+      const todayLabel =
+        s.todayStatus==="checked"
+          ? (Number(s.todayHits||0)>0
+              ? `SINJ consultado · ${s.todayHits} ocorrência(s) dos radares com data de hoje`
+              : "SINJ consultado · nenhuma ocorrência dos radares com data de hoje")
+          : s.todayStatus==="partial"
+            ? `consulta do dia teve falha${s.errorCount?` · ${s.errorCount} alerta(s) técnico(s)`:""}`
+            : s.todayStatus==="waiting-index"
+              ? "estado legado: aguardando nova varredura com a regra corrigida"
+              : s.todayStatus==="empty"
+                ? "SINJ consultado · nenhuma ocorrência dos radares"
+                : "aguardando primeira consulta";
 
-    const detail = key==="DODF" && s.todayStatus
-      ? `${dodfToday} · ${historyLabel}${s.historyErrorCount?` · ${s.historyErrorCount} falha(s)`:""}`
-      : st==="ok"
+      const officialLabel =
+        s.officialSiteStatus==="ok" ? "DODF certificado também conferido" :
+        s.officialSiteStatus==="unreachable" ? "DODF certificado direto indisponível; SINJ segue como fonte oficial de pesquisa" :
+        s.officialSiteStatus==="skipped" ? "PDF certificado não sondado neste horário" :
+        "";
+
+      const lastMatch=s.latestIndexedDate
+        ? `última data retornada para os termos: ${fmtDate(s.latestIndexedDate)}`
+        : "";
+      detail=[todayLabel,officialLabel,lastMatch,historyLabel].filter(Boolean).join(" · ");
+    }else{
+      detail = st==="ok"
         ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)`
         : st==="partial"
           ? `${s.checked||0} radares checados · ${s.errorCount||0} consulta(s) com falha nesta varredura`
           : "Aguardando diagnóstico da fonte.";
+    }
 
-    const visualStatus = waitingIndex ? "waiting" : st;
-    const statusLabel = waitingIndex ? "aguardando edição" : st==="ok" ? "online" : st==="partial" ? "parcial" : st;
-    return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":"DF"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(visualStatus)}">${esc(statusLabel)}</span></div>`;
+    const statusLabel = st==="ok" ? "online" : st==="partial" ? "parcial" : st;
+    return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":"DF"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(st)}">${esc(statusLabel)}</span></div>`;
   }).join("");
-
-  $("#sourceOverall").textContent = waitingOfficialUpdate
-    ? "DF aguardando publicação/indexação"
-    : allOk ? "fontes online" : "verificar fonte";
+  $("#sourceOverall").textContent = allOk ? "fontes online" : "verificar fonte";
 }
 
 function renderHits() {
