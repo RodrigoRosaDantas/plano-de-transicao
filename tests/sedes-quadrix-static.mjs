@@ -17,7 +17,7 @@ assert(radar.includes("Monitor institucional")&&radar.includes("Cronograma da ba
 assert(front.includes("qRenderSection")&&front.includes('document.querySelector(".post-exam-view [data-post-exam-page]")'),"monitor monta no host dedicado e visível do Pós-Prova");
 assert(front.includes("root.prepend(section)")&&front.includes("stale.remove()"),"monitor corrige host legado e reposiciona o painel se necessário");
 assert(front.includes("evidence_labels")&&front.includes("const grouped=new Map()"),"evidências pessoais duplicadas são agrupadas por publicação e cargo");
-assert(index.includes("post-exam-quadrix-v44.js")&&index.includes("post-exam-quadrix-v44.css"),"módulo v44 está carregado no site");
-assert(sw.includes("plano-transicao-v44-sedes-quadrix")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix v44");
+assert(index.includes("post-exam-quadrix-v44.js?v=45")&&index.includes("post-exam-quadrix-v44.css?v=45"),"módulo Quadrix usa cache busting v45 no site");
+assert(sw.includes("plano-transicao-v45-post-exam-host")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix no cache v45");
 if(process.exitCode)throw new Error("Auditoria estática SEDES/Quadrix falhou");
-console.log("SEDES/Quadrix v44: contratos estáticos íntegros.");
+console.log("SEDES/Quadrix: contratos estáticos íntegros no host visível.");
