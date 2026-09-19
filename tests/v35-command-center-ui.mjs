@@ -36,8 +36,12 @@ await scenario('pré-edital: dossiê e acompanhamento local', { width: 1440, hei
 await scenario('pós-prova: cronograma acionável e calendário', { width: 390, height: 844 }, async (page) => {
   await page.click('[data-view="post-exam"]');
   await page.waitForSelector('.post-exam-view');
-  if (await page.locator('.postexam-milestone__actions').count() !== 7) throw new Error('Ações não foram adicionadas aos sete marcos.');
-  if (await page.locator('[data-calendar-event]').count() !== 7) throw new Error('Exportação de calendário incompleta.');
+  const milestoneCount = await page.locator('.postexam-milestone').count();
+  if (milestoneCount < 7) throw new Error('Cronograma pós-prova perdeu marcos oficiais.');
+  const actionCount = await page.locator('.postexam-milestone__actions').count();
+  if (actionCount !== milestoneCount) throw new Error(`Ações incompletas no cronograma: ${actionCount}/${milestoneCount}.`);
+  const calendarCount = await page.locator('[data-calendar-event]').count();
+  if (calendarCount !== milestoneCount) throw new Error(`Exportação de calendário incompleta: ${calendarCount}/${milestoneCount}.`);
   const milestoneButton = page.locator('.postexam-milestone [data-alert-toggle]').first();
   await milestoneButton.click();
   if (await milestoneButton.getAttribute('aria-pressed') !== 'true') throw new Error('Marco não foi marcado como acompanhado.');
