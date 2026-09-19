@@ -502,7 +502,7 @@ function buildPostExamFollowUp() {
     title: 'Acompanhamento pós-prova',
     description: 'Painel permanente da SEDES/DF: correção, recursos, resultado e decisão seguinte, sem misturar os cargos.',
     currentStage: hasRanking ? 'Resultado e próximos passos' : hasDefinitive ? 'Classificação em acompanhamento' : resourcesClosed && hasPreliminary ? 'Aguardando resultado objetivo preliminar' : hasPreliminary ? 'Conferência e recursos' : 'Aguardando gabarito e correção',
-    nextAction: hasRanking ? 'Registrar classificação, discursiva e decisão de carreira.' : hasDefinitive ? 'Acompanhar classificação e correção da discursiva.' : resourcesClosed && hasPreliminary ? 'Acompanhar gabarito definitivo e resultado objetivo preliminar; atualizar notas e classificação quando a banca publicar.' : hasPreliminary ? 'Revisar divergências e protocolar somente recursos fundamentados.' : 'Aguardar fonte oficial de correção.',
+    nextAction: hasRanking ? 'Registrar classificação, discursiva e decisão de carreira.' : hasDefinitive ? 'Acompanhar classificação e correção da discursiva.' : resourcesClosed && hasPreliminary ? 'Acompanhar o gabarito definitivo e o resultado objetivo preliminar de 13/10; a posição classificatória passa a ser o dado crítico para definir a correção da discursiva sob a regra do Edital nº 6.' : hasPreliminary ? 'Revisar divergências e protocolar somente recursos fundamentados.' : 'Aguardar fonte oficial de correção.',
     snapshotDate: snapshot.meta?.postExamDate || null,
     lastCalculatedAt: new Date().toISOString(),
     milestones,
