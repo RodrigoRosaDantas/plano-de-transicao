@@ -16,6 +16,7 @@ assert(!radar.includes("Órgão + pós-prova")&&!radar.includes("MONITOR OFICIAL
 assert(radar.includes("Monitor institucional")&&radar.includes("Cronograma da banca, inscrições, gabaritos e resultados da Quadrix ficam no Pós-Prova"),"Radar Oficial mantém apenas o escopo DOU/DODF da SEDES");
 assert(front.includes("qRenderSection")&&front.includes('document.querySelector(".post-exam-view [data-post-exam-page]")'),"monitor monta no host dedicado e visível do Pós-Prova");
 assert(front.includes("root.prepend(section)")&&front.includes("stale.remove()"),"monitor corrige host legado e reposiciona o painel se necessário");
+assert(front.includes("sedesQuadrixPublicLoaded=false")&&front.includes("if(sedesQuadrixPublicLoaded)localStorage.setItem"),"monitor só atualiza a marcação de novidade após leitura pública válida");
 assert(front.includes("evidence_labels")&&front.includes("const grouped=new Map()"),"evidências pessoais duplicadas são agrupadas por publicação e cargo");
 assert(index.includes("post-exam-quadrix-v44.js?v=48")&&index.includes("post-exam-quadrix-v44.css?v=48"),"módulo privado SEDES usa cache busting v48");
 assert(front.includes("MINHA SITUAÇÃO AGORA")&&front.includes("Nota preliminar")&&front.includes("Resultado oficial")&&front.includes("Classificação"),"painel privado mostra situação pessoal completa por cargo");

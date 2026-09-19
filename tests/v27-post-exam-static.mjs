@@ -54,6 +54,8 @@ has(index, 'data-view="post-exam"', 'navegação pós-prova dedicada');
 has(score, 'window.__planoPostExamAudit', 'auditoria exportada para a página dedicada');
 has(followup, 'Auditoria questão a questão', 'auditoria detalhada no pós-prova');
 has(score + followup, 'sujeito a recurso e alteração', 'gabarito preliminar identificado como provisório');
+has(await fs.readFile('assets/work-app.js', 'utf8'), 'item.status === "current" && item.date', 'cartão da próxima publicação prioriza o marco atual');
+has(await fs.readFile('assets/work-app.js', 'utf8'), 'const nextMilestoneDate = nextMilestone.date || nextMilestone.start || nextMilestone.end || ""', 'cartão da próxima publicação preserva datas simples e janelas');
 
 for (const value of [
   'body.post-exam-v27 .command-view > .priority-grid',

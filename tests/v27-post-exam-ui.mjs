@@ -85,6 +85,11 @@ await scenario('desktop: Pós-prova dedicada concentra auditoria, gráficos e de
   for (const value of ['acompanhamento pós-prova', 'tipo b', 'tipo a', 'gabarito preliminar', 'recursos e divergências', 'auditoria questão a questão', 'sua anotação', 'motivo / leitura', 'pré-análise']) {
     if (!text.includes(value)) throw new Error('Pós-prova dedicada sem: ' + value);
   }
+  const nextPublication = post.locator('.metric-card').filter({ hasText: 'Próxima publicação' });
+  const nextPublicationText = fold(await nextPublication.innerText());
+  if (!nextPublicationText.includes('13/10/2026') || !nextPublicationText.includes('gabarito definitivo')) {
+    throw new Error('Cartão da próxima publicação não apontou o marco atual: ' + nextPublicationText);
+  }
   if (await post.locator('[data-post-exam-page]').count() !== 1) throw new Error('Deve existir um único host de pós-prova.');
   await page.waitForSelector('.post-exam-view [data-post-exam-page] [data-q44-wrap]', { timeout: 15000 });
   const sedesMonitor = post.locator('[data-post-exam-page] [data-q44-wrap]');

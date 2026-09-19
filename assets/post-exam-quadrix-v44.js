@@ -7,6 +7,7 @@ const SEDES_QUADRIX={
   seenKey:"plano.sedesQuadrix.seen.v1"
 };
 let sedesQuadrixState=null;
+let sedesQuadrixPublicLoaded=false;
 let sedesExamSnapshot=null;
 const qInt=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("pt-BR"):"—";
 const qPct=v=>Number.isFinite(Number(v))?Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+"%":"—";
@@ -30,7 +31,8 @@ async function qLoadPublic(){
     });
     if(!r.ok)throw new Error("HTTP "+r.status);
     const rows=await r.json(); sedesQuadrixState=rows?.[0]?.payload||null;
-  }catch{sedesQuadrixState=null}
+    sedesQuadrixPublicLoaded=Boolean(sedesQuadrixState);
+  }catch{sedesQuadrixState=null;sedesQuadrixPublicLoaded=false}
   qEnsure();
   const section=document.querySelector("[data-q44-wrap]");
   if(section)qRenderSection(section);
@@ -267,7 +269,7 @@ function qRenderPrivate(box,d,examData=sedesExamSnapshot){
 function qRenderSection(section){
   section.innerHTML=qSectionIntro()+qPublicMarkup()+qPrivateShell();
   section.querySelector("[data-q44-refresh]")?.addEventListener("click",qLoadPublic);
-  localStorage.setItem(SEDES_QUADRIX.seenKey,new Date().toISOString());
+  if(sedesQuadrixPublicLoaded)localStorage.setItem(SEDES_QUADRIX.seenKey,new Date().toISOString());
   qLoadPrivate(section);
 }
 function qPostExamHost(){
