@@ -72,7 +72,7 @@ await scenario('desktop: pós-prova preserva leitura competitiva preliminar e au
   const competition = post.locator('[data-v28-competition-panel]');
   if (await competition.count() !== 1) throw new Error('Leitura competitiva duplicada ou ausente.');
   const competitionText = fold(await competition.innerText());
-  for (const expected of ['2.387 correções', '282 correções', '50/100', 'chance pessoal: ainda não estimável']) {
+  for (const expected of ['2.387 correções', '282 correções', '50/100', 'próxima barreira: posição para correção da discursiva', 'a taxa nominal não é probabilidade pessoal']) {
     if (!competitionText.includes(expected)) throw new Error('Leitura competitiva sem: ' + expected);
   }
   const rows = post.locator('[data-v28-question-audit] .v28-audit-row');
