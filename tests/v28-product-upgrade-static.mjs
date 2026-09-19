@@ -19,7 +19,7 @@ function expect(label, condition) {
 }
 
 expect('index carrega a camada v28', index.includes('assets/post-exam-score-v28.js?v=31'));
-expect('index carrega o módulo competitivo v28', index.includes('assets/post-exam-competition-v28.js?v=31'));
+expect('index carrega o módulo competitivo v28', index.includes('assets/post-exam-competition-v28.js?v=32'));
 expect('v28 mantém a nota pós-prova', source.includes('Nota objetiva estimada'));
 expect('v28 cria central adaptativa', source.includes('data-v28-transition-console'));
 expect('v28 separa SEDES da próxima preparação', source.includes('SEDES em acompanhamento. A transição já pode olhar para frente.'));
@@ -33,13 +33,13 @@ expect('v28 ignora score bruto do candidato como correção oficial', source.inc
 expect('v28 não cria nova camada v29', !source.includes('v29') && !competition.includes('v29'));
 expect('módulo exibe leitura competitiva preliminar', competition.includes('data-v28-competition-panel'));
 expect('módulo chama taxa de correção de nominal', competition.includes('Taxa nominal de correção AC'));
-expect('módulo não confunde taxa nominal com chance pessoal', competition.includes('Chance pessoal: ainda não estimável com rigor') && competition.includes('não é sua probabilidade individual'));
+expect('módulo não confunde taxa nominal com chance pessoal', competition.includes('Próxima barreira: posição para correção da discursiva') && competition.includes('A taxa nominal não é probabilidade pessoal.'));
 expect('motor registra probabilidade pessoal como indisponível', scoring.includes("available: false") && scoring.includes("personalProbabilityStatus: 'not-estimable-yet'"));
 expect('v28 exibe auditoria questão a questão', source.includes('AUDITORIA QUESTÃO A QUESTÃO') && source.includes('data-v28-answer-audit'));
 expect('v28 separa anotação do candidato e gabarito preliminar', source.includes('Anotadas na prova') && source.includes('não são gabarito oficial') && source.includes('Gabarito preliminar oficial'));
 expect('v28 expõe acertos, erros e pontos por questão', source.includes('Ver o cruzamento das') && source.includes('Sua anotação') && source.includes('Pontos'));
 expect('v28 expõe pré-análise de recursos', source.includes('Pré-análise de recursos') && source.includes('Não priorizar só pela divergência'));
-expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=31') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
+expect('v28 liga o painel pós-prova', index.includes('assets/post-exam-follow-up-v28.js?v=32') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
 expect('v28 mantém auditoria questão a questão no host dedicado', followUp.includes('data-v28-question-audit') && followUp.includes('questionAudit') && source.includes('window.__planoPostExamAudit'));
 expect('v28 mostra gráficos de resultado', followUp.includes('v28-followup-chart-grid') && followUp.includes('v28-followup-stack') && followUp.includes('v28-followup-area-row'));
 expect('v28 mostra linha do tempo oficial', followUp.includes('v28-followup-milestones') && followUp.includes('LINHA DO TEMPO OFICIAL'));
@@ -64,6 +64,10 @@ expect('EDAS preliminar auditado em 88', snapshot.postExam?.competitionReading?.
 expect('taxa nominal TDAS AC é 3,49%', snapshot.postExam?.competitionReading?.exams?.tdas?.nominalCorrectionRateAC === 3.49);
 expect('taxa nominal EDAS AC é 6,86%', snapshot.postExam?.competitionReading?.exams?.edas?.nominalCorrectionRateAC === 6.86);
 expect('probabilidade pessoal não é inventada', snapshot.postExam?.competitionReading?.personalProbability?.available === false && snapshot.postExam?.competitionReading?.personalProbability?.value == null);
+expect('retificação 6 está incorporada ao snapshot', snapshot.postExam?.competitionReading?.rules?.retification?.edital === 'Edital nº 6' && snapshot.postExam?.competitionReading?.rules?.retification?.items?.includes('12.4.5.5') && snapshot.postExam?.competitionReading?.rules?.retification?.items?.includes('16.7.1'));
+expect('retificação 6 preserva empatados na última posição', snapshot.postExam?.competitionReading?.rules?.lastPositionTie?.includes('todos os empatados nessa posição avançam') && competition.includes('empatados na última posição'));
+expect('retificação 6 está nas fontes do pós-prova', Boolean(snapshot.postExam?.followUp?.sourceDocuments?.retification6) && followUp.includes('Edital nº 6 · retificação'));
+expect('cronograma pós-prova chega ao resultado final', snapshot.postExam?.followUp?.milestones?.some(item => item.id === 'final-result' && item.date === '2027-04-02'));
 expect('router possui página pré-prova', app.includes('function preExamView') && app.includes('"pre-exam": preExamView'));
 expect('router possui página pós-prova', app.includes('function postExamView') && app.includes('"post-exam": postExamView'));
 expect('Agora usa a central de transição no lugar do cockpit antigo', app.includes('transition-now-hero') && app.includes('transition-next') && !app.includes('cockpit-grid'));
