@@ -34,18 +34,34 @@ const TARGETS = [
 ];
 
 const COMPETITION = {
-  auditedAt: '2026-09-09',
+  auditedAt: '2026-09-19',
   methodology: 'nominal-advancement-rate-not-personal-probability',
   sources: {
     contest: 'https://quadrix.org.br/informacoes/3056/',
     updatedNotice: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/b852c323-8771-4021-bbbd-8032e88e58e0.pdf',
+    retification6: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/50d10ab1-e875-402f-a02b-6c8f7c7a722f.pdf',
     registrations: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/49fb4e92-f367-44a9-abc0-12e32eed31f8.pdf'
   },
   milestones: {
     objectivePreliminaryResult: '2026-10-13',
+    objectiveAppealsStart: '2026-10-14',
+    objectiveAppealsEnd: '2026-10-20',
     objectiveDefinitiveAndDiscursiveCorrectionList: '2026-10-30',
     discursivePreliminaryResult: '2026-11-23',
-    discursiveDefinitiveResult: '2026-12-11'
+    discursiveAppealsStart: '2026-11-24',
+    discursiveAppealsEnd: '2026-11-30',
+    discursiveDefinitiveResult: '2026-12-11',
+    titlesStartEDAS: '2026-12-14',
+    titlesEndEDAS: '2026-12-18',
+    titlesPreliminaryResultEDAS: '2027-01-12',
+    titlesAppealsStartEDAS: '2027-01-13',
+    titlesAppealsEndEDAS: '2027-01-19',
+    titlesDefinitiveResultEDAS: '2027-01-26',
+    biopsychosocialHeteroStart: '2027-01-30',
+    biopsychosocialHeteroEnd: '2027-01-31',
+    criminalCertificateStart: '2027-02-27',
+    criminalCertificateEnd: '2027-03-08',
+    finalResult: '2027-04-02'
   },
   tdas: {
     registrationsAC: 68345,
@@ -463,10 +479,20 @@ function buildPostExamFollowUp() {
     { id: 'exam', label: 'Provas realizadas', date: snapshot.meta?.postExamDate || '2026-09-06', status: 'done', detail: 'EDAS pela manhã · TDAS à tarde' },
     { id: 'preliminary-key', label: 'Gabarito preliminar', date: keys.source?.publishedAt || null, status: hasPreliminary ? 'done' : 'pending', detail: hasPreliminary ? 'Tipos A e B incorporados' : 'Aguardar publicação oficial' },
     { id: 'resources', label: 'Recursos', start: protocol?.start || null, end: protocol?.end || null, status: hasDefinitive || resourcesClosed ? 'done' : hasPreliminary ? 'current' : 'pending', detail: hasDefinitive ? 'Janela encerrada ou resultado definitivo disponível' : resourcesClosed ? 'Prazo encerrado; manter o registro dos recursos já protocolados' : hasPreliminary ? 'Conferir divergências com fundamento objetivo' : 'Depois do gabarito preliminar' },
-    { id: 'objective-result', label: 'Resultado objetivo preliminar', date: COMPETITION.milestones.objectivePreliminaryResult, status: hasRanking ? 'done' : hasDefinitive || resourcesClosed ? 'current' : 'upcoming', detail: hasRanking ? 'Classificação registrada' : 'Publicação oficial ainda pendente' },
+    { id: 'retification-6', label: 'Edital nº 6 · retificação', date: '2026-09-18', status: 'done', detail: 'Atualiza correção da discursiva, ordenação da objetiva e critérios de desempate' },
+    { id: 'objective-result', label: 'Gabarito definitivo + resultado objetivo preliminar', date: COMPETITION.milestones.objectivePreliminaryResult, status: hasRanking ? 'done' : hasDefinitive || resourcesClosed ? 'current' : 'upcoming', detail: hasRanking ? 'Classificação registrada' : 'Publicação oficial ainda pendente; posição passa a ser o dado crítico para a discursiva' },
+    { id: 'objective-result-appeals', label: 'Recursos contra o resultado preliminar da objetiva', start: COMPETITION.milestones.objectiveAppealsStart, end: COMPETITION.milestones.objectiveAppealsEnd, status: 'upcoming', detail: 'Janela específica após o resultado preliminar' },
     { id: 'objective-definitive', label: 'Resultado definitivo e lista da discursiva', date: COMPETITION.milestones.objectiveDefinitiveAndDiscursiveCorrectionList, status: hasRanking ? 'done' : 'upcoming', detail: 'Acompanhar lista de correção discursiva' },
     { id: 'discursive-preliminary', label: 'Resultado preliminar da discursiva', date: COMPETITION.milestones.discursivePreliminaryResult, status: 'upcoming', detail: 'Somente após a correção da discursiva' },
-    { id: 'discursive-definitive', label: 'Resultado definitivo da discursiva', date: COMPETITION.milestones.discursiveDefinitiveResult, status: 'upcoming', detail: 'Fechamento do ciclo oficial' }
+    { id: 'discursive-appeals', label: 'Recursos contra o resultado preliminar da discursiva', start: COMPETITION.milestones.discursiveAppealsStart, end: COMPETITION.milestones.discursiveAppealsEnd, status: 'upcoming', detail: 'Janela prevista após a divulgação preliminar' },
+    { id: 'discursive-definitive', label: 'Resultado definitivo da discursiva', date: COMPETITION.milestones.discursiveDefinitiveResult, status: 'upcoming', detail: 'Resultado definitivo da etapa discursiva' },
+    { id: 'edas-titles', label: 'EDAS · envio de títulos', start: COMPETITION.milestones.titlesStartEDAS, end: COMPETITION.milestones.titlesEndEDAS, status: 'upcoming', detail: 'Etapa exclusiva dos cargos EDAS' },
+    { id: 'edas-titles-preliminary', label: 'EDAS · resultado preliminar de títulos', date: COMPETITION.milestones.titlesPreliminaryResultEDAS, status: 'upcoming', detail: 'Acompanhar pontuação da avaliação de títulos' },
+    { id: 'edas-titles-appeals', label: 'EDAS · recursos de títulos', start: COMPETITION.milestones.titlesAppealsStartEDAS, end: COMPETITION.milestones.titlesAppealsEndEDAS, status: 'upcoming', detail: 'Janela de recurso da avaliação de títulos' },
+    { id: 'edas-titles-definitive', label: 'EDAS · resultado definitivo de títulos', date: COMPETITION.milestones.titlesDefinitiveResultEDAS, status: 'upcoming', detail: 'Fecha a avaliação de títulos do cargo 400' },
+    { id: 'biopsychosocial-hetero', label: 'Avaliação biopsicossocial / heteroidentificação', start: COMPETITION.milestones.biopsychosocialHeteroStart, end: COMPETITION.milestones.biopsychosocialHeteroEnd, status: 'upcoming', detail: 'Quando aplicável ao sistema de concorrência' },
+    { id: 'criminal-certificate', label: 'Envio de certidão negativa criminal', start: COMPETITION.milestones.criminalCertificateStart, end: COMPETITION.milestones.criminalCertificateEnd, status: 'upcoming', detail: 'Etapa documental prevista no cronograma' },
+    { id: 'final-result', label: 'Resultado final do concurso', date: COMPETITION.milestones.finalResult, status: 'upcoming', detail: 'Marco final previsto para 02/04/2027' }
   ];
   const totalDifferences = values.reduce((total, item) => total + Number(item.resources.differenceCount || 0), 0);
   const totalPotentialGain = values.reduce((total, item) => total + Number(item.resources.potentialGainIfAllResolved || 0), 0);
@@ -490,6 +516,7 @@ function buildPostExamFollowUp() {
     sourceDocuments: {
       contest: COMPETITION.sources.contest,
       updatedNotice: COMPETITION.sources.updatedNotice,
+      retification6: COMPETITION.sources.retification6,
       keyPdf: keys.source?.keyPdfUrl || null,
       justificationsPdf: keys.source?.justificationsPdfUrl || null,
       resourceNoticePdf: keys.source?.resourceNoticePdfUrl || null
@@ -509,8 +536,13 @@ const competitionReading = {
   rules: {
     objectiveMinimums: 'mínimo de 10/20 em Conhecimentos Gerais e 40/80 em Conhecimentos Específicos',
     discursiveMinimum: 'mínimo de 50/100 na prova discursiva para aprovação nessa etapa',
-    correctionRule: 'a discursiva é corrigida para os candidatos mais bem classificados na objetiva dentro do quantitativo de cada sistema; vagas de correção reservadas não preenchidas podem ser revertidas à ampla concorrência',
-    interpretation: 'aprovação/classificação, posição em vagas/CR e eventual nomeação são réguas distintas'
+    correctionRule: 'a discursiva é corrigida para os candidatos mais bem classificados na objetiva, por cargo/especialidade e sistema de concorrência, dentro do quantitativo previsto; candidatos empatados na última posição de corte também têm a discursiva corrigida; vagas reservadas de correção não preenchidas podem ser revertidas à ampla concorrência',
+    objectiveOrdering: 'os candidatos dentro do quantitativo de correção da discursiva são ordenados em valores decrescentes da nota final da prova objetiva, observados os critérios de desempate do item 16.7',
+    lastPositionTie: 'empates na última posição do quantitativo de correção não eliminam o candidato da etapa: todos os empatados nessa posição avançam para a correção da discursiva',
+    tieBreakOrder: ['idade igual ou superior a 60 anos', 'exercício da função de jurado', 'maior nota em Conhecimentos Específicos', 'maior nota em Conhecimentos Gerais', 'maior nota na prova discursiva', 'maior nota na avaliação de títulos, quando aplicável', 'maior idade entre candidatos com menos de 60 anos'],
+    tieBreakPersistence: 'persistindo o empate após os critérios do item 16.7.1, o edital prevê verificação do horário de nascimento na etapa própria',
+    retification: { edital: 'Edital nº 6', signedAt: '2026-09-17', publishedAt: '2026-09-18', items: ['12.4.5', '12.4.5.5', '16.7.1'] },
+    interpretation: 'aprovação/classificação, posição em vagas/CR e eventual nomeação são réguas distintas; após o Edital nº 6, a próxima barreira objetiva é a posição dentro do quantitativo de correção da discursiva na modalidade do candidato'
   },
   milestones: COMPETITION.milestones,
   sources: COMPETITION.sources,
@@ -543,7 +575,7 @@ for (const target of TARGETS) {
     personalProbability: null,
     personalProbabilityStatus: 'not-estimable-yet',
     competitiveStatus: preliminary?.objectiveMinimumsMet
-      ? 'Nota preliminar acima dos mínimos eliminatórios; faixa classificatória ainda indeterminada.'
+      ? 'Nota preliminar acima dos mínimos eliminatórios; a próxima barreira é ficar dentro do quantitativo de correção da discursiva na modalidade, com inclusão dos empatados na última posição.'
       : 'Situação objetiva ainda não confirmada.'
   };
 }
