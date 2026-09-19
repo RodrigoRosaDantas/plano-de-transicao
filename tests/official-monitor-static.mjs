@@ -29,6 +29,7 @@ assert(html.includes("Cronograma da banca, inscrições, gabaritos e resultados 
 assert(!html.includes("Órgão + pós-prova") && !html.includes("MONITOR OFICIAL · QUADRIX"), "Radar Oficial não incorpora o módulo Pós-Prova SEDES/Quadrix");
 assert(!html.includes('SEEDF</span><strong>Órgão + pré-edital') && !html.includes('TJDFT</span><strong>Órgão + pré-edital'), "SEEDF e TJDFT permanecem somente em monitoramento específico");
 assert(front.includes("const grouped = new Map()"), "interface agrupa ocorrências coincidentes");
+assert(front.includes("RUN_STALE_AFTER_MS") && front.includes("Atualização atrasada") && front.includes("ageLabel"), "Radar sinaliza quando a última rodada automática está atrasada");
 assert(front.includes("Contagens, datas e ocorrências ficam somente na área privada."), "resumo público não expõe atividade do radar pessoal");
 assert(!front.includes("personal.hits30d") && !front.includes("personal.lastHitAt"), "frontend público não lê contagem nem horário de ocorrência pessoal");
 assert(collector.includes('const isGeneral=label.includes("geral")'), "coletor diferencia radar geral de radar de concurso");

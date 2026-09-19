@@ -1,5 +1,6 @@
 const SUPABASE_URL = "https://fqqkkyusnzhuuizahkww.supabase.co";
 const SUPABASE_KEY = "sb_publishable_GfoaAPKtYuSu_UY6wE8jMg_XsVjdWU7";
+const RUN_STALE_AFTER_MS = 150 * 60 * 1000;
 let dashboard = null;
 let activeFilter = "all";
 const $ = (q) => document.querySelector(q);
@@ -27,6 +28,13 @@ const localDay = (v) => {
 const isPublishedToday = (h) => Boolean(h?.published_at) && String(h.published_at) === todayKey();
 const isFoundToday = (h) => localDay(h?.first_seen_at) === todayKey();
 const isLateFindToday = (h) => isFoundToday(h) && Boolean(h?.published_at) && String(h.published_at) < todayKey();
+const ageLabel = (milliseconds) => {
+  const minutes = Math.max(0, Math.floor(milliseconds / 60000));
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return `${hours}h${remainder ? ` ${remainder}min` : ""}`;
+};
 
 async function loadDashboard() {
   $("#globalStatus").textContent = "Atualizando";
@@ -57,11 +65,17 @@ function render() {
   const d = dashboard || {};
   const run = d.lastRun || {};
   const status = run.status || "pending";
-  $("#globalStatus").textContent = status === "ok" ? "Monitoramento ativo" : status === "partial" ? "Monitoramento parcial" : status === "running" ? "Varredura em curso" : "Aguardando varredura";
-  $(".radar-live").className = "radar-live "+(status==="ok"?"ok":status==="partial"||status==="running"?"partial":status==="error"?"error":"");
-  $("#runStatus").textContent = status === "ok" ? "ok" : status === "partial" ? "parcial" : status === "running" ? "rodando" : "pendente";
+  const lastRunAt = Date.parse(run.finishedAt || run.startedAt || "");
+  const runAge = Number.isFinite(lastRunAt) ? Date.now() - lastRunAt : null;
+  const runIsStale = Number.isFinite(runAge) && runAge >= RUN_STALE_AFTER_MS;
+  const statusText = runIsStale
+    ? "Atualização atrasada"
+    : status === "ok" ? "Monitoramento ativo" : status === "partial" ? "Monitoramento parcial" : status === "running" ? "Varredura em curso" : "Aguardando varredura";
+  $("#globalStatus").textContent = statusText;
+  $(".radar-live").className = "radar-live "+(runIsStale?"partial":status==="ok"?"ok":status==="partial"||status==="running"?"partial":status==="error"?"error":"");
+  $("#runStatus").textContent = runIsStale ? "atrasada" : status === "ok" ? "ok" : status === "partial" ? "parcial" : status === "running" ? "rodando" : "pendente";
   $("#lastRunTime").textContent = fmtDateTime(run.finishedAt || run.startedAt);
-  $("#runMeta").textContent = `${run.termsChecked || 0} termos · ${run.hitsFound || 0} achados · ${run.newHits || 0} novos`;
+  $("#runMeta").textContent = `${run.termsChecked || 0} termos · ${run.hitsFound || 0} achados · ${run.newHits || 0} novos${runIsStale ? ` · última rodada há ${ageLabel(runAge)}` : ""}`;
   $("#generatedAt").textContent = "Painel consultado "+fmtDateTime(d.generatedAt);
 
   const personal = d.personalRadar || {};
