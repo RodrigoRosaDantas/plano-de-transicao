@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-19T10:45:53.351Z",
+    "generatedAt": "2026-09-19T10:48:50.435Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,16 +8,16 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-19T10:45:55.062Z",
+    "workParityEnrichedAt": "2026-09-19T10:48:53.613Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-19T10:45:55.116Z",
+    "postExamNormalizedAt": "2026-09-19T10:48:53.658Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-19T10:45:53.831Z",
-    "postExamScoringUpdatedAt": "2026-09-19T10:45:53.910Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-19T10:45:53.831Z",
-    "postExamCompetitionAuditedAt": "2026-09-19T10:45:53.910Z",
-    "postExamFollowUpUpdatedAt": "2026-09-19T10:45:53.910Z"
+    "postExamNotesSyncedAt": "2026-09-19T10:48:50.904Z",
+    "postExamScoringUpdatedAt": "2026-09-19T10:48:50.974Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-19T10:48:50.904Z",
+    "postExamCompetitionAuditedAt": "2026-09-19T10:48:50.974Z",
+    "postExamFollowUpUpdatedAt": "2026-09-19T10:48:50.974Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -1397,7 +1397,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-19T10:45:53.909Z",
+          "comparedAt": "2026-09-19T10:48:50.973Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3878,7 +3878,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-19T10:45:53.909Z"
+        "lastComparedAt": "2026-09-19T10:48:50.973Z"
       },
       "edas": {
         "examType": "A",
@@ -3891,7 +3891,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-19T10:45:53.910Z",
+          "comparedAt": "2026-09-19T10:48:50.974Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6140,7 +6140,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-19T10:45:53.910Z"
+        "lastComparedAt": "2026-09-19T10:48:50.974Z"
       }
     },
     "competitionReading": {
@@ -6156,7 +6156,7 @@
         "objectiveMinimums": "mínimo de 10/20 em Conhecimentos Gerais e 40/80 em Conhecimentos Específicos",
         "discursiveMinimum": "mínimo de 50/100 na prova discursiva para aprovação nessa etapa",
         "correctionRule": "a discursiva é corrigida para os candidatos mais bem classificados na objetiva, por cargo/especialidade e sistema de concorrência, dentro do quantitativo previsto; candidatos empatados na última posição de corte também têm a discursiva corrigida; vagas reservadas de correção não preenchidas podem ser revertidas à ampla concorrência",
-        "objectiveOrdering": "os candidatos dentro do quantitativo de correção da discursiva são ordenados em valores decrescentes da nota final da prova objetiva, observados os critérios de desempate do item 16.7",
+        "objectiveOrdering": "os candidatos aprovados para fins de correção da discursiva são ordenados em valores decrescentes da nota final na prova objetiva e listados em ordem alfabética; o item 16.7 não é usado como regra de ordenação desta lista objetiva",
         "lastPositionTie": "empates na última posição do quantitativo de correção não eliminam o candidato da etapa: todos os empatados nessa posição avançam para a correção da discursiva",
         "tieBreakOrder": [
           "idade igual ou superior a 60 anos",
@@ -6167,7 +6167,8 @@
           "maior nota na avaliação de títulos, quando aplicável",
           "maior idade entre candidatos com menos de 60 anos"
         ],
-        "tieBreakPersistence": "persistindo o empate após os critérios do item 16.7.1, o edital prevê verificação do horário de nascimento na etapa própria",
+        "tieBreakScope": "os critérios do item 16.7.1 se aplicam ao empate na nota final do concurso público, em etapa posterior à objetiva e à discursiva",
+        "tieBreakPersistence": "persistindo o empate após os critérios do item 16.7.1, o edital prevê convocação para apresentação da certidão de nascimento e verificação do horário de nascimento",
         "retification": {
           "edital": "Edital nº 6",
           "signedAt": "2026-09-17",
@@ -6197,13 +6198,20 @@
         "titlesDefinitiveResultEDAS": "2027-01-26",
         "biopsychosocialHeteroStart": "2027-01-30",
         "biopsychosocialHeteroEnd": "2027-01-31",
+        "biopsychosocialHeteroPreliminaryResult": "2027-02-12",
+        "biopsychosocialHeteroAppealsStart": "2027-02-15",
+        "biopsychosocialHeteroAppealsEnd": "2027-02-19",
+        "biopsychosocialHeteroDefinitiveResult": "2027-02-26",
         "criminalCertificateStart": "2027-02-27",
         "criminalCertificateEnd": "2027-03-08",
+        "tieBreakPreliminaryResult": "2027-03-22",
+        "tieBreakAppealsStart": "2027-03-23",
+        "tieBreakAppealsEnd": "2027-03-30",
         "finalResult": "2027-04-02"
       },
       "sources": {
         "contest": "https://quadrix.org.br/informacoes/3056/",
-        "updatedNotice": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/b852c323-8771-4021-bbbd-8032e88e58e0.pdf",
+        "updatedNotice": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/ae27ef17-6914-4b96-9f9d-c5c0c151d95a.pdf",
         "retification6": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/50d10ab1-e875-402f-a02b-6c8f7c7a722f.pdf",
         "registrations": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/49fb4e92-f367-44a9-abc0-12e32eed31f8.pdf"
       },
@@ -6272,7 +6280,7 @@
       "currentStage": "Aguardando resultado objetivo preliminar",
       "nextAction": "Acompanhar o gabarito definitivo e o resultado objetivo preliminar de 13/10; a posição classificatória passa a ser o dado crítico para definir a correção da discursiva sob a regra do Edital nº 6.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-19T10:45:53.910Z",
+      "lastCalculatedAt": "2026-09-19T10:48:50.974Z",
       "milestones": [
         {
           "id": "exam",
@@ -6386,12 +6394,49 @@
           "detail": "Quando aplicável ao sistema de concorrência"
         },
         {
+          "id": "biopsychosocial-hetero-preliminary",
+          "label": "Resultado preliminar · biopsicossocial / heteroidentificação",
+          "date": "2027-02-12",
+          "status": "upcoming",
+          "detail": "Resultado preliminar das fases complementares"
+        },
+        {
+          "id": "biopsychosocial-hetero-appeals",
+          "label": "Recursos · biopsicossocial / heteroidentificação",
+          "start": "2027-02-15",
+          "end": "2027-02-19",
+          "status": "upcoming",
+          "detail": "Janela recursal das fases complementares"
+        },
+        {
+          "id": "biopsychosocial-hetero-definitive",
+          "label": "Resultado definitivo · biopsicossocial / heteroidentificação",
+          "date": "2027-02-26",
+          "status": "upcoming",
+          "detail": "Fechamento das fases complementares"
+        },
+        {
           "id": "criminal-certificate",
           "label": "Envio de certidão negativa criminal",
           "start": "2027-02-27",
           "end": "2027-03-08",
           "status": "upcoming",
           "detail": "Etapa documental prevista no cronograma"
+        },
+        {
+          "id": "tie-break-preliminary",
+          "label": "Resultado provisório do desempate de notas",
+          "date": "2027-03-22",
+          "status": "upcoming",
+          "detail": "Relativo às inscrições definitivas deferidas"
+        },
+        {
+          "id": "tie-break-appeals",
+          "label": "Recursos contra o desempate provisório",
+          "start": "2027-03-23",
+          "end": "2027-03-30",
+          "status": "upcoming",
+          "detail": "Janela prevista no cronograma oficial"
         },
         {
           "id": "final-result",
@@ -6578,7 +6623,7 @@
       },
       "sourceDocuments": {
         "contest": "https://quadrix.org.br/informacoes/3056/",
-        "updatedNotice": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/b852c323-8771-4021-bbbd-8032e88e58e0.pdf",
+        "updatedNotice": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/ae27ef17-6914-4b96-9f9d-c5c0c151d95a.pdf",
         "retification6": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/50d10ab1-e875-402f-a02b-6c8f7c7a722f.pdf",
         "keyPdf": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/9ecbb8fd-f3b7-4bc7-a1a8-3b64b5f38752.pdf",
         "justificationsPdf": "https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/a6ca1138-66c1-4d2a-b0c0-04ad7285c239.pdf",
