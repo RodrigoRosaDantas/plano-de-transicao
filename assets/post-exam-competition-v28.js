@@ -52,6 +52,10 @@
       .v28-competition-note p{margin:0;color:var(--text-muted,#8f9793);font-size:.78rem;line-height:1.5}
       .v28-milestones ul{margin:0;padding-left:17px;color:var(--text-muted,#8f9793);font-size:.76rem;line-height:1.55}
       .v28-competition-source{margin:0;color:var(--text-muted,#8f9793);font-size:.7rem;line-height:1.45}
+      .v28-rule-update{display:grid;gap:12px;padding:16px;border:1px solid color-mix(in srgb,#e8b35b 38%,var(--line,#29312e));border-radius:16px;background:color-mix(in srgb,#e8b35b 5%,var(--surface-2,#111816))}
+      .v28-rule-update-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.v28-rule-update-head span{display:block;color:#e8b35b;font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.v28-rule-update-head strong{display:block;margin-top:4px;font-size:1rem}.v28-rule-update-head a{color:#64d8cf;text-decoration:none;font-size:.72rem;font-weight:800;white-space:nowrap}.v28-rule-update-head a:hover{text-decoration:underline}
+      .v28-rule-update ul{margin:0;padding-left:18px;color:var(--text-muted,#a7afab);font-size:.78rem;line-height:1.55}.v28-rule-update li+li{margin-top:5px}.v28-rule-update b{color:var(--text,#eef3ee)}
+      .v28-rule-update details{border-top:1px solid var(--line,#29312e);padding-top:10px}.v28-rule-update summary{cursor:pointer;font-size:.76rem;font-weight:800;color:var(--text,#eef3ee)}.v28-rule-update details p{margin:8px 0 0;color:var(--text-muted,#a7afab);font-size:.74rem;line-height:1.5}
       @media(max-width:900px){.v28-competition-grid,.v28-competition-footer{grid-template-columns:1fr}.v28-competition-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
       @media(max-width:620px){.v28-competition-panel{padding:18px!important}.v28-competition-head{display:block}.v28-prelim-chip{margin-top:10px}.v28-competition-stats{grid-template-columns:1fr}.v28-competition-card header{align-items:center}}
     `;
@@ -73,8 +77,28 @@
           <div class="v28-competition-stat"><small>Taxa nominal de correção AC</small><strong>${pct(info.nominalCorrectionRateAC)}</strong><span>${fmt(info.correctionSlotsAC)} correções ÷ ${fmt(info.registrationsAC)} inscrições homologadas AC</span></div>
           <div class="v28-competition-stat"><small>Vagas + CR previstos na AC</small><strong>${fmt(listed)}</strong><span>${fmt(info.immediateVacanciesAC)} imediatas + ${fmt(info.reservePositionsAC)} CR</span></div>
         </div>
-        <div class="v28-probability-lock"><strong>Chance pessoal: ainda não estimável com rigor</strong><span>Faltam distribuição oficial das notas, nota de corte e classificação objetiva. A taxa nominal acima descreve o concurso; não é sua probabilidade individual.</span></div>
+        <div class="v28-probability-lock"><strong>Próxima barreira: posição para correção da discursiva</strong><span>Na referência AC deste painel, é preciso ficar dentro das ${fmt(info.correctionSlotsAC)} posições previstas; o Edital nº 6 também inclui todos os empatados na última posição de corte. A taxa nominal não é probabilidade pessoal.</span></div>
       </article>`;
+  }
+
+  function ruleUpdate(info) {
+    const rules = info?.rules || {};
+    const ret = rules.retification || {};
+    const tie = Array.isArray(rules.tieBreakOrder) ? rules.tieBreakOrder : [];
+    const href = info?.sources?.retification6 || info?.sources?.contest || '#';
+    return `
+      <section class="v28-rule-update" data-v28-rule-update>
+        <div class="v28-rule-update-head">
+          <div><span>REGRA VIGENTE · ${esc(ret.edital || 'Edital nº 6')}</span><strong>Retificação incorporada ao Pós‑Prova · ${esc(date(ret.publishedAt || '2026-09-18'))}</strong></div>
+          <a href="${esc(href)}" target="_blank" rel="noreferrer">Abrir retificação ↗</a>
+        </div>
+        <ul>
+          <li><b>Discursiva:</b> avançam os mais bem classificados por cargo/especialidade e sistema de concorrência dentro do quantitativo; <b>empatados na última posição também avançam</b>.</li>
+          <li><b>Objetiva:</b> a lista de quem segue para correção da discursiva é ordenada pela nota final objetiva em ordem decrescente, com aplicação dos critérios de desempate do item 16.7.</li>
+          <li><b>Para o seu acompanhamento:</b> os 83/100 do TDAS e 88/100 do EDAS permanecem como estimativas preliminares; o dado crítico seguinte é a <b>posição classificatória oficial</b>.</li>
+        </ul>
+        <details><summary>Ver ordem de desempate incorporada</summary><p>${esc(tie.join(' → '))}${rules.tieBreakPersistence ? '. ' + esc(rules.tieBreakPersistence) : ''}</p></details>
+      </section>`;
   }
 
   function panelTemplate(data = snapshot) {
@@ -86,12 +110,13 @@
     return `
       <section class="panel v28-competition-panel" data-v28-competition-panel>
         <div class="v28-competition-head">
-          <div><span class="eyebrow">LEITURA COMPETITIVA · AUDITORIA PRELIMINAR</span><h3>Nota estimada é dado. “Chance de aprovação” ainda não.</h3><p>O painel separa o que já é verificável no edital do que depende da distribuição real das notas. Assim, 3,49% ou 6,86% não viram falsa “chance pessoal”.</p></div>
+          <div><span class="eyebrow">LEITURA COMPETITIVA · EDITAL Nº 6 INCORPORADO</span><h3>Nota estimada é dado. Agora, a posição objetiva virou a próxima barreira.</h3><p>O painel separa mínimos, quantitativo para correção da discursiva e classificação oficial. A retificação de 18/09/2026 foi incorporada sem transformar taxa nominal em falsa “chance pessoal”.</p></div>
           <span class="v28-prelim-chip">preliminar · ${esc(date(info.auditedAt))}</span>
         </div>
         <div class="v28-competition-grid">${examCard('tdas', tdas)}${examCard('edas', edas)}</div>
+        ${ruleUpdate(info)}
         <div class="v28-competition-footer">
-          <div class="v28-competition-note"><strong>Como interpretar</strong><p>${esc(info.rules?.interpretation || 'Aprovação/classificação, vagas/CR e nomeação são réguas distintas.')} Para ter a discursiva corrigida, é preciso superar os mínimos e ficar dentro do quantitativo classificatório da objetiva. Na discursiva, o mínimo editalício é 50/100.</p></div>
+          <div class="v28-competition-note"><strong>Como interpretar</strong><p>${esc(info.rules?.interpretation || 'Aprovação/classificação, vagas/CR e nomeação são réguas distintas.')} O empate na última posição do quantitativo de correção é preservado pela regra retificada. Na discursiva, o mínimo editalício continua em 50/100.</p></div>
           <div class="v28-milestones"><strong>Próximos marcos prováveis</strong><ul><li>${esc(date(milestones.objectivePreliminaryResult))} · resultado preliminar da objetiva</li><li>${esc(date(milestones.objectiveDefinitiveAndDiscursiveCorrectionList))} · objetiva definitiva + relação para correção da discursiva</li><li>${esc(date(milestones.discursivePreliminaryResult))} · resultado preliminar da discursiva</li><li>${esc(date(milestones.discursiveDefinitiveResult))} · resultado definitivo da discursiva</li></ul></div>
         </div>
         <p class="v28-competition-source">Fonte: edital atualizado e quantitativos oficiais de inscrições homologadas. Referência AC usada apenas como taxa nominal do certame; modalidades reservadas têm quantitativos próprios e podem alterar a dinâmica da ampla concorrência conforme o edital.</p>
