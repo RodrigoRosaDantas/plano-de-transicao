@@ -139,7 +139,7 @@ check('Todos os estilos v9–v15 estão ligados no HTML', [
 ].every((asset) => index.includes(asset)));
 check('Cache busting do shell está em v15', !index.includes('?v=14') && index.includes('?v=15'));
 check('Cartão social está configurado', index.includes('og:image') && index.includes('assets/og.png'));
-check('Pós-prova liga o painel de acompanhamento', index.includes('assets/post-exam-follow-up-v28.js?v=31') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
+check('Pós-prova liga o painel de acompanhamento', index.includes('assets/post-exam-follow-up-v28.js?v=32') && followUp.includes('ACOMPANHAMENTO PÓS-PROVA'));
 check('Pré-prova fica pronta para novo concurso', Boolean(snapshot.preExamReadiness?.status === 'standby') && (snapshot.preExamReadiness?.checklist || []).length >= 7);
 check('Navegação possui fases separadas', index.includes('data-view="pre-exam"') && index.includes('data-view="post-exam"'));
 check('Roteador possui fases separadas', app.includes('function preExamView') && app.includes('function postExamView') && app.includes('"pre-exam": preExamView') && app.includes('"post-exam": postExamView'));
