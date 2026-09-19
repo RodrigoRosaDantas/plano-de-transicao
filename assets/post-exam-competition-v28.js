@@ -94,10 +94,10 @@
         </div>
         <ul>
           <li><b>Discursiva:</b> avançam os mais bem classificados por cargo/especialidade e sistema de concorrência dentro do quantitativo; <b>empatados na última posição também avançam</b>.</li>
-          <li><b>Objetiva:</b> a lista de quem segue para correção da discursiva é ordenada pela nota final objetiva em ordem decrescente, com aplicação dos critérios de desempate do item 16.7.</li>
-          <li><b>Para o seu acompanhamento:</b> os 83/100 do TDAS e 88/100 do EDAS permanecem como estimativas preliminares; o dado crítico seguinte é a <b>posição classificatória oficial</b>.</li>
+          <li><b>Objetiva:</b> a lista de quem segue para correção da discursiva é ordenada pela nota final objetiva em ordem decrescente e listada em ordem alfabética. O item 16.7 não é a regra de ordenação dessa lista.</li>
+          <li><b>Desempate final:</b> os critérios do item 16.7 entram em jogo em caso de empate na <b>nota final do concurso</b>, em etapa posterior. Para agora, o dado crítico é a <b>posição objetiva oficial</b> para correção da discursiva.</li>
         </ul>
-        <details><summary>Ver ordem de desempate incorporada</summary><p>${esc(tie.join(' → '))}${rules.tieBreakPersistence ? '. ' + esc(rules.tieBreakPersistence) : ''}</p></details>
+        <details><summary>Ver critérios de desempate da classificação final</summary><p>${rules.tieBreakScope ? esc(rules.tieBreakScope) + '. ' : ''}${esc(tie.join(' → '))}${rules.tieBreakPersistence ? '. ' + esc(rules.tieBreakPersistence) : ''}</p></details>
       </section>`;
   }
 
