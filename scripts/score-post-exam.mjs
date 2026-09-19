@@ -38,7 +38,7 @@ const COMPETITION = {
   methodology: 'nominal-advancement-rate-not-personal-probability',
   sources: {
     contest: 'https://quadrix.org.br/informacoes/3056/',
-    updatedNotice: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/b852c323-8771-4021-bbbd-8032e88e58e0.pdf',
+    updatedNotice: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/ae27ef17-6914-4b96-9f9d-c5c0c151d95a.pdf',
     retification6: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/50d10ab1-e875-402f-a02b-6c8f7c7a722f.pdf',
     registrations: 'https://anexos-r2.selecao.net.br/uploads/861/concursos/3056/anexos/49fb4e92-f367-44a9-abc0-12e32eed31f8.pdf'
   },
@@ -59,8 +59,15 @@ const COMPETITION = {
     titlesDefinitiveResultEDAS: '2027-01-26',
     biopsychosocialHeteroStart: '2027-01-30',
     biopsychosocialHeteroEnd: '2027-01-31',
+    biopsychosocialHeteroPreliminaryResult: '2027-02-12',
+    biopsychosocialHeteroAppealsStart: '2027-02-15',
+    biopsychosocialHeteroAppealsEnd: '2027-02-19',
+    biopsychosocialHeteroDefinitiveResult: '2027-02-26',
     criminalCertificateStart: '2027-02-27',
     criminalCertificateEnd: '2027-03-08',
+    tieBreakPreliminaryResult: '2027-03-22',
+    tieBreakAppealsStart: '2027-03-23',
+    tieBreakAppealsEnd: '2027-03-30',
     finalResult: '2027-04-02'
   },
   tdas: {
@@ -491,7 +498,12 @@ function buildPostExamFollowUp() {
     { id: 'edas-titles-appeals', label: 'EDAS · recursos de títulos', start: COMPETITION.milestones.titlesAppealsStartEDAS, end: COMPETITION.milestones.titlesAppealsEndEDAS, status: 'upcoming', detail: 'Janela de recurso da avaliação de títulos' },
     { id: 'edas-titles-definitive', label: 'EDAS · resultado definitivo de títulos', date: COMPETITION.milestones.titlesDefinitiveResultEDAS, status: 'upcoming', detail: 'Fecha a avaliação de títulos do cargo 400' },
     { id: 'biopsychosocial-hetero', label: 'Avaliação biopsicossocial / heteroidentificação', start: COMPETITION.milestones.biopsychosocialHeteroStart, end: COMPETITION.milestones.biopsychosocialHeteroEnd, status: 'upcoming', detail: 'Quando aplicável ao sistema de concorrência' },
+    { id: 'biopsychosocial-hetero-preliminary', label: 'Resultado preliminar · biopsicossocial / heteroidentificação', date: COMPETITION.milestones.biopsychosocialHeteroPreliminaryResult, status: 'upcoming', detail: 'Resultado preliminar das fases complementares' },
+    { id: 'biopsychosocial-hetero-appeals', label: 'Recursos · biopsicossocial / heteroidentificação', start: COMPETITION.milestones.biopsychosocialHeteroAppealsStart, end: COMPETITION.milestones.biopsychosocialHeteroAppealsEnd, status: 'upcoming', detail: 'Janela recursal das fases complementares' },
+    { id: 'biopsychosocial-hetero-definitive', label: 'Resultado definitivo · biopsicossocial / heteroidentificação', date: COMPETITION.milestones.biopsychosocialHeteroDefinitiveResult, status: 'upcoming', detail: 'Fechamento das fases complementares' },
     { id: 'criminal-certificate', label: 'Envio de certidão negativa criminal', start: COMPETITION.milestones.criminalCertificateStart, end: COMPETITION.milestones.criminalCertificateEnd, status: 'upcoming', detail: 'Etapa documental prevista no cronograma' },
+    { id: 'tie-break-preliminary', label: 'Resultado provisório do desempate de notas', date: COMPETITION.milestones.tieBreakPreliminaryResult, status: 'upcoming', detail: 'Relativo às inscrições definitivas deferidas' },
+    { id: 'tie-break-appeals', label: 'Recursos contra o desempate provisório', start: COMPETITION.milestones.tieBreakAppealsStart, end: COMPETITION.milestones.tieBreakAppealsEnd, status: 'upcoming', detail: 'Janela prevista no cronograma oficial' },
     { id: 'final-result', label: 'Resultado final do concurso', date: COMPETITION.milestones.finalResult, status: 'upcoming', detail: 'Marco final previsto para 02/04/2027' }
   ];
   const totalDifferences = values.reduce((total, item) => total + Number(item.resources.differenceCount || 0), 0);
@@ -537,10 +549,11 @@ const competitionReading = {
     objectiveMinimums: 'mínimo de 10/20 em Conhecimentos Gerais e 40/80 em Conhecimentos Específicos',
     discursiveMinimum: 'mínimo de 50/100 na prova discursiva para aprovação nessa etapa',
     correctionRule: 'a discursiva é corrigida para os candidatos mais bem classificados na objetiva, por cargo/especialidade e sistema de concorrência, dentro do quantitativo previsto; candidatos empatados na última posição de corte também têm a discursiva corrigida; vagas reservadas de correção não preenchidas podem ser revertidas à ampla concorrência',
-    objectiveOrdering: 'os candidatos dentro do quantitativo de correção da discursiva são ordenados em valores decrescentes da nota final da prova objetiva, observados os critérios de desempate do item 16.7',
+    objectiveOrdering: 'os candidatos aprovados para fins de correção da discursiva são ordenados em valores decrescentes da nota final na prova objetiva e listados em ordem alfabética; o item 16.7 não é usado como regra de ordenação desta lista objetiva',
     lastPositionTie: 'empates na última posição do quantitativo de correção não eliminam o candidato da etapa: todos os empatados nessa posição avançam para a correção da discursiva',
     tieBreakOrder: ['idade igual ou superior a 60 anos', 'exercício da função de jurado', 'maior nota em Conhecimentos Específicos', 'maior nota em Conhecimentos Gerais', 'maior nota na prova discursiva', 'maior nota na avaliação de títulos, quando aplicável', 'maior idade entre candidatos com menos de 60 anos'],
-    tieBreakPersistence: 'persistindo o empate após os critérios do item 16.7.1, o edital prevê verificação do horário de nascimento na etapa própria',
+    tieBreakScope: 'os critérios do item 16.7.1 se aplicam ao empate na nota final do concurso público, em etapa posterior à objetiva e à discursiva',
+    tieBreakPersistence: 'persistindo o empate após os critérios do item 16.7.1, o edital prevê convocação para apresentação da certidão de nascimento e verificação do horário de nascimento',
     retification: { edital: 'Edital nº 6', signedAt: '2026-09-17', publishedAt: '2026-09-18', items: ['12.4.5', '12.4.5.5', '16.7.1'] },
     interpretation: 'aprovação/classificação, posição em vagas/CR e eventual nomeação são réguas distintas; após o Edital nº 6, a próxima barreira objetiva é a posição dentro do quantitativo de correção da discursiva na modalidade do candidato'
   },
