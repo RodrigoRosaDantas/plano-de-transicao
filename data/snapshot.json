@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-19T10:43:15.797Z",
+    "generatedAt": "2026-09-19T10:45:10.555Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,16 +8,16 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-19T10:43:17.334Z",
+    "workParityEnrichedAt": "2026-09-19T10:45:12.017Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-19T10:43:17.390Z",
+    "postExamNormalizedAt": "2026-09-19T10:45:12.075Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-19T10:43:16.288Z",
-    "postExamScoringUpdatedAt": "2026-09-19T10:43:16.375Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-19T10:43:16.289Z",
-    "postExamCompetitionAuditedAt": "2026-09-19T10:43:53.557Z",
-    "postExamFollowUpUpdatedAt": "2026-09-19T10:43:53.557Z"
+    "postExamNotesSyncedAt": "2026-09-19T10:45:11.064Z",
+    "postExamScoringUpdatedAt": "2026-09-19T10:45:11.146Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-19T10:45:11.064Z",
+    "postExamCompetitionAuditedAt": "2026-09-19T10:45:11.146Z",
+    "postExamFollowUpUpdatedAt": "2026-09-19T10:45:11.146Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -1397,7 +1397,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-19T10:43:16.374Z",
+          "comparedAt": "2026-09-19T10:45:11.146Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3878,7 +3878,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-19T10:43:16.374Z"
+        "lastComparedAt": "2026-09-19T10:45:11.146Z"
       },
       "edas": {
         "examType": "A",
@@ -3891,7 +3891,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-19T10:43:16.374Z",
+          "comparedAt": "2026-09-19T10:45:11.146Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6140,7 +6140,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-19T10:43:16.374Z"
+        "lastComparedAt": "2026-09-19T10:45:11.146Z"
       }
     },
     "competitionReading": {
@@ -6270,9 +6270,9 @@
       "title": "Acompanhamento pós-prova",
       "description": "Painel permanente da SEDES/DF: correção, recursos, resultado e decisão seguinte, sem misturar os cargos.",
       "currentStage": "Aguardando resultado objetivo preliminar",
-      "nextAction": "Acompanhar o gabarito definitivo e o resultado objetivo preliminar de 13/10; a posição classificatória passa a ser o dado crítico para definir a correção da discursiva sob a regra do Edital nº 6.",
+      "nextAction": "Acompanhar gabarito definitivo e resultado objetivo preliminar; atualizar notas e classificação quando a banca publicar.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-19T10:43:53.553Z",
+      "lastCalculatedAt": "2026-09-19T10:45:11.146Z",
       "milestones": [
         {
           "id": "exam",
@@ -6323,7 +6323,7 @@
           "label": "Resultado definitivo e lista da discursiva",
           "date": "2026-10-30",
           "status": "upcoming",
-          "detail": "Acompanhar lista de correção discursiva e empates na última posição"
+          "detail": "Acompanhar lista de correção discursiva"
         },
         {
           "id": "discursive-preliminary",
@@ -6398,7 +6398,7 @@
           "label": "Resultado final do concurso",
           "date": "2027-04-02",
           "status": "upcoming",
-          "detail": "Marco final previsto"
+          "detail": "Marco final previsto para 02/04/2027"
         }
       ],
       "exams": {
