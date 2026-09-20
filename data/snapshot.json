@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-20T04:55:36.240Z",
+    "generatedAt": "2026-09-20T11:26:44.537Z",
     "homeSnapshot": "2026-09-06",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,16 +8,16 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-20T04:55:37.842Z",
+    "workParityEnrichedAt": "2026-09-20T11:26:45.954Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-20T04:55:37.897Z",
+    "postExamNormalizedAt": "2026-09-20T11:26:46.009Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-20T04:55:36.695Z",
-    "postExamScoringUpdatedAt": "2026-09-20T04:55:36.783Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-20T04:55:36.695Z",
-    "postExamCompetitionAuditedAt": "2026-09-20T04:55:36.783Z",
-    "postExamFollowUpUpdatedAt": "2026-09-20T04:55:36.783Z"
+    "postExamNotesSyncedAt": "2026-09-20T11:26:44.987Z",
+    "postExamScoringUpdatedAt": "2026-09-20T11:26:45.074Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-20T11:26:44.987Z",
+    "postExamCompetitionAuditedAt": "2026-09-20T11:26:45.074Z",
+    "postExamFollowUpUpdatedAt": "2026-09-20T11:26:45.074Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -102,10 +102,10 @@
       "score": "35/50",
       "rawAccuracy": 70,
       "weightedScore": "68/100",
-      "ranking": "1.822º · Resultado final da prova objetiva — ampla concorrência",
-      "status": "Resultado final da prova objetiva AC: NPO 68, classificação 1.822 em lista de 4.148. O bloco de 68 reúne 196 candidatos: 1.821 aparecem à frente, 195 outros empatam na mesma nota e 2.131 têm nota inferior. O índice de posição do ranking é 43,92% (1.822/4.148), mas não é percentil exato. Fora da faixa das 4 vagas AC imediatas; concurso ainda em andamento no corte de 30/08/2026.",
+      "ranking": "1.822º · Resultado final da prova objetiva — ampla concorrência; resultado final do concurso publicado em 19/09/2026",
+      "status": "Resultado final da prova objetiva AC: NPO 68, classificação 1.822 em lista de 4.148. Em 19/09/2026, o Instituto Verbena/UFG publicou o resultado final do concurso AC para Agente Administrativo com 42 nomes (4 Aprovados + 38 Cadastro Reserva), encerrando a lista na nota 89. Rodrigo não consta na lista final AC. A classificação 1.822 permanece exclusivamente como posição na etapa objetiva, sem atribuição de classificação final artificial.",
       "classification": 1822,
-      "classificationStage": "Resultado final da prova objetiva — ampla concorrência",
+      "classificationStage": "Resultado final da prova objetiva — ampla concorrência; resultado final do concurso publicado em 19/09/2026",
       "stageClassified": 4148,
       "sameScoreCandidates": 196,
       "competitionPerVacancy": 2410,
@@ -487,7 +487,7 @@
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
-      "lastEditedAt": "2026-09-16T22:40:00.000Z",
+      "lastEditedAt": "2026-09-20T09:41:00.000Z",
       "status": "treated-fallback"
     },
     "postExamGates": [
@@ -1397,7 +1397,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-20T04:55:36.782Z",
+          "comparedAt": "2026-09-20T11:26:45.073Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3878,7 +3878,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-20T04:55:36.782Z"
+        "lastComparedAt": "2026-09-20T11:26:45.073Z"
       },
       "edas": {
         "examType": "A",
@@ -3891,7 +3891,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-20T04:55:36.783Z",
+          "comparedAt": "2026-09-20T11:26:45.073Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6140,7 +6140,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-20T04:55:36.783Z"
+        "lastComparedAt": "2026-09-20T11:26:45.073Z"
       }
     },
     "competitionReading": {
@@ -6280,7 +6280,7 @@
       "currentStage": "Aguardando resultado objetivo preliminar",
       "nextAction": "Acompanhar o gabarito definitivo e o resultado objetivo preliminar de 13/10; a posição classificatória passa a ser o dado crítico para definir a correção da discursiva sob a regra do Edital nº 6.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-20T04:55:36.783Z",
+      "lastCalculatedAt": "2026-09-20T11:26:45.073Z",
       "milestones": [
         {
           "id": "exam",
