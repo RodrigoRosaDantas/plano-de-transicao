@@ -25,6 +25,7 @@ const localDay = (v) => {
   const d = new Date(String(v).length===10 ? v+"T12:00:00-03:00" : v);
   return Number.isNaN(d.getTime()) ? null : dayFmt.format(d);
 };
+const isOfficial = (h) => h?.source === "DOU" || h?.source === "DODF";
 const isPublishedToday = (h) => Boolean(h?.published_at) && String(h.published_at) === todayKey();
 const isFoundToday = (h) => localDay(h?.first_seen_at) === todayKey();
 const isLateFindToday = (h) => isFoundToday(h) && Boolean(h?.published_at) && String(h.published_at) < todayKey();
@@ -85,7 +86,7 @@ function render() {
     ? "Contagens, datas e ocorrências ficam somente na área privada."
     : "Nenhum radar pessoal está configurado.";
   const publicHits = d.hits || [];
-  $("#publishedTodayCount").textContent = d.counts?.publishedToday ?? d.counts?.today ?? publicHits.filter(isPublishedToday).length;
+  $("#publishedTodayCount").textContent = d.counts?.publishedToday ?? d.counts?.today ?? publicHits.filter(h=>isOfficial(h)&&isPublishedToday(h)).length;
   $("#foundTodayCount").textContent = d.counts?.foundToday ?? publicHits.filter(isFoundToday).length;
   $("#lateFoundTodayCount").textContent = d.counts?.lateFoundToday ?? publicHits.filter(isLateFindToday).length;
   $("#weekCount").textContent = d.counts?.last7d ?? 0;
@@ -95,7 +96,7 @@ function render() {
 }
 
 function renderSources(sources) {
-  const names = [["DOU","Diário Oficial da União"],["DODF","Diário Oficial do Distrito Federal"]];
+  const names = [["DOU","Diário Oficial da União"],["DODF","Diário Oficial do Distrito Federal"],["WEB","Sinais pré-edital na web"]];
   let allOk = true;
   $("#sourceHealth").innerHTML = names.map(([key,label])=>{
     const s = sources[key] || {status:"pending"};
@@ -143,7 +144,7 @@ function renderSources(sources) {
     }
 
     const statusLabel = st==="ok" ? "online" : st==="partial" ? "parcial" : st;
-    return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":"DF"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(st)}">${esc(statusLabel)}</span></div>`;
+    return `<div class="radar-source"><span class="radar-source-icon">${key==="DOU"?"BR":key==="DODF"?"DF":"WEB"}</span><div><strong>${label}</strong><small>${esc(detail)}</small></div><span class="radar-source-status ${esc(st)}">${esc(statusLabel)}</span></div>`;
   }).join("");
   $("#sourceOverall").textContent = allOk ? "fontes online" : "verificar fonte";
 }
@@ -168,7 +169,8 @@ function renderHits() {
     const timingTags = [
       isPublishedToday(h) ? '<span class="radar-tag published">publicado hoje</span>' : "",
       isFoundToday(h) ? '<span class="radar-tag found">detectado hoje</span>' : "",
-      isLateFindToday(h) ? '<span class="radar-tag late">publicação anterior · achada hoje</span>' : ""
+      isLateFindToday(h) && isOfficial(h) ? '<span class="radar-tag late">publicação anterior · achada hoje</span>' : "",
+      h.source==="WEB" ? '<span class="radar-tag">sinal pré-edital · web</span>' : ""
     ].join("");
     const radarTags=(h.radars||[h.radar]).filter(Boolean).map(r=>'<span class="radar-tag">'+esc(r)+'</span>').join("");
     const classTags=(h.classifications||[h.classification]).filter(Boolean).map(v=>'<span class="radar-tag">'+esc(v)+'</span>').join("");
@@ -179,10 +181,10 @@ function renderHits() {
         <span>Detectado: ${fmtDateTime(h.first_seen_at)}</span>
         <span>${esc(h.section || "")}</span>
       </div>
-      <div class="radar-hit-main"><h3>${esc(h.title)}</h3><p>${esc(snippet || "Ocorrência registrada pelo monitor oficial.")}</p><div class="radar-hit-tags">${radarTags}${classTags}${timingTags}</div><small>${esc(h.agency || "Órgão não identificado automaticamente")}</small></div>
-      <a class="radar-hit-link" href="${esc(h.url)}" target="_blank" rel="noreferrer">Abrir oficial ↗</a>
+      <div class="radar-hit-main"><h3>${esc(h.title)}</h3><p>${esc(snippet || "Ocorrência registrada pelo radar.")}</p><div class="radar-hit-tags">${radarTags}${classTags}${timingTags}</div><small>${esc(h.agency || "Órgão não identificado automaticamente")}</small></div>
+      <a class="radar-hit-link" href="${esc(h.url)}" target="_blank" rel="noreferrer">${h.source==="WEB"?"Abrir fonte ↗":"Abrir oficial ↗"}</a>
     </article>`;
-  }).join("") : '<div class="radar-empty">Nenhuma ocorrência pública nesse filtro. O radar continua monitorando qualquer menção à SEDES/DF e os atos de concurso/pré-edital de SEEDF e TJDFT.</div>';
+  }).join("") : '<div class="radar-empty">Nenhuma ocorrência pública nesse filtro. O radar segue monitorando DOU/DODF e sinais pré-edital na web para SEEDF, sem confundir notícia com publicação oficial.</div>';
 }
 $("#refreshRadar")?.addEventListener("click",loadDashboard);
 $$("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
