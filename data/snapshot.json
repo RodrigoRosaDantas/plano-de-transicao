@@ -102,10 +102,10 @@
       "score": "35/50",
       "rawAccuracy": 70,
       "weightedScore": "68/100",
-      "ranking": "1.822º · Resultado final da prova objetiva — ampla concorrência; resultado final do concurso publicado em 19/09/2026",
-      "status": "Resultado final da prova objetiva AC: NPO 68, classificação 1.822 em lista de 4.148. Em 19/09/2026, o Instituto Verbena/UFG publicou o resultado final do concurso AC para Agente Administrativo com 42 nomes (4 Aprovados + 38 Cadastro Reserva), encerrando a lista na nota 89. Rodrigo não consta na lista final AC. A classificação 1.822 permanece exclusivamente como posição na etapa objetiva, sem atribuição de classificação final artificial.",
+      "ranking": "1.822º na Prova Objetiva/AC · 1.887º na classificação geral AC · Não Aprovado",
+      "status": "Resultado final individual confirmado no boletim do Instituto Verbena/UFG: NPO 68/100; 1.822º na Prova Objetiva/AC; 1.887º na classificação geral final em AC; situação Não Aprovado. O ciclo competitivo está encerrado.",
       "classification": 1822,
-      "classificationStage": "Resultado final da prova objetiva — ampla concorrência; resultado final do concurso publicado em 19/09/2026",
+      "classificationStage": "Prova Objetiva — AC: 1.822º; classificação geral final em AC: 1.887º; situação final: Não Aprovado",
       "stageClassified": 4148,
       "sameScoreCandidates": 196,
       "competitionPerVacancy": 2410,
@@ -117,7 +117,10 @@
       "reservePositionsTotal": 45,
       "relativePosition": 43.92,
       "financialStatus": "Fechado",
-      "auditStatus": "Validado"
+      "auditStatus": "Validado",
+      "finalClassificationAC": 1887,
+      "finalSituation": "Não Aprovado",
+      "competitionStatus": "Fechado"
     },
     {
       "name": "SEDES/DF",
@@ -480,6 +483,11 @@
       "date": "06/09/2026",
       "title": "SEDES/DF",
       "detail": "EDAS e TDAS realizadas em 06/09/2026. Gabarito preliminar incorporado; a janela de recursos encerrou e o ciclo aguarda o resultado objetivo."
+    },
+    {
+      "date": "22/09/2026",
+      "title": "Câmara de Goiânia — ciclo encerrado",
+      "detail": "Resultado final individual confirmado: NPO 68/100, 1.822º na Prova Objetiva/AC, 1.887º na classificação geral em AC e situação Não Aprovado."
     }
   ],
   "strategy": {
