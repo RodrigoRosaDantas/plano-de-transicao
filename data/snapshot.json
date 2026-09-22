@@ -102,10 +102,10 @@
       "score": "35/50",
       "rawAccuracy": 70,
       "weightedScore": "68/100",
-      "ranking": "1.822º · Prova Objetiva — AC: 1.822º; classificação geral final em AC: 1.887º; situação final: Não Aprovado",
-      "status": "Resultado final individual confirmado: NPO 68/100; classificação na Prova Objetiva/AC 1.822º; classificação geral final em AC 1.887º; situação Não Aprovado. O ciclo competitivo da Câmara Municipal de Goiânia está encerrado.",
-      "classification": 1822,
-      "classificationStage": "Prova Objetiva — AC: 1.822º; classificação geral final em AC: 1.887º; situação final: Não Aprovado",
+      "ranking": "1.822º · Prova Objetiva — ampla concorrência · 1.887º · classificação geral final AC · Não Aprovado",
+      "status": "Resultado final individual confirmado: NPO 68/100; 1.822º na Prova Objetiva/AC; 1.887º na classificação geral final em AC; situação Não Aprovado. O ciclo competitivo da Câmara Municipal de Goiânia está encerrado.",
+      "classification": 1887,
+      "classificationStage": "Classificação geral final — ampla concorrência · Não Aprovado",
       "stageClassified": 4148,
       "sameScoreCandidates": 196,
       "competitionPerVacancy": 2410,
@@ -120,7 +120,9 @@
       "auditStatus": "Validado",
       "finalClassificationAC": 1887,
       "finalSituation": "Não Aprovado",
-      "competitionStatus": "Fechado"
+      "competitionStatus": "Fechado",
+      "objectiveClassification": 1822,
+      "finalClassification": 1887
     },
     {
       "name": "SEDES/DF",
