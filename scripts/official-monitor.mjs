@@ -166,7 +166,8 @@ const relevantPublicContext=(text,term)=>{
           ||n.includes("secretaria de educacao do distrito federal")
           ||n.includes("secretaria de educacao do df")
           ||/\bseedf\b/.test(n)
-          ||/\bsedf\b/.test(n))
+          ||/\bsedf\b/.test(n)
+          ||/\bsee\/?df\b/.test(n))
       : category==="sedes"
         ? (n.includes("secretaria de estado de desenvolvimento social do distrito federal")||/\bsedes\b/.test(n))
         : category==="tjdft"
@@ -252,7 +253,7 @@ async function scanDOU(term){
 
 async function scanWeb(term){
   sourceHealth.WEB.checked++;
-  const query=term.query_text+" (SEEDF OR SEDF OR \"Secretaria de Educação\") when:7d";
+  const query=term.query_text+" (SEEDF OR SEDF OR SEE/DF OR \"Secretaria de Educação\") when:7d";
   const rss="https://news.google.com/rss/search?q="+encodeURIComponent(query)+"&hl=pt-BR&gl=BR&ceid=BR:pt-419";
   const xml=await resilientFetch(rss,15000,2);
   const items=[...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].slice(0,14);
