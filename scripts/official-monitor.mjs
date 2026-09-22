@@ -21,7 +21,7 @@ const classify=text=>{
   if(/designa(c|ç)[aã]o|designar|designad/.test(n))return"Designação";
   if(/lota(c|ç)[aã]o|lotar|lotad/.test(n))return"Lotação";
   if(/retifica(c|ç)[aã]o/.test(n))return"Retificação";
-  if(/comiss[aã]o.*concurso|banca.*concurso/.test(n))return"Pré-edital";
+  if(/chamamento.*banca|contrata(c|ç)[aã]o.*banca|banca organizadora|comiss[aã]o.*concurso|banca.*concurso/.test(n))return"Pré-edital";
   if(/edital|concurso p[uú]blico|certame/.test(n))return"Concurso";
   return"Administrativo";
 };
@@ -67,6 +67,9 @@ const uniq=arr=>[...new Map(arr.map(x=>[x.url,x])).values()];
 const htmlDecode=v=>String(v||"")
   .replace(/&amp;/gi,"&").replace(/&quot;/gi,'"').replace(/&#39;/gi,"'")
   .replace(/&lt;/gi,"<").replace(/&gt;/gi,">");
+const decodeXml=v=>htmlDecode(String(v||"").replace(/^<!\[CDATA\[/,"").replace(/\]\]>$/,""))
+  .replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(Number(n)))
+  .replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCodePoint(parseInt(n,16)));
 const binaryFetch=async(url,ms=25000)=>{
   const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),ms);
   try{
@@ -159,7 +162,11 @@ const relevantPublicContext=(text,term)=>{
   }
   const agencyOk=
     category==="seedf"
-      ? (n.includes("secretaria de estado de educacao do distrito federal")||/\bseedf\b/.test(n))
+      ? (n.includes("secretaria de estado de educacao do distrito federal")
+          ||n.includes("secretaria de educacao do distrito federal")
+          ||n.includes("secretaria de educacao do df")
+          ||/\bseedf\b/.test(n)
+          ||/\bsedf\b/.test(n))
       : category==="sedes"
         ? (n.includes("secretaria de estado de desenvolvimento social do distrito federal")||/\bsedes\b/.test(n))
         : category==="tjdft"
@@ -201,6 +208,7 @@ const {terms}=await cfgRes.json();
 const occurrences=[];
 const sourceHealth={
   DOU:{status:"ok",checked:0,hits:0,errors:[],collector:"github-actions"},
+  WEB:{status:"ok",checked:0,hits:0,errors:[],collector:"Google News RSS · sinal pré-edital"},
   DODF:{
     status:"ok",checked:0,hits:0,errors:[],
     collector:"SINJ/DF + DODF certificado",
@@ -240,6 +248,57 @@ async function scanDOU(term){
     occurrences.push({term_id:term.id,source:"DOU",title,url:item.url,published_at,section,agency,snippet:contextHit.snippet.slice(0,900),classification:classify(contextHit.snippet)});
   }
   sourceHealth.DOU.hits+=occurrences.filter(o=>o.term_id===term.id&&o.source==="DOU").length;
+}
+
+async function scanWeb(term){
+  sourceHealth.WEB.checked++;
+  const query=term.query_text+" (SEEDF OR SEDF OR \"Secretaria de Educação\") when:7d";
+  const rss="https://news.google.com/rss/search?q="+encodeURIComponent(query)+"&hl=pt-BR&gl=BR&ceid=BR:pt-419";
+  const xml=await resilientFetch(rss,15000,2);
+  const items=[...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].slice(0,14);
+  let localHits=0;
+  const tag=(item,name)=>{
+    const m=item.match(new RegExp("<"+name+"(?:\\s[^>]*)?>([\\s\\S]*?)<\\/"+name+">","i"));
+    return m?decodeXml(m[1]).trim():"";
+  };
+  for(const match of items){
+    const item=match[1];
+    const title=stripHtml(tag(item,"title"));
+    const link=tag(item,"link");
+    const description=stripHtml(tag(item,"description"));
+    const publisher=stripHtml(tag(item,"source"));
+    const pubDate=tag(item,"pubDate");
+    if(!title||!link)continue;
+    let url;
+    try{
+      const u=new URL(link);
+      if(u.protocol!=="https:"||u.hostname.toLowerCase()!=="news.google.com")continue;
+      url=u.href;
+    }catch{continue}
+    const context=[title,description,publisher].filter(Boolean).join(" · ");
+    const contextHit=relevantPublicContext(context,term);
+    if(!contextHit)continue;
+    let published_at=null;
+    const d=new Date(pubDate);
+    if(!Number.isNaN(d.getTime())){
+      published_at=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).format(d);
+    }
+    if(published_at&&!isRecentDate(published_at,8))continue;
+    occurrences.push({
+      term_id:term.id,
+      source:"WEB",
+      title:title.slice(0,500),
+      url,
+      published_at,
+      section:"Sinal pré-edital",
+      agency:publisher?("Web · "+publisher).slice(0,300):"Web · Google News",
+      snippet:contextHit.snippet.slice(0,1200),
+      classification:classify(context)
+    });
+    localHits++;
+  }
+  sourceHealth.WEB.hits+=localHits;
+  return {hits:localHits,items:items.length};
 }
 
 async function scanDODFToday(dodfTerms){
@@ -511,6 +570,16 @@ for(const term of douTerms){
   try{await scanDOU(term)}catch(e){recordSourceError("DOU",term,e)}
 }
 
+const webTerms=terms.filter(t=>!t.is_private&&(t.target_sources||[]).includes("WEB"));
+const webBatchSize=2;
+for(let i=0;i<webTerms.length;i+=webBatchSize){
+  const batch=webTerms.slice(i,i+webBatchSize);
+  await Promise.all(batch.map(async term=>{
+    try{await scanWeb(term)}catch(e){recordSourceError("WEB",term,e)}
+  }));
+  if(i+webBatchSize<webTerms.length)await sleep(200);
+}
+
 const clean=[...new Map(occurrences.map(o=>[`${o.term_id}|${o.source}|${o.url}`,o])).values()].slice(0,200);
 const status=Object.values(sourceHealth).every(s=>s.status==="ok")?"ok":"partial";
 const ingest=await fetch(EDGE+"/ingest",{
@@ -521,5 +590,6 @@ if(!ingest.ok)throw new Error("Ingest HTTP "+ingest.status+" "+await ingest.text
 const result=await ingest.json();
 console.log(JSON.stringify({ok:true,status,termsChecked:terms.length,occurrences:clean.length,newHits:result.newHits,sourceHealth:{
   DOU:{status:sourceHealth.DOU.status,checked:sourceHealth.DOU.checked,hits:sourceHealth.DOU.hits,errorCount:sourceHealth.DOU.errors.length},
-  DODF:{status:sourceHealth.DODF.status,checked:sourceHealth.DODF.checked,hits:sourceHealth.DODF.hits,errorCount:sourceHealth.DODF.errors.length}
+  DODF:{status:sourceHealth.DODF.status,checked:sourceHealth.DODF.checked,hits:sourceHealth.DODF.hits,errorCount:sourceHealth.DODF.errors.length},
+  WEB:{status:sourceHealth.WEB.status,checked:sourceHealth.WEB.checked,hits:sourceHealth.WEB.hits,errorCount:sourceHealth.WEB.errors.length}
 }}));
