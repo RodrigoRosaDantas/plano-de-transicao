@@ -335,16 +335,34 @@ function dynamicExam(previousExam, needle) {
   const h = numberValue(row, 'Acertos') ?? 0;
   const max = numberValue(row, 'Pontuação máxima');
   const note = numberValue(row, 'Nota editalícia');
-  const ranking = numberValue(row, 'Classificação da etapa');
+  const stageRanking = numberValue(row, 'Classificação da etapa');
+  const stageLabel = textValue(row, 'Etapa da classificação');
+  const finalRanking = numberValue(row, 'Classificação geral final');
+  const finalSituation = textValue(row, 'Situação final');
+  const rankingLabel = finalRanking
+    ? [
+        stageRanking ? `${stageRanking.toLocaleString('pt-BR')}º${stageLabel ? ` · ${stageLabel}` : ' · etapa objetiva'}` : null,
+        `${finalRanking.toLocaleString('pt-BR')}º · classificação geral final AC`,
+        finalSituation || null
+      ].filter(Boolean).join(' · ')
+    : stageRanking
+      ? `${stageRanking.toLocaleString('pt-BR')}º${stageLabel ? ` · ${stageLabel}` : ''}`
+      : previousExam.ranking;
   return {
     ...previousExam,
     date: dateValue(row, 'Data') || previousExam.date,
     score: q ? `${h}/${q}` : previousExam.score,
     rawAccuracy: numberValue(row, 'Aproveitamento') ?? accuracy(h, q),
     weightedScore: note !== null && max ? `${note}/${max}` : previousExam.weightedScore,
-    ranking: ranking
-      ? `${ranking.toLocaleString('pt-BR')}º${textValue(row, 'Etapa da classificação') ? ` · ${textValue(row, 'Etapa da classificação')}` : ''}`
-      : previousExam.ranking,
+    objectiveClassification: stageRanking ?? previousExam.objectiveClassification ?? previousExam.classification,
+    finalClassification: finalRanking ?? previousExam.finalClassification ?? previousExam.finalClassificationAC ?? null,
+    finalClassificationAC: finalRanking ?? previousExam.finalClassificationAC ?? previousExam.finalClassification ?? null,
+    finalSituation: finalSituation || previousExam.finalSituation || null,
+    classification: finalRanking ?? stageRanking ?? previousExam.classification,
+    classificationStage: finalRanking
+      ? `Classificação geral final — ampla concorrência${finalSituation ? ` · ${finalSituation}` : ''}`
+      : stageLabel || previousExam.classificationStage,
+    ranking: rankingLabel,
     status: textValue(row, 'Situação competitiva') || previousExam.status
   };
 }
@@ -358,6 +376,7 @@ const exams = syncSedesExams(previous.exams.map(e => {
   questions: numberValue(row, 'Questões'), hits: numberValue(row, 'Acertos'),
   accuracy: numberValue(row, 'Aproveitamento'), score: numberValue(row, 'Nota editalícia'),
   maximum: numberValue(row, 'Pontuação máxima'), classification: numberValue(row, 'Classificação da etapa'),
+  finalClassification: numberValue(row, 'Classificação geral final'), finalSituation: textValue(row, 'Situação final'),
   stage: textValue(row, 'Etapa da classificação'), status: textValue(row, 'Situação competitiva'), url: row.url
 })));
 
