@@ -98,6 +98,11 @@ check('Classificação sempre possui etapa', classified.every((x) => Boolean(x.c
 check('Prova sem realização confirmada não possui resultado inventado', (snapshot.exams || []).filter((x) => x.name.includes('SEDES') && x.attendance !== 'completed').every((x) => x.rawAccuracy == null));
 check('Caldas preserva não auditável financeiro', (snapshot.exams || []).filter((x) => x.name.includes('Caldas')).every((x) => String(x.financialStatus || '').includes('Não auditável')));
 check('Câmara preserva status financeiro fechado', (snapshot.exams || []).filter((x) => x.name.includes('Câmara')).every((x) => x.financialStatus === 'Fechado'));
+const camaraGoiania = (snapshot.exams || []).find((x) => x.name === 'Câmara Municipal de Goiânia');
+check('Câmara preserva classificação da objetiva', camaraGoiania?.objectiveClassification === 1822, `${camaraGoiania?.objectiveClassification}`);
+check('Câmara preserva classificação geral final', (camaraGoiania?.finalClassification ?? camaraGoiania?.finalClassificationAC) === 1887, `${camaraGoiania?.finalClassification ?? camaraGoiania?.finalClassificationAC}`);
+check('Câmara usa classificação final como classificação corrente', camaraGoiania?.classification === 1887, `${camaraGoiania?.classification}`);
+check('Câmara preserva situação final', camaraGoiania?.finalSituation === 'Não Aprovado', String(camaraGoiania?.finalSituation || ''));
 
 check('Sem warnings de sincronização', !(snapshot.meta.syncWarnings || []).length, JSON.stringify(snapshot.meta.syncWarnings || []));
 check('Sem divergências de enriquecimento', !(snapshot.meta.dataWarnings || []).length, JSON.stringify(snapshot.meta.dataWarnings || []));
