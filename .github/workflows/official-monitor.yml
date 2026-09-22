@@ -1,11 +1,11 @@
-name: Radar Oficial DOU e DODF
+name: Radar Oficial + Pré-edital Web
 
 on:
   workflow_dispatch:
   schedule:
-    # GitHub Actions usa UTC. 09h–21h UTC = 06h–18h em Brasília.
-    # Varredura horária durante manhã/tarde + fechamento noturno às 21h15 BRT.
-    - cron: "15 9-21 * * *"
+    # GitHub Actions usa UTC. 09h–23h UTC = 06h–20h em Brasília.
+    # Varredura horária até a noite + fechamento às 21h15 BRT.
+    - cron: "15 9-23 * * *"
     - cron: "15 0 * * *"
   push:
     branches: [main]
@@ -43,5 +43,5 @@ jobs:
             echo "Varredura horária leve: PDF certificado não é sondado neste horário."
           fi
 
-      - name: Varrer DOU e DODF
+      - name: Varrer DOU, DODF e sinais pré-edital na web
         run: node scripts/official-monitor.mjs
