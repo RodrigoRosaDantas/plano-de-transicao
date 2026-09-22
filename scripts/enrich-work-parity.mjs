@@ -101,17 +101,34 @@ function enrichExam(previous, row) {
   const h = num(row, 'Acertos') || 0;
   const note = num(row, 'Nota editalícia');
   const max = num(row, 'Pontuação máxima');
-  const ranking = num(row, 'Classificação da etapa');
+  const stageRanking = num(row, 'Classificação da etapa');
   const stage = text(row, 'Etapa da classificação');
+  const finalRanking = num(row, 'Classificação geral final');
+  const finalSituation = text(row, 'Situação final');
+  const rankingLabel = finalRanking
+    ? [
+        stageRanking ? `${stageRanking.toLocaleString('pt-BR')}º${stage ? ` · ${stage}` : ' · etapa objetiva'}` : null,
+        `${finalRanking.toLocaleString('pt-BR')}º · classificação geral final AC`,
+        finalSituation || null
+      ].filter(Boolean).join(' · ')
+    : stageRanking
+      ? `${stageRanking.toLocaleString('pt-BR')}º${stage ? ` · ${stage}` : ''}`
+      : previous.ranking;
   return {
     ...previous,
     date: date(row, 'Data') || previous.date,
     score: q ? `${h}/${q}` : previous.score,
     rawAccuracy: num(row, 'Aproveitamento') ?? previous.rawAccuracy,
     weightedScore: note != null && max ? `${note}/${max}` : previous.weightedScore,
-    ranking: ranking ? `${ranking.toLocaleString('pt-BR')}º${stage ? ` · ${stage}` : ''}` : previous.ranking,
-    classification: ranking,
-    classificationStage: stage || null,
+    objectiveClassification: stageRanking ?? previous.objectiveClassification ?? previous.classification,
+    finalClassification: finalRanking ?? previous.finalClassification ?? previous.finalClassificationAC ?? null,
+    finalClassificationAC: finalRanking ?? previous.finalClassificationAC ?? previous.finalClassification ?? null,
+    finalSituation: finalSituation || previous.finalSituation || null,
+    ranking: rankingLabel,
+    classification: finalRanking ?? stageRanking ?? previous.classification,
+    classificationStage: finalRanking
+      ? `Classificação geral final — ampla concorrência${finalSituation ? ` · ${finalSituation}` : ''}`
+      : stage || previous.classificationStage || null,
     stageClassified: num(row, 'Classificados na etapa'),
     sameScoreCandidates: num(row, 'Candidatos na mesma nota'),
     competitionPerVacancy: num(row, 'Concorrência por vaga'),
