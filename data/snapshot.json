@@ -1,23 +1,23 @@
 {
   "meta": {
-    "generatedAt": "2026-09-22T16:58:31.377Z",
-    "homeSnapshot": "2026-09-20",
+    "generatedAt": "2026-09-22T21:20:47.561Z",
+    "homeSnapshot": "2026-09-22",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
     "sourceUrl": "https://app.notion.com/p/239cf5a2673180a1a2a2df40b502a899",
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-22T16:58:36.000Z",
+    "workParityEnrichedAt": "2026-09-22T21:20:48.987Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-22T16:58:36.051Z",
+    "postExamNormalizedAt": "2026-09-22T21:20:49.043Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-22T16:58:32.641Z",
-    "postExamScoringUpdatedAt": "2026-09-22T16:58:32.721Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-22T16:58:32.641Z",
-    "postExamCompetitionAuditedAt": "2026-09-22T16:58:32.721Z",
-    "postExamFollowUpUpdatedAt": "2026-09-22T16:58:32.721Z"
+    "postExamNotesSyncedAt": "2026-09-22T21:20:48.038Z",
+    "postExamScoringUpdatedAt": "2026-09-22T21:20:48.117Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-22T21:20:48.039Z",
+    "postExamCompetitionAuditedAt": "2026-09-22T21:20:48.117Z",
+    "postExamFollowUpUpdatedAt": "2026-09-22T21:20:48.117Z"
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -102,8 +102,8 @@
       "score": "35/50",
       "rawAccuracy": 70,
       "weightedScore": "68/100",
-      "ranking": "1.822º na Prova Objetiva/AC · 1.887º na classificação geral AC · Não Aprovado",
-      "status": "Resultado final individual confirmado no boletim do Instituto Verbena/UFG: NPO 68/100; 1.822º na Prova Objetiva/AC; 1.887º na classificação geral final em AC; situação Não Aprovado. O ciclo competitivo está encerrado.",
+      "ranking": "1.822º · Prova Objetiva — AC: 1.822º; classificação geral final em AC: 1.887º; situação final: Não Aprovado",
+      "status": "Resultado final individual confirmado: NPO 68/100; classificação na Prova Objetiva/AC 1.822º; classificação geral final em AC 1.887º; situação Não Aprovado. O ciclo competitivo da Câmara Municipal de Goiânia está encerrado.",
       "classification": 1822,
       "classificationStage": "Prova Objetiva — AC: 1.822º; classificação geral final em AC: 1.887º; situação final: Não Aprovado",
       "stageClassified": 4148,
@@ -495,7 +495,7 @@
     "postExamSource": {
       "page": "04 — Estratégia de Carreira e Próximas Etapas",
       "url": "https://app.notion.com/p/3c8cf5a2673181e08ae8f9eff95df293",
-      "lastEditedAt": "2026-09-20T18:40:00.000Z",
+      "lastEditedAt": "2026-09-22T20:36:00.000Z",
       "status": "treated-fallback"
     },
     "postExamGates": [
@@ -1405,7 +1405,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-22T16:58:32.720Z",
+          "comparedAt": "2026-09-22T21:20:48.116Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3886,7 +3886,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-22T16:58:32.720Z"
+        "lastComparedAt": "2026-09-22T21:20:48.116Z"
       },
       "edas": {
         "examType": "A",
@@ -3899,7 +3899,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-22T16:58:32.721Z",
+          "comparedAt": "2026-09-22T21:20:48.116Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6148,7 +6148,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-22T16:58:32.721Z"
+        "lastComparedAt": "2026-09-22T21:20:48.116Z"
       }
     },
     "competitionReading": {
@@ -6288,7 +6288,7 @@
       "currentStage": "Aguardando resultado objetivo preliminar",
       "nextAction": "Acompanhar o gabarito definitivo e o resultado objetivo preliminar de 13/10; a posição classificatória passa a ser o dado crítico para definir a correção da discursiva sob a regra do Edital nº 6.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-22T16:58:32.721Z",
+      "lastCalculatedAt": "2026-09-22T21:20:48.117Z",
       "milestones": [
         {
           "id": "exam",
