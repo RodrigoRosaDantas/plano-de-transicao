@@ -263,10 +263,13 @@ async function scanWeb(term){
   };
   for(const match of items){
     const item=match[1];
-    const title=stripHtml(tag(item,"title"));
+    const rawTitle=stripHtml(tag(item,"title"));
     const link=tag(item,"link");
     const description=stripHtml(tag(item,"description"));
     const publisher=stripHtml(tag(item,"source"));
+    const title=publisher&&rawTitle.endsWith(" - "+publisher)
+      ? rawTitle.slice(0,-(" - "+publisher).length).trim()
+      : rawTitle;
     const pubDate=tag(item,"pubDate");
     if(!title||!link)continue;
     let url;
