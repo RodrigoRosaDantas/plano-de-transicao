@@ -29,6 +29,10 @@ const isOfficial = (h) => h?.source === "DOU" || h?.source === "DODF";
 const isPublishedToday = (h) => Boolean(h?.published_at) && String(h.published_at) === todayKey();
 const isFoundToday = (h) => localDay(h?.first_seen_at) === todayKey();
 const isLateFindToday = (h) => isFoundToday(h) && Boolean(h?.published_at) && String(h.published_at) < todayKey();
+const logicalHitKey = (h) => h?.source === "WEB"
+  ? ["WEB",String(h?.title||"").toLowerCase().trim(),String(h?.published_at||"")].join("|")
+  : String(h?.id || [h?.source,h?.url,h?.published_at].join("|"));
+const uniqueHitCount = (hits) => new Set((hits||[]).map(logicalHitKey)).size;
 const ageLabel = (milliseconds) => {
   const minutes = Math.max(0, Math.floor(milliseconds / 60000));
   if (minutes < 60) return `${minutes} min`;
@@ -87,7 +91,7 @@ function render() {
     : "Nenhum radar pessoal está configurado.";
   const publicHits = d.hits || [];
   $("#publishedTodayCount").textContent = d.counts?.publishedToday ?? d.counts?.today ?? publicHits.filter(h=>isOfficial(h)&&isPublishedToday(h)).length;
-  $("#foundTodayCount").textContent = d.counts?.foundToday ?? publicHits.filter(isFoundToday).length;
+  $("#foundTodayCount").textContent = uniqueHitCount(publicHits.filter(isFoundToday));
   $("#lateFoundTodayCount").textContent = d.counts?.lateFoundToday ?? publicHits.filter(isLateFindToday).length;
   $("#weekCount").textContent = d.counts?.last7d ?? 0;
 
@@ -154,7 +158,9 @@ function renderHits() {
   const grouped = new Map();
   for (const h of filtered) {
     const contextKey = cleanSnippet(h.snippet).toLowerCase().slice(0,220);
-    const key = [h.source,h.url,h.published_at||"",contextKey].join("|");
+    const key = h.source==="WEB"
+      ? logicalHitKey(h)
+      : [h.source,h.url,h.published_at||"",contextKey].join("|");
     if (!grouped.has(key)) {
       grouped.set(key,{...h,radars:[h.radar].filter(Boolean),classifications:[h.classification].filter(Boolean)});
       continue;
