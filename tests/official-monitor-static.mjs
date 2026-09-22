@@ -19,7 +19,7 @@ const workflow = read(".github/workflows/official-monitor.yml");
 const sw = read("sw.js");
 
 assert(html.includes("Radar Oficial"), "página dedicada do Radar Oficial existe");
-assert(html.includes("06:15–18:15") && html.includes("21:15"), "cadência exibida coincide com o workflow");
+assert(html.includes("06:15–21:15"), "cadência exibida coincide com o workflow ampliado");
 assert(html.includes("Publicadas hoje") && html.includes("Detectadas hoje") && html.includes("Recuperadas hoje"), "painel distingue data oficial, detecção e recuperação histórica");
 assert(html.includes("revarredura histórica ou indexação posterior da fonte") && !html.includes("Mostra quando a fonte indexa um ato com atraso"), "texto não atribui indevidamente toda recuperação a atraso da fonte");
 assert(html.includes("🔐 Meu radar") && html.includes("Identificadores privados"), "resumo pessoal cobre nome, documento, e-mail ou outros identificadores protegidos");
@@ -57,11 +57,15 @@ assert(!front.includes("get_official_monitor_dashboard"), "frontend não usa RPC
 assert(!html.includes("Rodrigo Rosa Dantas") && !front.includes("Rodrigo Rosa Dantas") && !collector.includes("Rodrigo Rosa Dantas"), "nome pessoal não está hardcoded no repositório público");
 assert(workflow.includes("id-token: write"), "workflow usa OIDC do GitHub");
 assert(collector.includes("termsChecked:terms.length"), "coletor envia a quantidade realmente varrida para o histórico");
-assert(workflow.includes('cron: "15 9-21 * * *"') && workflow.includes('cron: "15 0 * * *"'), "agendamento automático está configurado");
+assert(workflow.includes('cron: "15 9-23 * * *"') && workflow.includes('cron: "15 0 * * *"'), "agendamento automático está configurado até 21:15 BRT");
 assert(collector.includes("relevantPublicContext(text,term)") && collector.includes("relevantPublicContext(pdfText,term)"), "coletor aplica contexto estrito para reduzir falsos positivos");
 assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "ausência de ocorrência hoje não degrada a saúde da fonte");
+assert(collector.includes("https://news.google.com/rss/search") && collector.includes('source:"WEB"'), "coletor possui camada WEB de sinais pré-edital");
+assert(collector.includes('/\\bsedf\\b/') && collector.includes("secretaria de educacao do df"), "coletor reconhece SEDF e forma abreviada da Secretaria de Educação");
+assert(front.includes('["WEB","Sinais pré-edital na web"]') && front.includes('h.source==="WEB"?"Abrir fonte ↗":"Abrir oficial ↗"'), "interface separa sinal web de publicação oficial");
+assert(html.includes("Notícias aparecem identificadas como WEB") && html.includes("não são tratadas como ato jurídico"), "interface explicita natureza não oficial dos sinais web");
 assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css") && sw.includes("./assets/personal-web-search.js"), "Radar Oficial e Radar Web estão incluídos no PWA");
-assert(sw.includes("plano-transicao-v49-brand-icon"), "cache v49 da Central está ativo e força recache da identidade visual");
+assert(sw.includes("plano-transicao-v50-seedf-preedital-web"), "cache v50 força recache da camada pré-edital web");
 assert(html.includes("assets/central-mark.svg"), "Radar Oficial usa a identidade visual da Central");
 assert(html.includes('assets/central-icon-192.png') && html.includes('apple-touch-icon'), "Radar Oficial usa os favicons da Central");
 assert(html.includes("identificadores pessoais protegidos") && !html.includes("para o seu nome"), "texto do Radar representa nome, documento, e-mail e outros identificadores sem restringir o escopo ao nome");
