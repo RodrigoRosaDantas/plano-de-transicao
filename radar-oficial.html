@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b0f0e">
-  <meta name="description" content="Radar Oficial da Central de Transição — monitoramento de DOU e DODF para concursos, órgãos e identificadores protegidos.">
+  <meta name="description" content="Radar da Central de Transição — DOU/DODF como fontes oficiais e sinais pré-edital na web para acompanhamento de concursos.">
   <title>Radar Oficial · Central de Transição</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/central-mark.svg" type="image/svg+xml">
@@ -31,14 +31,14 @@
   <main id="radarContent" class="radar-shell" aria-live="polite">
     <section class="radar-hero">
       <div>
-        <span class="radar-eyebrow">DOU + DODF · MONITORAMENTO AUTOMÁTICO</span>
-        <h1>O Diário Oficial entra no radar antes de virar surpresa.</h1>
-        <p>Varredura automática de DOU e DODF para identificadores pessoais protegidos, atos institucionais da SEDES/DF e radares específicos de SEEDF/TJDFT. O acompanhamento da banca Quadrix, cronograma, inscrições e resultados da SEDES fica exclusivamente no módulo Pós-Prova do painel principal. Termos pessoais ficam protegidos no banco e não são enviados ao navegador.</p>
+        <span class="radar-eyebrow">DOU + DODF + WEB · MONITORAMENTO AUTOMÁTICO</span>
+        <h1>O ato oficial e o sinal pré-edital entram no mesmo radar — sem virar a mesma coisa.</h1>
+        <p>DOU e DODF continuam sendo as fontes oficiais. Para a SEEDF, o radar também faz triagem de sinais pré-edital publicados na web — banca, comissão, concurso, edital e retificação — para detectar movimentações antes de eventual publicação no Diário Oficial. Notícias aparecem identificadas como WEB e não são tratadas como ato jurídico. O acompanhamento da banca Quadrix, cronograma, inscrições e resultados da SEDES fica exclusivamente no módulo Pós-Prova do painel principal. Termos pessoais ficam protegidos no banco e não são enviados ao navegador.</p>
       </div>
       <aside class="radar-next-scan">
         <span>Rotina automática</span>
         <strong>A cada hora</strong>
-        <small>06:15–18:15 · conferência final 21:15 (Brasília)</small>
+        <small>06:15–21:15 · a cada hora (Brasília)</small>
       </aside>
     </section>
 
@@ -98,7 +98,7 @@
         </header>
         <div class="radar-contests">
           <div class="radar-contest"><span>SEDES/DF</span><strong>Monitor institucional</strong><small>atos do órgão · resultado · homologação · convocação · nomeação no DOU/DODF</small></div>
-          <div class="radar-contest"><span>SEEDF</span><strong>Pré-edital</strong><small>concurso · comissão · banca · edital · retificação</small></div>
+          <div class="radar-contest"><span>SEEDF</span><strong>Pré-edital · oficial + web</strong><small>concurso · comissão · banca · edital · retificação · sinais web identificados separadamente</small></div>
           <div class="radar-contest"><span>TJDFT</span><strong>Pré-edital</strong><small>concurso · comissão · banca · edital · retificação · provimento</small></div>
         </div>
       </article>
@@ -235,7 +235,7 @@
 
     <section class="radar-panel">
       <header class="radar-panel-head radar-panel-head--wrap">
-        <div><span class="radar-eyebrow">OCORRÊNCIAS</span><h2>Publicações encontradas</h2><p>Nesta página, SEDES/DF significa somente publicações oficiais no DOU/DODF e atos institucionais relacionados ao órgão. Cronograma da banca, inscrições, gabaritos e resultados da Quadrix ficam no Pós-Prova. SEEDF e TJDFT seguem filtrados para concurso/pré-edital. Quando a mesma publicação cair em mais de um radar, ela é agrupada em um único cartão.</p></div>
+        <div><span class="radar-eyebrow">OCORRÊNCIAS</span><h2>Publicações e sinais encontrados</h2><p>Nesta página, SEDES/DF significa somente publicações oficiais no DOU/DODF e atos institucionais relacionados ao órgão. Cronograma da banca, inscrições, gabaritos e resultados da Quadrix ficam no Pós-Prova. Para a SEEDF, resultados WEB são sinais de triagem pré-edital e aparecem separados das publicações oficiais. TJDFT permanece filtrado para atos de concurso/pré-edital no DOU/DODF. Quando a mesma ocorrência cair em mais de um radar, ela é agrupada em um único cartão.</p></div>
         <div class="radar-filters" role="group" aria-label="Filtrar ocorrências">
           <button type="button" class="active" data-filter="all">Todas</button>
           <button type="button" data-filter="sedes">SEDES</button>
@@ -257,10 +257,10 @@
       </div>
     </section>
 
-    <p class="radar-footnote">O radar é um mecanismo de detecção e triagem. A versão certificada do diário oficial continua sendo a fonte jurídica definitiva da publicação.</p>
+    <p class="radar-footnote">O radar é um mecanismo de detecção e triagem. Resultados WEB antecipam sinais e exigem validação; a versão certificada do Diário Oficial continua sendo a fonte jurídica definitiva da publicação oficial.</p>
   </main>
 
-  <script type="module" src="assets/official-monitor.js?v=8"></script>
+  <script type="module" src="assets/official-monitor.js?v=9"></script>
   <script type="module" src="assets/personal-web-search.js?v=5"></script>
 </body>
 </html>
