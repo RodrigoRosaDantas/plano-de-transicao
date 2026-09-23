@@ -294,7 +294,7 @@ async function scanWeb(term){
   const query="\"concurso\" \"Educação\" DF "+focus+" when:7d";
   const rss="https://news.google.com/rss/search?q="+encodeURIComponent(query)+"&hl=pt-BR&gl=BR&ceid=BR:pt-419";
   const xml=await resilientFetch(rss,15000,2);
-  const items=[...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].slice(0,14);
+  const items=[...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].slice(0,30);
   let localHits=0;
   const tag=(item,name)=>{
     const m=item.match(new RegExp("<"+name+"(?:\\s[^>]*)?>([\\s\\S]*?)<\\/"+name+">","i"));
