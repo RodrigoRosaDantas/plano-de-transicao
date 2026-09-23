@@ -21,7 +21,7 @@ const classify=text=>{
   if(/designa(c|ç)[aã]o|designar|designad/.test(n))return"Designação";
   if(/lota(c|ç)[aã]o|lotar|lotad/.test(n))return"Lotação";
   if(/retifica(c|ç)[aã]o/.test(n))return"Retificação";
-  if(/chamamento.*banca|contrata(c|ç)[aã]o.*banca|banca organizadora|comiss[aã]o.*concurso|banca.*concurso/.test(n))return"Pré-edital";
+  if(/chamamento.*(?:banca|concurso)|contrata(c|ç)[aã]o.*banca|banca organizadora|comiss[aã]o.*concurso|banca.*concurso/.test(n))return"Pré-edital";
   if(/edital|concurso p[uú]blico|certame/.test(n))return"Concurso";
   return"Administrativo";
 };
@@ -165,6 +165,10 @@ const relevantPublicContext=(text,term)=>{
       ? (n.includes("secretaria de estado de educacao do distrito federal")
           ||n.includes("secretaria de educacao do distrito federal")
           ||n.includes("secretaria de educacao do df")
+          ||n.includes("educacao do distrito federal")
+          ||n.includes("educacao no distrito federal")
+          ||n.includes("educacao do df")
+          ||n.includes("educacao no df")
           ||/\bseedf\b/.test(n)
           ||/\bsedf\b/.test(n)
           ||/\bsee\/?df\b/.test(n))
@@ -253,7 +257,13 @@ async function scanDOU(term){
 
 async function scanWeb(term){
   sourceHealth.WEB.checked++;
-  const query=term.query_text+" (SEEDF OR SEDF OR SEE/DF OR \"Secretaria de Educação\") when:7d";
+  const label=normalize(term.label);
+  const focus=label.includes("banca")?"banca organizadora"
+    :label.includes("comissao")?"comissão"
+    :label.includes("edital")?"edital"
+    :label.includes("retificacao")?"retificação"
+    :"concurso";
+  const query="\"concurso\" \"Educação\" DF "+focus+" when:7d";
   const rss="https://news.google.com/rss/search?q="+encodeURIComponent(query)+"&hl=pt-BR&gl=BR&ceid=BR:pt-419";
   const xml=await resilientFetch(rss,15000,2);
   const items=[...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].slice(0,14);
