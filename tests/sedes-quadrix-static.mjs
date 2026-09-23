@@ -23,10 +23,10 @@ assert(front.includes("MINHA SITUAÇÃO AGORA")&&front.includes("Nota preliminar
 assert(front.includes("Mínimos objetivos")&&front.includes("Inscrições homologadas AC")&&front.includes("Correções de discursiva AC")&&front.includes("não é probabilidade pessoal"),"painel privado incorpora régua competitiva sem converter taxa em chance pessoal");
 assert(front.includes('pattern="[0-9]{11}"')&&front.includes('inputmode="numeric"'),"desbloqueio do Pós-Prova está alinhado ao código privado numérico de 11 dígitos");
 assert(front.includes("followUp:data?.postExam?.followUp")&&front.includes("competition:data?.postExam?.competitionReading"),"painel privado consome estágio e leitura competitiva auditados");
-assert(sw.includes("v49 brand-icon-refresh"),"service worker muda para recarregar o painel privado em instalações PWA");
+assert(sw.includes("v51 brand-icon-refresh"),"service worker muda para recarregar o painel privado em instalações PWA");
 assert(front.includes("Linha do tempo pessoal")&&front.includes("O que ainda falta sair")&&front.includes("Documentos em que você apareceu"),"painel privado consolida timeline, pendências e evidências");
 assert(front.includes("qLoadExamSnapshot")&&front.includes("sedes-2026-tdas")&&front.includes("sedes-2026-edas"),"painel privado cruza matches Quadrix com dados auditados das duas provas");
-assert(sw.includes("plano-transicao-v49-brand-icon")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix no cache v49");
+assert(sw.includes("plano-transicao-v51-seedf-preedital-web")&&sw.includes("post-exam-quadrix-v44.js"),"PWA inclui monitor Quadrix no cache v51");
 assert(resourcesPage.includes("assets/central-mark.svg")&&resourcesPage.includes("assets/central-icon-192.png")&&resourcesPage.includes("apple-touch-icon"),"Sala de Recursos usa a identidade visual da Central");
 if(process.exitCode)throw new Error("Auditoria estática SEDES/Quadrix falhou");
 console.log("SEDES/Quadrix: contratos estáticos íntegros no host visível.");
