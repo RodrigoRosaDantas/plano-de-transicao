@@ -61,6 +61,7 @@ assert(workflow.includes('cron: "15 9-23 * * *"') && workflow.includes('cron: "1
 assert(collector.includes("relevantPublicContext(text,term)") && collector.includes("relevantPublicContext(pdfText,term)"), "coletor aplica contexto estrito para reduzir falsos positivos");
 assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "ausência de ocorrência hoje não degrada a saúde da fonte");
 assert(collector.includes("https://news.google.com/rss/search") && collector.includes('source:"WEB"'), "coletor possui camada WEB de sinais pré-edital");
+assert(collector.includes("slice(0,30)"), "camada WEB examina até 30 resultados por consulta para reduzir perda por ranking");
 assert(collector.includes("const relevantWebContext=") && collector.includes("relevantWebContext(context,term)"), "sinais WEB usam filtro próprio para contexto jornalístico da SEEDF");
 assert(collector.includes('/\\bconcurso\\b|certame/') || collector.includes('\\bconcurso\\b|certame'), "classificação reconhece menção simples a concurso");
 assert(front.includes("correspondência(s) de radar"), "saúde WEB diferencia correspondências de radar de ocorrências lógicas");
