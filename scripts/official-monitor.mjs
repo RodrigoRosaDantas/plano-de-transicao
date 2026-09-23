@@ -22,7 +22,7 @@ const classify=text=>{
   if(/lota(c|ç)[aã]o|lotar|lotad/.test(n))return"Lotação";
   if(/retifica(c|ç)[aã]o/.test(n))return"Retificação";
   if(/chamamento.*(?:banca|concurso)|contrata(c|ç)[aã]o.*banca|banca organizadora|comiss[aã]o.*concurso|banca.*concurso/.test(n))return"Pré-edital";
-  if(/edital|concurso p[uú]blico|certame/.test(n))return"Concurso";
+  if(/edital|\bconcurso\b|certame/.test(n))return"Concurso";
   return"Administrativo";
 };
 const isoFromText=text=>{
