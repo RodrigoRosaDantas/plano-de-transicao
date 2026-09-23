@@ -139,6 +139,12 @@ function renderSources(sources) {
         ? `última data retornada para os termos: ${fmtDate(lastMatchedDate)}`
         : "";
       detail=[todayLabel,officialLabel,lastMatch,historyLabel].filter(Boolean).join(" · ");
+    }else if(key==="WEB"){
+      detail = st==="ok"
+        ? `${s.checked||0} radares checados · ${s.hits||0} correspondência(s) de radar`
+        : st==="partial"
+          ? `${s.checked||0} radares checados · ${s.errorCount||0} consulta(s) com falha nesta varredura`
+          : "Aguardando diagnóstico da fonte.";
     }else{
       detail = st==="ok"
         ? `${s.checked||0} radares checados · ${s.hits||0} ocorrência(s)`
