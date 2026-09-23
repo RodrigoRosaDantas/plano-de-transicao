@@ -187,6 +187,34 @@ const relevantPublicContext=(text,term)=>{
           : true;
   return agencyOk?hit:null;
 };
+const relevantWebContext=(text,term)=>{
+  if(term.category!=="seedf")return relevantPublicContext(text,term);
+  const compact=String(text||"").replace(/\s+/g," ").trim();
+  const n=normalize(compact),label=normalize(term.label);
+  const agencyOk=
+    n.includes("secretaria de estado de educacao do distrito federal")
+    ||n.includes("secretaria de educacao do distrito federal")
+    ||n.includes("secretaria de educacao do df")
+    ||n.includes("educacao do distrito federal")
+    ||n.includes("educacao no distrito federal")
+    ||n.includes("educacao do df")
+    ||n.includes("educacao no df")
+    ||/\bseedf\b/.test(n)
+    ||/\bsedf\b/.test(n)
+    ||/\bsee\/?df\b/.test(n);
+  if(!agencyOk)return null;
+  const hasConcurso=/\b(concurso|certame)\b/.test(n);
+  let eventOk=false;
+  if(label.includes("banca"))eventOk=hasConcurso&&/(\bbanca\b|chamamento|contrata(c|ç)[aã]o)/.test(n);
+  else if(label.includes("comissao"))eventOk=hasConcurso&&/comiss[aã]o/.test(n);
+  else if(label.includes("edital"))eventOk=hasConcurso&&/\bedital\b/.test(n);
+  else if(label.includes("retificacao"))eventOk=hasConcurso&&/retific/.test(n);
+  else if(label.includes("concurso"))eventOk=hasConcurso;
+  if(!eventOk)return null;
+  const pos=Math.max(0,n.search(/concurso|certame|banca|chamamento|edital|retific|comiss/));
+  return {pos,snippet:compact.slice(Math.max(0,pos-350),Math.min(compact.length,pos+950)),label:"web"};
+};
+
 const sectionAt=(text,pos)=>{
   const before=String(text||"").slice(Math.max(0,pos-160000),Math.max(0,pos)).toUpperCase();
   const options=[
@@ -290,7 +318,7 @@ async function scanWeb(term){
       url=u.href;
     }catch{continue}
     const context=[title,description,publisher].filter(Boolean).join(" · ");
-    const contextHit=relevantPublicContext(context,term);
+    const contextHit=relevantWebContext(context,term);
     if(!contextHit)continue;
     let published_at=null;
     const d=new Date(pubDate);
