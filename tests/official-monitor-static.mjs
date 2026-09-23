@@ -61,6 +61,8 @@ assert(workflow.includes('cron: "15 9-23 * * *"') && workflow.includes('cron: "1
 assert(collector.includes("relevantPublicContext(text,term)") && collector.includes("relevantPublicContext(pdfText,term)"), "coletor aplica contexto estrito para reduzir falsos positivos");
 assert(collector.includes('todayStatus=todayQueryErrors?"partial":"checked"'), "ausência de ocorrência hoje não degrada a saúde da fonte");
 assert(collector.includes("https://news.google.com/rss/search") && collector.includes('source:"WEB"'), "coletor possui camada WEB de sinais pré-edital");
+assert(collector.includes("const relevantWebContext=") && collector.includes("relevantWebContext(context,term)"), "sinais WEB usam filtro próprio para contexto jornalístico da SEEDF");
+assert(collector.includes('n.includes("educacao no df")') && collector.includes('chamamento.*(?:banca|concurso)'), "filtro WEB cobre Educação no DF e chamamento de concurso");
 assert(collector.includes('/\\bsedf\\b/') && collector.includes('/\\bsee\\/?df\\b/') && collector.includes("secretaria de educacao do df"), "coletor reconhece SEEDF, SEDF, SEE/DF e forma abreviada da Secretaria de Educação");
 assert(front.includes('["WEB","Sinais pré-edital na web"]') && front.includes('h.source==="WEB"?"Abrir fonte ↗":"Abrir oficial ↗"'), "interface separa sinal web de publicação oficial");
 assert(html.includes("Notícias aparecem identificadas como WEB") && html.includes("não são tratadas como ato jurídico"), "interface explicita natureza não oficial dos sinais web");
