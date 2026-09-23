@@ -39,7 +39,7 @@ for (const legacy of [
   "'./assets/exam-day-v20.css'",
   "'./assets/exam-day-v20.js'"
 ]) lacks(sw, legacy, 'PWA sem camada legada');
-has(sw, "const CACHE='plano-transicao-v49-brand-icon'", 'cache consolidado v49');
+has(sw, "const CACHE='plano-transicao-v51-seedf-preedital-web'", 'cache consolidado v51');
 
 for (const asset of [
   "'./assets/exam-day-v21-bootstrap.js'",
