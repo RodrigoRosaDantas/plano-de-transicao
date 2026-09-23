@@ -131,7 +131,7 @@ const cachedAssets = [
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está consolidado na v49 com a identidade da Central', sw.includes("const CACHE='plano-transicao-v49-brand-icon'") && sw.includes("'./assets/central-mark.svg'") && sw.includes("'./assets/central-icon-192.png'") && sw.includes("'./assets/central-icon-512.png'") && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/official-monitor.css'") && sw.includes("'./assets/official-monitor.js'"));
+check('Cache PWA está consolidado na v51 com a identidade da Central e Radar pré-edital', sw.includes("const CACHE='plano-transicao-v51-seedf-preedital-web'") && sw.includes("'./assets/central-mark.svg'") && sw.includes("'./assets/central-icon-192.png'") && sw.includes("'./assets/central-icon-512.png'") && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/official-monitor.css'") && sw.includes("'./assets/official-monitor.js'"));
 check('Cache busting da interface publicada está em v45', index.includes('__PLANO_UI_RELEASE__ = "v45"') && index.includes('work-app.js?v=38&home=37') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36') && index.includes("location.href='./radar-oficial.html'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
