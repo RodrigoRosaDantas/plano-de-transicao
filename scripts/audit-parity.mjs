@@ -1,3 +1,4 @@
+// Radar v51: paridade do cache e da camada pré-edital web auditada.
 import fs from 'node:fs/promises';
 
 const read = async (path) => fs.readFile(new URL(`../${path}`, import.meta.url), 'utf8');
