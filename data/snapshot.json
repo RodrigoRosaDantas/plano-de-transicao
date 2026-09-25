@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-25T04:59:50.455Z",
+    "generatedAt": "2026-09-25T10:08:40.298Z",
     "homeSnapshot": "2026-09-22",
     "performanceCut": "2026-08-27",
     "source": "Notion vivo — bancos operacionais + Registro Histórico",
@@ -8,26 +8,26 @@
     "nextExam": null,
     "live": true,
     "syncWarnings": [],
-    "workParityEnrichedAt": "2026-09-25T04:59:52.200Z",
+    "workParityEnrichedAt": "2026-09-25T10:08:41.850Z",
     "dataWarnings": [],
     "phase": "post-exam",
-    "postExamNormalizedAt": "2026-09-25T04:59:52.249Z",
+    "postExamNormalizedAt": "2026-09-25T10:08:41.913Z",
     "postExamDate": "2026-09-06",
-    "postExamNotesSyncedAt": "2026-09-25T04:59:51.108Z",
-    "postExamScoringUpdatedAt": "2026-09-25T04:59:51.186Z",
-    "postExamCandidateResponsesSyncedAt": "2026-09-25T04:59:51.108Z",
-    "postExamCompetitionAuditedAt": "2026-09-25T04:59:51.186Z",
-    "postExamFollowUpUpdatedAt": "2026-09-25T04:59:51.186Z",
+    "postExamNotesSyncedAt": "2026-09-25T10:08:40.778Z",
+    "postExamScoringUpdatedAt": "2026-09-25T10:08:40.879Z",
+    "postExamCandidateResponsesSyncedAt": "2026-09-25T10:08:40.778Z",
+    "postExamCompetitionAuditedAt": "2026-09-25T10:08:40.879Z",
+    "postExamFollowUpUpdatedAt": "2026-09-25T10:08:40.879Z",
     "historyReconciliation": {
       "status": "pending",
       "official": {
-        "sourceRecord": "Consolidado histórico revalidado | 27/08/2026 — bancos globais",
-        "asOf": "2026-08-27",
         "questions": 15329,
         "hits": 13976,
         "errors": 1353,
         "withoutResult": 90,
-        "rawRecords": 15419
+        "rawRecords": 15419,
+        "sourceRecord": "Consolidado histórico revalidado | 27/08/2026 — bancos globais",
+        "asOf": "2026-08-27"
       },
       "registeredComponents": {
         "questions": 15329,
@@ -37,13 +37,13 @@
         "rawRecords": 15419
       },
       "tdasValidated": {
-        "sourceRecord": "TDAS — snapshot revalidado | 27/08/2026",
-        "asOf": "2026-08-27",
         "questions": 3319,
         "hits": 3055,
         "errors": 264,
         "withoutResult": 0,
-        "rawRecords": 3319
+        "rawRecords": 3319,
+        "sourceRecord": "TDAS — snapshot revalidado | 27/08/2026",
+        "asOf": "2026-08-27"
       },
       "tdasOperational": {
         "questions": 3559,
@@ -84,12 +84,12 @@
       "errors": 301,
       "accuracy": 91.54,
       "stepsDone": 104,
+      "stepsNotStudied": 8,
       "stepsTotal": 112,
       "errorNotebook": 325,
       "essays": 33,
       "essaysGraded": 13,
-      "simulations": 8,
-      "stepsNotStudied": 8
+      "simulations": 8
     },
     "edas": {
       "questions": 145,
@@ -1453,7 +1453,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — TDAS Técnico Administrativo Tipo B",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-25T04:59:51.185Z",
+          "comparedAt": "2026-09-25T10:08:40.878Z",
           "correct": 49,
           "wrong": 10,
           "invalid": 1,
@@ -3934,7 +3934,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-25T04:59:51.185Z"
+        "lastComparedAt": "2026-09-25T10:08:40.878Z"
       },
       "edas": {
         "examType": "A",
@@ -3947,7 +3947,7 @@
           "sourceTitle": "Instituto Quadrix — Gabarito preliminar — EDAS Administração Tipo A",
           "publishedAt": "2026-09-09",
           "version": "preliminar-2026-09-09",
-          "comparedAt": "2026-09-25T04:59:51.185Z",
+          "comparedAt": "2026-09-25T10:08:40.878Z",
           "correct": 53,
           "wrong": 7,
           "invalid": 0,
@@ -6196,7 +6196,7 @@
             }
           }
         ],
-        "lastComparedAt": "2026-09-25T04:59:51.185Z"
+        "lastComparedAt": "2026-09-25T10:08:40.878Z"
       }
     },
     "competitionReading": {
@@ -6336,7 +6336,7 @@
       "currentStage": "Aguardando resultado objetivo preliminar",
       "nextAction": "Acompanhar o gabarito definitivo e o resultado objetivo preliminar de 13/10; a posição classificatória passa a ser o dado crítico para definir a correção da discursiva sob a regra do Edital nº 6.",
       "snapshotDate": "2026-09-06",
-      "lastCalculatedAt": "2026-09-25T04:59:51.186Z",
+      "lastCalculatedAt": "2026-09-25T10:08:40.879Z",
       "milestones": [
         {
           "id": "exam",
