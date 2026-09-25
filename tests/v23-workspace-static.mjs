@@ -39,7 +39,7 @@ has(sw, "'./assets/workspace-v23.css'", 'PWA CSS v23');
 has(sw, "'./assets/workspace-v23-home.css'", 'PWA Home v23');
 has(sw, "'./assets/workspace-v23.js'", 'PWA JS v23');
 has(sw, "'./assets/workspace-v24-hardening.css'", 'PWA hardening v24');
-has(sw, "const CACHE='plano-transicao-v51-seedf-preedital-web'", 'cache PWA v51 força atualização da nova identidade');
+has(sw, "const CACHE='plano-transicao-v52-history-reconciliation'", 'cache PWA v52 força atualização da nova identidade');
 has(sw, "'./assets/central-mark.svg'", 'PWA cacheia marca vetorial');
 has(sw, "'./assets/central-icon-192.png'", 'PWA cacheia ícone 192');
 has(sw, "'./assets/central-icon-512.png'", 'PWA cacheia ícone 512');

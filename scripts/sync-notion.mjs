@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises';
 import { syncSedesExams } from './sedes-exams.mjs';
+import { reconcileHistory } from './history-reconciliation.mjs';
+import { deriveTdasProgress } from './tdas-progress.mjs';
 
 const token = process.env.NOTION_TOKEN;
 if (!token) throw new Error('NOTION_TOKEN não configurado.');
@@ -224,6 +226,7 @@ let tdasQuestions = previous.metrics.tdas.questions;
 let tdasHits = previous.metrics.tdas.hits;
 let tdasStepsTotal = previous.metrics.tdas.stepsTotal;
 let tdasStepsDone = previous.metrics.tdas.stepsDone;
+let tdasStepsNotStudied = previous.metrics.tdas.stepsNotStudied || 0;
 let tdasSimulations = previous.metrics.tdas.simulations;
 
 const tdasRowsUsable = Array.isArray(tdasRows) && tdasRows.some(r => /^PE\d+/i.test(textValue(r, 'Dia ID')));
@@ -240,11 +243,14 @@ if (tdasRowsUsable) {
     (numberValue(r, 'Acertos específicas') || 0)
   );
 
-  const uniquePEs = new Map(peRows.map(r => [textValue(r, 'Dia ID'), r]));
-  tdasStepsTotal = uniquePEs.size || tdasStepsTotal;
-  tdasStepsDone = [...uniquePEs.values()].filter(r =>
-    ['Concluído', 'Descanso'].includes(textValue(r, 'Status'))
-  ).length;
+  const progress = deriveTdasProgress(peRows.map(r => ({
+    id: textValue(r, 'Dia ID'),
+    status: textValue(r, 'Status'),
+    notes: textValue(r, 'Observações')
+  })), tdasStepsTotal);
+  tdasStepsTotal = progress.stepsTotal || tdasStepsTotal;
+  tdasStepsDone = progress.stepsDone;
+  tdasStepsNotStudied = progress.stepsNotStudied;
 
   tdasSimulations = concludedPEs.filter(r =>
     textValue(r, 'Bloco predominante') === 'Simulado'
@@ -270,19 +276,31 @@ if (edasRowsUsable) {
 
 const registry = registryRows || [];
 const included = registry.filter(r => checkboxValue(r, 'Conta no consolidado geral'));
-
-let historyQuestions = previous.metrics.history.questions;
-let historyHits = previous.metrics.history.hits;
-let historyWithoutResult = previous.metrics.history.withoutResult;
-
-if (included.length && tdasRowsUsable) {
-  const nonTdasIncluded = included.filter(r => textValue(r, 'Projeto') !== 'TDAS 202');
-  historyQuestions = sum(nonTdasIncluded, r => numberValue(r, 'Questões')) + tdasQuestions;
-  historyHits = sum(nonTdasIncluded, r => numberValue(r, 'Acertos')) + tdasHits;
-}
-
-const historyErrors = historyQuestions - historyHits;
-const historyRaw = historyQuestions + historyWithoutResult;
+const normalizedRegistry = registry.map(r => ({
+  project: textValue(r, 'Projeto'),
+  scope: textValue(r, 'Escopo'),
+  type: textValue(r, 'Tipo'),
+  auditStatus: textValue(r, 'Status auditoria'),
+  record: textValue(r, 'Registro'),
+  date: dateValue(r, 'Data'),
+  auditedAt: dateValue(r, 'Data auditoria'),
+  questions: numberValue(r, 'Questões') || 0,
+  hits: numberValue(r, 'Acertos') || 0,
+  errors: numberValue(r, 'Erros'),
+  withoutResult: numberValue(r, 'Sem resultado') || 0,
+  include: checkboxValue(r, 'Conta no consolidado geral')
+}));
+const { history: reconciledHistory, reconciliation: historyReconciliation } = reconcileHistory({
+  registryRows: Array.isArray(registryRows) ? normalizedRegistry : null,
+  tdasOperational: { questions: tdasQuestions, hits: tdasHits, errors: tdasQuestions - tdasHits },
+  previousHistory: previous.metrics.history,
+  previousReconciliation: previous.meta.historyReconciliation
+});
+const historyQuestions = reconciledHistory.questions;
+const historyHits = reconciledHistory.hits;
+const historyErrors = reconciledHistory.errors;
+const historyWithoutResult = reconciledHistory.withoutResult;
+const historyRaw = reconciledHistory.rawRecords;
 
 const financeRow = registry.find(r =>
   textValue(r, 'Registro').includes('SEDES/DF 2026 — ciclo financeiro')
@@ -309,21 +327,25 @@ const cycleNames = {
   'TDAS 202': 'SEDES — TDAS Pós-edital'
 };
 
-const shouldRebuildHistory = Boolean(registryRows?.length && included.length && tdasRowsUsable);
+const shouldRebuildHistory = Boolean(registryRows?.length && included.length);
 const historyCycles = shouldRebuildHistory
   ? included
   .filter(r => (numberValue(r, 'Questões') || 0) > 0)
   .map(r => {
     const project = textValue(r, 'Projeto');
     const record = textValue(r, 'Registro');
-    const isTdas = project === 'TDAS 202';
-    const q = isTdas ? tdasQuestions : (numberValue(r, 'Questões') || 0);
-    const h = isTdas ? tdasHits : (numberValue(r, 'Acertos') || 0);
+    const q = numberValue(r, 'Questões') || 0;
+    const h = numberValue(r, 'Acertos') || 0;
     let name = cycleNames[project] || record.split('|')[0].trim();
     if (record.includes('Reta Final')) name = 'Câmara Goiânia — Reta Final';
     else if (record.includes('Agente Administrativo')) name = 'Câmara Goiânia — Agente Administrativo';
     else if (record.includes('Treino Quadrix')) name = 'Treino Quadrix — CRF-DF';
-    return { name, questions: q, hits: h, errors: q - h, accuracy: accuracy(h, q) };
+    return {
+      name, questions: q, hits: h,
+      errors: numberValue(r, 'Erros') ?? (q - h),
+      accuracy: accuracy(h, q),
+      date: dateValue(r, 'Data') || dateValue(r, 'Data auditoria') || null
+    };
   })
   : (previous.historyCycles || []);
 
@@ -396,7 +418,8 @@ const snapshot = {
     ...previous.meta,
     generatedAt: new Date().toISOString(),
     homeSnapshot: (homeMeta.last_edited_time || new Date().toISOString()).slice(0, 10),
-    performanceCut: latestIncludedAudit,
+    performanceCut: historyReconciliation.official.asOf || latestIncludedAudit,
+    historyReconciliation,
     source: 'Notion vivo — bancos operacionais + Registro Histórico',
     live: true,
     syncWarnings: Object.entries(access).filter(([, value]) => !value.ok).map(([key]) => key)
@@ -428,6 +451,7 @@ const snapshot = {
       errors: tdasQuestions - tdasHits,
       accuracy: accuracy(tdasHits, tdasQuestions),
       stepsDone: tdasStepsDone,
+      stepsNotStudied: tdasStepsNotStudied,
       stepsTotal: tdasStepsTotal || previous.metrics.tdas.stepsTotal,
       errorNotebook: tdasErrorRows?.length ? tdasErrorRows.length : previous.metrics.tdas.errorNotebook,
       essays: tdasEssayRows?.length ? tdasEssayRows.length : previous.metrics.tdas.essays,

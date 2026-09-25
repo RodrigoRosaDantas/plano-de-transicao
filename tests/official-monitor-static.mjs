@@ -70,7 +70,7 @@ assert(collector.includes('/\\bsedf\\b/') && collector.includes('/\\bsee\\/?df\\
 assert(front.includes('["WEB","Sinais pré-edital na web"]') && front.includes('h.source==="WEB"?"Abrir fonte ↗":"Abrir oficial ↗"'), "interface separa sinal web de publicação oficial");
 assert(html.includes("Notícias aparecem identificadas como WEB") && html.includes("não são tratadas como ato jurídico"), "interface explicita natureza não oficial dos sinais web");
 assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css") && sw.includes("./assets/personal-web-search.js"), "Radar Oficial e Radar Web estão incluídos no PWA");
-assert(sw.includes("plano-transicao-v51-seedf-preedital-web"), "cache v51 força recache da camada pré-edital web");
+assert(sw.includes("plano-transicao-v52-history-reconciliation"), "cache v52 força recache da camada pré-edital web");
 assert(html.includes("assets/official-monitor.js?v=11"), "Radar Oficial usa cache busting v11 após correções da camada WEB");
 assert(html.includes("assets/central-mark.svg"), "Radar Oficial usa a identidade visual da Central");
 assert(html.includes('assets/central-icon-192.png') && html.includes('apple-touch-icon'), "Radar Oficial usa os favicons da Central");

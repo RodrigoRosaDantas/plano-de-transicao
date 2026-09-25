@@ -529,6 +529,7 @@ select { min-height: 38px; padding: 0 32px 0 11px; border: 1px solid var(--borde
 .audit-hero { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 28px; padding: clamp(25px, 4vw, 42px); }
 .audit-hero.ready { border-color: color-mix(in srgb, var(--lime) 25%, transparent); background: linear-gradient(135deg, color-mix(in srgb, var(--lime) 7%, var(--surface)), var(--surface)); }
 .audit-hero.warning { border-color: color-mix(in srgb, var(--coral) 28%, transparent); }
+.audit-hero.pending { border-color: color-mix(in srgb, var(--amber) 32%, transparent); background: linear-gradient(135deg, color-mix(in srgb, var(--amber) 8%, var(--surface)), var(--surface)); }
 .audit-score { display: grid; width: 142px; aspect-ratio: 1; place-items: center; border: 1px solid color-mix(in srgb, var(--lime) 30%, transparent); border-radius: 50%; background: color-mix(in srgb, var(--lime) 7%, transparent); text-align: center; }
 .audit-score strong, .audit-score small { grid-area: 1 / 1; }
 .audit-score strong { align-self: center; color: var(--lime); font-size: 2.2rem; letter-spacing: -.06em; }

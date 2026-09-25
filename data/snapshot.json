@@ -17,7 +17,48 @@
     "postExamScoringUpdatedAt": "2026-09-25T04:59:51.186Z",
     "postExamCandidateResponsesSyncedAt": "2026-09-25T04:59:51.108Z",
     "postExamCompetitionAuditedAt": "2026-09-25T04:59:51.186Z",
-    "postExamFollowUpUpdatedAt": "2026-09-25T04:59:51.186Z"
+    "postExamFollowUpUpdatedAt": "2026-09-25T04:59:51.186Z",
+    "historyReconciliation": {
+      "status": "pending",
+      "official": {
+        "sourceRecord": "Consolidado histórico revalidado | 27/08/2026 — bancos globais",
+        "asOf": "2026-08-27",
+        "questions": 15329,
+        "hits": 13976,
+        "errors": 1353,
+        "withoutResult": 90,
+        "rawRecords": 15419
+      },
+      "registeredComponents": {
+        "questions": 15329,
+        "hits": 13976,
+        "errors": 1353,
+        "withoutResult": 90,
+        "rawRecords": 15419
+      },
+      "tdasValidated": {
+        "sourceRecord": "TDAS — snapshot revalidado | 27/08/2026",
+        "asOf": "2026-08-27",
+        "questions": 3319,
+        "hits": 3055,
+        "errors": 264,
+        "withoutResult": 0,
+        "rawRecords": 3319
+      },
+      "tdasOperational": {
+        "questions": 3559,
+        "hits": 3258,
+        "errors": 301,
+        "withoutResult": 0,
+        "rawRecords": 3559
+      },
+      "pendingDelta": {
+        "questions": 240,
+        "hits": 203,
+        "errors": 37
+      },
+      "componentsMatch": true
+    }
   },
   "mission": "Transformar as provas realizadas em diagnóstico, correção, recursos, resultado e próxima decisão de carreira.",
   "priorities": [
@@ -42,12 +83,13 @@
       "hits": 3258,
       "errors": 301,
       "accuracy": 91.54,
-      "stepsDone": 112,
+      "stepsDone": 104,
       "stepsTotal": 112,
       "errorNotebook": 325,
       "essays": 33,
       "essaysGraded": 13,
-      "simulations": 8
+      "simulations": 8,
+      "stepsNotStudied": 8
     },
     "edas": {
       "questions": 145,
@@ -58,11 +100,11 @@
       "caseStudies": 12
     },
     "history": {
-      "questions": 15569,
-      "hits": 14179,
-      "errors": 1390,
-      "accuracy": 91.07,
-      "rawRecords": 15659,
+      "questions": 15329,
+      "hits": 13976,
+      "errors": 1353,
+      "accuracy": 91.17,
+      "rawRecords": 15419,
       "withoutResult": 90
     },
     "finance": {
@@ -401,10 +443,10 @@
     },
     {
       "name": "SEDES — TDAS Pós-edital",
-      "questions": 3559,
-      "hits": 3258,
-      "errors": 301,
-      "accuracy": 91.54,
+      "questions": 3319,
+      "hits": 3055,
+      "errors": 264,
+      "accuracy": 92.05,
       "date": "2026-08-27"
     },
     {

@@ -35,6 +35,10 @@ jobs:
           node-version: '22'
       - name: Auditoria de dados e paridade
         run: node scripts/audit-parity.mjs
+      - name: Testes de reconciliação do histórico e progresso TDAS
+        run: |
+          node tests/history-reconciliation.mjs
+          node tests/tdas-progress.mjs
       - name: Realização e resultados independentes por cargo
         run: node tests/sedes-exams.mjs
       - name: Auditoria estrutural da v13

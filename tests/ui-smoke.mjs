@@ -86,7 +86,12 @@ await run('desktop: financeiro, concursos, fontes e operações', { width: 1440,
   await page.click('[data-view="sources"]');
   await page.waitForSelector('.audit-check');
   const score = await page.locator('.audit-score strong').innerText();
-  if (!score.includes('11/11')) throw new Error(`Auditoria visual não fechou: ${score}`);
+  if (!score.includes('13/13')) throw new Error(`Auditoria visual não fechou: ${score}`);
+  const reconciliationNotice = page.locator('.history-reconciliation-note');
+  if (await reconciliationNotice.count() !== 1) throw new Error('Aviso do corte histórico não apareceu.');
+  if (!(await page.locator('.audit-hero').evaluate(node => node.classList.contains('pending')))) throw new Error('O estado pendente não está destacado.');
+  const noticeText = await reconciliationNotice.innerText();
+  if (!noticeText.includes('240') || !noticeText.includes('PE101–PE104')) throw new Error('Aviso não identifica o delta operacional pendente.');
   await page.click('[data-view="operations"]');
   await page.waitForSelector('.operations-view');
   if (await page.locator('.system-card').count() !== 4) throw new Error('Central de operações incompleta.');

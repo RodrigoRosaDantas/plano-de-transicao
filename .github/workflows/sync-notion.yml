@@ -52,6 +52,10 @@ jobs:
         run: node scripts/enrich-work-parity.mjs
       - name: Aplicar estado pós-prova
         run: node scripts/apply-post-exam-state.mjs
+      - name: Testar reconciliação antes do commit
+        run: |
+          node tests/history-reconciliation.mjs
+          node tests/tdas-progress.mjs
       - name: Auditar dados e paridade antes do commit
         run: node scripts/audit-parity.mjs
       - name: Commit de atualização

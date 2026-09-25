@@ -587,7 +587,25 @@ function auditChecks() {
   const m = data.metrics;
   const sedesOperational = data.financeSummary.sedes.confirmed;
   const topicalValid = treatedTopicalSeed.every((row) => row.questions >= row.correct && row.questions >= 0 && row.correct >= 0);
+  const reconciliation = data.meta.historyReconciliation || {};
+  const official = reconciliation.official || {};
+  const components = reconciliation.registeredComponents || {};
+  const tdasValidated = reconciliation.tdasValidated || {};
+  const tdasOperational = reconciliation.tdasOperational || {};
+  const pendingDelta = reconciliation.pendingDelta || {};
+  const historyMatchesOfficial = ["questions", "hits", "errors", "withoutResult", "rawRecords"]
+    .every((key) => Number(m.history[key]) === Number(official[key])) &&
+    reconciliation.componentsMatch === true &&
+    ["questions", "hits", "errors", "withoutResult", "rawRecords"]
+      .every((key) => Number(components[key]) === Number(official[key]));
+  const tdasDeltaTracked = ["questions", "hits", "errors"]
+    .every((key) => Number(tdasOperational[key]) === Number(m.tdas[key])) &&
+    ["questions", "hits", "errors"]
+      .every((key) => Number(tdasOperational[key]) - Number(tdasValidated[key]) === Number(pendingDelta[key])) &&
+    ["pending", "reconciled"].includes(reconciliation.status);
   return [
+    ["Histórico confere com corte validado", historyMatchesOfficial],
+    ["Delta operacional do TDAS fica rastreável", tdasDeltaTracked],
     ["Histórico fecha em acertos + erros", m.history.questions === m.history.hits + m.history.errors],
     ["Bruto fecha em mensurável + sem resultado", m.history.rawRecords === m.history.questions + m.history.withoutResult],
     ["TDAS preservado separadamente", m.tdas.questions === m.tdas.hits + m.tdas.errors],
@@ -607,8 +625,16 @@ function sourcesView() {
   const checks = auditChecks();
   const passed = checks.filter(([, ok]) => ok).length;
   const subjectCount = treatedTopicalSeed.filter((row) => row.grain === "subject").length;
+  const reconciliation = data.meta.historyReconciliation || {};
+  const delta = reconciliation.pendingDelta || {};
+  const historyPending = reconciliation.status === "pending";
+  const signed = (value) => (Number(value) > 0 ? "+" : "") + fmt(Number(value) || 0);
+  const reconciliationNotice = historyPending
+    ? '<section class="panel truth-panel history-reconciliation-note" role="status"><div class="panel-heading"><div><span class="eyebrow">HISTÓRICO EM CONSOLIDAÇÃO</span><h2>Consolidado oficial até ' + dateBR(reconciliation.official?.asOf) + '</h2></div>' + svgIcon("alert") + '</div><p>O histórico geral mantém o último corte validado: ' + fmt(reconciliation.official?.questions) + ' questões, ' + fmt(reconciliation.official?.hits) + ' acertos, ' + fmt(reconciliation.official?.errors) + ' erros e ' + fmt(reconciliation.official?.withoutResult) + ' sem resultado.</p><p>O TDAS operacional registra ' + fmt(reconciliation.tdasOperational?.questions) + ' questões. Delta pendente de consolidação: ' + signed(delta.questions) + ' questões, ' + signed(delta.hits) + ' acertos e ' + signed(delta.errors) + ' erros. As PE101–PE104 continuam no quadro próprio do TDAS e só entram no histórico geral após validação de novo snapshot no Registro Histórico.</p></section>'
+    : "";
   return `<div class="view-stack sources-view">${viewHeading("Fontes", "A beleza fica na frente. A verdade continua rastreável.", "Notion vivo, tratamento, snapshot e site são camadas diferentes. O painel deixa essa cadeia visível.", `<button class="secondary-button" type="button" id="refreshPublished" data-refresh>${svgIcon("refresh")} Recarregar publicado</button><a class="secondary-button" href="https://github.com/RodrigoRosaDantas/plano-de-transicao/actions/workflows/sync-notion.yml" target="_blank" rel="noreferrer">${svgIcon("database")} Sincronizar no GitHub</a><button class="secondary-button" type="button" data-export-snapshot>${svgIcon("download")} Exportar snapshot</button>`)}
-    <section class="audit-hero panel ${passed === checks.length ? "ready" : "warning"}"><div class="audit-score"><strong>${passed}<span>/${checks.length}</span></strong><small>verificações aprovadas</small></div><div><span class="eyebrow">AUDITORIA AUTOMÁTICA</span><h2>${passed === checks.length ? "Dados reconciliados para publicação" : "Há verificações que pedem revisão"}</h2><p>Última geração em ${new Date(data.meta.generatedAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })} · corte de desempenho ${dateBR(data.meta.performanceCut)}.</p></div>${statusChip(passed === checks.length ? "Íntegro" : "Revisar", passed === checks.length ? "good" : "danger")}</section>
+    <section class="audit-hero panel ${passed === checks.length && !historyPending ? "ready" : historyPending ? "pending" : "warning"}"><div class="audit-score"><strong>${passed}<span>/${checks.length}</span></strong><small>verificações aprovadas</small></div><div><span class="eyebrow">AUDITORIA AUTOMÁTICA</span><h2>${passed !== checks.length ? "Há verificações que pedem revisão" : historyPending ? "Histórico validado; TDAS em consolidação" : "Dados reconciliados para publicação"}</h2><p>Última geração em ${new Date(data.meta.generatedAt).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })} · corte de desempenho ${dateBR(data.meta.performanceCut)}.</p></div>${statusChip(passed === checks.length && !historyPending ? "Íntegro" : historyPending ? "Acompanhar" : "Revisar", passed === checks.length && !historyPending ? "good" : historyPending ? "warning" : "danger")}</section>
+    ${reconciliationNotice}
     <section class="panel truth-panel"><div class="panel-heading"><div><span class="eyebrow">CADEIA DE VERDADE</span><h2>Quem prevalece quando há divergência</h2></div>${svgIcon("database")}</div><div class="truth-chain">${data.governance.truthChain.map((label, index) => `<div class="truth-node ${index === 0 ? "primary" : ""}"><span>0${index + 1}</span><strong>${esc(label)}</strong>${index < data.governance.truthChain.length - 1 ? svgIcon("arrow") : ""}</div>`).join("")}</div></section>
     <section class="audit-grid"><article class="panel audit-check-panel"><div class="panel-heading"><div><span class="eyebrow">VERIFICAÇÕES</span><h2>Fechamento automático</h2></div>${svgIcon("shield")}</div><div class="audit-checks">${checks.map(([label, ok]) => `<div class="audit-check ${ok ? "ok" : "bad"}"><span>${svgIcon(ok ? "check" : "alert")}</span><strong>${esc(label)}</strong><small>${ok ? "aprovado" : "revisar"}</small></div>`).join("")}</div></article><article class="panel source-summary"><span class="eyebrow">COBERTURA PUBLICADA</span><h2>O que o site sabe hoje</h2><div class="source-summary-list"><div><span>Registros brutos</span><strong>${fmt(data.metrics.history.rawRecords)}</strong></div><div><span>Questões mensuráveis</span><strong>${fmt(data.metrics.history.questions)}</strong></div><div><span>Linhas temáticas tratadas</span><strong>${fmt(treatedTopicalSeed.length)}</strong></div><div><span>Linhas só de matéria</span><strong>${fmt(subjectCount)}</strong></div><div><span>Atividades tratadas</span><strong>${fmt(treatedActivitySeed.length)}</strong></div><div><span>Lançamentos financeiros</span><strong>${fmt(data.financeEntries.length)}</strong></div></div></article></section>
     <section class="panel source-map"><div class="panel-heading"><div><span class="eyebrow">FONTES VIGENTES</span><h2>Bancos que alimentam o plano</h2></div><a class="text-button" href="${esc(data.meta.sourceUrl)}" target="_blank" rel="noreferrer">Abrir Notion ${svgIcon("external")}</a></div><div class="source-grid">${data.governance.sources.map((source) => `<article><div class="source-icon">${svgIcon("database")}</div><div><strong>${esc(source.name)}</strong><code>${esc(source.id.slice(0, 8))}…</code></div>${statusChip(source.status, "aqua")}</article>`).join("")}</div></section>
