@@ -8,6 +8,8 @@ on:
     paths:
       - '.github/workflows/sync-notion.yml'
       - 'scripts/sync-notion.mjs'
+      - 'scripts/history-reconciliation.mjs'
+      - 'scripts/tdas-progress.mjs'
       - 'scripts/sync-post-exam-notes.mjs'
       - 'scripts/score-post-exam.mjs'
       - 'data/official-keys.json'
