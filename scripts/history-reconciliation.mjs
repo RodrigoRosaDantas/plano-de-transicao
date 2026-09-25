@@ -44,7 +44,9 @@ export function reconcileHistory({ registryRows, tdasOperational, previousHistor
     row.type === "Snapshot" && row.auditStatus === "Validado"
   );
   const canonical = latestFirst(snapshots).at(-1) || null;
-  const included = registryRows.filter((row) => row.include && row.project !== "Consolidado geral");
+  const included = registryRows.filter((row) =>
+    row.include && !(row.project === "Consolidado geral" && row.scope === "Consolidado" && row.type === "Snapshot")
+  );
   const registeredComponents = totalMetrics(included);
   const fallbackOfficial = previousReconciliation?.official || metricsFrom(previousHistory);
   const official = canonical

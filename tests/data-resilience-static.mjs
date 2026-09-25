@@ -1,9 +1,10 @@
 import fs from 'node:fs/promises';
 
-const [syncNotion, enrich, quality] = await Promise.all([
+const [syncNotion, enrich, quality, historyReconciliation] = await Promise.all([
   fs.readFile('scripts/sync-notion.mjs', 'utf8'),
   fs.readFile('scripts/enrich-work-parity.mjs', 'utf8'),
   fs.readFile('.github/workflows/quality.yml', 'utf8'),
+  fs.readFile('scripts/history-reconciliation.mjs', 'utf8'),
 ]);
 
 const failures = [];
@@ -22,9 +23,9 @@ expect(
     syncNotion.includes('if (edasRowsUsable) {')
 );
 expect(
-  'histórico mantém último valor confiável quando fonte crítica está vazia',
-  syncNotion.includes('const shouldRebuildHistory = Boolean(registryRows?.length && included.length && tdasRowsUsable);') &&
-    syncNotion.includes(': (previous.historyCycles || []);')
+  'histórico mantém último valor confiável quando o Registro está indisponível',
+  historyReconciliation.includes('const previousOfficial = previousReconciliation?.official || metricsFrom(previousHistory);') &&
+    historyReconciliation.includes('history: metricsFrom(previousOfficial)')
 );
 expect(
   'métricas de cadernos e redações não zeram em resposta vazia',

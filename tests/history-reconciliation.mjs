@@ -3,7 +3,8 @@ import { reconcileHistory } from "../scripts/history-reconciliation.mjs";
 
 const rows = [
   { project: "TDAS 202", scope: "Objetivo", type: "Snapshot", auditStatus: "Validado", include: true, record: "TDAS — snapshot revalidado | 27/08/2026", date: "2026-08-27", auditedAt: "2026-08-27", questions: 3319, hits: 3055, errors: 264, withoutResult: 0 },
-  { project: "SEDES pré-edital", scope: "Objetivo", type: "Snapshot", auditStatus: "Validado", include: true, record: "Outros bancos validados", questions: 12010, hits: 10921, errors: 1089, withoutResult: 90 },
+  { project: "SEDES pré-edital", scope: "Objetivo", type: "Snapshot", auditStatus: "Validado", include: true, record: "Outros bancos validados", questions: 11982, hits: 10897, errors: 1085, withoutResult: 90 },
+  { project: "Consolidado geral", scope: "Objetivo", type: "Sessão", auditStatus: "Validado", include: true, record: "Treino Quadrix — CRF-DF", questions: 28, hits: 24, errors: 4, withoutResult: 0 },
   { project: "Consolidado geral", scope: "Consolidado", type: "Snapshot", auditStatus: "Ressalva", record: "Consolidado antigo", date: "2026-08-20", questions: 15301, hits: 13952, errors: 1349, withoutResult: 90 },
   { project: "Consolidado geral", scope: "Consolidado", type: "Snapshot", auditStatus: "Validado", record: "Consolidado histórico revalidado | 27/08/2026 — bancos globais", date: "2026-08-27", auditedAt: "2026-08-27", questions: 15329, hits: 13976, errors: 1353, withoutResult: 90 }
 ];
