@@ -704,7 +704,7 @@ function render() {
   bindViewControls();
   updateLiveTime();
   updateMoreSheet();
-  document.title = `${VIEW_NAMES[state.view]} · Jornada`;
+  document.title = state.view === "journey" ? "Jornada · Painel Estratégico" : `${VIEW_NAMES[state.view]} · Jornada`;
 }
 
 function navigate(view, options = {}) {

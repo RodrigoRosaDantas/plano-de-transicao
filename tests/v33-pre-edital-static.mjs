@@ -53,7 +53,7 @@ for (const value of [
 assert.ok(index.includes('pre-post-v33.css?v=36'));
 assert.ok(index.includes('aria-label="Pré-prova / Pré-edital"'));
 assert.ok(index.includes('__PLANO_UI_RELEASE__ = "v45"'));
-assert.ok(index.includes('work-app.js?v=39&home=38'));
+assert.ok(index.includes('work-app.js?v=40&home=38'));
 assert.ok(sw.includes("const CACHE='plano-transicao-v53-ecosystem-v1'"));
 assert.ok(sw.includes("'./assets/pre-post-v33.css'"));
 
