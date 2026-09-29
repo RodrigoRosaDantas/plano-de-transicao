@@ -67,6 +67,10 @@ jobs:
         run: node tests/navigation-icons-static.mjs
       - name: Auditoria estática da navegação móvel v38
         run: node tests/mobile-navigation-v38-static.mjs
+      - name: Auditoria estática da integração Jornada P1–P4
+        run: |
+          node --check assets/ecosystem-v1.js
+          node tests/ecosystem-v1-static.mjs
       - name: Auditoria de resiliência dos snapshots
         run: node tests/data-resilience-static.mjs
       - name: Sintaxe do Radar Oficial + Web privado
@@ -103,6 +107,12 @@ jobs:
           done
           cat /tmp/plano-http.log
           exit 1
+      - name: Verificar painel Jornada e estados dos contratos
+        id: ecosystem
+        continue-on-error: true
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/ecosystem-v1-ui.mjs
       - name: Auditoria da cauda vertical do layout
         id: tail
         continue-on-error: true
@@ -200,6 +210,7 @@ jobs:
         run: |
           failed=0
           for outcome in \
+            "${{ steps.ecosystem.outcome }}" \
             "${{ steps.tail.outcome }}" \
             "${{ steps.smoke.outcome }}" \
             "${{ steps.v21.outcome }}" \

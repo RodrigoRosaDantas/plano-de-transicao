@@ -16,11 +16,11 @@ const [index, css, homeCss, hardeningCss, js, shellCss, shellJs, sw, manifest] =
 const has = (text, value, label) => assert.ok(text.includes(value), `${label}: ausente ${value}`);
 
 has(index, 'assets/workspace-v23.css?v=23', 'loader CSS v23 direto no index');
-has(index, '<strong>Central de Transição</strong>', 'marca principal da Central');
-has(index, '<small>Plano de Transição</small>', 'Plano permanece como estratégia dentro da Central');
-has(index, '<title>Central de Transição</title>', 'título principal rebatizado');
-has(manifest, '"name": "Central de Transição"', 'PWA usa a nova marca');
-has(manifest, '"short_name": "Central"', 'PWA usa nome curto da Central');
+has(index, '<strong>Jornada</strong>', 'marca principal do painel estratégico');
+has(index, '<small>Painel Estratégico</small>', 'Jornada identifica sua função estratégica');
+has(index, '<title>Jornada · Painel Estratégico</title>', 'título principal da Jornada');
+has(manifest, '"name": "Jornada · Painel Estratégico"', 'PWA usa a marca Jornada');
+has(manifest, '"short_name": "Jornada"', 'PWA usa o nome curto da Jornada');
 has(index, 'assets/central-mark.svg', 'favicon e marca visual da Central');
 has(index, 'assets/central-icon-192.png', 'Apple/PWA usa ícone da Central');
 has(manifest, '"src": "assets/central-icon-192.png"', 'manifest aponta para ícone 192 da Central');
@@ -39,7 +39,7 @@ has(sw, "'./assets/workspace-v23.css'", 'PWA CSS v23');
 has(sw, "'./assets/workspace-v23-home.css'", 'PWA Home v23');
 has(sw, "'./assets/workspace-v23.js'", 'PWA JS v23');
 has(sw, "'./assets/workspace-v24-hardening.css'", 'PWA hardening v24');
-has(sw, "const CACHE='plano-transicao-v52-history-reconciliation'", 'cache PWA v52 força atualização da nova identidade');
+has(sw, "const CACHE='plano-transicao-v53-ecosystem-v1'", 'cache PWA v52 força atualização da nova identidade');
 has(sw, "'./assets/central-mark.svg'", 'PWA cacheia marca vetorial');
 has(sw, "'./assets/central-icon-192.png'", 'PWA cacheia ícone 192');
 has(sw, "'./assets/central-icon-512.png'", 'PWA cacheia ícone 512');
