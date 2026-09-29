@@ -1,0 +1,25 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+
+const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const html = read("index.html");
+const app = read("assets/work-app.js");
+const integration = read("assets/ecosystem-v1.js");
+const css = read("assets/ecosystem-v1.css");
+const sw = read("sw.js");
+const manifest = JSON.parse(read("manifest.webmanifest"));
+
+assert.ok(html.includes('id="ecosystem-overview"') === false, "the reusable Journey view must create its panel through the shared renderer");
+assert.ok(app.includes('id="ecosystem-overview"') && app.includes("REGISTRY COMPARTILHADO · P1–P4"), "Jornada must expose the shared operational overview");
+assert.ok(html.includes('href="https://rodrigorosadantas.github.io/central-estudos/"') && html.includes("Estudar agora"), "Jornada must link directly to the operational Central");
+assert.ok(integration.includes("/central-estudos/config/projects.json") && integration.includes("project.statusUrl") && integration.includes('method: "GET"') && integration.includes('cache: "no-store"'), "integration must fetch the shared registry and each declared statusUrl with read-only GETs");
+assert.ok(integration.includes("schemaVersion !== 3") && integration.includes("contract?.schemaVersion !== 1") && integration.includes("contract.projectId !== project.id"), "registry and project contract versions and identities must be validated");
+assert.ok(integration.includes("America/Sao_Paulo") && integration.includes("Publicação antiga") && integration.includes("Contrato incompatível") && integration.includes("Catálogo indisponível"), "freshness, compatibility and catalog failure must remain distinct");
+assert.ok(integration.includes("state.currentUnit") && integration.includes("state.nextActionKind") && integration.includes("contract.source.status"), "cards must present validated operational state and provenance");
+assert.ok(!/\b(?:study|notion|supabase)\b/i.test(integration), "the shared overview must not read private progress or connect to Notion/Supabase");
+assert.ok(!integration.includes("innerHTML") && !integration.includes("localStorage") && !integration.includes("credentials:"), "dynamic status text must use safe DOM APIs without local state or credentials");
+assert.ok(css.includes("repeat(4, minmax(0, 1fr))") && css.includes("@media (max-width: 1040px)") && css.includes("@media (max-width: 700px)"), "overview cards must reflow for tablet and phone widths");
+assert.ok(sw.includes("plano-transicao-v53-ecosystem-v1") && sw.includes("./assets/ecosystem-v1.js") && sw.includes("./assets/ecosystem-v1.css"), "offline shell must include the integration module and stylesheet");
+assert.equal(manifest.short_name, "Jornada", "installed app identity must be Jornada");
+assert.ok(html.includes('href="assets/ecosystem-v1.css?v=1"') && html.includes('src="assets/ecosystem-v1.js?v=1"'), "Jornada must load the versioned integration assets");
+console.log("PASS  v1 shared registry, read-only status contracts, privacy, provenance and responsive shell");

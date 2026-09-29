@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Central de Transição",
-  "short_name": "Central",
+  "name": "Jornada · Painel Estratégico",
+  "short_name": "Jornada",
   "start_url": "./#command",
   "scope": "./",
   "display": "standalone",
@@ -11,7 +11,7 @@
   ],
   "background_color": "#0b0f0e",
   "theme_color": "#0b0f0e",
-  "description": "Sistema gerencial de concursos, carreira, desempenho, decisões, investimentos e jornada.",
+  "description": "Painel estratégico de concursos, carreira, desempenho, decisões e próximos movimentos.",
   "lang": "pt-BR",
   "categories": [
     "productivity",

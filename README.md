@@ -1,8 +1,8 @@
-# 🧭 Central de Transição — GitHub Pages
+# 🧭 Jornada — Painel Estratégico
 
-Versão independente da **Central de Transição**, preparada para GitHub Pages.
+O **Painel Estratégico Jornada** preserva a visão longitudinal de concursos, carreira, desempenho, decisões e investimentos. É independente da **Central de Estudos**, que concentra a operação diária e a abertura dos projetos P1–P4.
 
-**Arquitetura de marca:** a **Central de Transição** é o produto/sistema gerencial; o **Plano de Transição** é a estratégia acompanhada dentro da Central. Os identificadores técnicos históricos (`plano-de-transicao`) permanecem estáveis para preservar URLs, integrações, caches e compatibilidade.
+**Identidade e compatibilidade:** Jornada é a camada estratégica; Central de Estudos é a camada operacional. Os identificadores técnicos históricos (`plano-de-transicao`) e a URL do Pages permanecem estáveis para preservar integrações, caches e compatibilidade.
 
 ## O que já está implementado
 
@@ -18,6 +18,7 @@ Versão independente da **Central de Transição**, preparada para GitHub Pages.
 - A interface diferencia explicitamente **Recarregar snapshot** de **Sincronizar Notion**.
 - Desempenho por matéria, combinações e atividades, com filtros independentes para histórico, TDAS e EDAS.
 - Jornada e marcos em mapa visual contínuo.
+- Visão somente leitura dos sinais publicados P1–P4, obtidos do registry e dos contratos sanitizados da Central de Estudos.
 - Provas e resultados com separação entre aproveitamento, nota, classificação e etapa do certame.
 - TDAS 202 e EDAS 400 com registros próprios de realização e resultado. Prova realizada sem nota permanece com resultado pendente, sem entrar nos gráficos de aproveitamento.
 - Financeiro completo com filtros, gráficos por ciclo/categoria, livro de lançamentos e exportação em CSV.
@@ -28,7 +29,7 @@ Versão independente da **Central de Transição**, preparada para GitHub Pages.
 - Tema claro/escuro.
 - Layout responsivo para Android, iPhone, iPad e desktop.
 - PWA instalável + service worker + uso offline.
-- Identidade visual própria da **Central de Transição**, com símbolo “C + bússola” aplicado ao favicon, cabeçalho, Radar Oficial, Sala de Recursos e ícones PWA 192/512.
+- Identidade visual existente do painel, com símbolo “C + bússola” mantido nos assets técnicos históricos enquanto o nome visível passa a Jornada.
 - Busca global por matéria, concurso, marco e investimento.
 - Cache local, exportação do snapshot em JSON e cartão social próprio.
 - Sincronização segura do Notion via `NOTION_TOKEN` em GitHub Actions.
@@ -75,6 +76,10 @@ GitHub Pages publica a branch `main` a partir de `/ (root)`.
 URL pública:
 
 `https://rodrigorosadantas.github.io/plano-de-transicao/`
+
+## Integração P1–P4
+
+A aba **Jornada** lê `config/projects.json` da Central de Estudos e, para cada projeto ativo, usa o `statusUrl` declarado no catálogo. O navegador só faz requisições GET; não acessa Notion, Supabase nem o campo privado de progresso. Cada projeto mantém seu repositório, seu fluxo Notion → GitHub Actions → Pages e seu contrato de status independente. A Central de Estudos oferece o caminho de volta para a escolha operacional de projeto. Veja [docs/JORNADA-ECOSYSTEM-V1.md](docs/JORNADA-ECOSYSTEM-V1.md) para o contrato, os estados de falha e os critérios de aceite.
 
 ## Sincronização
 

@@ -59,7 +59,7 @@ await scenario('desktop: Agora preserva o plano e Pré-prova fica pronta para o 
     if (!homeText.includes(value)) throw new Error('Agora sem foco do plano: ' + value);
   }
   const missionText = fold(await page.locator('.mission-strip').innerText());
-  if (!missionText.includes('plano de transição')) throw new Error('Plano de Transição deixou de aparecer como estratégia da Central.');
+  if (!missionText.includes('jornada') || !missionText.includes('painel estratégico')) throw new Error('Jornada deixou de se identificar como o painel estratégico.');
 
   const milestone = fold(await page.locator('#nextMilestone').innerText());
   if (!milestone.includes('próximos ciclos') || !milestone.includes('seedf') || !milestone.includes('tjdft')) throw new Error('Controle global da transição foi perdido: ' + milestone);
