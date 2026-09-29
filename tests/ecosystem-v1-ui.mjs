@@ -31,7 +31,7 @@ const contractFor = (project, day, nextActionKind) => ({
   study: { doNotDisplay: "PRIVATE_STUDY_SENTINEL" }
 });
 
-async function installRoutes(page, { catalogUnavailable = false } = {}) {
+async function installRoutes(page, { catalogUnavailable = false, missingContractId = null, timeoutContractId = null } = {}) {
   await page.route(`${CENTRAL}config/projects.json**`, route => catalogUnavailable
     ? route.fulfill({ status: 503, contentType: "application/json", body: "{}" })
     : route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(registry) }));
@@ -43,10 +43,20 @@ async function installRoutes(page, { catalogUnavailable = false } = {}) {
     if (!project) return route.fulfill({ status: 404, body: "{}" });
     const count = (calls.get(project.id) || 0) + 1;
     calls.set(project.id, count);
+    if (project.id === missingContractId) return route.fulfill({ status: 404, contentType: "application/json", body: "{}" });
+    if (project.id === timeoutContractId) {
+      await new Promise(resolve => setTimeout(resolve, 4500));
+      try { return await route.fulfill({ status: 200, contentType: "application/json", body: "{}" }); } catch { return; }
+    }
     if (project.id === "prf-adm") return route.fulfill({ status: 503, contentType: "application/json", body: "{}" });
     const age = project.id === "tcego" ? 2 : project.id === "tjdft" ? 1 : 0;
     const action = project.id === "tjdft" ? "operational" : "planned";
     const contract = contractFor(project, dayAt(age), action);
+    if (project.id === "tjdft" && count === 1) {
+      contract.source.updatedAt = null;
+      contract.state.phase = null;
+      contract.state.cycle = null;
+    }
     if (project.id === "tjdft" && count > 1) contract.projectId = "unexpected-project";
     return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(contract) });
   });
@@ -72,6 +82,12 @@ try {
   assert.deepEqual(await page.locator(".ecosystem-code").allTextContents(), ["P1", "P2", "P3", "P4"], "cards must follow the declared P1–P4 order");
   assert.ok((await page.locator(".ecosystem-card").nth(0).innerText()).includes("Próxima ação do calendário"), "planned actions must be labeled as calendar data");
   assert.ok((await page.locator(".ecosystem-card").nth(1).innerText()).includes("Próxima ação operacional publicada"), "operational actions must be labeled distinctly");
+  const nullableFacts = await page.locator(".ecosystem-card").nth(1).locator(".ecosystem-fact").evaluateAll(nodes =>
+    nodes.map(node => ({ label: node.querySelector("dt")?.textContent, value: node.querySelector("dd")?.textContent }))
+  );
+  assert.equal(nullableFacts.find(fact => fact.label === "Fase")?.value, "Não publicada", "nullable phase must remain valid and explicit");
+  assert.equal(nullableFacts.find(fact => fact.label === "Ciclo")?.value, "Não publicado", "nullable cycle must remain valid and explicit");
+  assert.ok((await page.locator(".ecosystem-card").nth(1).innerText()).includes("data não publicada"), "nullable source timestamp must remain valid and explicit");
   assert.ok((await page.locator(".ecosystem-card").nth(2).innerText()).includes("Publicação antiga"), "a two-calendar-day-old signal must be marked old in Brasília time");
   assert.ok((await page.locator(".ecosystem-card").nth(2).innerText()).includes("Não publicada"), "missing current unit must remain explicit rather than becoming zero");
   assert.ok((await page.locator(".ecosystem-card").nth(3).innerText()).includes("Status indisponível"), "HTTP/network failure must be distinct from an incompatible contract");
@@ -95,6 +111,10 @@ try {
   assert.ok(overflow <= 2, `mobile layout must not overflow horizontally (${overflow}px)`);
   assert.equal(await mobilePage.locator(".ecosystem-grid").evaluate(node => getComputedStyle(node).gridTemplateColumns.split(" ").length), 1, "mobile status cards must stack in one column");
   await mobilePage.screenshot({ path: "artifacts/jornada-ecosystem-mobile.png", fullPage: true });
+  await mobileContext.setOffline(true);
+  await mobilePage.locator("[data-ecosystem-refresh]").click();
+  await mobilePage.locator(".ecosystem-status.is-offline").first().waitFor({ timeout: 15000 });
+  assert.equal(await mobilePage.locator(".ecosystem-status.is-offline").count(), 4, "offline refresh must mark all published signals unknown instead of showing old data as current");
   await mobileContext.close();
 
   const failureContext = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
@@ -104,7 +124,17 @@ try {
   await failurePage.getByText("Catálogo indisponível", { exact: false }).waitFor({ timeout: 15000 });
   assert.equal(await failurePage.locator(".ecosystem-study-link").getAttribute("href"), CENTRAL, "direct study access must survive catalog outages");
   await failureContext.close();
-  console.log("PASS  Jornada: desktop, refresh, contract failure states, privacy and mobile layout");
+
+  const contractFailureContext = await browser.newContext({ viewport: { width: 1366, height: 900 }, serviceWorkers: "block" });
+  const contractFailurePage = await contractFailureContext.newPage();
+  await installRoutes(contractFailurePage, { missingContractId: "prf-adm", timeoutContractId: "tcego" });
+  await openJourney(contractFailurePage);
+  await contractFailurePage.locator(".ecosystem-status.is-not-published").waitFor({ timeout: 15000 });
+  await contractFailurePage.locator(".ecosystem-status").filter({ hasText: "Tempo limite excedido" }).waitFor({ timeout: 15000 });
+  assert.ok((await contractFailurePage.locator(".ecosystem-card").nth(3).innerText()).includes("Contrato não publicado"), "HTTP 404 must differ from transport and schema failures");
+  assert.ok((await contractFailurePage.locator(".ecosystem-card").nth(2).innerText()).includes("Sem resposta no limite de 3,5 s"), "slow endpoints must time out and remain visibly unavailable");
+  await contractFailureContext.close();
+  console.log("PASS  Jornada: desktop, mobile, nullable v1, offline, timeout, missing, stale, incompatible and unavailable states");
 } finally {
   await browser.close();
 }

@@ -3,6 +3,7 @@ const CENTRAL_URL = "https://rodrigorosadantas.github.io/central-estudos/";
 const PRIORITIES = new Set(["P1", "P2", "P3", "P4"]);
 const NEXT_KINDS = new Set(["operational", "planned", "manual", "none"]);
 let activeRoot = null;
+let cachedProjects = null;
 let requestSequence = 0;
 
 function element(tag, className, content) {
@@ -34,8 +35,8 @@ function validateContract(contract, project) {
   const state = contract?.state;
   const source = contract?.source;
   if (contract?.schemaVersion !== 1 || contract.projectId !== project.id || typeof contract.publishedAt !== "string" || !/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(contract.publishedAt)) throw new Error("identity");
-  if (!source || typeof source.kind !== "string" || typeof source.ref !== "string" || typeof source.status !== "string" || typeof source.updatedAt !== "string") throw new Error("source");
-  if (!state || typeof state.phase !== "string" || typeof state.cycle !== "string" || !validTextOrNull(state.currentUnit) || !validTextOrNull(state.nextAction) || !NEXT_KINDS.has(state.nextActionKind) || !Array.isArray(state.alerts) || state.alerts.some(alert => typeof alert !== "string")) throw new Error("state");
+  if (!source || typeof source.kind !== "string" || typeof source.ref !== "string" || typeof source.status !== "string" || !validTextOrNull(source.updatedAt)) throw new Error("source");
+  if (!state || !validTextOrNull(state.phase) || !validTextOrNull(state.cycle) || !validTextOrNull(state.currentUnit) || !validTextOrNull(state.nextAction) || !NEXT_KINDS.has(state.nextActionKind) || !Array.isArray(state.alerts) || state.alerts.some(alert => typeof alert !== "string")) throw new Error("state");
   return contract;
 }
 
@@ -71,6 +72,30 @@ function dateLabel(value) {
   const parsed = new Date(value.length === 10 ? `${value}T12:00:00` : value);
   if (Number.isNaN(parsed.getTime())) return value;
   return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short" }).format(parsed);
+}
+
+async function fetchPublic(url) {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) throw new Error("offline");
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 3500);
+  try {
+    return await fetch(url, { method: "GET", cache: "no-store", headers: { Accept: "application/json" }, signal: controller.signal });
+  } catch (error) {
+    if (error?.name === "AbortError") throw error;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) throw new Error("offline");
+    throw new Error("network");
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function contractFailure(error) {
+  if (error?.message === "not-published") return { status: "Contrato não publicado", kind: "is-not-published", badge: "Endpoint não publicado", detail: "O projeto ainda não publicou este contrato read-only." };
+  if (error?.message === "offline" || (typeof navigator !== "undefined" && navigator.onLine === false)) return { status: "Sem conexão", kind: "is-offline", badge: "Estado não verificado offline", detail: "O estado permanece desconhecido até a próxima leitura com conexão." };
+  if (error?.name === "AbortError") return { status: "Tempo limite excedido", kind: "is-unavailable", badge: "Sem resposta no limite de 3,5 s", detail: "O endpoint público não respondeu a tempo." };
+  if (error?.message === "network") return { status: "Falha de rede", kind: "is-unavailable", badge: "Status indisponível", detail: "A rede não permitiu validar o contrato." };
+  if (error?.message === "unavailable") return { status: "Status indisponível", kind: "is-unavailable", badge: "Endpoint sem resposta válida", detail: "O site do projeto não retornou um status público." };
+  return { status: "Status não validado", kind: "is-incompatible", badge: "Contrato incompatível", detail: "A resposta não corresponde ao contrato público v1." };
 }
 
 function addFact(container, label, value, className = "") {
@@ -110,20 +135,20 @@ function projectCard(project) {
   return { project, card, status, facts, freshnessBadge, sourceLabel, projectLink };
 }
 
-function showContractFailure(view, message, kind) {
-  view.status.className = `ecosystem-status ${kind}`;
-  view.status.textContent = message;
-  view.freshnessBadge.className = `ecosystem-freshness ${kind}`;
-  view.freshnessBadge.textContent = kind === "is-incompatible" ? "Contrato incompatível" : "Contrato indisponível";
-  view.sourceLabel.textContent = "Sinal não validado";
+function showContractFailure(view, failure) {
+  view.status.className = `ecosystem-status ${failure.kind}`;
+  view.status.textContent = failure.status;
+  view.freshnessBadge.className = `ecosystem-freshness ${failure.kind}`;
+  view.freshnessBadge.textContent = failure.badge;
+  view.sourceLabel.textContent = failure.detail;
 }
 
 function renderContract(view, contract) {
   view.status.className = "ecosystem-status is-ready";
   view.status.textContent = contract.source.status === "partial" ? "Publicação parcial" : "Contrato validado";
   view.facts.replaceChildren();
-  addFact(view.facts, "Fase", contract.state.phase);
-  addFact(view.facts, "Ciclo", contract.state.cycle);
+  addFact(view.facts, "Fase", contract.state.phase || "Não publicada");
+  addFact(view.facts, "Ciclo", contract.state.cycle || "Não publicado");
   if (contract.state.currentUnit) addFact(view.facts, "Unidade atual publicada", contract.state.currentUnit);
   else addFact(view.facts, "Unidade atual", "Não publicada");
   addFact(view.facts, actionLabel(contract), contract.state.nextAction || "Sem ação disponível", "ecosystem-next");
@@ -146,26 +171,43 @@ async function loadOverview(root, manual = false) {
   grid.setAttribute("aria-busy", "true");
   grid.replaceChildren(element("p", "ecosystem-message", manual ? "Atualizando sinais publicados…" : "Carregando catálogo público e contratos de status…"));
   try {
-    const response = await fetch(`${REGISTRY_URL}?v=28.1.0`, { method: "GET", cache: "no-store", headers: { Accept: "application/json" } });
-    if (!response.ok) throw new Error("registry");
-    const projects = validateRegistry(await response.json());
+    const offline = typeof navigator !== "undefined" && navigator.onLine === false;
+    let projects;
+    if (offline && cachedProjects) {
+      projects = cachedProjects;
+    } else {
+      const response = await fetchPublic(`${REGISTRY_URL}?v=28.1.0`);
+      if (!response.ok) throw new Error("registry");
+      projects = validateRegistry(await response.json());
+      cachedProjects = projects;
+    }
     if (sequence !== requestSequence || !root.isConnected) return;
     const views = projects.map(project => projectCard(project));
     grid.replaceChildren();
     for (const view of views) grid.append(view.card);
     await Promise.all(views.map(async view => {
       try {
-        const statusResponse = await fetch(`${view.project.statusUrl}?v=28.1.0`, { method: "GET", cache: "no-store", headers: { Accept: "application/json" } });
+        const statusResponse = await fetchPublic(`${view.project.statusUrl}?v=28.1.0`);
+        if (statusResponse.status === 404) throw new Error("not-published");
         if (!statusResponse.ok) throw new Error("unavailable");
         const contract = validateContract(await statusResponse.json(), view.project);
         if (sequence === requestSequence && root.isConnected) renderContract(view, contract);
       } catch (error) {
         if (sequence !== requestSequence || !root.isConnected) return;
-        showContractFailure(view, error?.message === "unavailable" ? "Status indisponível" : "Status não validado", error?.message === "unavailable" ? "is-unavailable" : "is-incompatible");
+        showContractFailure(view, contractFailure(error));
       }
     }));
-  } catch {
-    if (sequence === requestSequence && root.isConnected) grid.replaceChildren(element("p", "ecosystem-message is-error", "Catálogo indisponível. Use o acesso direto para escolher um projeto na Central."));
+  } catch (error) {
+    if (sequence === requestSequence && root.isConnected) {
+      const message = error?.message === "offline"
+        ? "Sem conexão. Os sinais públicos não foram carregados; os acessos diretos à Central continuam disponíveis."
+        : error?.message === "network"
+          ? "Falha de rede ao carregar o catálogo. Use o acesso direto para escolher um projeto na Central."
+          : error?.name === "AbortError"
+            ? "Tempo limite excedido ao carregar o catálogo. Os acessos diretos à Central continuam disponíveis."
+            : "Catálogo indisponível. Use o acesso direto para escolher um projeto na Central.";
+      grid.replaceChildren(element("p", "ecosystem-message is-error", message));
+    }
   } finally {
     if (sequence === requestSequence && root.isConnected) {
       grid.setAttribute("aria-busy", "false");
@@ -173,7 +215,6 @@ async function loadOverview(root, manual = false) {
     }
   }
 }
-
 document.addEventListener("click", event => {
   const button = event.target.closest("[data-ecosystem-refresh]");
   if (!button) return;
