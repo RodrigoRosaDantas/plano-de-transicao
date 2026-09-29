@@ -45,6 +45,6 @@ for (const value of [
 ]) assert.ok(phaseStyles.includes(value), `CSS das fases sem ${value}`);
 
 assert.ok(index.includes('__PLANO_UI_RELEASE__ = "v45"'));
-assert.ok(index.includes('work-app.js?v=38&home=37'));
+assert.ok(index.includes('work-app.js?v=39&home=38'));
 
 console.log('PASS  v35: central, alertas locais, calendário e dossiê pré-edital presentes.');

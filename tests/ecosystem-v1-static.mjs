@@ -22,4 +22,5 @@ assert.ok(css.includes("repeat(4, minmax(0, 1fr))") && css.includes("@media (max
 assert.ok(sw.includes("plano-transicao-v53-ecosystem-v1") && sw.includes("./assets/ecosystem-v1.js") && sw.includes("./assets/ecosystem-v1.css"), "offline shell must include the integration module and stylesheet");
 assert.equal(manifest.short_name, "Jornada", "installed app identity must be Jornada");
 assert.ok(html.includes('href="assets/ecosystem-v1.css?v=1"') && html.includes('src="assets/ecosystem-v1.js?v=1"'), "Jornada must load the versioned integration assets");
+assert.ok(html.includes('src="assets/work-app.js?v=39&home=38"'), "the Journey view must load the current renderer instead of a cached older work-app bundle");
 console.log("PASS  v1 shared registry, read-only status contracts, privacy, provenance and responsive shell");
