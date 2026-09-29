@@ -151,6 +151,7 @@ async function loadOverview(root, manual = false) {
     const projects = validateRegistry(await response.json());
     if (sequence !== requestSequence || !root.isConnected) return;
     const views = projects.map(project => projectCard(project));
+    grid.replaceChildren();
     for (const view of views) grid.append(view.card);
     await Promise.all(views.map(async view => {
       try {

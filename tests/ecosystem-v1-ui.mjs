@@ -68,6 +68,7 @@ try {
   await openJourney(page);
   await page.locator(".ecosystem-card").first().waitFor({ timeout: 20000 });
   await page.waitForFunction(() => [...document.querySelectorAll(".ecosystem-status")].every(node => node.textContent !== "Carregando contrato"), null, { timeout: 20000 });
+  assert.ok(!(await page.locator("[data-ecosystem-grid]").innerText()).includes("Carregando catálogo público"), "loading message must disappear after cards are rendered");
   assert.deepEqual(await page.locator(".ecosystem-code").allTextContents(), ["P1", "P2", "P3", "P4"], "cards must follow the declared P1–P4 order");
   assert.ok((await page.locator(".ecosystem-card").nth(0).innerText()).includes("Próxima ação do calendário"), "planned actions must be labeled as calendar data");
   assert.ok((await page.locator(".ecosystem-card").nth(1).innerText()).includes("Próxima ação operacional publicada"), "operational actions must be labeled distinctly");
