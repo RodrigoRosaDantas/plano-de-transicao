@@ -18,6 +18,7 @@
 .ecosystem-status.is-ready { border-color: color-mix(in srgb, var(--lime) 30%, var(--border)); color: var(--lime); }
 .ecosystem-status.is-loading { border-color: color-mix(in srgb, var(--aqua) 26%, var(--border)); color: var(--aqua); }
 .ecosystem-status.is-unavailable, .ecosystem-status.is-incompatible, .ecosystem-freshness.is-old { border-color: color-mix(in srgb, var(--amber) 42%, var(--border)); color: var(--amber); }
+.ecosystem-status.is-not-published, .ecosystem-status.is-offline { border-color: var(--border); color: var(--muted-2); }
 .ecosystem-phase { margin: -3px 0 0; color: var(--muted); font-size: .7rem; line-height: 1.45; }
 .ecosystem-facts { display: grid; gap: 0; min-width: 0; margin: 0; }
 .ecosystem-fact { display: grid; gap: 3px; min-width: 0; padding: 8px 0; border-top: 1px solid color-mix(in srgb, var(--border) 75%, transparent); }
