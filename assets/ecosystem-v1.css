@@ -7,7 +7,7 @@
 .ecosystem-actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 12px 14px; border: 1px solid var(--border); border-radius: 15px; background: color-mix(in srgb, var(--surface-2) 72%, transparent); }
 .ecosystem-actions > span { color: var(--muted); font-size: .72rem; line-height: 1.45; }
 .ecosystem-study-link { min-height: 40px; padding: 0 13px; font-size: .76rem; }
-.ecosystem-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; min-width: 0; }
+.ecosystem-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; min-width: 0; }
 .ecosystem-card { display: grid; align-content: start; gap: 11px; min-width: 0; padding: 14px; border: 1px solid var(--border); border-radius: 16px; background: color-mix(in srgb, var(--surface-2) 62%, transparent); }
 .ecosystem-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; min-width: 0; }
 .ecosystem-card-identity { display: grid; gap: 7px; min-width: 0; }
@@ -38,3 +38,11 @@
 @media (max-width: 1040px) { .ecosystem-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 700px) { .ecosystem-panel-head { display: grid; gap: 12px; } .ecosystem-refresh { width: fit-content; } .ecosystem-grid { grid-template-columns: 1fr; } .ecosystem-actions { align-items: flex-start; flex-direction: column; } }
 @media (max-width: 560px) { .journey-central-link { width: 38px; min-width: 38px; min-height: 38px; padding: 0; } .journey-central-link b { display: none; } .ecosystem-panel { padding: 15px; } .ecosystem-card { padding: 13px; } }
+
+.ecosystem-history { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line, rgba(255,255,255,.12)); }
+.ecosystem-history h3 { margin: 0 0 10px; font-size: .95rem; }
+.ecosystem-history-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 10px; }
+.ecosystem-history-card { display: grid; gap: 6px; padding: 13px; border: 1px solid var(--line, rgba(255,255,255,.12)); border-radius: 12px; background: rgba(255,255,255,.025); }
+.ecosystem-history-card strong { color: var(--text, inherit); }
+.ecosystem-history-phase { font-size: .8rem; opacity: .75; }
+.ecosystem-history-card p { margin: 0; font-size: .83rem; line-height: 1.45; }

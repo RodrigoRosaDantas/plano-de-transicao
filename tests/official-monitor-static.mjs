@@ -17,6 +17,8 @@ const monitorCss = read("assets/official-monitor.css");
 const collector = read("scripts/official-monitor.mjs");
 const workflow = read(".github/workflows/official-monitor.yml");
 const sw = read("sw.js");
+const journeyHtml = read("index.html");
+const moreSheet = (journeyHtml.match(/<aside id="moreSheet"[\s\S]*?<\/aside>/) || [])[0] || "";
 
 assert(html.includes("Radar Oficial"), "página dedicada do Radar Oficial existe");
 assert(html.includes("06:15–21:15"), "cadência exibida coincide com o workflow ampliado");
@@ -55,6 +57,9 @@ assert(!personalWeb.includes("MNS2-CZFH-K7VN") && !html.includes("MNS2-CZFH-K7VN
 assert(!front.includes("official_monitor_terms") && !front.includes("official_monitor_occurrences"), "frontend não consulta tabelas privadas");
 assert(!front.includes("get_official_monitor_dashboard"), "frontend não usa RPC SECURITY DEFINER legada");
 assert(!html.includes("Rodrigo Rosa Dantas") && !front.includes("Rodrigo Rosa Dantas") && !collector.includes("Rodrigo Rosa Dantas"), "nome pessoal não está hardcoded no repositório público");
+assert(collector.includes("async function edgeFetch(url,init={})") && collector.includes("const jwt=await oidcToken()"), "cada chamada privada ao Edge solicita um token OIDC novo");
+assert(collector.includes('const cfgRes=await edgeFetch(EDGE+"/config")') && collector.includes("const r=await edgeFetch(u,{signal:ctrl.signal})") && collector.includes('const ingest=await edgeFetch(EDGE+"/ingest"'), "configuração, proxy DODF e ingest usam autenticação renovada por requisição");
+assert(!collector.includes("const token=await oidcToken()") && !collector.includes('Authorization:"Bearer "+token'), "coletor não reutiliza um JWT durante a varredura");
 assert(workflow.includes("id-token: write"), "workflow usa OIDC do GitHub");
 assert(collector.includes("termsChecked:terms.length"), "coletor envia a quantidade realmente varrida para o histórico");
 assert(workflow.includes('cron: "15 9-23 * * *"') && workflow.includes('cron: "15 0 * * *"'), "agendamento automático está configurado até 21:15 BRT");
@@ -70,7 +75,8 @@ assert(collector.includes('/\\bsedf\\b/') && collector.includes('/\\bsee\\/?df\\
 assert(front.includes('["WEB","Sinais pré-edital na web"]') && front.includes('h.source==="WEB"?"Abrir fonte ↗":"Abrir oficial ↗"'), "interface separa sinal web de publicação oficial");
 assert(html.includes("Notícias aparecem identificadas como WEB") && html.includes("não são tratadas como ato jurídico"), "interface explicita natureza não oficial dos sinais web");
 assert(sw.includes("./radar-oficial.html") && sw.includes("./assets/official-monitor.js") && sw.includes("./assets/official-monitor.css") && sw.includes("./assets/personal-web-search.js"), "Radar Oficial e Radar Web estão incluídos no PWA");
-assert(sw.includes("plano-transicao-v54-ecosystem-v1"), "cache v54 força recache da camada pré-edital web");
+assert(sw.includes("plano-transicao-v56-portfolio-archive-oidc"), "cache v56 força atualização do portfólio, arquivo e OIDC");
+assert(moreSheet.includes("JORNADA · PAINEL ESTRATÉGICO") && moreSheet.includes("Navegação e operações"), "drawer mantém a identidade Jornada");
 assert(html.includes("assets/official-monitor.js?v=11"), "Radar Oficial usa cache busting v11 após correções da camada WEB");
 assert(html.includes("assets/central-mark.svg"), "Radar Oficial usa a identidade visual da Central");
 assert(html.includes('assets/central-icon-192.png') && html.includes('apple-touch-icon'), "Radar Oficial usa os favicons da Central");

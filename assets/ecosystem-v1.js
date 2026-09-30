@@ -1,6 +1,5 @@
 const REGISTRY_URL = "https://rodrigorosadantas.github.io/central-estudos/config/projects.json";
 const CENTRAL_URL = "https://rodrigorosadantas.github.io/central-estudos/";
-const PRIORITIES = new Set(["P1", "P2", "P3", "P4"]);
 const NEXT_KINDS = new Set(["operational", "planned", "manual", "none"]);
 let activeRoot = null;
 let cachedProjects = null;
@@ -19,9 +18,9 @@ function validTextOrNull(value) {
 
 function validateRegistry(registry) {
   if (!registry || registry.schemaVersion !== 3 || !Array.isArray(registry.projects)) throw new Error("registry");
-  const projects = registry.projects.filter(project => project?.status === "active" && PRIORITIES.has(project.code));
-  const codes = new Set(projects.map(project => project.code));
-  if (projects.length !== 4 || codes.size !== 4 || [...PRIORITIES].some(code => !codes.has(code))) throw new Error("mapping");
+  const projects = registry.projects.filter(project => project?.status === "active");
+  const codes = projects.map(project => project.code);
+  if (!projects.length || codes.some(code => !/^P[1-9][0-9]*$/.test(code)) || new Set(codes).size !== codes.length) throw new Error("mapping");
   for (const project of projects) {
     const pageUrl = new URL(project.url);
     const statusUrl = new URL(project.statusUrl);
@@ -29,6 +28,16 @@ function validateRegistry(registry) {
     if (typeof project.name !== "string" || typeof project.phase !== "string" || !Number.isInteger(project.order)) throw new Error("fields");
   }
   return projects.sort((a, b) => a.order - b.order);
+}
+
+function validateArchivedProjects(registry) {
+  const projects = registry.projects.filter(project => project?.status === "archived");
+  for (const project of projects) {
+    const pageUrl = new URL(project.url);
+    if (pageUrl.protocol !== "https:" || typeof project.name !== "string" || typeof project.phase !== "string" || typeof project.archiveNote !== "string" || !project.archiveNote.trim()) throw new Error("archive");
+    if (project.availability !== "archive-only") throw new Error("archive");
+  }
+  return projects.sort((a, b) => (a.order || 99) - (b.order || 99));
 }
 
 function validateContract(contract, project) {
@@ -162,6 +171,27 @@ function renderContract(view, contract) {
   }
 }
 
+function renderArchive(root, projects) {
+  const history = root.querySelector("[data-ecosystem-history]");
+  if (!history) return;
+  history.replaceChildren();
+  if (!projects.length) {
+    history.append(element("p", "ecosystem-message", "Nenhum projeto arquivado cadastrado."));
+    return;
+  }
+  for (const project of projects) {
+    const card = element("article", "ecosystem-history-card");
+    card.append(element("strong", "", project.name), element("span", "ecosystem-history-phase", project.phase), element("p", "", project.archiveNote));
+    const link = element("a", "ecosystem-project-link", "Abrir histórico");
+    link.href = project.url;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.setAttribute("aria-label", "Abrir histórico de " + project.name);
+    card.append(link);
+    history.append(card);
+  }
+}
+
 async function loadOverview(root, manual = false) {
   const grid = root.querySelector("[data-ecosystem-grid]");
   const refresh = root.querySelector("[data-ecosystem-refresh]");
@@ -172,22 +202,24 @@ async function loadOverview(root, manual = false) {
   grid.replaceChildren(element("p", "ecosystem-message", manual ? "Atualizando sinais publicados…" : "Carregando catálogo público e contratos de status…"));
   try {
     const offline = typeof navigator !== "undefined" && navigator.onLine === false;
-    let projects;
+    let catalog;
     if (offline && cachedProjects) {
-      projects = cachedProjects;
+      catalog = cachedProjects;
     } else {
-      const response = await fetchPublic(`${REGISTRY_URL}?v=28.1.0`);
+      const response = await fetchPublic(REGISTRY_URL + "?v=28.2.0");
       if (!response.ok) throw new Error("registry");
-      projects = validateRegistry(await response.json());
-      cachedProjects = projects;
+      const registry = await response.json();
+      catalog = { active: validateRegistry(registry), archived: validateArchivedProjects(registry) };
+      cachedProjects = catalog;
     }
     if (sequence !== requestSequence || !root.isConnected) return;
-    const views = projects.map(project => projectCard(project));
+    const views = catalog.active.map(project => projectCard(project));
     grid.replaceChildren();
     for (const view of views) grid.append(view.card);
+    renderArchive(root, catalog.archived);
     await Promise.all(views.map(async view => {
       try {
-        const statusResponse = await fetchPublic(`${view.project.statusUrl}?v=28.1.0`);
+        const statusResponse = await fetchPublic(view.project.statusUrl + "?v=28.2.0");
         if (statusResponse.status === 404) throw new Error("not-published");
         if (!statusResponse.ok) throw new Error("unavailable");
         const contract = validateContract(await statusResponse.json(), view.project);
@@ -215,6 +247,7 @@ async function loadOverview(root, manual = false) {
     }
   }
 }
+
 document.addEventListener("click", event => {
   const button = event.target.closest("[data-ecosystem-refresh]");
   if (!button) return;

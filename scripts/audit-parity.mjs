@@ -5,6 +5,7 @@ const read = async (path) => fs.readFile(new URL(`../${path}`, import.meta.url),
 const snapshot = JSON.parse(await read('data/snapshot.json'));
 const manifest = JSON.parse(await read('manifest.webmanifest'));
 const index = await read('index.html');
+const moreSheet = (index.match(/<aside id="moreSheet"[\s\S]*?<\/aside>/) || [])[0] || '';
 const sw = await read('sw.js');
 const app = await read('assets/work-app.js');
 const styles = await read('assets/work-app.css');
@@ -158,8 +159,8 @@ const cachedAssets = [
   'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está consolidado na v54 com integração P1–P4', sw.includes("const CACHE='plano-transicao-v54-ecosystem-v1'") && sw.includes("'./assets/central-mark.svg'") && sw.includes("'./assets/central-icon-192.png'") && sw.includes("'./assets/central-icon-512.png'") && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/official-monitor.css'") && sw.includes("'./assets/official-monitor.js'"));
-check('Cache busting da interface publicada está em v45', index.includes('__PLANO_UI_RELEASE__ = "v45"') && index.includes('work-app.js?v=40&home=38') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36') && index.includes("location.href='./radar-oficial.html'"));
+check('Cache PWA está consolidado na v56 com carteira P1–P3 e arquivo', sw.includes("const CACHE='plano-transicao-v56-portfolio-archive-oidc'") && sw.includes("'./assets/central-mark.svg'") && sw.includes("'./assets/central-icon-192.png'") && sw.includes("'./assets/central-icon-512.png'") && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/official-monitor.css'") && sw.includes("'./assets/official-monitor.js'"));
+check('Cache busting da interface publicada está em v45', index.includes('__PLANO_UI_RELEASE__ = "v45"') && index.includes('work-app.js?v=41&home=38') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36') && index.includes("location.href='./radar-oficial.html'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
 check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
@@ -189,7 +190,7 @@ check('Painel mantém fonte e snapshot identificados', followUp.includes('snapsh
 
 check('Estudo saiu da navegação pública', !index.includes('data-view="study"'));
 check('Botão Recarregar snapshot é textual e visível', index.includes('id="refreshBtn"') && index.includes('data-refresh') && index.includes('Recarregar snapshot'));
-check('Mais usa a marca Central de Transição na navegação e operações', index.includes('CENTRAL DE TRANSIÇÃO') && index.includes('Navegação e operações'));
+check('Mais mantém a marca Jornada na navegação e operações', moreSheet.includes('JORNADA · PAINEL ESTRATÉGICO') && moreSheet.includes('Navegação e operações'));
 check('Site não oferece estudo nem acesso operacional', !index.includes('../sedes-df-questoes/') && !manager.includes('PLATFORM_URL') && !index.includes('data-view="study"'));
 check('Assets operacionais antigos não são publicados', !legacyStudyAssetsPublished);
 check('Espelho bruto do Notion não é publicado', !rawNotionMirrorPublished);

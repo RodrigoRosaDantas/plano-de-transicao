@@ -85,7 +85,7 @@ const edgeProxyFetch=async(target,mode="text",ms=30000)=>{
   const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),ms);
   try{
     const u=EDGE+"/dodf-proxy?url="+encodeURIComponent(target);
-    const r=await fetch(u,{signal:ctrl.signal,headers:{Authorization:"Bearer "+token}});
+    const r=await edgeFetch(u,{signal:ctrl.signal});
     if(!r.ok)throw new Error("proxy HTTP "+r.status+" "+(await r.text()).slice(0,160));
     if(mode==="binary")return {bytes:new Uint8Array(await r.arrayBuffer()),contentType:r.headers.get("content-type")||""};
     return await r.text();
@@ -233,8 +233,11 @@ async function oidcToken(){
   if(!r.ok)throw new Error("OIDC HTTP "+r.status);
   const j=await r.json();if(!j.value)throw new Error("OIDC token ausente");return j.value;
 }
-const token=await oidcToken();
-const cfgRes=await fetch(EDGE+"/config",{headers:{Authorization:"Bearer "+token}});
+async function edgeFetch(url,init={}) {
+  const jwt=await oidcToken();
+  return fetch(url,{...init,headers:{...(init.headers||{}),Authorization:"Bearer "+jwt}});
+}
+const cfgRes=await edgeFetch(EDGE+"/config");
 if(!cfgRes.ok)throw new Error("Config HTTP "+cfgRes.status+" "+await cfgRes.text());
 const {terms}=await cfgRes.json();
 
@@ -624,8 +627,8 @@ for(let i=0;i<webTerms.length;i+=webBatchSize){
 
 const clean=[...new Map(occurrences.map(o=>[`${o.term_id}|${o.source}|${o.url}`,o])).values()].slice(0,200);
 const status=Object.values(sourceHealth).every(s=>s.status==="ok")?"ok":"partial";
-const ingest=await fetch(EDGE+"/ingest",{
-  method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
+const ingest=await edgeFetch(EDGE+"/ingest",{
+  method:"POST",headers:{"Content-Type":"application/json"},
   body:JSON.stringify({startedAt,finishedAt:new Date().toISOString(),status,sourceHealth,termsChecked:terms.length,occurrences:clean})
 });
 if(!ingest.ok)throw new Error("Ingest HTTP "+ingest.status+" "+await ingest.text());
