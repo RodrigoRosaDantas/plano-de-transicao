@@ -1,6 +1,6 @@
 # 🧭 Jornada — Painel Estratégico
 
-O **Painel Estratégico Jornada** preserva a visão longitudinal de concursos, carreira, desempenho, decisões e investimentos. É independente da **Central de Estudos**, que concentra a operação diária e a abertura dos projetos P1–P4.
+O **Painel Estratégico Jornada** preserva a visão longitudinal de concursos, carreira, desempenho, decisões e investimentos. É independente da **Central de Estudos**, que concentra a operação diária e a abertura dos projetos ativos P1–P3; TCE-GO permanece como referência histórica arquivada.
 
 **Identidade e compatibilidade:** Jornada é a camada estratégica; Central de Estudos é a camada operacional. Os identificadores técnicos históricos (`plano-de-transicao`) e a URL do Pages permanecem estáveis para preservar integrações, caches e compatibilidade.
 
@@ -18,7 +18,7 @@ O **Painel Estratégico Jornada** preserva a visão longitudinal de concursos, c
 - A interface diferencia explicitamente **Recarregar snapshot** de **Sincronizar Notion**.
 - Desempenho por matéria, combinações e atividades, com filtros independentes para histórico, TDAS e EDAS.
 - Jornada e marcos em mapa visual contínuo.
-- Visão somente leitura dos sinais publicados P1–P4, obtidos do registry e dos contratos sanitizados da Central de Estudos.
+- Visão somente leitura dos sinais dos projetos ativos P1–P3, obtidos do registry e dos contratos sanitizados da Central de Estudos; o TCE-GO aparece no arquivo histórico sem consulta ao seu status.
 - Provas e resultados com separação entre aproveitamento, nota, classificação e etapa do certame.
 - TDAS 202 e EDAS 400 com registros próprios de realização e resultado. Prova realizada sem nota permanece com resultado pendente, sem entrar nos gráficos de aproveitamento.
 - Financeiro completo com filtros, gráficos por ciclo/categoria, livro de lançamentos e exportação em CSV.
@@ -77,7 +77,7 @@ URL pública:
 
 `https://rodrigorosadantas.github.io/plano-de-transicao/`
 
-## Integração P1–P4
+## Integração P1–P3 e arquivo histórico
 
 A aba **Jornada** lê `config/projects.json` da Central de Estudos e, para cada projeto ativo, usa o `statusUrl` declarado no catálogo. O navegador só faz requisições GET; não acessa Notion, Supabase nem o campo privado de progresso. Cada projeto mantém seu repositório, seu fluxo Notion → GitHub Actions → Pages e seu contrato de status independente. A Central de Estudos oferece o caminho de volta para a escolha operacional de projeto. Veja [docs/JORNADA-ECOSYSTEM-V1.md](docs/JORNADA-ECOSYSTEM-V1.md) para o contrato, os estados de falha e os critérios de aceite.
 

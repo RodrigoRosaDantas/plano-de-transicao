@@ -15,43 +15,44 @@ const dayAt = (offset = 0) => {
 };
 
 const projects = [
-  { id: "tcego", name: "TCE-GO", phase: "Edital publicado", status: "active", code: "P3", order: 3, url: `${ROOT}tce-go-dashboard/`, statusUrl: `${ROOT}tce-go-dashboard/central-status.json` },
-  { id: "seedf", name: "SEEDF", phase: "Pré-edital", status: "active", code: "P1", order: 1, url: `${ROOT}seedf-ppge-dashboard/`, statusUrl: `${ROOT}seedf-ppge-dashboard/central-status.json` },
-  { id: "tjdft", name: "TJDFT", phase: "Preparação", status: "active", code: "P2", order: 2, url: `${ROOT}tjdft-dashboard/`, statusUrl: `${ROOT}tjdft-dashboard/central-status.json` },
-  { id: "prf-adm", name: "PRF Administrativo", phase: "Pré-edital", status: "active", code: "P4", order: 4, url: `${ROOT}prf-administrativo-dashboard/`, statusUrl: `${ROOT}prf-administrativo-dashboard/central-status.json` }
+  { id: "seedf", name: "SEEDF", phase: "Pré-edital", status: "active", code: "P1", order: 1, url: ROOT + "seedf-ppge-dashboard/", statusUrl: ROOT + "seedf-ppge-dashboard/central-status.json" },
+  { id: "tjdft", name: "TJDFT", phase: "Preparação", status: "active", code: "P2", order: 2, url: ROOT + "tjdft-dashboard/", statusUrl: ROOT + "tjdft-dashboard/central-status.json" },
+  { id: "prf-adm", name: "PRF Administrativo", phase: "Pré-edital", status: "active", code: "P3", order: 3, url: ROOT + "prf-administrativo-dashboard/", statusUrl: ROOT + "prf-administrativo-dashboard/central-status.json" },
+  { id: "tcego", name: "TCE-GO", phase: "Histórico arquivado", status: "archived", availability: "archive-only", archiveNote: "Projeto arquivado em 30/09/2026; acesso preservado para consulta histórica.", url: ROOT + "tce-go-dashboard/" }
 ];
-const registry = { schemaVersion: 3, central: { version: "28.1.0", defaultProject: "tcego" }, projects };
+const registry = { schemaVersion: 3, central: { version: "28.2.0", defaultProject: "seedf" }, projects };
 const calls = new Map();
 const contractFor = (project, day, nextActionKind) => ({
   schemaVersion: 1,
   projectId: project.id,
   publishedAt: day,
   source: { kind: "public-project-state", ref: "public-fixture", status: "synced", updatedAt: `${day}T12:00:00-03:00` },
-  state: { phase: project.phase, cycle: "Ciclo demonstrativo", currentUnit: project.id === "tcego" ? null : "U01", nextAction: "Próxima ação de teste", nextActionKind, alerts: [] },
+  state: { phase: project.phase, cycle: "Ciclo demonstrativo", currentUnit: project.id === "prf-adm" ? null : "U01", nextAction: "Próxima ação de teste", nextActionKind, alerts: [] },
   study: { doNotDisplay: "PRIVATE_STUDY_SENTINEL" }
 });
 
 async function installRoutes(page, { catalogUnavailable = false, missingContractId = null, timeoutContractId = null } = {}) {
-  await page.route(`${CENTRAL}config/projects.json**`, route => catalogUnavailable
+  await page.route(CENTRAL + "config/projects.json**", route => catalogUnavailable
     ? route.fulfill({ status: 503, contentType: "application/json", body: "{}" })
     : route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(registry) }));
-  await page.route(`${ROOT}**/central-status.json**`, async route => {
+  await page.route(ROOT + "**/central-status.json**", async route => {
     const url = new URL(route.request().url());
     const slug = url.pathname.split("/").filter(Boolean)[0];
     const idBySlug = { "seedf-ppge-dashboard": "seedf", "tjdft-dashboard": "tjdft", "tce-go-dashboard": "tcego", "prf-administrativo-dashboard": "prf-adm" };
-    const project = projects.find(item => item.id === idBySlug[slug]);
+    const id = idBySlug[slug];
+    const count = (calls.get(id) || 0) + 1;
+    calls.set(id, count);
+    const project = projects.find(item => item.id === id && item.status === "active");
     if (!project) return route.fulfill({ status: 404, body: "{}" });
-    const count = (calls.get(project.id) || 0) + 1;
-    calls.set(project.id, count);
     if (project.id === missingContractId) return route.fulfill({ status: 404, contentType: "application/json", body: "{}" });
     if (project.id === timeoutContractId) {
       await new Promise(resolve => setTimeout(resolve, 4500));
       try { return await route.fulfill({ status: 200, contentType: "application/json", body: "{}" }); } catch { return; }
     }
-    if (project.id === "prf-adm") return route.fulfill({ status: 503, contentType: "application/json", body: "{}" });
-    const age = project.id === "tcego" ? 2 : project.id === "tjdft" ? 1 : 0;
+    const age = project.id === "prf-adm" ? 2 : project.id === "tjdft" ? 1 : 0;
     const action = project.id === "tjdft" ? "operational" : "planned";
     const contract = contractFor(project, dayAt(age), action);
+    if (project.id === "prf-adm") contract.state.currentUnit = null;
     if (project.id === "tjdft" && count === 1) {
       contract.source.updatedAt = null;
       contract.state.phase = null;
@@ -79,7 +80,7 @@ try {
   await page.locator(".ecosystem-card").first().waitFor({ timeout: 20000 });
   await page.waitForFunction(() => [...document.querySelectorAll(".ecosystem-status")].every(node => node.textContent !== "Carregando contrato"), null, { timeout: 20000 });
   assert.ok(!(await page.locator("[data-ecosystem-grid]").innerText()).includes("Carregando catálogo público"), "loading message must disappear after cards are rendered");
-  assert.deepEqual(await page.locator(".ecosystem-code").allTextContents(), ["P1", "P2", "P3", "P4"], "cards must follow the declared P1–P4 order");
+  assert.deepEqual(await page.locator(".ecosystem-code").allTextContents(), ["P1", "P2", "P3"], "cards must follow the declared P1–P3 order");
   assert.ok((await page.locator(".ecosystem-card").nth(0).innerText()).includes("Próxima ação do calendário"), "planned actions must be labeled as calendar data");
   assert.ok((await page.locator(".ecosystem-card").nth(1).innerText()).includes("Próxima ação operacional publicada"), "operational actions must be labeled distinctly");
   const nullableFacts = await page.locator(".ecosystem-card").nth(1).locator(".ecosystem-fact").evaluateAll(nodes =>
@@ -90,7 +91,8 @@ try {
   assert.ok((await page.locator(".ecosystem-card").nth(1).innerText()).includes("data não publicada"), "nullable source timestamp must remain valid and explicit");
   assert.ok((await page.locator(".ecosystem-card").nth(2).innerText()).includes("Publicação antiga"), "a two-calendar-day-old signal must be marked old in Brasília time");
   assert.ok((await page.locator(".ecosystem-card").nth(2).innerText()).includes("Não publicada"), "missing current unit must remain explicit rather than becoming zero");
-  assert.ok((await page.locator(".ecosystem-card").nth(3).innerText()).includes("Status indisponível"), "HTTP/network failure must be distinct from an incompatible contract");
+  assert.ok((await page.locator("[data-ecosystem-history]").innerText()).includes("TCE-GO"), "archived TCE-GO must remain visible in a separate history list");
+  assert.equal(calls.get("tcego") || 0, 0, "archived TCE-GO status must never be polled");
   assert.ok(!(await page.locator("#ecosystem-overview").innerText()).includes("PRIVATE_STUDY_SENTINEL"), "private progress fixture must never render");
   assert.equal(await page.locator(".journey-central-link").getAttribute("href"), CENTRAL, "header must preserve direct access to the operational Central");
   await page.screenshot({ path: "artifacts/jornada-ecosystem-desktop.png", fullPage: true });
@@ -105,7 +107,7 @@ try {
   const mobilePage = await mobileContext.newPage();
   await installRoutes(mobilePage);
   await openJourney(mobilePage);
-  await mobilePage.locator(".ecosystem-card").nth(3).waitFor({ timeout: 20000 });
+  await mobilePage.locator(".ecosystem-card").nth(2).waitFor({ timeout: 20000 });
   await mobilePage.waitForFunction(() => [...document.querySelectorAll(".ecosystem-status")].every(node => node.textContent !== "Carregando contrato"), null, { timeout: 20000 });
   const overflow = await mobilePage.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   assert.ok(overflow <= 2, `mobile layout must not overflow horizontally (${overflow}px)`);
@@ -114,7 +116,7 @@ try {
   await mobileContext.setOffline(true);
   await mobilePage.locator("[data-ecosystem-refresh]").click();
   await mobilePage.locator(".ecosystem-status.is-offline").first().waitFor({ timeout: 15000 });
-  assert.equal(await mobilePage.locator(".ecosystem-status.is-offline").count(), 4, "offline refresh must mark all published signals unknown instead of showing old data as current");
+  assert.equal(await mobilePage.locator(".ecosystem-status.is-offline").count(), 3, "offline refresh must mark all published signals unknown instead of showing old data as current");
   await mobileContext.close();
 
   const failureContext = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
@@ -127,12 +129,12 @@ try {
 
   const contractFailureContext = await browser.newContext({ viewport: { width: 1366, height: 900 }, serviceWorkers: "block" });
   const contractFailurePage = await contractFailureContext.newPage();
-  await installRoutes(contractFailurePage, { missingContractId: "prf-adm", timeoutContractId: "tcego" });
+  await installRoutes(contractFailurePage, { missingContractId: "prf-adm", timeoutContractId: "seedf" });
   await openJourney(contractFailurePage);
   await contractFailurePage.locator(".ecosystem-status.is-not-published").waitFor({ timeout: 15000 });
   await contractFailurePage.locator(".ecosystem-status").filter({ hasText: "Tempo limite excedido" }).waitFor({ timeout: 15000 });
-  assert.ok((await contractFailurePage.locator(".ecosystem-card").nth(3).innerText()).includes("Contrato não publicado"), "HTTP 404 must differ from transport and schema failures");
-  assert.ok((await contractFailurePage.locator(".ecosystem-card").nth(2).innerText()).includes("Sem resposta no limite de 3,5 s"), "slow endpoints must time out and remain visibly unavailable");
+  assert.ok((await contractFailurePage.locator(".ecosystem-card").nth(2).innerText()).includes("Contrato não publicado"), "HTTP 404 must differ from transport and schema failures");
+  assert.ok((await contractFailurePage.locator(".ecosystem-card").nth(0).innerText()).includes("Sem resposta no limite de 3,5 s"), "slow endpoints must time out and remain visibly unavailable");
   await contractFailureContext.close();
   console.log("PASS  Jornada: desktop, mobile, nullable v1, offline, timeout, missing, stale, incompatible and unavailable states");
 } finally {
