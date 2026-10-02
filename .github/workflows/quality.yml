@@ -1,5 +1,5 @@
 name: Qualidade e paridade gerencial
-# Radar Web privado + Pós-Prova SEDES/Quadrix v45: valida privacidade, monitoramento e regressões.
+# Jornada + Radar + Pós-Prova: valida privacidade, horas, monitoramento e regressões.
 
 on:
   workflow_dispatch:
@@ -127,6 +127,12 @@ jobs:
         env:
           BASE_URL: http://127.0.0.1:4173/
         run: node tests/ui-smoke.mjs
+      - name: Testes do painel de horas com histórico e deduplicação
+        id: studyhours
+        continue-on-error: true
+        env:
+          BASE_URL: http://127.0.0.1:4173/
+        run: node tests/study-hours-v2-ui.mjs
       - name: Testes da aba dedicada v21 no estado atual
         id: v21
         continue-on-error: true
@@ -215,6 +221,7 @@ jobs:
             "${{ steps.ecosystem.outcome }}" \
             "${{ steps.tail.outcome }}" \
             "${{ steps.smoke.outcome }}" \
+            "${{ steps.studyhours.outcome }}" \
             "${{ steps.v21.outcome }}" \
             "${{ steps.v22.outcome }}" \
             "${{ steps.v23.outcome }}" \
