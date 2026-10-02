@@ -9,6 +9,8 @@ const sw = fs.readFileSync('sw.js', 'utf8');
 assert.match(index, /study-hours-v1\.css\?v=1/, 'CSS de horas não foi ligado ao index');
 assert.match(index, /study-hours-v1\.js\?v=1/, 'JS de horas não foi ligado ao index');
 assert.match(js, /central-estudos\/data\/federated-status\.json/, 'Fonte federada incorreta');
+assert.match(js, /central-estudos:study-log-v1/, 'Registro local confirmado da Central de Estudos não foi integrado');
+assert.match(js, /creditFingerprint/, 'Deduplicação entre crédito automático e registro local ausente');
 for (const project of ['seedf', 'tjdft', 'prf-adm']) {
   assert.ok(js.includes(project), `Projeto ativo ausente: ${project}`);
 }
