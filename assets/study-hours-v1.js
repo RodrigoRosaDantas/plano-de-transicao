@@ -1,4 +1,5 @@
 const STUDY_HOURS_URL = "https://rodrigorosadantas.github.io/central-estudos/data/federated-status.json";
+const LOCAL_STUDY_KEY = "central-estudos:study-log-v1";
 const ACTIVE_PROJECTS = [
   { id: "seedf", code: "P1", name: "SEEDF" },
   { id: "tjdft", code: "P2", name: "TJDFT" },
@@ -57,12 +58,46 @@ function validCredit(credit, today) {
     && Number(credit.minutes) <= 1440;
 }
 
+function readLocalCredits(today) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LOCAL_STUDY_KEY) || "[]");
+    const active = new Set(ACTIVE_PROJECTS.map(project => project.id));
+    return Array.isArray(raw)
+      ? raw.filter(row =>
+          row?.confirmed === true
+          && active.has(row?.projectId)
+          && typeof row?.id === "string"
+          && /^\d{4}-\d{2}-\d{2}$/.test(String(row?.date || ""))
+          && row.date <= today
+          && Number.isFinite(Number(row?.minutes))
+          && Number(row.minutes) > 0
+          && Number(row.minutes) <= 1440
+        ).map(row => ({
+          id: row.id,
+          date: row.date,
+          projectId: row.projectId,
+          trail: String(row.trail || ""),
+          topic: String(row.topic || ""),
+          minutes: Number(row.minutes),
+          sourceType: "local",
+        }))
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function creditFingerprint(row) {
+  const topic = String(row.topic || row.unit || "").trim().toLocaleUpperCase("pt-BR");
+  return [row.projectId, row.date, topic, Number(row.minutes) || 0].join("|");
+}
+
 function summarize(payload) {
   const today = saoPauloDay();
   const fromWeek = weekStart(today);
   const fromMonth = today.slice(0, 7) + "-01";
-  const byId = new Map();
-  const projects = [];
+  const byFingerprint = new Map();
+  const sourceState = new Map();
   let aligned = 0;
 
   for (const project of ACTIVE_PROJECTS) {
@@ -77,40 +112,53 @@ function summarize(payload) {
       && contract?.study?.evidence === "confirmed";
 
     if (usable) aligned += 1;
+    sourceState.set(project.id, usable ? "aligned" : (integrity || source?.publicStatus || "unavailable"));
 
     const credits = usable && Array.isArray(contract?.study?.timeCredits)
       ? contract.study.timeCredits.filter(credit => validCredit(credit, today))
       : [];
 
-    let projectMinutes = 0;
     for (const credit of credits) {
-      if (byId.has(credit.id)) continue;
+      const topic = credit.kind === "reading" ? `Leitura · ${credit.unit || ""}` : String(credit.unit || "");
       const normalized = {
         ...credit,
         projectId: project.id,
         code: project.code,
         projectName: project.name,
+        topic,
         minutes: Number(credit.minutes),
+        sourceType: "public",
       };
-      byId.set(credit.id, normalized);
-      projectMinutes += normalized.minutes;
+      const fingerprint = creditFingerprint(normalized);
+      if (!byFingerprint.has(fingerprint)) byFingerprint.set(fingerprint, normalized);
     }
-
-    projects.push({
-      ...project,
-      minutes: projectMinutes,
-      status: usable ? "aligned" : (integrity || source?.publicStatus || "unavailable"),
-      credits: credits.length,
-    });
   }
 
-  const credits = [...byId.values()];
+  const localCredits = readLocalCredits(today);
+  for (const credit of localCredits) {
+    const fingerprint = creditFingerprint(credit);
+    byFingerprint.set(fingerprint, credit);
+  }
+
+  const credits = [...byFingerprint.values()];
   const sum = rows => rows.reduce((acc, row) => acc + row.minutes, 0);
   const total = sum(credits);
   const todayMinutes = sum(credits.filter(row => row.date === today));
   const weekMinutes = sum(credits.filter(row => row.date >= fromWeek && row.date <= today));
   const monthMinutes = sum(credits.filter(row => row.date >= fromMonth && row.date <= today));
   const activeDays = new Set(credits.map(row => row.date)).size;
+  const localCount = credits.filter(row => row.sourceType === "local").length;
+
+  const projects = ACTIVE_PROJECTS.map(project => {
+    const mine = credits.filter(row => row.projectId === project.id);
+    return {
+      ...project,
+      minutes: sum(mine),
+      status: sourceState.get(project.id) || "unavailable",
+      credits: mine.length,
+      localCredits: mine.filter(row => row.sourceType === "local").length,
+    };
+  });
 
   return {
     generatedAt: payload?.generatedAt || null,
@@ -122,6 +170,7 @@ function summarize(payload) {
     monthMinutes,
     activeDays,
     credits: credits.length,
+    localCount,
     aligned,
     projects,
   };
@@ -168,7 +217,7 @@ function renderLoading(root) {
   copy.append(
     element("span", "eyebrow", "TEMPO DE ESTUDO · P1–P3"),
     element("h2", "", "Horas estudadas"),
-    element("p", "", "Somando apenas créditos confirmados publicados pelos projetos ativos."),
+    element("p", "", "Somando créditos confirmados dos projetos ativos e ajustes registrados na Central de Estudos neste navegador."),
   );
   head.append(copy, element("span", "study-hours-state is-loading", "Atualizando…"));
   root.append(head, element("div", "study-hours-loading", "Conferindo SEEDF, TJDFT e PRF ADM…"));
@@ -227,7 +276,12 @@ function renderSummary(root, summary) {
     const fill = element("i");
     fill.style.width = summary.total ? `${Math.max(0, Math.min(100, project.minutes / summary.total * 100))}%` : "0%";
     track.append(fill);
-    item.append(top, track, element("small", "", project.status === "aligned" ? `${project.credits} crédito(s) publicado(s)` : "fonte não alinhada — tempo não contabilizado"));
+    const sourceNote = project.localCredits
+      ? `${project.credits} crédito(s) · ${project.localCredits} registro(s) local(is)`
+      : project.status === "aligned"
+        ? `${project.credits} crédito(s) confirmado(s)`
+        : "fonte pública não alinhada; apenas registros locais confirmados podem aparecer";
+    item.append(top, track, element("small", "", sourceNote));
     projects.append(item);
   }
 
@@ -236,8 +290,8 @@ function renderSummary(root, summary) {
     ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(new Date(summary.generatedAt))
     : "horário não publicado";
   foot.append(
-    element("small", "", `Fonte: contratos federados da Central de Estudos · atualização ${updated}.`),
-    element("small", "", "Regra vigente: créditos publicados valem o tempo confirmado pelo projeto; leituras e unidades podem gerar créditos separados quando a fonte assim registra."),
+    element("small", "", `Fonte: contratos federados + registro confirmado da Central de Estudos neste navegador · atualização ${updated}.`),
+    element("small", "", "Sem dupla contagem: créditos automáticos e registros locais equivalentes são deduplicados por projeto, data, tópico e duração. Ajustes manuais confirmados entram como tempo adicional."),
   );
 
   root.append(head, metrics, projects, foot);
@@ -293,3 +347,10 @@ observer.observe(document.documentElement, { childList: true, subtree: true });
 window.addEventListener("hashchange", () => queueMicrotask(ensurePanel));
 document.addEventListener("DOMContentLoaded", ensurePanel, { once: true });
 ensurePanel();
+
+window.addEventListener("storage", event => {
+  if (event.key !== LOCAL_STUDY_KEY) return;
+  cachedSummary = null;
+  const root = document.getElementById("study-hours-overview");
+  if (root) hydrate(root, true);
+});
