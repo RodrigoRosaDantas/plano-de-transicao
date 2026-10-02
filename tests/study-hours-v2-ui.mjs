@@ -50,7 +50,7 @@ try {
   const page = await context.newPage();
   const pageErrors = [];
   page.on("pageerror", error => pageErrors.push(String(error)));
-  await page.route(FEDERATED + "**", route => route.fulfill({
+  await page.route("**/central-estudos/data/federated-status.json**", route => route.fulfill({
     status: 200,
     contentType: "application/json",
     body: JSON.stringify(fixture),
@@ -59,7 +59,8 @@ try {
   await page.goto(baseURL, { waitUntil: "domcontentloaded" });
   await page.locator("#content[aria-busy=false]").waitFor({ timeout: 25000 });
   await page.locator("#study-hours-overview").waitFor({ timeout: 15000 });
-  await page.waitForFunction(() => !document.querySelector("#study-hours-overview .study-hours-loading"), null, { timeout: 15000 });
+  await page.locator("#study-hours-overview .study-hours-metrics").waitFor({ timeout: 15000 });
+  assert.equal(await page.locator("#study-hours-overview .study-hours-error").count(), 0, "painel não pode cair em estado de erro com fixture válida");
 
   const panelText = await page.locator("#study-hours-overview").innerText();
   assert.ok(panelText.includes("Acumulado"), "painel deve exibir o acumulado atual");
@@ -79,7 +80,7 @@ try {
 
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
   const mobilePage = await mobile.newPage();
-  await mobilePage.route(FEDERATED + "**", route => route.fulfill({
+  await mobilePage.route("**/central-estudos/data/federated-status.json**", route => route.fulfill({
     status: 200,
     contentType: "application/json",
     body: JSON.stringify(fixture),
@@ -87,7 +88,8 @@ try {
   await mobilePage.goto(baseURL, { waitUntil: "domcontentloaded" });
   await mobilePage.locator("#content[aria-busy=false]").waitFor({ timeout: 25000 });
   await mobilePage.locator("#study-hours-overview").waitFor({ timeout: 15000 });
-  await mobilePage.waitForFunction(() => !document.querySelector("#study-hours-overview .study-hours-loading"), null, { timeout: 15000 });
+  await mobilePage.locator("#study-hours-overview .study-hours-metrics").waitFor({ timeout: 15000 });
+  assert.equal(await mobilePage.locator("#study-hours-overview .study-hours-error").count(), 0, "painel móvel não pode cair em erro com fixture válida");
   const overflow = await mobilePage.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   assert.ok(overflow <= 2, `painel de horas não pode causar overflow móvel (${overflow}px)`);
   await mobilePage.screenshot({ path: "artifacts/study-hours-dedup-mobile.png", fullPage: true });
