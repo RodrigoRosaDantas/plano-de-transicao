@@ -6,12 +6,14 @@ const js = fs.readFileSync('assets/study-hours-v1.js', 'utf8');
 const css = fs.readFileSync('assets/study-hours-v1.css', 'utf8');
 const sw = fs.readFileSync('sw.js', 'utf8');
 
-assert.match(index, /study-hours-v1\.css\?v=2/, 'CSS de horas não foi ligado ao index');
-assert.match(index, /study-hours-v1\.js\?v=2/, 'JS de horas não foi ligado ao index');
+assert.match(index, /study-hours-v1\.css\?v=3/, 'CSS de horas não foi ligado ao index');
+assert.match(index, /study-hours-v1\.js\?v=3/, 'JS de horas não foi ligado ao index');
 assert.match(js, /central-estudos\/data\/federated-status\.json/, 'Fonte federada incorreta');
 assert.match(js, /study-hours-history\.json/, 'Fonte do histórico reconstruído não foi integrada');
 assert.match(js, /central-estudos:study-log-v1/, 'Registro local confirmado da Central de Estudos não foi integrado');
 assert.match(js, /creditFingerprint/, 'Deduplicação entre crédito automático e registro local ausente');
+assert.match(js, /coalescePublicCredits/, 'Coalescência de leitura + estudo da mesma unidade ausente');
+assert.match(js, /droppedReadingShadows/, 'Contagem de créditos redundantes absorvidos ausente');
 for (const project of ['seedf', 'tjdft', 'prf-adm']) {
   assert.ok(js.includes(project), `Projeto ativo ausente: ${project}`);
 }
@@ -30,5 +32,6 @@ const history = JSON.parse(fs.readFileSync('data/study-hours-history.json', 'utf
 assert.equal(history.summary.historicalEstimateMinutes, 35280, 'Total histórico reconstruído divergente');
 assert.equal(history.summary.historicalEstimateHours, 588, 'Total histórico em horas divergente');
 assert.deepEqual(history.method.rules, { studyMinutes: 60, reviewMinutes: 120, simulationMinutes: 180 }, 'Regra histórica divergente');
+assert.equal(history.currentCycleStartsAt, '2026-09-21', 'Marco entre histórico e ciclo atual divergente');
 
 console.log('study-hours-v1-static: ok');
