@@ -1,4 +1,4 @@
-// Radar v52: reconciliação entre histórico validado, TDAS operacional e cache.
+// Radar v59: reconciliação entre histórico validado, TDAS operacional e cache.
 import fs from 'node:fs/promises';
 
 const read = async (path) => fs.readFile(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -156,11 +156,12 @@ const cachedAssets = [
   'assets/exam-day-v21.css', 'assets/exam-day-v21-shell.css', 'assets/exam-day-v21.js', 'assets/exam-day-v21-shell.js', 'assets/exam-day-v21-bootstrap.js',
   'assets/exam-day-v22.css', 'assets/exam-day-v22.js',
   'assets/post-exam-v27.css', 'assets/post-exam-v27.js', 'assets/post-exam-score-v28.js', 'assets/post-exam-follow-up-v28.js', 'assets/post-exam-competition-v28.js', 'assets/transition-pages-v29.css', 'assets/pre-post-v33.css', 'assets/navigation-mobile-v38.css',
-  'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'manifest.webmanifest',
+  'assets/study-hours-v1.css', 'assets/study-hours-v1.js',
+  'assets/og.png', 'data/snapshot.json', 'data/treated-performance-data.js', 'data/study-hours-history.json', 'manifest.webmanifest',
 ];
 for (const asset of cachedAssets) check(`PWA cacheia ${asset}`, sw.includes(`'./${asset}'`) || sw.includes(`"./${asset}"`));
-check('Cache PWA está consolidado na v56 com carteira P1–P3 e arquivo', sw.includes("const CACHE='plano-transicao-v56-portfolio-archive-oidc'") && sw.includes("'./assets/central-mark.svg'") && sw.includes("'./assets/central-icon-192.png'") && sw.includes("'./assets/central-icon-512.png'") && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/official-monitor.css'") && sw.includes("'./assets/official-monitor.js'"));
-check('Cache busting da interface publicada está em v45', index.includes('__PLANO_UI_RELEASE__ = "v45"') && index.includes('work-app.js?v=41&home=38') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36') && index.includes("location.href='./radar-oficial.html'"));
+check('Cache PWA está consolidado na v59 com histórico de horas', sw.includes("const CACHE='plano-transicao-v59-study-hours-dedup'") && sw.includes("'./assets/central-mark.svg'") && sw.includes("'./assets/central-icon-192.png'") && sw.includes("'./assets/central-icon-512.png'") && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/official-monitor.css'") && sw.includes("'./assets/official-monitor.js'") && sw.includes("'./assets/study-hours-v1.js'") && sw.includes("'./data/study-hours-history.json'"));
+check('Cache busting da interface publicada está em v48', index.includes('__PLANO_UI_RELEASE__ = "v48"') && index.includes('work-app.js?v=41&home=38') && index.includes('navigation-mobile-v38.css?v=38') && index.includes('transition-pages-v29.css?v=36') && index.includes('pre-post-v33.css?v=36') && index.includes('study-hours-v1.css?v=3') && index.includes('study-hours-v1.js?v=3') && index.includes("location.href='./radar-oficial.html'"));
 check('Manifest está ligado no HTML', index.includes('manifest.webmanifest'));
 check('Dia da Prova consolidado está ligado no HTML', index.includes('exam-day-v21.css') && index.includes('exam-day-v21.js'));
 check('Camadas v18/v19/v20 saíram do runtime', !index.includes('exam-day-v19') && !index.includes('exam-day-v20') && !sw.includes("'./assets/exam-day-v18.css'") && !sw.includes("'./assets/exam-day-v19") && !sw.includes("'./assets/exam-day-v20"));
