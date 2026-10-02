@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "historicalCut": "2026-09-20",
-  "generatedAt": "2026-10-02T22:12:17Z",
+  "generatedAt": "2026-10-02T22:55:00Z",
   "method": {
     "kind": "user-reported-average",
     "label": "Estimativa histórica reconstruída",
@@ -12,7 +12,8 @@
     },
     "description": "Estimativa baseada na média informada pelo candidato: 1h por matéria/sessão de estudo identificada, 2h por dia/bloco de revisão e 3h por simulado.",
     "separationRule": "Não misturar com os créditos atuais confirmados da Central de Estudos; o total da jornada deve somar estimativa histórica + tempo atual confirmado, mantendo os dois rótulos.",
-    "currentCycleRule": "No ciclo atual, leitura e estudo da mesma unidade na mesma data não podem ser somados em duplicidade; a unidade concluída recebe um único crédito-base, salvo ajuste manual distinto e confirmado."
+    "currentCycleRule": "No ciclo atual, leitura e estudo da mesma unidade na mesma data não podem ser somados em duplicidade; a unidade concluída recebe um único crédito-base, salvo ajuste manual distinto e confirmado.",
+    "historicalRule": "Ciclos antigos usam 1h por matéria/sessão executada, 2h por revisão e 3h por simulado. Sessões de outros projetos entram quando há evidência de execução real; material apenas criado ou questão apenas planejada não gera hora."
   },
   "summary": {
     "historicalEstimateMinutes": 35280,
@@ -131,15 +132,30 @@
       },
       "calculation": "75×1h + 9×2h + 12×3h",
       "evidence": "96 blocos realmente estudados. PE105–PE112 foram excluídos porque os próprios registros dizem 'não estudei nesses dias'."
-    }
-  ],
-  "omitted": [
+    },
     {
       "id": "treino-quadrix-crf-df",
-      "name": "Treino Quadrix — CRF-DF",
-      "reason": "Há desempenho de 28 questões, mas não há evidência suficiente de duração/tipo da sessão para precificar o tempo sem inventar precisão."
+      "name": "Treino Quadrix — CRF-DF Assistente/Administrador",
+      "period": "20–21/07/2026",
+      "status": "conservative-floor",
+      "evidence": "Sessão histórica validada; 28 questões / 24 acertos / 4 erros, execução adicional e sem sobreposição com os PEs TDAS dos mesmos dias.",
+      "formula": "1 sessão validada × 1h",
+      "estimateMinutes": 60,
+      "notes": "O registro cobre dois dias, mas conta apenas uma hora-base para evitar inventar uma segunda sessão sem marcação temporal individual."
+    },
+    {
+      "id": "sedes-edas-administracao-s01-s04",
+      "name": "SEDES/DF — EDAS Administração · S01–S04",
+      "period": "27/07/2026–07/08/2026",
+      "status": "conservative-floor",
+      "evidence": "4 sessões com bloco objetivo concluído no BANCO — CONTROLE DE QUESTÕES EDAS; 145 questões / 122 acertos / 23 erros.",
+      "formula": "4 sessões executadas × 1h",
+      "estimateMinutes": 240,
+      "notes": "Carga planejada das sessões era superior a 1h, mas a reconstrução usa somente 1h por sessão conforme a regra-base do candidato. Mantido separado do TDAS por possuir execução e questões próprias."
     }
   ],
-  "auditedAt": "2026-10-02T22:12:17Z",
-  "currentCycleStartsAt": "2026-09-21"
+  "omitted": [],
+  "auditedAt": "2026-10-02T22:55:00Z",
+  "currentCycleStartsAt": "2026-09-21",
+  "historicalEstimateHours": 593
 }
