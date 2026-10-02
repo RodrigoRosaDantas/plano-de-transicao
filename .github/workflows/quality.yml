@@ -1,5 +1,5 @@
 name: Qualidade e paridade gerencial
-# Jornada + Radar + Pós-Prova: valida privacidade, horas, monitoramento e regressões.
+# Jornada v60 + Radar + Pós-Prova: valida privacidade, horas, monitoramento e regressões.
 
 on:
   workflow_dispatch:
