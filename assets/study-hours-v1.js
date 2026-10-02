@@ -1,4 +1,5 @@
 const STUDY_HOURS_URL = "https://rodrigorosadantas.github.io/central-estudos/data/federated-status.json";
+const HISTORY_HOURS_URL = "./data/study-hours-history.json";
 const LOCAL_STUDY_KEY = "central-estudos:study-log-v1";
 const ACTIVE_PROJECTS = [
   { id: "seedf", code: "P1", name: "SEEDF" },
@@ -92,7 +93,7 @@ function creditFingerprint(row) {
   return [row.projectId, row.date, topic, Number(row.minutes) || 0].join("|");
 }
 
-function summarize(payload) {
+function summarize(payload, history) {
   const today = saoPauloDay();
   const fromWeek = weekStart(today);
   const fromMonth = today.slice(0, 7) + "-01";
@@ -173,6 +174,9 @@ function summarize(payload) {
     localCount,
     aligned,
     projects,
+    history: history?.schemaVersion === 1 ? history : null,
+    historicalMinutes: Number(history?.summary?.historicalEstimateMinutes || 0),
+    journeyMinutes: Number(history?.summary?.historicalEstimateMinutes || 0) + total,
   };
 }
 
@@ -183,14 +187,23 @@ async function loadSummary(force = false) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 4500);
     try {
-      const response = await fetch(`${STUDY_HOURS_URL}?v=${Date.now()}`, {
-        cache: "no-store",
-        headers: { Accept: "application/json" },
-        signal: controller.signal,
-      });
+      const stamp = Date.now();
+      const [response, historyResponse] = await Promise.all([
+        fetch(`${STUDY_HOURS_URL}?v=${stamp}`, {
+          cache: "no-store",
+          headers: { Accept: "application/json" },
+          signal: controller.signal,
+        }),
+        fetch(`${HISTORY_HOURS_URL}?v=${stamp}`, {
+          cache: "no-store",
+          headers: { Accept: "application/json" },
+          signal: controller.signal,
+        }),
+      ]);
       if (!response.ok) throw new Error("status");
       const payload = await response.json();
-      cachedSummary = summarize(payload);
+      const history = historyResponse.ok ? await historyResponse.json() : null;
+      cachedSummary = summarize(payload, history);
       return cachedSummary;
     } finally {
       clearTimeout(timer);
@@ -265,6 +278,49 @@ function renderSummary(root, summary) {
     metric("Acumulado", duration(summary.total), `${summary.activeDays} dia(s) com estudo confirmado`, "violet"),
   );
 
+  if (summary.history) {
+    const historical = element("section", "study-hours-history");
+    const historyHead = element("div", "study-hours-history-head");
+    const historyCopy = element("div");
+    historyCopy.append(
+      element("span", "eyebrow", "HISTÓRICO RECONSTRUÍDO"),
+      element("h3", "", `≈ ${duration(summary.historicalMinutes)} antes do ciclo atual`),
+      element("p", "", "Estimativa conservadora, separada das horas atuais confirmadas. Regra informada: 1h por matéria/bloco, 2h por revisão e 3h por simulado."),
+    );
+    const journey = element("div", "study-hours-journey-total");
+    journey.append(
+      element("span", "", "Jornada total estimada"),
+      element("strong", "", `≈ ${duration(summary.journeyMinutes)}`),
+      element("small", "", `${duration(summary.historicalMinutes)} históricas + ${duration(summary.total)} atuais confirmadas`),
+    );
+    historyHead.append(historyCopy, journey);
+
+    const details = element("details", "study-hours-history-details");
+    const summaryNode = element("summary", "", "Ver reconstrução por ciclo");
+    const list = element("div", "study-hours-history-list");
+    for (const cycle of summary.history.cycles || []) {
+      const row = element("div", "study-hours-history-row");
+      const left = element("div");
+      left.append(
+        element("strong", "", cycle.name),
+        element("small", "", cycle.calculation || cycle.evidence || ""),
+      );
+      const value = element("span", "", cycle.status === "conservative-floor"
+        ? `≥ ${duration(cycle.estimateMinutes)}`
+        : `≈ ${duration(cycle.estimateMinutes)}`);
+      row.append(left, value);
+      list.append(row);
+    }
+    if (Array.isArray(summary.history.omitted) && summary.history.omitted.length) {
+      const omitted = element("p", "study-hours-history-omitted",
+        `Fora da soma por falta de duração confiável: ${summary.history.omitted.map(item => item.name).join(", ")}.`);
+      list.append(omitted);
+    }
+    details.append(summaryNode, list);
+    historical.append(historyHead, details);
+    metrics.__historyBlock = historical;
+  }
+
   const projects = element("div", "study-hours-projects");
   for (const project of summary.projects) {
     const item = element("article", "study-hours-project");
@@ -294,7 +350,9 @@ function renderSummary(root, summary) {
     element("small", "", "Sem dupla contagem: créditos automáticos e registros locais equivalentes são deduplicados por projeto, data, tópico e duração. Ajustes manuais confirmados entram como tempo adicional."),
   );
 
-  root.append(head, metrics, projects, foot);
+  root.append(head, metrics);
+  if (metrics.__historyBlock) root.append(metrics.__historyBlock);
+  root.append(projects, foot);
 }
 
 async function hydrate(root, force = false) {
