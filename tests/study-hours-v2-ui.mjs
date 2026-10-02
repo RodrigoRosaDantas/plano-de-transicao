@@ -17,7 +17,7 @@ const today = (() => {
   return `${pick("year")}-${pick("month")}-${pick("day")}`;
 })();
 
-const project = (id, credits) => ({
+const project = (id, credits, questionsDone = 0) => ({
   kind: "project",
   publicStatus: "live",
   integrity: { status: "aligned" },
@@ -25,7 +25,7 @@ const project = (id, credits) => ({
     schemaVersion: 1,
     projectId: id,
     source: { status: "synced" },
-    study: { evidence: "confirmed", timeCredits: credits },
+    study: { evidence: "confirmed", timeCredits: credits, questionsDone },
   },
 });
 
@@ -36,11 +36,11 @@ const fixture = {
       { id: "seedf:reading:L01", date: today, kind: "reading", unit: "L01", minutes: 60 },
       { id: "seedf:study:L01", date: today, kind: "study", unit: "L01", minutes: 60 },
       { id: "seedf:study:L02", date: today, kind: "study", unit: "L02", minutes: 60 },
-    ]),
+    ], 165),
     tjdft: project("tjdft", [
       { id: "tjdft:study:P01", date: today, kind: "study", unit: "P01", minutes: 60 },
-    ]),
-    "prf-adm": project("prf-adm", []),
+    ], 61),
+    "prf-adm": project("prf-adm", [], 0),
   },
 };
 
@@ -79,6 +79,13 @@ try {
   assert.ok(
     (await page.locator("#study-hours-overview .study-hours-foot").textContent())?.includes("1 crédito(s) de leitura redundante(s) foram absorvidos"),
     "painel deve declarar a deduplicação aplicada",
+  );
+
+  const questionValues = await page.locator("#study-hours-overview .study-hours-question-evidence strong").allTextContents();
+  assert.deepEqual(
+    questionValues,
+    ["15.329", "226", "15.555", "145"],
+    "painel deve separar questões históricas, atuais, total canônico e EDAS não somado",
   );
 
   await page.locator(".study-hours-history-details summary").click();
