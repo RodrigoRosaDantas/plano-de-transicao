@@ -34,7 +34,7 @@ check('mobile também recolhe card institucional e atalhos redundantes', css.inc
 check('v14 mantém tratamento estreito em 390px', css.includes('@media (max-width: 390px)'));
 check('v14 não cria largura fixa problemática', !css.includes('width: 1000px') && !css.includes('min-width: 1000px'));
 
-check('service worker está no cache v56 da Jornada arquivada e do OIDC', sw.includes("const CACHE='plano-transicao-v56-portfolio-archive-oidc'") && sw.includes("'./radar-oficial.html'"));
+check('service worker mantém cache versionado da Jornada', /const CACHE='plano-transicao-v\\d+-/.test(sw) && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/study-hours-v1.js'") && sw.includes("'./data/study-hours-history.json'"));
 check('service worker preserva assets v14', sw.includes('home-focus-v14.css') && sw.includes('home-focus-v14.js'));
 
 const failures = checks.filter((item) => !item.pass);
