@@ -44,7 +44,7 @@ check('v15 inclui etapas na busca global', app.includes('transitionGates') && ap
 
 check('CSS v15 é responsivo até 390px', css.includes('@media (max-width: 980px)') && css.includes('@media (max-width: 390px)'));
 check('CSS v15 evita largura fixa problemática', !css.includes('width: 1000px') && !css.includes('min-width: 1000px'));
-check('service worker mantém cache versionado da Jornada', /const CACHE='plano-transicao-v\\d+-/.test(sw) && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/study-hours-v1.js'") && sw.includes("'./data/study-hours-history.json'"));
+check('service worker mantém cache versionado da Jornada', /const CACHE='plano-transicao-v\d+-/.test(sw) && sw.includes("'./radar-oficial.html'") && sw.includes("'./assets/study-hours-v1.js'") && sw.includes("'./data/study-hours-history.json'"));
 check('service worker inclui os dois assets v15', sw.includes('transition-gate-v15.css') && sw.includes('transition-gate-v15.js'));
 check('workflow executa auditoria e teste v15', workflow.includes('node scripts/audit-v15.mjs') && workflow.includes('node tests/v15-transition-gate.mjs'));
 
