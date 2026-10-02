@@ -68,13 +68,13 @@ try {
   assert.equal(metricValues.at(-1), "3h", "KPI Acumulado não pode inflar leitura + estudo da mesma unidade");
   assert.equal(
     (await page.locator("#study-hours-overview .study-hours-journey-total small").textContent())?.trim(),
-    "588h históricas + 3h atuais confirmadas",
+    "593h históricas + 3h atuais confirmadas",
     "jornada deve separar histórico reconstruído e ciclo atual",
   );
   assert.equal(
     (await page.locator("#study-hours-overview .study-hours-journey-total strong").textContent())?.trim(),
-    "≈ 591h",
-    "jornada total estimada deve fechar em 591h no fixture",
+    "≈ 596h",
+    "jornada total estimada deve fechar em 596h no fixture",
   );
   assert.ok(
     (await page.locator("#study-hours-overview .study-hours-foot").textContent())?.includes("1 crédito(s) de leitura redundante(s) foram absorvidos"),
@@ -82,7 +82,7 @@ try {
   );
 
   await page.locator(".study-hours-history-details summary").click();
-  assert.equal(await page.locator(".study-hours-history-row").count(), 8, "histórico deve preservar os oito ciclos precificados");
+  assert.equal(await page.locator(".study-hours-history-row").count(), 10, "histórico deve preservar os dez ciclos precificados");
   await page.screenshot({ path: "artifacts/study-hours-dedup-desktop.png", fullPage: true });
   if (pageErrors.length) throw new Error(`Erros JavaScript: ${pageErrors.join(" | ")}`);
   await context.close();
