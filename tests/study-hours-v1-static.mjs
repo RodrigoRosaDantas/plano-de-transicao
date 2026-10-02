@@ -25,6 +25,9 @@ assert.match(js, /monthMinutes/, 'KPI Mês ausente');
 assert.match(js, /activeDays/, 'KPI acumulado/dias ativos ausente');
 assert.match(js, /historicalMinutes/, 'Total histórico estimado ausente');
 assert.match(js, /journeyMinutes/, 'Total estimado da jornada ausente');
+assert.match(js, /currentQuestions/, 'Questões atuais confirmadas ausentes');
+assert.match(js, /historicalQuestions/, 'Questões históricas reconciliadas ausentes');
+assert.match(js, /separateQuestions/, 'Questões preservadas fora da soma ausentes');
 assert.match(css, /@media\(max-width:640px\)/, 'Tratamento responsivo móvel ausente');
 assert.ok(sw.includes('study-hours-v1.js') && sw.includes('study-hours-v1.css'), 'PWA não inclui os novos assets');
 assert.ok(sw.includes('study-hours-history.json'), 'PWA não inclui o histórico de horas');
@@ -33,5 +36,7 @@ assert.equal(history.summary.historicalEstimateMinutes, 35580, 'Total histórico
 assert.equal(history.summary.historicalEstimateHours, 593, 'Total histórico em horas divergente');
 assert.deepEqual(history.method.rules, { studyMinutes: 60, reviewMinutes: 120, simulationMinutes: 180 }, 'Regra histórica divergente');
 assert.equal(history.currentCycleStartsAt, '2026-09-21', 'Marco entre histórico e ciclo atual divergente');
+assert.equal(history.questionEvidence.historicalMeasuredQuestions, 15329, 'Histórico de questões mensuráveis divergente');
+assert.equal(history.questionEvidence.separateNotSummed[0].questions, 145, 'EDAS separado deve permanecer visível sem inflar o consolidado');
 
 console.log('study-hours-v1-static: ok');
