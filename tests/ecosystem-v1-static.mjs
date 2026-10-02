@@ -24,7 +24,7 @@ assert.ok(integration.includes("catalog.active.map") && integration.includes("ca
 assert.ok(!/\b(?:study|notion|supabase)\b/i.test(integration), "the shared overview must not read private progress or connect to Notion/Supabase");
 assert.ok(!integration.includes("innerHTML") && !integration.includes("localStorage") && !integration.includes("credentials:"), "dynamic status text must use safe DOM APIs without local state or credentials");
 assert.ok(css.includes("repeat(3, minmax(0, 1fr))") && css.includes("@media (max-width: 1040px)") && css.includes("@media (max-width: 700px)"), "overview cards must reflow for tablet and phone widths");
-assert.ok(sw.includes("plano-transicao-v56-portfolio-archive-oidc") && sw.includes("./assets/ecosystem-v1.js") && sw.includes("./assets/ecosystem-v1.css"), "offline shell must include the integration module and stylesheet");
+assert.ok(sw.includes("plano-transicao-v60-study-hours-audited") && sw.includes("./assets/ecosystem-v1.js") && sw.includes("./assets/ecosystem-v1.css"), "offline shell must include the integration module and stylesheet");
 assert.equal(manifest.short_name, "Jornada", "installed app identity must be Jornada");
 assert.ok(html.includes('href="assets/ecosystem-v1.css?v=3"') && html.includes('src="assets/ecosystem-v1.js?v=3"'), "Jornada must load the versioned integration assets");
 assert.ok(html.includes('src="assets/work-app.js?v=41&home=38"'), "the Journey view must load the current renderer instead of a cached older work-app bundle");
