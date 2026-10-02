@@ -6,7 +6,7 @@
 .study-hours-state{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--line,#25302d);border-radius:999px;font-size:.76rem;font-weight:750;white-space:nowrap}
 .study-hours-state::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 12%,transparent)}
 .study-hours-state.is-ok{color:#73d3a7}.study-hours-state.is-warning{color:#e0b66a}.study-hours-state.is-loading{color:#7cb9d8}
-.study-hours-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.study-hours-metrics,.study-hours-question-evidence{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .study-hours-metric{min-width:0;padding:16px;border:1px solid var(--line,#25302d);border-radius:16px;background:color-mix(in srgb,var(--surface-2,#121917) 88%,transparent)}
 .study-hours-metric span{display:block;color:var(--muted,#8f9b97);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
 .study-hours-metric strong{display:block;margin:7px 0 4px;font-size:clamp(1.45rem,3vw,2.2rem);line-height:1}
@@ -30,9 +30,9 @@
 .study-hours-loading,.study-hours-error{margin:0;padding:18px;border:1px dashed var(--line,#25302d);border-radius:14px;color:var(--muted,#8f9b97)}
 .study-hours-error{color:#e0b66a}
 .study-hours-refresh{white-space:nowrap}
-@media(max-width:900px){.study-hours-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.study-hours-projects{grid-template-columns:1fr}.study-hours-foot{display:grid}.study-hours-foot small:last-child{text-align:left}}
-@media(max-width:640px){.study-hours-head{display:grid}.study-hours-controls{justify-content:flex-start}.study-hours-metrics{grid-template-columns:1fr 1fr}.study-hours-metric{padding:14px}.study-hours-metric strong{font-size:1.55rem}.study-hours-foot{gap:8px}}
-@media(max-width:420px){.study-hours-metrics{grid-template-columns:1fr}.study-hours-controls{align-items:stretch}.study-hours-refresh{width:100%}}
+@media(max-width:900px){.study-hours-metrics,.study-hours-question-evidence{grid-template-columns:repeat(2,minmax(0,1fr))}.study-hours-projects{grid-template-columns:1fr}.study-hours-foot{display:grid}.study-hours-foot small:last-child{text-align:left}}
+@media(max-width:640px){.study-hours-head{display:grid}.study-hours-controls{justify-content:flex-start}.study-hours-metrics,.study-hours-question-evidence{grid-template-columns:1fr 1fr}.study-hours-metric{padding:14px}.study-hours-metric strong{font-size:1.55rem}.study-hours-foot{gap:8px}}
+@media(max-width:420px){.study-hours-metrics,.study-hours-question-evidence{grid-template-columns:1fr}.study-hours-controls{align-items:stretch}.study-hours-refresh{width:100%}}
 
 .study-hours-history{display:grid;gap:12px;padding:16px;border:1px solid color-mix(in srgb,var(--accent,#69c49c) 30%,var(--line,#25302d));border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent,#69c49c) 8%,transparent),color-mix(in srgb,var(--surface,#0f1513) 94%,transparent))}
 .study-hours-history-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center}
