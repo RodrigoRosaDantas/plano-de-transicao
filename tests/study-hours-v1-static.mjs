@@ -6,8 +6,8 @@ const js = fs.readFileSync('assets/study-hours-v1.js', 'utf8');
 const css = fs.readFileSync('assets/study-hours-v1.css', 'utf8');
 const sw = fs.readFileSync('sw.js', 'utf8');
 
-assert.match(index, /study-hours-v1\.css\?v=3/, 'CSS de horas não foi ligado ao index');
-assert.match(index, /study-hours-v1\.js\?v=3/, 'JS de horas não foi ligado ao index');
+assert.match(index, /study-hours-v1\.css\?v=4/, 'CSS de horas não foi ligado ao index');
+assert.match(index, /study-hours-v1\.js\?v=4/, 'JS de horas não foi ligado ao index');
 assert.match(js, /central-estudos\/data\/federated-status\.json/, 'Fonte federada incorreta');
 assert.match(js, /study-hours-history\.json/, 'Fonte do histórico reconstruído não foi integrada');
 assert.match(js, /central-estudos:study-log-v1/, 'Registro local confirmado da Central de Estudos não foi integrado');
