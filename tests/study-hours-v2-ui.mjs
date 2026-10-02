@@ -62,9 +62,9 @@ try {
   await page.locator("#study-hours-overview .study-hours-metrics").waitFor({ timeout: 15000 });
   assert.equal(await page.locator("#study-hours-overview .study-hours-error").count(), 0, "painel não pode cair em estado de erro com fixture válida");
 
-  const metricLabels = await page.locator("#study-hours-overview .study-hours-metric > span").allTextContents();
+  const metricLabels = await page.locator("#study-hours-overview .study-hours-metrics .study-hours-metric > span").allTextContents();
   assert.deepEqual(metricLabels, ["Hoje", "Semana", "Mês", "Acumulado"], "painel deve preservar os quatro KPIs de tempo");
-  const metricValues = await page.locator("#study-hours-overview .study-hours-metric strong").allTextContents();
+  const metricValues = await page.locator("#study-hours-overview .study-hours-metrics .study-hours-metric strong").allTextContents();
   assert.equal(metricValues.at(-1), "3h", "KPI Acumulado não pode inflar leitura + estudo da mesma unidade");
   assert.equal(
     (await page.locator("#study-hours-overview .study-hours-journey-total small").textContent())?.trim(),
