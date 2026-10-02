@@ -128,6 +128,7 @@ function summarize(payload, history) {
   const fromMonth = today.slice(0, 7) + "-01";
   const byFingerprint = new Map();
   const sourceState = new Map();
+  const sourceQuestions = new Map();
   const publicCredits = [];
   let aligned = 0;
 
@@ -144,6 +145,10 @@ function summarize(payload, history) {
 
     if (usable) aligned += 1;
     sourceState.set(project.id, usable ? "aligned" : (integrity || source?.publicStatus || "unavailable"));
+    const questionsDone = usable && Number.isFinite(Number(contract?.study?.questionsDone))
+      ? Math.max(0, Number(contract.study.questionsDone))
+      : null;
+    sourceQuestions.set(project.id, questionsDone);
 
     const credits = usable && Array.isArray(contract?.study?.timeCredits)
       ? contract.study.timeCredits.filter(credit => validCredit(credit, today))
@@ -191,8 +196,17 @@ function summarize(payload, history) {
       status: sourceState.get(project.id) || "unavailable",
       credits: mine.length,
       localCredits: mine.filter(row => row.sourceType === "local").length,
+      questions: sourceQuestions.get(project.id),
     };
   });
+
+  const currentQuestions = projects.reduce((acc, project) =>
+    acc + (Number.isFinite(project.questions) ? project.questions : 0), 0);
+  const historicalQuestions = Number(history?.questionEvidence?.historicalMeasuredQuestions || 0);
+  const separateQuestions = Array.isArray(history?.questionEvidence?.separateNotSummed)
+    ? history.questionEvidence.separateNotSummed.reduce((acc, item) =>
+        acc + (Number.isFinite(Number(item?.questions)) ? Number(item.questions) : 0), 0)
+    : 0;
 
   return {
     generatedAt: payload?.generatedAt || null,
@@ -211,6 +225,10 @@ function summarize(payload, history) {
     history: history?.schemaVersion === 1 ? history : null,
     historicalMinutes: Number(history?.summary?.historicalEstimateMinutes || 0),
     journeyMinutes: Number(history?.summary?.historicalEstimateMinutes || 0) + total,
+    currentQuestions,
+    historicalQuestions,
+    journeyQuestions: historicalQuestions + currentQuestions,
+    separateQuestions,
   };
 }
 
@@ -312,6 +330,14 @@ function renderSummary(root, summary) {
     metric("Acumulado", duration(summary.total), `${summary.activeDays} dia(s) com estudo confirmado`, "violet"),
   );
 
+  const evidence = element("section", "study-hours-question-evidence");
+  evidence.append(
+    metric("Questões históricas", Number(summary.historicalQuestions || 0).toLocaleString("pt-BR"), "mensuráveis e reconciliadas", "aqua"),
+    metric("Questões atuais", Number(summary.currentQuestions || 0).toLocaleString("pt-BR"), "P1–P3 com execução confirmada", "lime"),
+    metric("Total canônico", Number(summary.journeyQuestions || 0).toLocaleString("pt-BR"), "histórico + ciclo atual, sem duplicar", "violet"),
+    metric("Separadas", Number(summary.separateQuestions || 0).toLocaleString("pt-BR"), "visíveis, mas fora da soma por cautela", "amber"),
+  );
+
   if (summary.history) {
     const historical = element("section", "study-hours-history");
     const historyHead = element("div", "study-hours-history-head");
@@ -384,7 +410,7 @@ function renderSummary(root, summary) {
     element("small", "", `Sem dupla contagem: leitura + estudo da mesma unidade/data contam uma vez; ${summary.droppedReadingShadows} crédito(s) de leitura redundante(s) foram absorvidos. Registros locais equivalentes também são deduplicados; ajustes manuais distintos entram como tempo adicional.`),
   );
 
-  root.append(head, metrics);
+  root.append(head, metrics, evidence);
   if (metrics.__historyBlock) root.append(metrics.__historyBlock);
   root.append(projects, foot);
 }
