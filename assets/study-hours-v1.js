@@ -93,12 +93,41 @@ function creditFingerprint(row) {
   return [row.projectId, row.date, topic, Number(row.minutes) || 0].join("|");
 }
 
+function publicSessionKey(row) {
+  const unit = String(row.unit || "").trim().toLocaleUpperCase("pt-BR");
+  return [row.projectId, row.date, unit].join("|");
+}
+
+function coalescePublicCredits(rows) {
+  const grouped = new Map();
+  for (const row of rows) {
+    const key = publicSessionKey(row);
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(row);
+  }
+
+  const kept = [];
+  let droppedReadingShadows = 0;
+  for (const group of grouped.values()) {
+    const hasNonReading = group.some(row => row.kind !== "reading");
+    for (const row of group) {
+      if (row.kind === "reading" && hasNonReading) {
+        droppedReadingShadows += 1;
+        continue;
+      }
+      kept.push(row);
+    }
+  }
+  return { rows: kept, droppedReadingShadows };
+}
+
 function summarize(payload, history) {
   const today = saoPauloDay();
   const fromWeek = weekStart(today);
   const fromMonth = today.slice(0, 7) + "-01";
   const byFingerprint = new Map();
   const sourceState = new Map();
+  const publicCredits = [];
   let aligned = 0;
 
   for (const project of ACTIVE_PROJECTS) {
@@ -120,19 +149,22 @@ function summarize(payload, history) {
       : [];
 
     for (const credit of credits) {
-      const topic = credit.kind === "reading" ? `Leitura · ${credit.unit || ""}` : String(credit.unit || "");
-      const normalized = {
+      publicCredits.push({
         ...credit,
         projectId: project.id,
         code: project.code,
         projectName: project.name,
-        topic,
+        topic: credit.kind === "reading" ? `Leitura · ${credit.unit || ""}` : String(credit.unit || ""),
         minutes: Number(credit.minutes),
         sourceType: "public",
-      };
-      const fingerprint = creditFingerprint(normalized);
-      if (!byFingerprint.has(fingerprint)) byFingerprint.set(fingerprint, normalized);
+      });
     }
+  }
+
+  const coalescedPublic = coalescePublicCredits(publicCredits);
+  for (const credit of coalescedPublic.rows) {
+    const fingerprint = creditFingerprint(credit);
+    if (!byFingerprint.has(fingerprint)) byFingerprint.set(fingerprint, credit);
   }
 
   const localCredits = readLocalCredits(today);
@@ -173,6 +205,7 @@ function summarize(payload, history) {
     credits: credits.length,
     localCount,
     aligned,
+    droppedReadingShadows: coalescedPublic.droppedReadingShadows,
     projects,
     history: history?.schemaVersion === 1 ? history : null,
     historicalMinutes: Number(history?.summary?.historicalEstimateMinutes || 0),
@@ -347,7 +380,7 @@ function renderSummary(root, summary) {
     : "horário não publicado";
   foot.append(
     element("small", "", `Fonte: contratos federados + registro confirmado da Central de Estudos neste navegador · atualização ${updated}.`),
-    element("small", "", "Sem dupla contagem: créditos automáticos e registros locais equivalentes são deduplicados por projeto, data, tópico e duração. Ajustes manuais confirmados entram como tempo adicional."),
+    element("small", "", `Sem dupla contagem: leitura + estudo da mesma unidade/data contam uma vez; ${summary.droppedReadingShadows} crédito(s) de leitura redundante(s) foram absorvidos. Registros locais equivalentes também são deduplicados; ajustes manuais distintos entram como tempo adicional.`),
   );
 
   root.append(head, metrics);
