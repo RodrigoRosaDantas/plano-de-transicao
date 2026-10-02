@@ -29,8 +29,8 @@ assert.match(css, /@media\(max-width:640px\)/, 'Tratamento responsivo móvel aus
 assert.ok(sw.includes('study-hours-v1.js') && sw.includes('study-hours-v1.css'), 'PWA não inclui os novos assets');
 assert.ok(sw.includes('study-hours-history.json'), 'PWA não inclui o histórico de horas');
 const history = JSON.parse(fs.readFileSync('data/study-hours-history.json', 'utf8'));
-assert.equal(history.summary.historicalEstimateMinutes, 35280, 'Total histórico reconstruído divergente');
-assert.equal(history.summary.historicalEstimateHours, 588, 'Total histórico em horas divergente');
+assert.equal(history.summary.historicalEstimateMinutes, 35580, 'Total histórico reconstruído divergente');
+assert.equal(history.summary.historicalEstimateHours, 593, 'Total histórico em horas divergente');
 assert.deepEqual(history.method.rules, { studyMinutes: 60, reviewMinutes: 120, simulationMinutes: 180 }, 'Regra histórica divergente');
 assert.equal(history.currentCycleStartsAt, '2026-09-21', 'Marco entre histórico e ciclo atual divergente');
 
