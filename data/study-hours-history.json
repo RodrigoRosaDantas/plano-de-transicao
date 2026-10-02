@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "historicalCut": "2026-09-20",
+  "generatedAt": "2026-10-02T22:20:00-03:00",
+  "method": {
+    "kind": "user-reported-average",
+    "label": "Estimativa histórica reconstruída",
+    "rules": {
+      "studyMinutes": 60,
+      "reviewMinutes": 120,
+      "simulationMinutes": 180
+    },
+    "description": "Estimativa baseada na média informada pelo candidato: 1h por matéria/bloco normal, 2h por dia/bloco de revisão e 3h por simulado.",
+    "separationRule": "Não misturar com os créditos atuais confirmados da Central de Estudos; o total da jornada deve somar estimativa histórica + tempo atual confirmado, mantendo os dois rótulos."
+  },
+  "summary": {
+    "historicalEstimateMinutes": 35280,
+    "historicalEstimateHours": 588,
+    "status": "conservative-estimate",
+    "pricedCycles": 8,
+    "omittedCycles": 1
+  },
+  "cycles": [
+    {
+      "id": "tribunais-120",
+      "name": "Tribunais — 120 dias",
+      "estimateMinutes": 5940,
+      "estimateHours": 99,
+      "status": "conservative-floor",
+      "calculation": "99 dias de estudo confirmados × mínimo de 1h",
+      "evidence": "Registro-Mestre: 99/120 dias estudados. O calendário legado disponível é incompleto para classificar todos os dias em estudo/revisão/simulado.",
+      "caveat": "Como revisões valiam em média 2h, o tempo real deste ciclo pode ser superior a 99h."
+    },
+    {
+      "id": "sedes-paralelo-1",
+      "name": "SEDES — Plano Paralelo 1",
+      "estimateMinutes": 3720,
+      "estimateHours": 62,
+      "status": "reconstructed",
+      "components": {
+        "study": 23,
+        "review": 12,
+        "simulation": 5
+      },
+      "calculation": "23×1h + 12×2h + 5×3h",
+      "evidence": "40 registros executados no banco histórico, classificados pelo título da atividade."
+    },
+    {
+      "id": "sedes-paralelo-8-semanas",
+      "name": "SEDES — Plano Paralelo 8 Semanas",
+      "estimateMinutes": 6120,
+      "estimateHours": 102,
+      "status": "reconstructed",
+      "components": {
+        "study": 53,
+        "review": 20,
+        "simulation": 3
+      },
+      "calculation": "53×1h + 20×2h + 3×3h",
+      "evidence": "76 registros executados no banco histórico, com revisões e simulados identificáveis."
+    },
+    {
+      "id": "senador-canedo-analista",
+      "name": "Senador Canedo — Analista Administrativo",
+      "estimateMinutes": 1380,
+      "estimateHours": 23,
+      "status": "reconstructed",
+      "components": {
+        "study": 17,
+        "review": 3,
+        "simulation": 0
+      },
+      "calculation": "17×1h + 3×2h",
+      "evidence": "20 blocos com questões no banco; o Registro-Mestre preserva 18 dias de execução, permitindo múltiplos blocos no mesmo dia."
+    },
+    {
+      "id": "camara-goiania-principal",
+      "name": "Câmara Goiânia — ciclo principal",
+      "estimateMinutes": 4620,
+      "estimateHours": 77,
+      "status": "reconstructed",
+      "components": {
+        "study": 37,
+        "review": 17,
+        "simulation": 2
+      },
+      "calculation": "37×1h + 17×2h + 2×3h",
+      "evidence": "56 blocos com questões; auditoria temporal registra 53/56 dias executados."
+    },
+    {
+      "id": "camara-goiania-reta-final",
+      "name": "Câmara Goiânia — Reta Final",
+      "estimateMinutes": 2460,
+      "estimateHours": 41,
+      "status": "audited-reconstruction",
+      "components": {
+        "study": 23,
+        "review": 0,
+        "simulation": 6,
+        "rest": 4
+      },
+      "calculation": "23×1h + 6×3h; 4 descansos = 0h",
+      "evidence": "Auditoria semanal prevalece sobre o legado 56/56: 33 dias comprovados (7+7+7+7+4+1+0)."
+    },
+    {
+      "id": "sedes-pre-edital-pro",
+      "name": "SEDES — Pré-edital PRO",
+      "estimateMinutes": 3300,
+      "estimateHours": 55,
+      "status": "block-level-estimate",
+      "components": {
+        "studyOrOther": 34,
+        "review": 6,
+        "simulation": 3
+      },
+      "calculation": "34×1h + 6×2h + 3×3h",
+      "evidence": "43 blocos concluídos no banco estruturado: 25 estudos, 6 revisões, 3 correções estratégicas, 3 simulados e 6 blocos sem tipo explícito.",
+      "caveat": "O resumo histórico preserva 24 dias; o cálculo é por bloco/matéria, conforme a regra informada, não por dia civil."
+    },
+    {
+      "id": "tdas-pos-edital",
+      "name": "SEDES/DF — TDAS pós-edital",
+      "estimateMinutes": 7740,
+      "estimateHours": 129,
+      "status": "audited-reconstruction",
+      "components": {
+        "studyOrOther": 75,
+        "review": 9,
+        "simulation": 12
+      },
+      "calculation": "75×1h + 9×2h + 12×3h",
+      "evidence": "96 blocos realmente estudados. PE105–PE112 foram excluídos porque os próprios registros dizem 'não estudei nesses dias'."
+    }
+  ],
+  "omitted": [
+    {
+      "id": "treino-quadrix-crf-df",
+      "name": "Treino Quadrix — CRF-DF",
+      "reason": "Há desempenho de 28 questões, mas não há evidência suficiente de duração/tipo da sessão para precificar o tempo sem inventar precisão."
+    }
+  ]
+}
