@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "historicalCut": "2026-09-20",
-  "generatedAt": "2026-10-02T22:20:00-03:00",
+  "generatedAt": "2026-10-02T22:12:17Z",
   "method": {
     "kind": "user-reported-average",
     "label": "Estimativa histórica reconstruída",
@@ -10,8 +10,9 @@
       "reviewMinutes": 120,
       "simulationMinutes": 180
     },
-    "description": "Estimativa baseada na média informada pelo candidato: 1h por matéria/bloco normal, 2h por dia/bloco de revisão e 3h por simulado.",
-    "separationRule": "Não misturar com os créditos atuais confirmados da Central de Estudos; o total da jornada deve somar estimativa histórica + tempo atual confirmado, mantendo os dois rótulos."
+    "description": "Estimativa baseada na média informada pelo candidato: 1h por matéria/sessão de estudo identificada, 2h por dia/bloco de revisão e 3h por simulado.",
+    "separationRule": "Não misturar com os créditos atuais confirmados da Central de Estudos; o total da jornada deve somar estimativa histórica + tempo atual confirmado, mantendo os dois rótulos.",
+    "currentCycleRule": "No ciclo atual, leitura e estudo da mesma unidade na mesma data não podem ser somados em duplicidade; a unidade concluída recebe um único crédito-base, salvo ajuste manual distinto e confirmado."
   },
   "summary": {
     "historicalEstimateMinutes": 35280,
@@ -138,5 +139,7 @@
       "name": "Treino Quadrix — CRF-DF",
       "reason": "Há desempenho de 28 questões, mas não há evidência suficiente de duração/tipo da sessão para precificar o tempo sem inventar precisão."
     }
-  ]
+  ],
+  "auditedAt": "2026-10-02T22:12:17Z",
+  "currentCycleStartsAt": "2026-09-21"
 }
