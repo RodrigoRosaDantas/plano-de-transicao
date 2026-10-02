@@ -157,5 +157,23 @@
   "omitted": [],
   "auditedAt": "2026-10-02T22:55:00Z",
   "currentCycleStartsAt": "2026-09-21",
-  "historicalEstimateHours": 593
+  "historicalEstimateHours": 593,
+  "questionEvidence": {
+    "historicalMeasuredQuestions": 15329,
+    "historicalCorrect": 13976,
+    "historicalErrors": 1353,
+    "historicalAccuracy": 91.17,
+    "cutoff": "2026-08-27",
+    "separateNotSummed": [
+      {
+        "id": "sedes-edas-administracao",
+        "name": "SEDES/DF — EDAS Administração",
+        "questions": 145,
+        "correct": 122,
+        "errors": 23,
+        "reason": "Mantido separado do consolidado geral de questões por risco histórico de sobreposição com componentes TDAS; as horas S01–S04 são contadas por sessões próprias comprovadas."
+      }
+    ],
+    "notes": "O treino CRF-DF de 28 questões já está contido nas 15.329 questões históricas mensuráveis. Questões atuais dos projetos P1–P3 são somadas separadamente pelos contratos vivos."
+  }
 }
