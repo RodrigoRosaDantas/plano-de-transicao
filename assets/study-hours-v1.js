@@ -95,7 +95,8 @@ function creditFingerprint(row) {
 
 function publicSessionKey(row) {
   const unit = String(row.unit || "").trim().toLocaleUpperCase("pt-BR");
-  return [row.projectId, row.date, unit].join("|");
+  const stableUnit = unit || `ID:${String(row.id || "").trim().toLocaleUpperCase("pt-BR")}`;
+  return [row.projectId, row.date, stableUnit].join("|");
 }
 
 function coalescePublicCredits(rows) {
