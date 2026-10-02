@@ -1,0 +1,35 @@
+.study-hours-panel{display:grid;gap:18px;overflow:hidden}
+.study-hours-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.study-hours-head h2{margin:.22rem 0 .35rem;font-size:clamp(1.35rem,2.4vw,2rem)}
+.study-hours-head p{margin:0;color:var(--muted,#8f9b97);max-width:760px}
+.study-hours-controls{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.study-hours-state{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--line,#25302d);border-radius:999px;font-size:.76rem;font-weight:750;white-space:nowrap}
+.study-hours-state::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 12%,transparent)}
+.study-hours-state.is-ok{color:#73d3a7}.study-hours-state.is-warning{color:#e0b66a}.study-hours-state.is-loading{color:#7cb9d8}
+.study-hours-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.study-hours-metric{min-width:0;padding:16px;border:1px solid var(--line,#25302d);border-radius:16px;background:color-mix(in srgb,var(--surface-2,#121917) 88%,transparent)}
+.study-hours-metric span{display:block;color:var(--muted,#8f9b97);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
+.study-hours-metric strong{display:block;margin:7px 0 4px;font-size:clamp(1.45rem,3vw,2.2rem);line-height:1}
+.study-hours-metric small{display:block;color:var(--muted,#8f9b97);font-size:.76rem}
+.study-hours-metric.aqua{box-shadow:inset 0 2px 0 rgba(72,184,211,.65)}
+.study-hours-metric.lime{box-shadow:inset 0 2px 0 rgba(100,204,145,.65)}
+.study-hours-metric.amber{box-shadow:inset 0 2px 0 rgba(224,182,106,.65)}
+.study-hours-metric.violet{box-shadow:inset 0 2px 0 rgba(154,129,210,.65)}
+.study-hours-projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.study-hours-project{display:grid;gap:9px;padding:14px 15px;border:1px solid var(--line,#25302d);border-radius:15px;background:color-mix(in srgb,var(--surface,#0f1513) 90%,transparent)}
+.study-hours-project-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.study-hours-project-head>div{display:flex;align-items:center;gap:9px;min-width:0}
+.study-hours-project-head b{display:grid;place-items:center;min-width:30px;height:26px;border-radius:8px;background:color-mix(in srgb,var(--accent,#69c49c) 14%,transparent);color:var(--accent,#69c49c);font-size:.72rem}
+.study-hours-project-head strong{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.study-hours-project-head span{font-size:.9rem;font-weight:800;white-space:nowrap}
+.study-hours-track{height:7px;border-radius:999px;background:color-mix(in srgb,var(--line,#25302d) 70%,transparent);overflow:hidden}
+.study-hours-track i{display:block;height:100%;border-radius:inherit;background:var(--accent,#69c49c)}
+.study-hours-project small,.study-hours-foot small{color:var(--muted,#8f9b97);font-size:.72rem}
+.study-hours-foot{display:flex;justify-content:space-between;gap:14px;padding-top:2px;border-top:1px solid color-mix(in srgb,var(--line,#25302d) 70%,transparent)}
+.study-hours-foot small:last-child{text-align:right;max-width:620px}
+.study-hours-loading,.study-hours-error{margin:0;padding:18px;border:1px dashed var(--line,#25302d);border-radius:14px;color:var(--muted,#8f9b97)}
+.study-hours-error{color:#e0b66a}
+.study-hours-refresh{white-space:nowrap}
+@media(max-width:900px){.study-hours-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.study-hours-projects{grid-template-columns:1fr}.study-hours-foot{display:grid}.study-hours-foot small:last-child{text-align:left}}
+@media(max-width:640px){.study-hours-head{display:grid}.study-hours-controls{justify-content:flex-start}.study-hours-metrics{grid-template-columns:1fr 1fr}.study-hours-metric{padding:14px}.study-hours-metric strong{font-size:1.55rem}.study-hours-foot{gap:8px}}
+@media(max-width:420px){.study-hours-metrics{grid-template-columns:1fr}.study-hours-controls{align-items:stretch}.study-hours-refresh{width:100%}}
