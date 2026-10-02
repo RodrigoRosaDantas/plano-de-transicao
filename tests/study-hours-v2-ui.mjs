@@ -62,15 +62,24 @@ try {
   await page.locator("#study-hours-overview .study-hours-metrics").waitFor({ timeout: 15000 });
   assert.equal(await page.locator("#study-hours-overview .study-hours-error").count(), 0, "painel não pode cair em estado de erro com fixture válida");
 
-  const panelText = await page.locator("#study-hours-overview").innerText();
-  assert.ok(panelText.includes("Acumulado"), "painel deve exibir o acumulado atual");
-  assert.ok(panelText.includes("3h"), "reading + study de L01 devem contar uma única vez; total atual esperado = 3h");
-  assert.ok(panelText.includes("588h históricas + 3h atuais confirmadas"), "jornada deve separar histórico reconstruído e ciclo atual");
-  assert.ok(panelText.includes("≈ 591h"), "jornada total estimada deve fechar em 591h no fixture");
-  assert.ok(panelText.includes("1 crédito(s) de leitura redundante(s) foram absorvidos"), "painel deve declarar a deduplicação aplicada");
-
-  const metrics = await page.locator(".study-hours-metric strong").allTextContents();
-  assert.equal(metrics.at(-1), "3h", "KPI Acumulado não pode inflar leitura + estudo da mesma unidade");
+  const metricLabels = await page.locator("#study-hours-overview .study-hours-metric > span").allTextContents();
+  assert.deepEqual(metricLabels, ["Hoje", "Semana", "Mês", "Acumulado"], "painel deve preservar os quatro KPIs de tempo");
+  const metricValues = await page.locator("#study-hours-overview .study-hours-metric strong").allTextContents();
+  assert.equal(metricValues.at(-1), "3h", "KPI Acumulado não pode inflar leitura + estudo da mesma unidade");
+  assert.equal(
+    (await page.locator("#study-hours-overview .study-hours-journey-total small").textContent())?.trim(),
+    "588h históricas + 3h atuais confirmadas",
+    "jornada deve separar histórico reconstruído e ciclo atual",
+  );
+  assert.equal(
+    (await page.locator("#study-hours-overview .study-hours-journey-total strong").textContent())?.trim(),
+    "≈ 591h",
+    "jornada total estimada deve fechar em 591h no fixture",
+  );
+  assert.ok(
+    (await page.locator("#study-hours-overview .study-hours-foot").textContent())?.includes("1 crédito(s) de leitura redundante(s) foram absorvidos"),
+    "painel deve declarar a deduplicação aplicada",
+  );
 
   await page.locator(".study-hours-history-details summary").click();
   assert.equal(await page.locator(".study-hours-history-row").count(), 8, "histórico deve preservar os oito ciclos precificados");
