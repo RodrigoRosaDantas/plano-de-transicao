@@ -16,11 +16,11 @@
     "historicalRule": "Ciclos antigos usam 1h por matéria/sessão executada, 2h por revisão e 3h por simulado. Sessões de outros projetos entram quando há evidência de execução real; material apenas criado ou questão apenas planejada não gera hora."
   },
   "summary": {
-    "historicalEstimateMinutes": 35280,
-    "historicalEstimateHours": 588,
+    "historicalEstimateMinutes": 35580,
+    "historicalEstimateHours": 593,
     "status": "conservative-estimate",
-    "pricedCycles": 8,
-    "omittedCycles": 1
+    "pricedCycles": 10,
+    "omittedCycles": 0
   },
   "cycles": [
     {
