@@ -67,10 +67,12 @@ jobs:
         run: node tests/navigation-icons-static.mjs
       - name: Auditoria estática da navegação móvel v38
         run: node tests/mobile-navigation-v38-static.mjs
-      - name: Auditoria estática da integração Jornada P1–P4
+      - name: Auditoria estática da integração Jornada P1–P3 e horas estudadas
         run: |
           node --check assets/ecosystem-v1.js
+          node --check assets/study-hours-v1.js
           node tests/ecosystem-v1-static.mjs
+          node tests/study-hours-v1-static.mjs
       - name: Auditoria de resiliência dos snapshots
         run: node tests/data-resilience-static.mjs
       - name: Sintaxe do Radar Oficial + Web privado
